@@ -1,0 +1,66 @@
+{% extends "Menu_Usuario.html" %} {% block head %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil</title>
+    <link rel="stylesheet" href="/static/ModuloUsuarios/css/stylePerfil.css">
+</head>
+{% endblock head %} {% block Contenido %} 
+<div class="Perfil_contenedor">
+        <div class=" d-flex p-2">
+            <a href="{%url 'EditarPerfil'%} ">
+                <img src="/media/{{User.imagen}}" class="Perfil_foto_perfil" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            </a>
+            <h1 class="Perfil_Apodo">
+                {{Usuario.username}}</h1>
+            </div>
+        <br>
+        <div class="Perfil_informacion">
+            <div class="row">
+                
+                <div class="col"><label>Nombres</label><br>{{Usuario.nombres}}</div>
+                
+                <div class="col"><label>Apellidos</label><br>{{Usuario.apellidos}}</div>
+            </div>
+            <div class="row">
+                
+                <div class="col"><label>Email</label><br>{{Usuario.email}}</div>
+                
+                <div class="col"><label>Telefono</label><br>{{Usuario.telefono}}</div>
+            </div>
+            <div class="row">
+                
+                <div class="col"><label>Celular</label><br>{{Usuario.celular}}</div>
+                
+                <div class="col"><label>Fecha de Nacimiento</label><br>{{Usuario.fec_nac}}</div>
+            </div>
+            <div class="row">
+                
+                <div class="col"><label>Tipo de documento</label><br>{{Usuario.tipo_documento}}</div>
+                
+                <div class="col"><label>Número de documento</label><br>{{Usuario.num_documento}}</div>
+            </div>
+            <div class="row">
+                
+                <div class="col"><label>Municipio</label><br>{{Usuario.municipio}}</div>
+                
+                <div class="col"><label>Codigo Postal</label><br>{{Usuario.cod_postal}}</div>
+            </div>
+            <div class="row">
+                <div class="col"><label>Dirección</label><br>{{Usuario.direccion}}</div>
+                <div class="col">
+                    
+                    <button type="button" class="btn btn-primary"><a href="{%url 'EditarPerfil'%} " style="color:#000;"> Editar</a></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock Contenido %}
+    {% block modal %}
+
+{% endblock modal %}
+{% block scripts %}
+  <script src="/static/ModuloUsuarios/js/mainPerfil.js"></script>
+{% endblock scripts %}
