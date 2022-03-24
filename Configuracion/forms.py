@@ -1,5 +1,7 @@
+from dataclasses import fields
 from django import forms
 from .models import Rol
+from .models import cambios,cambiosFooter
 from crispy_forms.helper import FormHelper
 
 class RolForm(forms.ModelForm):
@@ -16,3 +18,15 @@ class RolForm(forms.ModelForm):
         super(RolForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.attrs = {"novalidate": "novalidate"}
+
+class CambiosForm(forms.ModelForm):
+
+    class Meta:
+        model = cambios
+        fields = '__all__'
+
+class FooterForm(forms.ModelForm):
+
+    class Meta:
+        model = cambiosFooter
+        fields = '__all__'

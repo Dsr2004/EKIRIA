@@ -11,8 +11,8 @@ from django.views.generic import CreateView, UpdateView
 from django.urls import reverse_lazy
 # Create your views here.
 
-from .models import Rol,cambios
-from .forms import RolForm
+from .models import Rol, cambios, cambiosFooter
+from .forms import RolForm, CambiosForm, FooterForm
 
 
 def Configuracion(request):
@@ -22,7 +22,12 @@ def Roles(request):
     return render(request, "Roles.html")
 
 def Cambios(request):
-    return render(request,"Cambios.html")
+    formulario = CambiosForm
+    ListarCambios = cambios.objects.all()
+    formulario2 = FooterForm
+    Listarfooter =cambiosFooter.objects.all()
+    contexto = {'Cambios' :ListarCambios, 'footer' :Listarfooter}
+    return render (request, "Cambios.html",contexto)
 
 def Permisos(request):
     return render(request, "Permisos.html")
@@ -43,15 +48,8 @@ def ListarRol(request):
     contexto= {'roles':ListRoles}
     return render(request, "Roles.html", contexto)
 
-# def insertValues(request):
-#     if request.method=="POST":
-#         if request.POST.get("")
-#             saverecord=cambios()
-#             saverecord=ColorLetra=request.POST.get("")
-#             saverecord=save()
-#             return render(request, 'Cambios.html')
-#         else:
-#             return render(request, 'Cambios.html')
+
+
 
 def EstadoRol(request):
     id_estado=request.POST.get("estado")
