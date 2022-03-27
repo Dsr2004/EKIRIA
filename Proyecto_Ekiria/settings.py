@@ -43,8 +43,10 @@ INSTALLED_APPS = [
     'Ventas',
     'Configuracion',
     'Usuarios',
+    'Modulo_compras',
     'rest_framework', 
     'rest_framework.authtoken',
+    
 
 ]
 
