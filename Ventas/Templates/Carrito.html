@@ -68,7 +68,7 @@
                         {% endif %}
                         
                         {% if serviciosPerx %}
-                            <h5>Estosd son los servicios personalizados</h5>
+                            <h5>Estos son los servicios personalizados</h5>
                             <br>
                             <div class="fila_carrito">
                                 <div style="flex: 1;"></div>
@@ -86,9 +86,9 @@
                                     </div>
                                     <div style="flex: 2;">{{item.servicio_personalizado_id.descripcion}}</div>
                                     <div style="flex: 1;">
-                                        <button data-servicio="{{item.servicio_id.id_servicio}}" data-action="remove" class="btn addToCar" style="transform: scale(1.5);">
+                                        <button data-servicio="{{item.servicio_personalizado_id.id_servicio_personalizado}}" data-action="removePer" class="btn addToCar" style="transform: scale(1.5);">
                                             <i class="fa-solid fa-trash"></i> </button>
-                                            <button data-servicio="{{item.servicio_id.id_servicio}}" data-action="update" class="btn addToCar" style="transform: scale(1.5);">
+                                            <button onclick="abrir_modal_serviciosPersonalizados('{%url 'Ventas:actualizarServicioPer' item.servicio_personalizado_id.id_servicio_personalizado %}')" class="btn addToCar" style="transform: scale(1.5);">
                                                 <i class="fa-solid fa-pencil"></i> </button>
                                     </div>   
                         </div>
@@ -102,6 +102,10 @@
         </div>
     </div>
     <br><br>
+
+    <div class="modal fade" id="ActualizarServicioPer"  role="dialog">
+
+    </div>
     
 {% endblock Contenido %}
 

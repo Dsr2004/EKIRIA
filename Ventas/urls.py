@@ -22,6 +22,7 @@ urlpatterns = [
     path('TerminarPedido/', TerminarPedido, name="terminarPedido"),
     path('Calendario/', Calendario.as_view(), name="calendario"),
     path('PersonalizarSer/', ServiciosPersonalizados.as_view(), name="personalizar"),
+    path('ActualizarServicioPer/<int:pk>', EditarServiciosPersonalizados.as_view(), name="actualizarServicioPer"),
     
     
     path('AdminVentas/', AdminVentas.as_view(), name="adminVentas"),
