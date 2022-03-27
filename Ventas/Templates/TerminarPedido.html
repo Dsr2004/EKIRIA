@@ -57,7 +57,7 @@
              {{form.descripcion}}
               <br><br>
               <div class="d-grid gap-2">
-                <button class="btn btn-success" type="button">Continuar</button>
+                <button class="btn btn-success" type="submit">Continuar</button>
               </div>
             </form>
           </div>
@@ -69,8 +69,9 @@
             <hr>
             <h3>Resumen de la cita</h3>
             <hr>
-            {% if items %}    
-                        {% for item in items %}
+           
+            {% if serviciosx %}    
+                        {% for item in serviciosx %}
                         <div class="fila_carrito">
                                 <div style="flex: 2;">
                                     <img class="img_carrito" src="/media/{{item.servicio_id.img_servicio}}" alt="">
@@ -79,12 +80,24 @@
                                     <div style="flex: 1;">${{item.servicio_id.precio}}</div>
                                      
                         </div>
+                        {% endfor %} 
+                        {% endif %}
+
+                        {% if serviciosPerx %}  
+                        <h6 style="font-family: cursive;">Servicios personalizados</h6>  
+                        {% for item in serviciosPerx %}
+                        <div class="fila_carrito">
+                                <div style="flex: 2;">
+                                    <img class="img_carrito" src="/media/{{item.servicio_personalizado_id.img_servicio}}" alt="">
+                                    </div>
+                                    <div style="flex: 2;">{{item.servicio_personalizado_id.tipo_servicio_id}}</div>
+                                    <div style="flex: 1; overflow: hidden; white-space:nowrap; text-overflow: ellipsis;">{{item.servicio_personalizado_id.descripcion}}</div>
+                                     
+                        </div>
                         {% endfor %}   
+                        {% endif %}
                         <h5>Items: {{pedido.get_items_carrito}}</h5>
                         <h5>Total: ${{pedido.get_total_carrito}}</h5>
-                        {% else %}
-                        <h5>No hay servicios que mostrar</h5>  
-                        {% endif %}
                         
             
           </div>
@@ -140,6 +153,9 @@
           jQuery("#horaInicioBox").css("display", "block")
           var horas = response["horasDisponibles"]
           ejecutarReloj(horas)
+        },
+        error: function(error){
+          console.log(error.responseJSON)
         }
       })
     },

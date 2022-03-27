@@ -37,16 +37,18 @@ class Catalogo(ListView):
     context_object_name = "servicios"
     template_name = "Catalogo.html"
 
-    def get(self, request, *args, **kwargs):
+    def get_context_data(self, *args, **kwargs):
+        context = super(Catalogo, self).get_context_data(**kwargs)
         try:
-            if request.session:
-                imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+            if self.request.session:
+                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
-                UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen}
-            usuario = Usuario.objects.get(id_usuario=request.session['pk'])
-            return render(request, self.template_name, {"servicios":self.queryset, "User":UserSesion})
+                UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen}
+                context["User"]=UserSesion
+                return context
         except:
-            return redirect("UNR")
+            return context
+    
 
 class AgregarServicioalCatalogo(View):
     model = Catalogo
@@ -134,19 +136,29 @@ def Carrito(request):
         items= pedido.pedidoitem_set.all()
         serviciosx=[]
         serviciosPerx=[]
+        duracion=0
+        cont=0
+        for i in items:
+            if not i.servicio_personalizado_id == None:
+                cont+=1
+        
+        if cont <= 0:
+            pedido.esPersonalizado = False
+            pedido.save()
+        cont=0
+        
+        for i in items:
+            if not i.servicio_id ==  None:
+                duracion=duracion+i.servicio_id.duracion
+            if not i.servicio_personalizado_id == None:
+                duracion=duracion+i.servicio_personalizado_id.duracion
         if items:
             for i in items:
                 if not i.servicio_id ==  None:
                     serviciosx.append(i)
                 if not i.servicio_personalizado_id == None:
                     serviciosPerx.append(i)
-
-            print("los que hay son")
-            print(serviciosx)
-        try:
-            duracion= sum([item.servicio_id.duracion for item in items])
-        except Exception as e:
-            duracion=0
+    
         request.session["carrito"]=pedido.get_items_carrito
         request.session["duracion"]=duracion
         
@@ -176,7 +188,17 @@ def TerminarPedido(request):
     if cliente:
         pedido,creado = Pedido.objects.get_or_create(cliente_id=cliente, completado=False)
         items= pedido.pedidoitem_set.all()
-        contexto={"items":items, "pedido":pedido,"form":form}
+        serviciosx=[]
+        serviciosPerx=[]
+        if items:
+            for i in items:
+                if not i.servicio_id ==  None:
+                    serviciosx.append(i)
+                if not i.servicio_personalizado_id == None:
+                    serviciosPerx.append(i)
+                    
+
+        contexto={"items":items, "pedido":pedido,"form":form,"serviciosx":serviciosx,"serviciosPerx":serviciosPerx}
     else:
         items=[]
         pedido={"get_total_carrito":0,"get_items_carrito":0}
@@ -204,7 +226,6 @@ class BuscarDisponibilidadEmpleado(View):
         if accion == "BuscarEmpleado":
             empleado=request.POST["empleado"]
             agenda=models.Calendario.objects.filter(empleado_id=empleado)
-            print(agenda)
             x= request.session["duracion"]
             return JsonResponse({"empleado":empleado})
 
@@ -213,19 +234,19 @@ class BuscarDisponibilidadEmpleado(View):
             dia=request.POST["dia"]
             dia=datetime.strptime(dia, "%d/%m/%Y")
             dia=dia.strftime("%Y-%m-%d")
-            print(dia)
             diasConsulta = models.Calendario.objects.filter(empleado_id=empleado).filter(dia=dia)
             
-
             horasNoDisponibles={}
             cont=1
-            
+            hora = datetime.time(0)
+            print("la hora es: ", hora)
             for i in diasConsulta:
                 horaInicio=i.horaInicio
                 horaInicio = horaInicio.strftime("%H:%M")
                 horaFin=i.horaFin
                 horaFin = horaFin.strftime("%H:%M")
                 cont=str(cont)
+
                 horasNoDisponibles[str("cita"+cont)]={"horaInicio":horaInicio,"horaFin":horaFin}
                 cont=int(cont)
                 cont+=1
@@ -242,8 +263,8 @@ class BuscarDisponibilidadEmpleado(View):
                 for i in horasNoDisponibles:
                     res = [x for x in horas if (x < horasNoDisponibles[i]["horaInicio"] or x > horasNoDisponibles[i]["horaFin"])]
 
-            print(res)
-            
+            duracion = request.session["duracion"]
+            print(duracion)
             return JsonResponse({"horasDisponibles":res})
 
 
@@ -277,8 +298,11 @@ class ServiciosPersonalizados(CreateView):
 
         return redirect("Ventas:carrito")
         
-    
-
+class EditarServiciosPersonalizados(UpdateView):
+    model = Servicio_Personalizado
+    form_class = Servicio_PersonalizadoForm
+    template_name = "Carrito/ActualizarServicioPer.html"
+    success_url=reverse_lazy("Ventas:carrito")
 """
 <----------------------------------------------------------------->
 Seccion de las Vistas donde se administra el Admin de las ventas
@@ -448,6 +472,7 @@ class EditarServicio(UpdateView):#actualizar
                 imagen = imagen.img_usuario
                 UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen}
                 context["User"]=UserSesion
+                return context
         except:
             return context
        
@@ -465,15 +490,18 @@ class ListarServicio(ListView):#listar
     queryset = Servicio.objects.all()
     context_object_name = "servicios"
     template_name = "ListarServicios.html"
-    def get(self, request, *args, **kwargs):
+  
+    def get_context_data(self, *args, **kwargs):
+        context = super(ListarServicio, self).get_context_data(**kwargs)
         try:
-            if request.session:
-                imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+            if self.request.session:
+                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
-                UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen}
-                return render(request, self.template_name, {"User":UserSesion, self.context_object_name:self.queryset})
+                UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen}
+                context["User"]=UserSesion
+                return context
         except:
-            return redirect("UNR")
+            return context
 
 class ServicioDetalle(DetailView):#detalle
     queryset = Servicio.objects.all()
@@ -505,8 +533,6 @@ def CambiarEstadoServicio(request):
 Seccion de las Vistas donde se administran las citas
 <----------------------------------------------------------------->
 """
-
-
 
 class AgregarCita(TemplateView):
     template_name = "AgregarCita.html"
@@ -581,25 +607,3 @@ def pruebas(request):
         "User":UserSesion
     }
     return render(request, 'prueba.html',cont)
-    # user_list = Servicio.objects.all().order_by('id_servicio')
-    # paginator = Paginator(user_list, 4)
-    # if request.method == 'GET':
-    # 	users = paginator.page(1)
-    # 	return render(request, 'prueba.html', {'users': users})
-    # if request.is_ajax():
-    #     page = request.GET.get('page')
-    #     try:
-    #         users = paginator.page(page)
-    #     except PageNotAnInteger:
-    #         users = paginator.page(1)
-    #     except InvalidPage:
-    #         users = paginator.page(paginator.num_pages)
-
-    #     user_li = list(users.object_list.values())
-    #     # Respectivamente, si hay una página anterior falsa / verdadera, si hay una página siguiente falsa / verdadera, el número total de páginas, los datos de la página actual
-    #     result = {'has_previous': users.has_previous(),
-    #               'has_next': users.has_next(),
-    #               'num_pages': users.paginator.num_pages,
-    #               'user_li': user_li}
-    #     print(result["user_li"])
-    #     return JsonResponse(result)
