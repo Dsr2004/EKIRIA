@@ -32,7 +32,7 @@ from rest_framework import viewsets
 from Usuarios.Serializers.general_serializers import UsuarioTokenSerializer
 from Usuarios.Serializers.general_serializers import UsuarioTokenSerializer
 #-----------------------------------------Models---------------------------------------------------
-from Usuarios.models import Usuario
+from Usuarios.models import Usuario, VistasDiarias
 from Ventas.models import Servicio
 #-----------------------------------------More---------------------------------------------------
 from Usuarios.authentication_mixins import Authentication
@@ -235,7 +235,6 @@ def Change(request):
     except:
         return("UNR")
 def Admin(request):
-    try:
         if request.session:
             imagen = Usuario.objects.get(id_usuario=request.session['pk'])
             imagen = imagen.img_usuario
@@ -249,9 +248,8 @@ def Admin(request):
         if request.method=="GET":
             queryset = model.objects.all()
             Servicios = Servicio.objects.all()
-        return render(request, template_name, {"Usuario":queryset,"contexto":Servicios, "User":UserSesion})
-    except:
-        return redirect("UNR")
+            Vistas = VistasDiarias.objects.get(id_dia=datetime.today().strftime('%Y-%m-%d'))
+        return render(request, template_name, {"Usuario":queryset,"contexto":Servicios, "User":UserSesion, "Vistas":Vistas})
     
     
     

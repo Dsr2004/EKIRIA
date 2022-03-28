@@ -7,10 +7,20 @@ from Usuarios.views import *
 from Usuarios.authentication_mixins import Authentication
 from django.views.generic import View
 from rest_framework.views import APIView
-from Usuarios.models import Usuario
+from Usuarios.models import Usuario, VistasDiarias
+from datetime import datetime
 #--------------------------------------Cargadores de templates------------------------------------
 class Inicio(View):
     def get(self, request, *args, **kwargs):  
+        try:
+            Vista = VistasDiarias.objects.get(id_dia=datetime.today().strftime('%Y-%m-%d')) 
+            Vista.Contador = Vista.Contador + 1
+            Vista.save()
+        except:
+            Vistas = VistasDiarias.objects.create(id_dia=datetime.today().strftime('%Y-%m-%d'))
+            Vista = VistasDiarias.objects.get(id_dia=datetime.today().strftime('%Y-%m-%d')) 
+            Vista.Contador = Vista.Contador + 1
+            Vista.save()
         try:
             if request.session:
                 print(request.session)
