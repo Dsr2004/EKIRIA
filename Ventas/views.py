@@ -347,20 +347,34 @@ class Calendario(TemplateView):
     template_name = "Calendario.html"
     def get(self, request, *args, **kwargs):
         try:
-            UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen}
             if request.session:
-                imagen = Usuario.objects.get(username=request.session['pk'])
+                imagen = Usuario.objects.get(id_usuario=request.session['pk'])
                 imagen = imagen.img_usuario
                 UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen}
-                return render(request, self.template_name, {"User":UserSesion})
         except:
             return redirect("UNR")
+        context={
+            "User":UserSesion,
+        }
+        
+        return render(request, self.template_name, context)
 
 class ServiciosPersonalizados(CreateView):
     model = Servicio_Personalizado
     form_class = Servicio_PersonalizadoForm
     template_name = "AddservicioPer.html"
     success_url=reverse_lazy("Ventas:catalogo")
+    def get_context_data(self, *args, **kwargs):
+        context = super(ServiciosPersonalizados, self).get_context_data(**kwargs)
+        try:
+            if self.request.session:
+                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
+                imagen = imagen.img_usuario
+                UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen}
+                context["User"]=UserSesion
+                return context
+        except:
+            return context
 
 
     def form_valid(self, form, *args, **kwargs):

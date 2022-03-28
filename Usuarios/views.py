@@ -235,6 +235,7 @@ def Change(request):
     except:
         return("UNR")
 def Admin(request):
+    try:
         if request.session:
             imagen = Usuario.objects.get(id_usuario=request.session['pk'])
             imagen = imagen.img_usuario
@@ -250,8 +251,8 @@ def Admin(request):
             Servicios = Servicio.objects.all()
             Vistas = VistasDiarias.objects.get(id_dia=datetime.today().strftime('%Y-%m-%d'))
         return render(request, template_name, {"Usuario":queryset,"contexto":Servicios, "User":UserSesion, "Vistas":Vistas})
-    
-    
+    except:
+        return redirect("UNR")    
     
 class CreateUser(CreateView):
     model = Usuario
@@ -259,11 +260,34 @@ class CreateUser(CreateView):
     template_name = 'UsersConfiguration/CreateUsers.html'
     success_url = reverse_lazy("Administracion")
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(CreateUser, self).get_context_data(**kwargs)
+        try:
+            if self.request.session:
+                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
+                imagen = imagen.img_usuario
+                UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen}
+                context["User"]=UserSesion
+                return context
+        except:
+            return context
+
 class UpdateUser(UpdateView):
     model = Usuario    
     template_name = 'UsersConfiguration/CreateUsers.html'
     form_class = Regitro
     success_url=reverse_lazy("Administracion")   
+    def get_context_data(self, *args, **kwargs):
+        context = super(UpdateUser, self).get_context_data(**kwargs)
+        try:
+            if self.request.session:
+                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
+                imagen = imagen.img_usuario
+                UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen}
+                context["User"]=UserSesion
+                return context
+        except:
+            return context
 # class Notification(View):
 #     template_name = 'UserInformation/Notification.html'
 # class Notificacion(TemplateView):

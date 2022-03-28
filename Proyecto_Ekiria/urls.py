@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from Proyecto_Ekiria.views import Inicio, menu, SinPermisos, Noregistrado, Error404, Error500
+from Proyecto_Ekiria.views import Inicio, menu, SinPermisos, Noregistrado, Error404, Error500, Errors
 from Usuarios.views import Login, Register, Loguot
 from rest_framework.authtoken import views
 from django.conf.urls import handler404, handler500
@@ -38,6 +38,7 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
     path('api_generate_token/', views.obtain_auth_token, name="tokenGenerate"),
     path('SinPermisos/', SinPermisos, name="SinPermisos"),
+    path('Errors/', Errors)
 ]
 
 if settings.DEBUG:
