@@ -21,6 +21,7 @@
             z-index: -1 !important;
                 }
     </style>
+    
     <h3 class="tituloCambios" >Cambios de pagina</h3>
     <div class="contenedorcambios">
         {%if Cambios%}
@@ -35,55 +36,59 @@
             <p id="text2" class="tipo">{{cambios.Texto_Vision}}</p>
                 
           </div>
-          <div class="seleccionar">
-            <label for="">Color de Fondo</label>
-              <input type="text" name="select1" id="ColorFondo" placeholder="en ingles " onkeydown="ColorFondo(event);" >
-          </div>
-          <br>
-          <div class="seleccionar">
-            <label for="">Color de Letra</label>
-              <input type="text" name="select2" id="ColorLetra" placeholder="en ingles " onkeydown="ColorLetra(event);" >
-          </div>
-          <br>
-          <div class="seleccionar">
-            <label for="">Tamaño de Letra del titulo</label>
-              <input type="text" name="select3" id="TamanoLetra"  onkeydown="CambiarTamano(event);" >
-          </div>
-          <br>
-          <div class="seleccionar">
-            <label for="">Tamaño de Letra del parrafo</label>
-              <input type="text" name="select3" id="TamanoLetra2"  onkeydown="CambiarTamano2(event);" >
-          </div>
-            <br>
-            <label for="TipoLetra">tipo de letra</label>
-            <select  id="TipoLetra" onchange="CambioLetra();">
-              <option value="tahoma">Tahoma</option>
-              <option value="arial">Arial</option>
-              <option value="cursive">cursive</option>
-            </select>
-            <br>
-            <div class="editarcambios">
-              <div>
-                <label class="separacambios" >Edita la Mision</label>
-                <br><br>
-                <textarea id="TextoEditar" cols="50" rows="10">{{cambios.Texto_Mision}}</textarea>
-              </div>
-              <div>
-                <label class="separacambios" >Edita la Vision</label>
-                <br><br>
-                <textarea id="TextoEditar" cols="50" rows="10">{{cambios.Texto_Vision}}</textarea>
-              </div>
-              {%endfor%}
-              {%else%}
-                
-              <h1>No hay registros</h1>
-
-              {%endif%}
+          <form action="{% url 'Crear'%}" method="post">
+              {% csrf_token %}
+            <div class="seleccionar">
+              <label for="">Color de Fondo</label>
+                <input type="text" name="select1" id="ColorFondo" placeholder="en ingles " onkeydown="ColorFondo(event);" >
             </div>
-            <button type="button" class="btn btn-warning botonEditarCambios" data-bs-toggle="modal" data-bs-target="#CrearConfirmacion" onclick="EditarMV()";>Editar Texto</button>
-          </div>
+            <br>
+            <div class="seleccionar">
+              <label for="">Color de Letra</label>
+                <input type="text" name="select2" id="ColorLetra" placeholder="en ingles " onkeydown="ColorLetra(event);" >
+            </div>
+            <br>
+            <div class="seleccionar">
+              <label for="">Tamaño de Letra del titulo</label>
+                <input type="text" name="select3" id="TamanoLetra"  onkeydown="CambiarTamano(event);" >
+            </div>
+            <br>
+            <div class="seleccionar">
+              <label for="">Tamaño de Letra del parrafo</label>
+                <input type="text" name="select3" id="TamanoLetra2"  onkeydown="CambiarTamano2(event);" >
+            </div>
+              <br>
+              <label for="TipoLetra">tipo de letra</label>
+              <select  id="TipoLetra" onchange="CambioLetra();">
+                <option value="tahoma">Tahoma</option>
+                <option value="arial">Arial</option>
+                <option value="cursive">cursive</option>
+              </select>
+              <br>
+              <div class="editarcambios">
+                <div>
+                  <label class="separacambios" >Edita la Mision</label>
+                  <br><br>
+                  <textarea id="TextoEditar" cols="50" rows="10">{{cambios.Texto_Mision}}</textarea>
+                </div>
+                <div>
+                  <label class="separacambios" >Edita la Vision</label>
+                  <br><br>
+                  <textarea id="TextoEditar" cols="50" rows="10">{{cambios.Texto_Vision}}</textarea>
+                </div>
+                {%endfor%}
+                {%else%}
+                  
+                <h1>No hay registros</h1>
+
+                {%endif%}
+              </div>
+              <button type="button" class="btn btn-warning botonEditarCambios" data-bs-toggle="modal" data-bs-target="#CrearConfirmacion" onclick="EditarMV()";>Editar Texto</button>
+            </form>
+        </div>
         </div>
       </div>
+ 
       <!-- foteeer -->
         <div class="contactenos" >
             {%if footer%}
@@ -94,6 +99,7 @@
             <h3 id="text4" class="tipo2">Direccion: {{cambiosFooter.Direccion}}</h3><hr>
             <h3 id="text4" class="tipo2">&copy;Todos los derechos reservados Ekiria {{cambiosFooter.Derechos}} - Sena</h3><hr>
           </div>
+          <form action="{% url 'Crear'%}" method="post">
           <div class="seleccionar2">
               <div class="seleccionar">
                   <label for="">Color de Fondo</label>
@@ -107,12 +113,12 @@
             <br>
             <div class="seleccionar">
                 <label for="">Tamaño de Letra del titulo</label>
-                <input type="text" name="select3" id="TamanoLetra2"  onkeydown="CambiarTamanoFooter(event);" >
+                <input type="text" name="select3" id="TamanoLetra3"  onkeydown="CambiarTamanoFooter(event);" >
             </div>
             <br>
             <div class="seleccionar">
                 <label for="">Tamaño de Letra del parrafo</label>
-                  <input type="text" name="select3" id="TamanoLetra2"  onkeydown="CambiarTamano2Footer(event);" >
+                  <input type="text" name="select3" id="TamanoLetra4"  onkeydown="CambiarTamano2Footer(event);" >
             </div>
             <br>
             <label for="TipoLetra2">tipo de letra</label>
@@ -145,8 +151,10 @@
         <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#CrearConfirmacion">Editar Texto</button>
         
     </div>
+  </form>
   </div>
 </div>
+
     <!--Boton de la modal confirmar-->
  
     
