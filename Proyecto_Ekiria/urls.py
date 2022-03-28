@@ -32,6 +32,7 @@ urlpatterns = [
     path('InformacionUsuario/', include('Usuarios.urls')),
     path('admin/', admin.site.urls),
     path('Inicio/', Inicio),
+    path('Compras/', include ('Modulo_compras.urls')),
     path('Ventas/', include ('Ventas.urls')),
     path('Configuracion/', include ('Configuracion.urls')),
     path('api-auth/', include('rest_framework.urls')),
