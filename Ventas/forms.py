@@ -101,7 +101,7 @@ class Servicio_PersonalizadoForm(forms.ModelForm):
 class CitaForm(forms.ModelForm):
     class Meta:
         model= Cita
-        fields =["empleado_id","diaCita","horaInicioCita","horaFinCita","descripcion"]
+        fields =["empleado_id","diaCita","horaInicioCita","horaFinCita","descripcion", "cliente_id", "pedido_id"]
         widgets={
             "diaCita":forms.DateInput(attrs={"class":"form-control","id":"DiaCita","type":"text","autocomplete":"off"}),
             "horaInicioCita":forms.TimeInput(attrs={"class":"form-control","id":"horaInicio","type":"text","autocomplete":"off"}),
