@@ -58,3 +58,5 @@ class Error500(TemplateView):
             r.render()
             return r
         return view
+def Errors(request):
+    return render(request, 'Https/Errors.html')

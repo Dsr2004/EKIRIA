@@ -101,7 +101,7 @@
 <div class="Table Header-table">
     <div class="Table search">
         <label>
-        <input type="text" id="search" placeholder="Search here">
+        <input type="search" id="search" placeholder="Search here" aria-controls="TableUsers">
         <i class="fas fa-search"></i>
     </label>
     </div>
@@ -121,8 +121,8 @@
         </div>
         <div class="container">
             <div class="row">
-                <div class="col">
-                    <table id="TableUsers" class="table table-bordered display nowrap" cellspacing="0" width="100">
+                <div class="col-lg-12">
+                    <table id="TableUsers" class="display nowrap" cellspacing="0" width="100">
                         <thead>
                             <tr>
                                 <td>Apodo</td>
@@ -140,7 +140,6 @@
                                 <td>Último Inicio</td>
                                 <td>Estado</td>
                                 <td>Editar</td>
-                                <td class="ver_mas">Ver más</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -165,7 +164,7 @@
                                     <form id="EstadoUsuarioForm" method="post" action="{% url 'editarEstadoUsuario' %}">
                                         {%csrf_token%}
                                         <div class="form-check form-switch switch-Cambio-TipoServicio" style="margin-left: 20px;">
-                                            <input class="form-check-input " type="checkbox" role="switch" name="esatdo" onclick="CambiarEstadoUsuario('{{User.id_usuario}}')" {% if User.estado %}checked{%endif%}>
+                                            <input class="form-check-input" type="checkbox" role="switch" name="esatdo" onclick="CambiarEstadoUsuario('{{User.id_usuario}}')" {% if User.estado %}checked{%endif%}>
                                         </div>
                                     </form>
                                 </td>
@@ -174,9 +173,6 @@
                                     <button type="button" class="Edit" onclick="EditarUsuario('{{User.id_usuario}}')">
                                         <i class="mdi mdi-account-edit"></i>
                                     </button>
-                                </td>
-                                <td class="ver_mas">
-                                    <div><i class="fas fa-angle-down"></i></div>
                                 </td>
                             </tr>
                             {% endfor %} {%else%}
@@ -204,7 +200,6 @@
                                 <td>Último Inicio</td>
                                 <td>Estado</td>
                                 <td>Editar</td>
-                                <td class="ver_mas">Ver más</td>
                             </tr>
                         </tfoot>
                     </table>
