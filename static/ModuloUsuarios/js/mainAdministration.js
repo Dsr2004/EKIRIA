@@ -1,3 +1,13 @@
+$(document).ready(function() {
+    $('#TableUsers').DataTable({
+        responsive: true
+    })
+});
+
+function EditarUsuario(id) {
+    window.location.href = "../CrearUsuario/" + id;
+}
+
 function añadirUsuario() {
     window.location.href = "../CrearUsuario/";
 }
@@ -5,10 +15,12 @@ function añadirUsuario() {
 function cancelCreate() {
     window.location.href = "../Administracion/";
 }
+
 const getValueInput = () => {
     let inputValue = document.getElementById("Idate").value;
     document.getElementById("valueInput").innerHTML = inputValue;
 }
+
 
 function CambiarEstadoUsuario(id) {
     let ids = id

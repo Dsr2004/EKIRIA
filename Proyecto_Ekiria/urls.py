@@ -18,10 +18,10 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from Proyecto_Ekiria.views import Inicio, menu, SinPermisos, Noregistrado
+from Proyecto_Ekiria.views import Inicio, menu, SinPermisos, Noregistrado, Error404, Error500
 from Usuarios.views import Login, Register, Loguot
 from rest_framework.authtoken import views
-
+from django.conf.urls import handler404, handler500
 urlpatterns = [
     path('', Inicio.as_view(), name="Inicio"),
     path('UsuarioNoRegistrado', Noregistrado, name="UNR"),
@@ -44,4 +44,8 @@ if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     
-
+    
+    
+# ----------------------------------------ERROS VIEWS--------------------------------
+handler404 = Error404.as_view()
+handler500 = Error500.as_error_view()

@@ -78,16 +78,17 @@
 .Table.Content-table {
     position: relative;
     width: 90%;
-    height: 500px;
     padding: 20px;
     margin: 20px 5%;
     border-radius: 20px;
     box-shadow: 0 7px 25px rgba(0, 0, 0, 0.28);
+    overflow: hidden;
 }
-.Table.Content-table .Information .over{
-    overflow-x:  auto;
-    height: 400px;
+
+.Table.Content-table .Information .over {
+    overflow: hidden;
 }
+
 .Table.Content-table .Information .cardHeader {
     position: sticky;
     top: -20px;
@@ -163,6 +164,11 @@
 
 .Table.Content-table .Information table tr td i {
     font-size: 25px;
+}
+
+.Table.Content-table .Information table .child {
+    position: relative !important;
+    left: 0 !important;
 }
 
 

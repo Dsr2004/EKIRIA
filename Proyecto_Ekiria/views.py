@@ -40,3 +40,21 @@ def SinPermisos(request):
 
 def Noregistrado(request):
     return render(request, "NoRegistrado.html")
+
+
+
+#------------------------------------------Errors HTTPS STATUS------------------------------------
+class Error404(TemplateView):
+    template_name="Https/Errors/404.html"
+    
+class Error500(TemplateView):
+    template_name="https/Errors/500.html"
+    
+    @classmethod
+    def as_error_view(cls):
+        v=cls.as_view()
+        def view(request):
+            r = v(request)
+            r.render()
+            return r
+        return view

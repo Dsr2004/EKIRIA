@@ -8,6 +8,8 @@
     <title>Administracion de usuarios</title>
     <link rel="stylesheet" href="/static/Proyecto_Ekiria/css/styleTablesInformations.css">
     <link rel="stylesheet" href="/static/ModuloUsuarios/css/styleAdministration.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css">
 </head>{% endblock head %} {% block Contenido %}
 <!----------------------------------------Dashborad Usuarios---------------------------------------->
 
@@ -117,78 +119,99 @@
             <h2> Usuarios Registrados </h2>
             <i class="fas fa-angle-right"></i>
         </div>
-        <div class="over">
-            <table>
-                <thead>
-                    <tr>
-                        <td>Apodo</td>
-                        <td>Nombres</td>
-                        <td>Apellidos</td>
-                        <td>Télefono</td>
-                        <td>Celular</td>
-                        <td>E-mail</td>
-                        <td>Tipo De Documento</td>
-                        <td>Número De Documento</td>
-                        <td>Dirección</td>
-                        <td>Código Postal</td>
-                        <td>Municipio</td>
-                        <td>Rol</td>
-                        <td>Último Inicio</td>
-                        <td>Estado</td>
-                        <td>Editar</td>
-                        <td class="ver_mas">Ver más</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {%if Usuario%} {% for User in Usuario%}
-                    <tr>
-                        <td>{{User.username}}</td>
-                        <td>{{User.nombres}}</td>
-                        <td>{{User.apellidos}}</td>
-                        <td>
-                            {% if User.telefono %} {{User.telefono}} {%else%} No Aplica {% endif %}
-                        </td>
-                        <td>{{User.celular}}</td>
-                        <td>{{User.email}}</td>
-                        <td>{{User.tipo_documento}}</td>
-                        <td>{{User.num_documento}}</td>
-                        <td>{% if User.direccion %} {{User.direccion}} {%else%} No Aplica {% endif %}</td>
-                        <td>{{User.cod_postal}}</td>
-                        <td>{{User.municipio}}</td>
-                        <td>{{User.rol}}</td>
-                        <td>{% if User.last_login %} {{User.last_login}} {%else%} No ha iniciado sesión {% endif %}</td>
-                        <td>
-                            <form id="EstadoUsuarioForm" method="post" action="{% url 'editarEstadoUsuario' %}">
-                                {%csrf_token%}
-                                <div class="form-check form-switch switch-Cambio-TipoServicio" style="margin-left: 20px;">
-                                    <input class="form-check-input " type="checkbox" role="switch" name="esatdo" onclick="CambiarEstadoUsuario('{{User.id_usuario}}')" {% if User.estado %}checked{%endif%}>
-                                </div>
-                            </form>
-                        </td>
-                        <td>
-                            {% csrf_token %}
-                            <button type="button" class="Edit" onclick="EditarUsuario('{{User.id_usuario}}')">
-                                <i class="mdi mdi-account-edit"></i>
-                            </button>
-                        </td>
-                        <td class="ver_mas">
-                            <div><i class="fas fa-angle-down"></i></div>
-                        </td>
-                    </tr>
-                    {% endfor %} {%else%}
-                    <tr>
-                        <td>
-                            No hay usuarios Registrados
-                        </td>
-                    </tr>
-                    {%endif%}
-                </tbody>
-            </table>
-
-            <p id="errores">
-            </p>
-
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <table id="TableUsers" class="table table-bordered display nowrap" cellspacing="0" width="100">
+                        <thead>
+                            <tr>
+                                <td>Apodo</td>
+                                <td>Nombres</td>
+                                <td>Apellidos</td>
+                                <td>Télefono</td>
+                                <td>Celular</td>
+                                <td>E-mail</td>
+                                <td>Tipo De Documento</td>
+                                <td>Número De Documento</td>
+                                <td>Dirección</td>
+                                <td>Código Postal</td>
+                                <td>Municipio</td>
+                                <td>Rol</td>
+                                <td>Último Inicio</td>
+                                <td>Estado</td>
+                                <td>Editar</td>
+                                <td class="ver_mas">Ver más</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {%if Usuario%} {% for User in Usuario%}
+                            <tr>
+                                <td>{{User.username}}</td>
+                                <td>{{User.nombres}}</td>
+                                <td>{{User.apellidos}}</td>
+                                <td>
+                                    {% if User.telefono %} {{User.telefono}} {%else%} No Aplica {% endif %}
+                                </td>
+                                <td>{{User.celular}}</td>
+                                <td>{{User.email}}</td>
+                                <td>{{User.tipo_documento}}</td>
+                                <td>{{User.num_documento}}</td>
+                                <td>{% if User.direccion %} {{User.direccion}} {%else%} No Aplica {% endif %}</td>
+                                <td>{{User.cod_postal}}</td>
+                                <td>{{User.municipio}}</td>
+                                <td>{{User.rol}}</td>
+                                <td>{% if User.last_login %} {{User.last_login}} {%else%} No ha iniciado sesión {% endif %}</td>
+                                <td>
+                                    <form id="EstadoUsuarioForm" method="post" action="{% url 'editarEstadoUsuario' %}">
+                                        {%csrf_token%}
+                                        <div class="form-check form-switch switch-Cambio-TipoServicio" style="margin-left: 20px;">
+                                            <input class="form-check-input " type="checkbox" role="switch" name="esatdo" onclick="CambiarEstadoUsuario('{{User.id_usuario}}')" {% if User.estado %}checked{%endif%}>
+                                        </div>
+                                    </form>
+                                </td>
+                                <td>
+                                    {% csrf_token %}
+                                    <button type="button" class="Edit" onclick="EditarUsuario('{{User.id_usuario}}')">
+                                        <i class="mdi mdi-account-edit"></i>
+                                    </button>
+                                </td>
+                                <td class="ver_mas">
+                                    <div><i class="fas fa-angle-down"></i></div>
+                                </td>
+                            </tr>
+                            {% endfor %} {%else%}
+                            <tr>
+                                <td>
+                                    No hay usuarios Registrados
+                                </td>
+                            </tr>
+                            {%endif%}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td>Apodo</td>
+                                <td>Nombres</td>
+                                <td>Apellidos</td>
+                                <td>Télefono</td>
+                                <td>Celular</td>
+                                <td>E-mail</td>
+                                <td>Tipo De Documento</td>
+                                <td>Número De Documento</td>
+                                <td>Dirección</td>
+                                <td>Código Postal</td>
+                                <td>Municipio</td>
+                                <td>Rol</td>
+                                <td>Último Inicio</td>
+                                <td>Estado</td>
+                                <td>Editar</td>
+                                <td class="ver_mas">Ver más</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
         </div>
+
     </div>
 </div>
 
@@ -200,4 +223,6 @@
 {% endblock Contenido %} {% block modal %} {% endblock modal %} {% block scripts %}
 <script src="/static/Proyecto_Ekiria/js/jsTablesInformations.js"></script>
 <script src="/static/ModuloUsuarios/js/mainAdministration.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 {% endblock scripts %}
