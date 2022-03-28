@@ -19,10 +19,11 @@ urlpatterns = [
     path('pruebas/', pruebas, name="pruebas"), 
 
     path('Carrito/', Carrito, name="carrito"),
-    path('TerminarPedido/', TerminarPedido, name="terminarPedido"),
+    path('TerminarPedido/', AgandarCita.as_view(), name="terminarPedido"),
     path('Calendario/', Calendario.as_view(), name="calendario"),
     path('PersonalizarSer/', ServiciosPersonalizados.as_view(), name="personalizar"),
     path('ActualizarServicioPer/<int:pk>', EditarServiciosPersonalizados.as_view(), name="actualizarServicioPer"),
+    # path("AgendarCita/", AgandarCita.as_view(), name="agendarCita"),
     
     
     path('AdminVentas/', AdminVentas.as_view(), name="adminVentas"),

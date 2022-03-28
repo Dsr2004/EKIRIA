@@ -101,13 +101,20 @@ class Servicio_PersonalizadoForm(forms.ModelForm):
 class CitaForm(forms.ModelForm):
     class Meta:
         model= Cita
-        fields =["empleado_id","diaCita","horaInicioCita","descripcion"]
+        fields =["empleado_id","diaCita","horaInicioCita","horaFinCita","descripcion"]
         widgets={
             "diaCita":forms.DateInput(attrs={"class":"form-control","id":"DiaCita","type":"text","autocomplete":"off"}),
             "horaInicioCita":forms.TimeInput(attrs={"class":"form-control","id":"horaInicio","type":"text","autocomplete":"off"}),
             "empleado_id":forms.Select(attrs={"class":"form-select","id":"empleado","type":"text"}),
-            "descripcion":forms.Textarea(attrs={"class":"form-control","cols":"60","rows":"10"})
+            "descripcion":forms.Textarea(attrs={"class":"form-control","cols":"60","rows":"10"}),
+            "horaFinCita":forms.TimeInput(attrs={"class":"form-control","id":"horaFin","type":"text","autocomplete":"off"}),
         }
+    def __init__(self, *args, **kwargs):
+        super(CitaForm, self).__init__(*args, **kwargs) 
+        self.fields['diaCita'].label = False
+        self.fields['horaInicioCita'].label = False
+        self.fields['empleado_id'].label = False
+        self.fields['descripcion'].label = False
     # date_field = forms.DateField(widget=DatePicker())
     # date_field_required_with_min_max_date = forms.DateField(
     #     required=True,

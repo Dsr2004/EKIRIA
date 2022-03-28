@@ -23,7 +23,8 @@
       <div class="row" style="margin-top: 10px;">
         <div class="col-lg-6">
           <div class="box-element" id="form-pedido">
-            <form action="">
+            <form  method="post">
+              {% csrf_token %}
               <label class="label-control">Seleccione un empleado:</label>
              {{form.empleado_id}}
               <br>

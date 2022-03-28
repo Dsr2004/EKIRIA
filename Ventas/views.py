@@ -1,4 +1,5 @@
-from datetime import datetime
+from datetime import datetime, timedelta
+import re
 
 from sre_constants import SUCCESS
 from webbrowser import get
@@ -179,46 +180,108 @@ def Carrito(request):
 
     return render(request, "Carrito.html",contexto)
 
-# class Carrito(TemplateView):
-#     template_name = "Carrito.html"
+class AgandarCita(CreateView):
+    model = Cita
+    form_class = CitaForm
+    template_name = "TerminarPedido.html"
 
-def TerminarPedido(request):
-    form=CitaForm
-    cliente=Usuario.objects.get(username=request.session['username'])
-    if cliente:
+    def get(self, request, *args,**kwargs):
+        print(request.session["duracion"])
+        cliente=Usuario.objects.get(username=self.request.session['username'])
+        if cliente:
+            pedido,creado = Pedido.objects.get_or_create(cliente_id=cliente, completado=False)
+            items= pedido.pedidoitem_set.all()
+            serviciosx=[]
+            serviciosPerx=[]
+            if items:
+                for i in items:
+                    if not i.servicio_id ==  None:
+                        serviciosx.append(i)
+                    if not i.servicio_personalizado_id == None:
+                        serviciosPerx.append(i)  
+            contexto={"items":items, "pedido":pedido,"form":self.form_class,"serviciosx":serviciosx,"serviciosPerx":serviciosPerx}
+        else:
+            items=[]
+            pedido={"get_total_carrito":0,"get_items_carrito":0}
+            contexto={"items":items, "pedido":pedido,"form":self.form_class}
+
+
+        try:
+            if self.request.session:
+                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
+                imagen = imagen.img_usuario
+                UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen}
+                contexto["User"]=UserSesion
+
+        except:
+            pass
+
+        if is_list_empty(items):
+            contexto["mensaje"]=True
+            return render(request, "Carrito.html",contexto)
+        else:
+            return render(request, "TerminarPedido.html",contexto)
+    
+    def post(self, request, *args, **kwargs):
+        duracion=int(request.session["duracion"])
+        horaInicio = request.POST["horaInicioCita"]
+        horaInicio=datetime.strptime(horaInicio, "%H:%M %p")
+        horaInicio = horaInicio.strftime("%H:%M")
+        horaInicio = datetime.strptime(horaInicio, "%H:%M")
+        duracion = timedelta(minutes=duracion)
+        horaFin = horaInicio + duracion
+        horaFin = horaFin.strftime("%H:%M %p")
+        horaInicio = horaInicio.strftime("%H:%M %p")
+        print("hora inicio: ", horaInicio)
+        print("hora fin: ",horaFin)
+        print("duracion: ", duracion)
+
+        
+
+        cliente=Usuario.objects.get(username=self.request.session['username'])
         pedido,creado = Pedido.objects.get_or_create(cliente_id=cliente, completado=False)
-        items= pedido.pedidoitem_set.all()
-        serviciosx=[]
-        serviciosPerx=[]
-        if items:
-            for i in items:
-                if not i.servicio_id ==  None:
-                    serviciosx.append(i)
-                if not i.servicio_personalizado_id == None:
-                    serviciosPerx.append(i)
+        
+        
+        return HttpResponse(request.POST)
+        
+
+# def TerminarPedido(request):
+#     form=CitaForm
+#     cliente=Usuario.objects.get(username=request.session['username'])
+#     if cliente:
+#         pedido,creado = Pedido.objects.get_or_create(cliente_id=cliente, completado=False)
+#         items= pedido.pedidoitem_set.all()
+#         serviciosx=[]
+#         serviciosPerx=[]
+#         if items:
+#             for i in items:
+#                 if not i.servicio_id ==  None:
+#                     serviciosx.append(i)
+#                 if not i.servicio_personalizado_id == None:
+#                     serviciosPerx.append(i)
                     
 
-        contexto={"items":items, "pedido":pedido,"form":form,"serviciosx":serviciosx,"serviciosPerx":serviciosPerx}
-    else:
-        items=[]
-        pedido={"get_total_carrito":0,"get_items_carrito":0}
-        contexto={"items":items, "pedido":pedido,"form":form}
+#         contexto={"items":items, "pedido":pedido,"form":form,"serviciosx":serviciosx,"serviciosPerx":serviciosPerx}
+#     else:
+#         items=[]
+#         pedido={"get_total_carrito":0,"get_items_carrito":0}
+#         contexto={"items":items, "pedido":pedido,"form":form}
 
-    try:
-        if request.session:
-            imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-            imagen = imagen.img_usuario
-            UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen}
-    except:
-            return redirect("UNR")
+#     try:
+#         if request.session:
+#             imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+#             imagen = imagen.img_usuario
+#             UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen}
+#     except:
+#             return redirect("UNR")
     
-    if is_list_empty(items):
-        contexto["mensaje"]=True
-        contexto["User"]=UserSesion
-        return render(request, "Carrito.html",contexto)
-    else:
-        contexto["User"]=UserSesion
-        return render(request, "TerminarPedido.html",contexto)
+#     if is_list_empty(items):
+#         contexto["mensaje"]=True
+#         contexto["User"]=UserSesion
+#         return render(request, "Carrito.html",contexto)
+#     else:
+#         contexto["User"]=UserSesion
+#         return render(request, "TerminarPedido.html",contexto)
 
 class BuscarDisponibilidadEmpleado(View):
     def post(self,request,*args,**kwargs):
@@ -238,15 +301,14 @@ class BuscarDisponibilidadEmpleado(View):
             
             horasNoDisponibles={}
             cont=1
-            hora = datetime.time(0)
-            print("la hora es: ", hora)
+            # hora = datetime.time(0)
+            # print("la hora es: ", hora)
             for i in diasConsulta:
                 horaInicio=i.horaInicio
                 horaInicio = horaInicio.strftime("%H:%M")
                 horaFin=i.horaFin
                 horaFin = horaFin.strftime("%H:%M")
                 cont=str(cont)
-
                 horasNoDisponibles[str("cita"+cont)]={"horaInicio":horaInicio,"horaFin":horaFin}
                 cont=int(cont)
                 cont+=1
@@ -266,6 +328,19 @@ class BuscarDisponibilidadEmpleado(View):
             duracion = request.session["duracion"]
             print(duracion)
             return JsonResponse({"horasDisponibles":res})
+
+# class AgandarCita(CreateView):
+#     model = Cita
+#     form_class = CitaForm
+#     def post(self, request, *args, **kwargs):
+#         form = self.form_class(request.POST)
+#         if form.is_valid():
+#             print(si)
+#         else:
+#             print("no")
+#         return HttpResponse(request.POST)
+
+    
 
 
 class Calendario(TemplateView):
