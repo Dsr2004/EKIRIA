@@ -184,9 +184,9 @@ class AgandarCita(CreateView):
     model = Cita
     form_class = CitaForm
     template_name = "TerminarPedido.html"
+    success_url = reverse_lazy("Ventas:calendario")
 
     def get(self, request, *args,**kwargs):
-        print(request.session["duracion"])
         cliente=Usuario.objects.get(username=self.request.session['username'])
         if cliente:
             pedido,creado = Pedido.objects.get_or_create(cliente_id=cliente, completado=False)
@@ -225,63 +225,47 @@ class AgandarCita(CreateView):
     def post(self, request, *args, **kwargs):
         duracion=int(request.session["duracion"])
         horaInicio = request.POST["horaInicioCita"]
-        horaInicio=datetime.strptime(horaInicio, "%H:%M %p")
-        horaInicio = horaInicio.strftime("%H:%M")
-        horaInicio = datetime.strptime(horaInicio, "%H:%M")
+        horaInicio=datetime.strptime(horaInicio, "%H:%M %p").strftime("%H:%M:%S")
+        horaInicio = datetime.strptime(horaInicio, "%H:%M:%S")
         duracion = timedelta(minutes=duracion)
         horaFin = horaInicio + duracion
-        horaFin = horaFin.strftime("%H:%M %p")
-        horaInicio = horaInicio.strftime("%H:%M %p")
-        print("hora inicio: ", horaInicio)
-        print("hora fin: ",horaFin)
-        print("duracion: ", duracion)
-
-        
+        horaFin = horaFin.strftime("%H:%M:%S")
+        horaInicio = request.POST["horaInicioCita"]
+        horaInicio=datetime.strptime(horaInicio, "%H:%M %p").strftime("%H:%M:%S")
 
         cliente=Usuario.objects.get(username=self.request.session['username'])
         pedido,creado = Pedido.objects.get_or_create(cliente_id=cliente, completado=False)
+
+        postViejo = request.POST._mutable
+        request.POST._mutable = True
+
+        request.POST["horaInicioCita"]=horaInicio
+        request.POST["horaFinCita"]=horaFin
+        request.POST["cliente_id"]=cliente
+        request.POST["pedido_id"]=pedido
+        form = self.form_class(request.POST)
+        if form.is_valid:
+            object=form.save()
+            calendarioSave = models.Calendario(dia=object.diaCita, horaInicio=object.horaInicioCita, horaFin=object.horaFinCita, cita_id=object, cliente_id=object.cliente_id, empleado_id=object.empleado_id)
+            calendarioSave.save()
+            form.save()
+            return redirect("Ventas:calendario")
+        else:
+            return render(request, self.template_name, {"form":self.form_class})
+       
         
         
-        return HttpResponse(request.POST)
+        return self.success_url
+
+
+        # object = Servicio.objects.get(request.POST.get(""))
+        # object.horafin = horaFin
+        # object.save(    )
         
 
-# def TerminarPedido(request):
-#     form=CitaForm
-#     cliente=Usuario.objects.get(username=request.session['username'])
-#     if cliente:
-#         pedido,creado = Pedido.objects.get_or_create(cliente_id=cliente, completado=False)
-#         items= pedido.pedidoitem_set.all()
-#         serviciosx=[]
-#         serviciosPerx=[]
-#         if items:
-#             for i in items:
-#                 if not i.servicio_id ==  None:
-#                     serviciosx.append(i)
-#                 if not i.servicio_personalizado_id == None:
-#                     serviciosPerx.append(i)
-                    
+       
+        
 
-#         contexto={"items":items, "pedido":pedido,"form":form,"serviciosx":serviciosx,"serviciosPerx":serviciosPerx}
-#     else:
-#         items=[]
-#         pedido={"get_total_carrito":0,"get_items_carrito":0}
-#         contexto={"items":items, "pedido":pedido,"form":form}
-
-#     try:
-#         if request.session:
-#             imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-#             imagen = imagen.img_usuario
-#             UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen}
-#     except:
-#             return redirect("UNR")
-    
-#     if is_list_empty(items):
-#         contexto["mensaje"]=True
-#         contexto["User"]=UserSesion
-#         return render(request, "Carrito.html",contexto)
-#     else:
-#         contexto["User"]=UserSesion
-#         return render(request, "TerminarPedido.html",contexto)
 
 class BuscarDisponibilidadEmpleado(View):
     def post(self,request,*args,**kwargs):
@@ -301,8 +285,6 @@ class BuscarDisponibilidadEmpleado(View):
             
             horasNoDisponibles={}
             cont=1
-            # hora = datetime.time(0)
-            # print("la hora es: ", hora)
             for i in diasConsulta:
                 horaInicio=i.horaInicio
                 horaInicio = horaInicio.strftime("%H:%M")
@@ -325,20 +307,8 @@ class BuscarDisponibilidadEmpleado(View):
                 for i in horasNoDisponibles:
                     res = [x for x in horas if (x < horasNoDisponibles[i]["horaInicio"] or x > horasNoDisponibles[i]["horaFin"])]
 
-            duracion = request.session["duracion"]
-            print(duracion)
             return JsonResponse({"horasDisponibles":res})
 
-# class AgandarCita(CreateView):
-#     model = Cita
-#     form_class = CitaForm
-#     def post(self, request, *args, **kwargs):
-#         form = self.form_class(request.POST)
-#         if form.is_valid():
-#             print(si)
-#         else:
-#             print("no")
-#         return HttpResponse(request.POST)
 
     
 
@@ -347,14 +317,19 @@ class Calendario(TemplateView):
     template_name = "Calendario.html"
     def get(self, request, *args, **kwargs):
         try:
-            UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen}
             if request.session:
-                imagen = Usuario.objects.get(username=request.session['pk'])
+                imagen = Usuario.objects.get(id_usuario=request.session['pk'])
                 imagen = imagen.img_usuario
                 UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen}
-                return render(request, self.template_name, {"User":UserSesion})
         except:
             return redirect("UNR")
+
+        #contexto
+        context={
+            "User":UserSesion,
+        }
+        
+        return render(request, self.template_name, context)
 
 class ServiciosPersonalizados(CreateView):
     model = Servicio_Personalizado
