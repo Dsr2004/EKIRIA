@@ -91,7 +91,7 @@ class CrearCambios(CreateView):
 
     def post(self,request, *args, **kwargs):
             if request.method == "POST":
-                formulario=self.formulario_cambios(request.POST)
+                formulario=self.formulario_camb(request.POST)
                 if formulario.is_valid():
                     formulario.save()
                     return JsonResponse({"mensaje": f"{self.model.__name__} Se ha creado correctamente", "errores":"No hay errores"})
