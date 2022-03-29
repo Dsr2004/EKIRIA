@@ -223,6 +223,10 @@ class AgandarCita(CreateView):
             return render(request, "TerminarPedido.html",contexto)
     
     def post(self, request, *args, **kwargs):
+        """
+            esta parte de la hora de fin se debe hacer en el metodo save del modelo es mas facil en el video de los calendarios de developer.pe
+            se explica muy bien 
+        """
         duracion=int(request.session["duracion"])
         horaInicio = request.POST["horaInicioCita"]
         horaInicio=datetime.strptime(horaInicio, "%H:%M %p").strftime("%H:%M:%S")
@@ -323,15 +327,15 @@ class Calendario(TemplateView):
                 UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen}
         except:
             return redirect("UNR")
-        context={
-            "User":UserSesion,
-        }
         
-        return render(request, self.template_name, context)
-
+        """"
+        falta validar si es un empleado o un cliente
+        """
+        citas = models.Calendario.objects.filter(cliente_id=request.session['pk'])
         #contexto
         context={
             "User":UserSesion,
+            "citas":citas,
         }
         
         return render(request, self.template_name, context)
