@@ -7,6 +7,7 @@ urlpatterns=[
     path("Roles/", views.ListarRol, name="Roles"),
     path("Cambios/", views.Cambios, name="Cambios"),
     path("CrearCambios/", views.CrearCambios.as_view(), name="Crear"),
+    path("CrearCambiosFooter/", views.CrearCambiosFooter.as_view(), name="CrearFooter"),
     path("Permisos/", views.Permisos, name="Permisos"),
     path("Admin/", views.Admin, name="Admin"),
     path("Empleado/", views.Empleado, name="Empleado"),

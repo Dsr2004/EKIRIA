@@ -1,5 +1,5 @@
 
-function ColorFondo(e) {
+function ColorFondo1(e) {
     const codigo = e.which || e.keyCode;
     if(codigo === 13){
         let ColorFondo = document.getElementById("ColorFondo").value;
@@ -8,20 +8,20 @@ function ColorFondo(e) {
     }
     
 }
-function CambioLetra() {
+function CambioLetra1() {
     $(document).ready(function() {
         let TipoLetra = document.querySelector("#TipoLetra").value;
         let body = document.querySelectorAll(".tipo");
         body.forEach(texto => {
             if (texto.style.fontFamily = TipoLetra) {
                 texto.style.fontFamily = TipoLetra
-                texto = texto.style.fontFamily = TipoLetra
+                texto = texto.style.fontFamily = TipoLetra;
                 console.log(texto)
             }
         });
     })
 }
-function ColorLetra(event) {
+function ColorLetra1(event) {
     const codigo = event.which || event.keyCode;
     if(codigo === 13){
         $(document).ready(function(){
@@ -39,7 +39,7 @@ function ColorLetra(event) {
 }
 
 
-function CambiarTamano(event) {
+function CambiarTamano1(event) {
     const codigo = event.which || event.keyCode;
     if(codigo === 13){
         $(document).ready(function(){
@@ -73,7 +73,7 @@ function CambiarTamano2(event) {
 }
 // aqui esta el footer
 
-function ColorFondoFooter(event) {
+function ColorFondoFooter2(event) {
     const codigo = event.which || event.keyCode;
     if(codigo === 13){
         let ColorFondo2 = document.getElementById("ColorFondo2").value;
@@ -82,7 +82,7 @@ function ColorFondoFooter(event) {
     }
     
 }
-function ColorLetraFooter(event) {
+function ColorLetraFooter2(event) {
     const codigo = event.which || event.keyCode;
     if(codigo === 13){
         $(document).ready(function(){
@@ -91,7 +91,7 @@ function ColorLetraFooter(event) {
             texto2.forEach(textos2 =>{
                 if (textos2.style.color = ColorLetra2) {
                     textos2.style.color = ColorLetra2
-                    textos2 = textos2.style.color = ColorLetra 
+                    textos2 = textos2.style.color = ColorLetra2;
                 }
             });
             
@@ -99,7 +99,7 @@ function ColorLetraFooter(event) {
     }  
 }
 
-function CambiarTamanoFooter(event) {
+function CambiarTamanoFooter2(event) {
     const codigo = event.which || event.keyCode;
     if(codigo === 13){
         $(document).ready(function(){
@@ -131,7 +131,7 @@ function CambiarTamano2Footer(event) {
         });
     }  
 }
-function CambioLetraFooter() {
+function CambioLetraFooter2() {
     $(document).ready(function() {
         let TipoLetra = document.querySelector("#TipoLetra2").value;
         let body = document.querySelectorAll(".tipo2");
@@ -144,18 +144,114 @@ function CambioLetraFooter() {
         });
     })
 }
-
 function ActualizarCambiosPagina(){
     let formulario = $("#cambiosPaginaForm")
-    $.ajax({
-        data: formulario.serialize(),
-        url: formulario.attr("action"),
-        type: formulario.attr("method"),
-        success: function(response){
-            location.reload()
+    const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success sweetAlertB',
+          cancelButton: 'btn btn-danger sweetAlertB',
         },
-        error: function(error){
-            alert("no ",error)
+        buttonsStyling: false
+      })
+      
+      swalWithBootstrapButtons.fire({
+        title: '¿Estas seguro?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Aceptar',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+            $(document).ready(function(){
+                $.ajax({
+                    data: formulario.serialize(),
+                    url: formulario.attr("action"),
+                    type: formulario.attr("method"),
+                    success: function(response){
+                        swalWithBootstrapButtons.fire(
+                            'Modificado Correctamente',
+                            'Cambiaste el estado',
+                            'success'
+                        ).then(function(){
+                            location.reload()
+                        });
+                    },
+                    error: function(error){
+                        alert("Error: "+error.responseJSON)
+                    }
+                });
+
+            })
+          
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons.fire(
+            'Cancelado',
+            'Ningun Cambio',
+            'error'
+          ).then(function(){
+              location.reload()
+          });
         }
-    })
-}
+      });
+    
+};
+
+function ActualizarCambiosFooter(){
+    let formulario = $("#CambiosFooterForm")
+    const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success sweetAlertB',
+          cancelButton: 'btn btn-danger sweetAlertB',
+        },
+        buttonsStyling: false
+      })
+      
+      swalWithBootstrapButtons.fire({
+        title: '¿Estas seguro?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Aceptar',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+            $(document).ready(function(){
+                $.ajax({
+                    data: formulario.serialize(),
+                    url: formulario.attr("action"),
+                    type: formulario.attr("method"),
+                    success: function(response){
+                        swalWithBootstrapButtons.fire(
+                            'Modificado Correctamente',
+                            'Cambiaste el estado',
+                            'success'
+                        ).then(function(){
+                            location.reload()
+                        });
+                    },
+                    error: function(error){
+                        alert("Error: "+error.responseJSON)
+                    }
+                });
+
+            })
+          
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons.fire(
+            'Cancelado',
+            'Ningun Cambio',
+            'error'
+          ).then(function(){
+              location.reload()
+          });
+        }
+      });
+    
+};

@@ -104,6 +104,27 @@ class CrearCambios(View):
             respuesta=JsonResponse({"mensaje":mensaje, "errores":errores})
             respuesta.status_code=400
             return respuesta
+    
+class CrearCambiosFooter(View):
+    model = cambiosFooter
+    form_class = FooterForm
+
+    def get_object(self, queryset=None):
+        obj = self.model.objects.filter(id_footer=self.request.POST["id_footer"]).first()
+        return obj
+
+    def post(self,request, *args, **kwargs):
+        formulario=self.form_class(request.POST, instance=self.get_object())
+        if formulario.is_valid():
+            formulario.save()
+            return JsonResponse({"mensaje": f"{self.model.__name__} Se ha creado correctamente", "errores":"No hay errores"})
+        else:
+            errores=formulario.errors
+            mensaje=f"{self.model.__name__} No se ha creado correctamente!"
+            print(mensaje)
+            respuesta=JsonResponse({"mensaje":mensaje, "errores":errores})
+            respuesta.status_code=400
+            return respuesta
 
 
 
