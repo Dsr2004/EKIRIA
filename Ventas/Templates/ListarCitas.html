@@ -25,38 +25,22 @@
            </tr>
         </thead>
         <tbody>
-           <tr>
-              <th scope="row">Margarita Hoyos</th>
-              <td>$45.000</td>
-              <td>28 de Noviembre del 2021</td>
-              <td>Pendiente</td>
-              <td><a href="{%url 'Ventas:editarCita'%}"><i class="fas fa-eye" style="font-size: 25px;"></i></a></td>
-              <td><a type="button" onclick="ConfirmarCita()"><i class="fas fa-check-circle" style="font-size: 25px;" onclick=""></i></a></td>
-           </tr>
-           <tr>
-            <th scope="row">Margarita Hoyos</th>
-            <td>$45.000</td>
-            <td>28 de Noviembre del 2021</td>
-            <td>Pendiente</td>
-            <td><a href="{%url 'Ventas:editarCita'%}"><i class="fas fa-eye" style="font-size: 25px;"></i></a></td>
-            <td><a type="button" onclick="ConfirmarCita()"><i class="fas fa-check-circle" style="font-size: 25px;" onclick=""></i></a></td>
-         </tr>
-         <tr>
-            <th scope="row">Margarita Hoyos</th>
-            <td>$45.000</td>
-            <td>28 de Noviembre del 2021</td>
-            <td>Pendiente</td>
-            <td><a href="{%url 'Ventas:editarCita'%}"><i class="fas fa-eye" style="font-size: 25px;"></i></a></td>
-            <td><a type="button" onclick="ConfirmarCita()"><i class="fas fa-check-circle" style="font-size: 25px;" onclick=""></i></a></td>
-         </tr>
-         <tr>
-            <th scope="row">Margarita Hoyos</th>
-            <td>$45.000</td>
-            <td>28 de Noviembre del 2021</td>
-            <td>Pendiente</td>
-            <td><a href="{%url 'Ventas:editarCita'%}"><i class="fas fa-eye" style="font-size: 25px;"></i></a></td>
-            <td><a type="button" onclick="ConfirmarCita()"><i class="fas fa-check-circle" style="font-size: 25px;" onclick=""></i></a></td>
-         </tr>
+           {% if citas %}
+               {% for cita in citas %}
+               <tr>
+                  <th scope="row">{{cita.cliente_id.nombres | upper}} {{cita.cliente_id.apellidos | upper}}</th>
+                  <td>$45.000</td>
+                  <td>28 de Noviembre del 2021</td>
+                  <td>Pendiente</td>
+                  <td><a href="{%url 'Ventas:editarCita'%}"><i class="fas fa-eye" style="font-size: 25px;"></i></a></td>
+                  <td><a type="button" onclick="ConfirmarCita()"><i class="fas fa-check-circle" style="font-size: 25px;" onclick=""></i></a></td>
+               </tr
+               {% endfor %}
+               {% else  %}
+               <h1>No hay registros</h1>
+           {% endif %}
+           >
+         
         
         </tbody>
      </table>

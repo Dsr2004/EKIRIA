@@ -1,4 +1,5 @@
-from datetime import datetime
+from datetime import datetime, timedelta
+from operator import truediv
 from typing_extensions import Required
 from django.db import models
 from django.db.models.signals import pre_save
@@ -95,7 +96,7 @@ class Pedido(models.Model):
     id_pedido=models.AutoField("Id del Pedido", primary_key=True, unique=True)
     cliente_id=models.ForeignKey(usuario, on_delete=models.SET_NULL, blank=True, null=True, db_column="cliente_id")
     completado=models.BooleanField(default=False, null=True, blank=False)
-    # total_pagar=models.IntegerField("Total a pagar",null=False,blank=False)
+    total_pagar=models.IntegerField("Total a pagar",null=True,blank=True)
     
     esPersonalizado=models.BooleanField("Es personalizado", default=False)
     fecha_creacion=models.DateField("Fecha de Creacion", auto_now=False, auto_now_add=True)
@@ -121,6 +122,20 @@ class Pedido(models.Model):
         itemspedido = self.pedidoitem_set.all()
         total = sum([item.cantidad for item in itemspedido])
         return total 
+    
+    @property
+    def get_cantidad(self):
+        itemspedido = self.pedidoitem_set.all()
+        duracion = 0
+        for i in itemspedido:
+            if not i.servicio_id ==  None:
+                duracion=duracion+i.servicio_id.duracion
+            if not i.servicio_personalizado_id == None:
+                duracion=duracion+i.servicio_personalizado_id.duracion
+       
+        return duracion
+
+    
 
 
     
@@ -153,31 +168,11 @@ class PedidoItem(models.Model):
             print(str(e))
             total=0
         return total
+   
 
     
     
     
-
-# modelos para administrar los pedidos personalizados osea que tenga por lo menos un servicio personalizado
-class Pedido_Personalizado(models.Model):
-    id_pedido_personalizado=models.AutoField("Id del Pedido Personalizado", primary_key=True, unique=True)
-    servicio_id=models.ForeignKey(Servicio, verbose_name="Id del Servicio",db_column="servicio_id", on_delete=models.SET_NULL, null=True)
-    servicio_personalizado_id=models.ForeignKey(Servicio_Personalizado, verbose_name="Servicios Personalizados",on_delete=models.SET_NULL, null=True,db_column="servicio_personalizado_id")
-    cantidad=models.IntegerField("Cantidad", default=1, null=True, blank=True)
-    pedido_id=models.ForeignKey(Pedido, verbose_name="Id del Pedido",db_column="pedido_id", on_delete=models.SET_NULL, null=True)
-    fecha_creacion=models.DateField("Fecha de Creacion", auto_now=False, auto_now_add=True)
-    fecha_actualizacion= models.DateTimeField("Fecha de Actualizacion", auto_now=True, auto_now_add=False)
-    estado=models.BooleanField("Estado", default=True)
-
-
-    class Meta:
-        db_table = 'pedidos_personalizados'
-        verbose_name = 'pedido personalizado'
-        verbose_name_plural = 'pedidos_personalizados'
-
-    def __str__(self):
-        return f"el id del pedido personalizado es: {self.id_pedido_personalizado}"
-
 class Cita(models.Model):
     id_cita=models.AutoField("Id de la Cita", primary_key=True, unique=True)
     empleado_id=models.ForeignKey(usuario, on_delete=models.SET_NULL, blank=True, null=True, db_column="empleado_id", related_name="empleado_id")
@@ -185,7 +180,7 @@ class Cita(models.Model):
     pedido_id=models.ForeignKey(Pedido, verbose_name="Id del Pedido",db_column="pedido_id", on_delete=models.SET_NULL, null=True)
     diaCita=models.DateField("Dia de la cita")
     horaInicioCita=models.TimeField("Fecha de Inicio de la Cita")
-    horaFinCita=models.TimeField("Fecha de Fin de la Cita")
+    horaFinCita=models.TimeField("Fecha de Fin de la Cita", null=True, blank= True)
     descripcion=models.TextField("Descripcion",null=True ,blank=True)
     fecha_creacion=models.DateField("Fecha de Creacion", auto_now=False, auto_now_add=True)
     fecha_actualizacion= models.DateTimeField("Fecha de Actualizacion", auto_now=True, auto_now_add=False)
@@ -199,14 +194,22 @@ class Cita(models.Model):
     def __str__(self):
         return f"el cliente de esta cita es: {self.cliente_id}"
 
+    # def save(self, *args, **kwargs):
+    #     print(self.horaInicioCita)
+    #     print(type(self.horaInicioCita))
+    #     hora = self.horaInicioCita + timedelta(minutes=self.pedido_id.get_cantidad)
+    #     print(hora)
+    #     #se restan horas del datetimepicker
+    #     super().save(*args, **kwargs)
+
 class Calendario(models.Model):
     #falta el id de este campo importante tambien organizar la parte donde se agendan citas creo
     empleado_id=models.ForeignKey(usuario, on_delete=models.SET_NULL,null=True, db_column="empleado_id", related_name="empleado_calendario_id")
     cliente_id=models.ForeignKey(usuario, on_delete=models.SET_NULL,null=True, db_column="cliente_id",related_name="cliente_calendario_id")
     cita_id=models.ForeignKey(Cita, on_delete=models.SET_NULL,null=True,db_column="cita_id")
     dia=models.DateField(null=False, blank=False)
-    horaInicio=models.TimeField(null=False, blank=False)
-    horaFin=models.TimeField(null=False, blank=False)
+    horaInicio=models.TimeField(null=True, blank=True)
+    horaFin=models.TimeField(null=True, blank=True)
 
     class Meta:
         db_table = 'calendario'
