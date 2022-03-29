@@ -32,7 +32,7 @@ from rest_framework import viewsets
 from Usuarios.Serializers.general_serializers import UsuarioTokenSerializer
 from Usuarios.Serializers.general_serializers import UsuarioTokenSerializer
 #-----------------------------------------Models---------------------------------------------------
-from Usuarios.models import Usuario
+from Usuarios.models import Usuario, VistasDiarias
 from Ventas.models import Servicio
 #-----------------------------------------More---------------------------------------------------
 from Usuarios.authentication_mixins import Authentication
@@ -249,11 +249,10 @@ def Admin(request):
         if request.method=="GET":
             queryset = model.objects.all()
             Servicios = Servicio.objects.all()
-        return render(request, template_name, {"Usuario":queryset,"contexto":Servicios, "User":UserSesion})
+            Vistas = VistasDiarias.objects.get(id_dia=datetime.today().strftime('%Y-%m-%d'))
+        return render(request, template_name, {"Usuario":queryset,"contexto":Servicios, "User":UserSesion, "Vistas":Vistas})
     except:
-        return redirect("UNR")
-    
-    
+        return redirect("UNR")    
     
 class CreateUser(CreateView):
     model = Usuario
@@ -261,11 +260,34 @@ class CreateUser(CreateView):
     template_name = 'UsersConfiguration/CreateUsers.html'
     success_url = reverse_lazy("Administracion")
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(CreateUser, self).get_context_data(**kwargs)
+        try:
+            if self.request.session:
+                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
+                imagen = imagen.img_usuario
+                UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen}
+                context["User"]=UserSesion
+                return context
+        except:
+            return context
+
 class UpdateUser(UpdateView):
     model = Usuario    
     template_name = 'UsersConfiguration/CreateUsers.html'
     form_class = Regitro
     success_url=reverse_lazy("Administracion")   
+    def get_context_data(self, *args, **kwargs):
+        context = super(UpdateUser, self).get_context_data(**kwargs)
+        try:
+            if self.request.session:
+                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
+                imagen = imagen.img_usuario
+                UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen}
+                context["User"]=UserSesion
+                return context
+        except:
+            return context
 # class Notification(View):
 #     template_name = 'UserInformation/Notification.html'
 # class Notificacion(TemplateView):

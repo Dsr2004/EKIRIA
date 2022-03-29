@@ -1,6 +1,7 @@
 from ast import Delete
+from dataclasses import fields
 from rest_framework import serializers
-from Usuarios.models import Usuario
+from Usuarios.models import Usuario, VistasDiarias
 
 
 class UsuarioTokenSerializer(serializers.ModelSerializer):
@@ -36,3 +37,4 @@ class UserListSerializer(serializers.ModelSerializer):
                 'email':instance['email'],
                 'password':instance['password']
             }
+        

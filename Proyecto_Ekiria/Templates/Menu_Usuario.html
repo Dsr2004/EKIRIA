@@ -17,12 +17,57 @@
 <header>
 </header>
 
-<body>
-    {%csrf_token%}
-    {%if User%}
+<body>{% if User %}
+            
+    <div class="toggle ">
+        <i class="abrir fas fa-bars "></i>
+        <i class="cerrar fas fa-times "></i>
+    </div>
+
+    {% else %}
+        <div class="Init__Sec">
+          <a href="{%url 'IniciarSesion'%}" style="color: white;">Iniciar Sesion</a>
+        </div>
+    {% endif %}
+    <div class="menus">
+
+        <ul>
+            <li><a class="links " href="# "><i class="mdi mdi-account-group " style="margin-top: -3px; "></i><p class="atext ">Nosotros</p></a></li>
+            
+            {% if User %}
+                
+                
+            <li>
+                <div class="notification-box">
+                    <ul class="list-inline mb-0 ">
+                        <li>
+                            <a href="{%url 'Notify'%}" class="right-bar-toggle ">
+                                <i class="mdi mdi-bell noti-icon "></i>
+                            </a>
+                            <div class="noti-dot " style="margin-left: -6px; ">
+                                <span class="dot "></span>
+                                <span class="pulse "></span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li><a href="/Ventas/Carrito/ " type="button " class=" btn position-relative " data-bs-toggle="offcanvas " data-bs-target="#Carrito " aria-controls="offcanvasTop " style="margin-top: -7px; "><i class="fas fa-shopping-cart
+                "></i><span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger "> 
+                {% if request.session.carrito %}
+                {{request.session.carrito}}
+                {% else %}
+                0
+                {% endif %}
+                    </span></a></li>
+                    {% endif %}
+        </ul>
+    </div>
     <div class="grid">
+        
+        {% if User %}
+            
         <!--          Creación del menú lateral        -->
-        <div class="backnav">
             <nav class="nav">
                 <div class="menul">
                     <!--Para usar los bloques li copiad y pegar toda la info, ademas agregad la clase activar a la parte donde esta parada-->
@@ -42,6 +87,10 @@
                                 <a class="nav_link escon" href="{%url 'Inicio'%}"> Inicio</a>
                             </div>
                         </li>
+                        
+                        {% if User.admin %}
+                            
+                            
                         <li class="list_item list_item--click">
                             <div class="list 
                             {%if request.path == '/InformacionUsuario/Administracion/'%}activar{% endif %}
@@ -61,6 +110,8 @@
                             </ul>
                         </li>
                         
+                        {% endif %}
+                        {% if User.admin %}
                         <li class="list_item list_item--click">
                             <div class="list 
                                 {% if request.path == '/Compras/listarprov/'%}activar{% endif %} 
@@ -80,11 +131,13 @@
                                 <br>
                             </ul>
                         </li>
+                        {%endif%}
                         
                         <li class="list_item list_item--click">
                             <div class="list 
                             {% if request.path == '/Ventas/Catalogo/'%}activar{% endif %} 
                             {% if request.path == '/Ventas/Calendario/'%}activar{% endif %}
+                            {% if User.admin %}
                             {% if request.path == '/Ventas/terminarPedido/'%}activar{% endif %}
                             {% if request.path == '/Ventas/PersonalizarSer/'%}activar{% endif %}
                             {% if request.path == '/Ventas/DetalleCita/'%}activar{% endif %} 
@@ -95,6 +148,7 @@
                             {% if request.path == '/Ventas/AgregarCita/'%}activar{% endif %}
                             {% if request.path == '/Ventas/ListadoCitas/'%}activar{% endif %}
                             {% if request.path == '/Ventas/EditarCita/'%}activar{% endif %}
+                            {%endif%}
                             list_button--click">
                                 <i class="mdi mdi-basket centrado"></i>
                                 <a class="nav_link escon"> Servicios</a>
@@ -103,12 +157,13 @@
                             <ul class="list_show">
 
                                 <li class="nav_link--inside"><a href="{%url 'Ventas:catalogo'%}">Catalogo</a></li>
-                                <li class="nav_link--inside"><a href="{%url 'Ventas:calendario'%}">Calendario</a></li>
+                                <li class="nav_link--inside"><a href="{%url 'Ventas:calendario'%}">Calendario</a></li>{% if User.admin %}
                                 <li class="nav_link--inside"><a href="{%url 'Ventas:adminVentas'%}">Administración de ventas</a></li>
                                 <li class="nav_link--inside"><a href="{%url 'Ventas:listarServicios'%}">Servicios</a></li> 
                                 <li class="nav_link--inside"><a href="{%url 'Ventas:listarCitas'%}">Citas</a></li>
                                 <li class="nav_link--inside"><a href="{%url 'Ventas:agregarCita'%}">Agregar cita</a></li>
-                                <li class="nav_link--inside"><a href="{%url 'Ventas:agregarServicio'%}">Agregar Servicios</a></li>
+                                <li class="nav_link--inside"><a href="{%url 'Ventas:agregarServicio'%}">Agregar Servicios</a></li>  
+                                {%endif%}
                                 <br>
                             </ul>
                         </li>
@@ -121,54 +176,15 @@
                     </li>
                 </div>
             </nav>
-        </div>
         {%endif%}
-        {% if User %}
-            
-        <div class="toggle ">
-            <i class="abrir fas fa-bars "></i>
-            <i class="cerrar fas fa-times "></i>
-        </div>
-
-        {% else %}
-            <div class="toggle ">
-              <a href="{%url 'IniciarSesion'%}" style="color: white;">Iniciar Sesion</a>
-            </div>
-        {% endif %}
+        
 
         <div class="content ">
 
             <div class="fondo "></div>
             <div class="relle">
 
-                <img href="{%url 'Inicio'%} " class="Logo " src="/static/Proyecto_Ekiria/Img/Logo Ekiria.png " width="179 " height="50 ">
-                <div class="menus">
-
-                    <ul>
-                        <li><a class="links " href="# "><i class="mdi mdi-account-group " style="margin-top: -3px; "></i><p class="atext ">Nosotros</p></a></li>
-                        <div class="notification-box ">
-                            <ul class="list-inline mb-0 ">
-                                <li>
-                                    <a href="{%url 'Notify'%}" class="right-bar-toggle ">
-                                        <i class="mdi mdi-bell noti-icon "></i>
-                                    </a>
-                                    <div class="noti-dot " style="margin-left: -6px; ">
-                                        <span class="dot "></span>
-                                        <span class="pulse "></span>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                        <li><a href="/Ventas/Carrito/ " type="button " class=" btn position-relative " data-bs-toggle="offcanvas " data-bs-target="#Carrito " aria-controls="offcanvasTop " style="margin-top: -7px; "><i class="fas fa-shopping-cart
-                            "></i><span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger "> 
-                            {% if request.session.carrito %}
-                            {{request.session.carrito}}
-                            {% else %}
-                            0
-                            {% endif %}
-                                </span></a></li>
-                    </ul>
-                </div>
+                
 
                 <div class="contentDiv" id="div">
 

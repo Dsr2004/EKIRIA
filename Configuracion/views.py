@@ -49,8 +49,6 @@ def ListarRol(request):
     return render(request, "Roles.html", contexto)
 
 
-
-
 def EstadoRol(request):
     id_estado=request.POST.get("estado")
     Object=Rol.objects.get(id_rol=id_estado)
@@ -85,11 +83,26 @@ class CreateRolView(CreateView):
             else:
                 return HttpResponse("holi")
     
-# class EditRolView(UpdateView):
-#     model = Rol
-#     form_class = RolForm
-#     template_name = 'Rol/EdirRol.html'
-#     success_url=reverse_lazy('Roles')
+class CrearCambios(CreateView):
+    model = cambios
+    formulario_cambios = CambiosForm
+    formulario2 = FooterForm
+    template_name = 'Cambios.html'
+
+    def post(self,request, *args, **kwargs):
+            if request.method == "POST":
+                formulario=self.formulario_cambios(request.POST)
+                if formulario.is_valid():
+                    formulario.save()
+                    return JsonResponse({"mensaje": f"{self.model.__name__} Se ha creado correctamente", "errores":"No hay errores"})
+                else:
+                    errores=formulario.errors
+                    mensaje=f"{self.model.__name__} No se ha creado correctamente!"
+                    respuesta=JsonResponse({"mensaje":mensaje, "errores":errores})
+                    respuesta.status_code=400
+                    return respuesta
+            else:
+                return HttpResponse("holi")
 
 
 

@@ -6,13 +6,12 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from Configuracion.models import Rol
 
 class VistasDiarias(models.Model):
-    id_dia = models.AutoField(primary_key=True)
-    Contador = models.IntegerField()
-    fecha = models.DateField()
+    id_dia = models.CharField(primary_key=True, max_length=10)
+    Contador = models.IntegerField(default=0)
     class Meta:
         db_table = "VisitasDiarias"
     def __str__(self):
-        return self.Contador
+        return '{}'.format(self.Contador)
 
 class TipoDocumento(models.Model):
     id_tipo_documento = models.AutoField(primary_key=True)

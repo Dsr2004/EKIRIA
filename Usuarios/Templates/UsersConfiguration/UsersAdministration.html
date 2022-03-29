@@ -7,7 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administracion de usuarios</title>
     <link rel="stylesheet" href="/static/Proyecto_Ekiria/css/styleTablesInformations.css">
-    <link rel="stylesheet" href="/static/ModuloUsuarios/css/styleAdministration.css"> 
+    <link rel="stylesheet" href="/static/ModuloUsuarios/css/styleAdministration.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css">
 </head>{% endblock head %} {% block Contenido %}
 <!----------------------------------------Dashborad Usuarios---------------------------------------->
 
@@ -18,7 +20,7 @@
                 <div>
                     <div class="numbers" id="NumUser"></div>
                     <div class="cardName">Usuarios</div>
-                    
+
                     <script>
                         var CantUsuarios = 0
                         var ContadorServicios = 0
@@ -30,9 +32,9 @@
             </div>
         </div>
         {% for Usuarios in Usuario %}
-            <script>
-                CantUsuarios++
-            </script>
+        <script>
+            CantUsuarios++
+        </script>
         {% endfor %}
         <script>
             let Usuario = document.getElementById('NumUser');
@@ -41,8 +43,8 @@
         <div class="cardbox">
             <div class="Card">
                 <div>
-                    <div class="numbers" id="NumSer"> 
-                        
+                    <div class="numbers" id="NumSer">
+
                     </div>
                     <div class="cardName">Servicios</div>
                 </div>
@@ -51,22 +53,20 @@
                 </div>
             </div>
         </div>
-                        {% for Servicio in contexto %}
-                            {% if Servicio.estado == True%} 
-                                <script>
-                                    ContadorServicios++
-                                </script>
-                            {% endif %}
-                        {% endfor %}
-                        <script>
-                            let insertServices = document.getElementById("NumSer");
-                            insertServices.innerHTML = ContadorServicios
-                        </script>
-        
+        {%if contexto%} {% for Servicio in contexto %} {% if Servicio.estado == True%}
+        <script>
+            ContadorServicios++
+        </script>
+        {% endif %} {% endfor %}{%endif%}
+        <script>
+            let insertServices = document.getElementById("NumSer");
+            insertServices.innerHTML = ContadorServicios
+        </script>
+
         <div class="cardbox">
             <div class="Card">
                 <div>
-                    <div class="numbers">1235</div>
+                    <div class="numbers" id="numVis"></div>
                     <div class="cardName">Visitas Diarias</div>
                 </div>
                 <div class="iconA">
@@ -74,6 +74,15 @@
                 </div>
             </div>
         </div>
+        {% if Vistas %}
+        <script>
+            let VisitasDiarias = "{{Vistas}}"
+            let insertVisitas = document.getElementById("numVis");
+            insertVisitas.innerHTML = VisitasDiarias
+        </script>
+        {% endif %}
+        <script>
+        </script>
         <div class="cardbox">
             <div class="Card">
                 <div>
@@ -92,7 +101,7 @@
 <div class="Table Header-table">
     <div class="Table search">
         <label>
-        <input type="text" id="search" placeholder="Search here">
+        <input type="search" id="search" placeholder="Search here" aria-controls="TableUsers">
         <i class="fas fa-search"></i>
     </label>
     </div>
@@ -110,73 +119,94 @@
             <h2> Usuarios Registrados </h2>
             <i class="fas fa-angle-right"></i>
         </div>
-        <div class="over">
-            <table>
-                <thead>
-                    <tr>
-                        <td>Apodo</td>
-                        <td>Nombres</td>
-                        <td>Apellidos</td>
-                        <td>Télefono</td>
-                        <td>Celular</td>
-                        <td>E-mail</td>
-                        <td>Tipo De Documento</td>
-                        <td>Número De Documento</td>
-                        <td>Dirección</td>
-                        <td>Código Postal</td>
-                        <td>Municipio</td>
-                        <td>Rol</td>
-                        <td>Último Inicio</td>
-                        <td>Estado</td>
-                        <td>Editar</td>
-                        <td class="ver_mas">Ver más</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {%if Usuario%}
-                    {% for User in Usuario%}
-                    <tr>
-                        <td>{{User.username}}</td>
-                        <td>{{User.nombres}}</td>
-                        <td>{{User.apellidos}}</td>
-                        <td>
-                            {% if User.telefono %} {{User.telefono}} {%else%} No Aplica {% endif %}
-                        </td>
-                        <td>{{User.celular}}</td>
-                        <td>{{User.email}}</td>
-                        <td>{{User.tipo_documento}}</td>
-                        <td>{{User.num_documento}}</td>
-                        <td>{% if User.direccion %} {{User.direccion}} {%else%} No Aplica {% endif %}</td>
-                        <td>{{User.cod_postal}}</td>
-                        <td>{{User.municipio}}</td>
-                        <td>{{User.rol}}</td>
-                        <td>{% if User.last_login %} {{User.last_login}} {%else%} No ha iniciado sesión {% endif %}</td>
-                        <td>{{User.estado}}</td>
-                        <td>
-                            {% csrf_token %}
-                            <button type="button" class="Edit" onclick="EditarUsuario('{{User.id_usuario}}')">
-                                <i class="mdi mdi-account-edit"></i>
-                            </button>
-                        </td>
-                        <td class="ver_mas">
-                            <div><i class="fas fa-angle-down"></i></div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                    {%else%}
-                    <tr>
-                        <td>
-                        No hay usuarios Registrados
-                        </td>
-                    </tr>
-                    {%endif%}
-                </tbody>
-            </table>
-
-            <p id="errores">
-            </p>
-
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <table id="TableUsers" class="display nowrap" cellspacing="0" width="100">
+                        <thead>
+                            <tr>
+                                <td>Apodo</td>
+                                <td>Nombres</td>
+                                <td>Apellidos</td>
+                                <td>Télefono</td>
+                                <td>Celular</td>
+                                <td>E-mail</td>
+                                <td>Tipo De Documento</td>
+                                <td>Número De Documento</td>
+                                <td>Dirección</td>
+                                <td>Código Postal</td>
+                                <td>Municipio</td>
+                                <td>Rol</td>
+                                <td>Último Inicio</td>
+                                <td>Estado</td>
+                                <td>Editar</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {%if Usuario%} {% for User in Usuario%}
+                            <tr>
+                                <td>{{User.username}}</td>
+                                <td>{{User.nombres}}</td>
+                                <td>{{User.apellidos}}</td>
+                                <td>
+                                    {% if User.telefono %} {{User.telefono}} {%else%} No Aplica {% endif %}
+                                </td>
+                                <td>{{User.celular}}</td>
+                                <td>{{User.email}}</td>
+                                <td>{{User.tipo_documento}}</td>
+                                <td>{{User.num_documento}}</td>
+                                <td>{% if User.direccion %} {{User.direccion}} {%else%} No Aplica {% endif %}</td>
+                                <td>{{User.cod_postal}}</td>
+                                <td>{{User.municipio}}</td>
+                                <td>{{User.rol}}</td>
+                                <td>{% if User.last_login %} {{User.last_login}} {%else%} No ha iniciado sesión {% endif %}</td>
+                                <td>
+                                    <form id="EstadoUsuarioForm" method="post" action="{% url 'editarEstadoUsuario' %}">
+                                        {%csrf_token%}
+                                        <div class="form-check form-switch switch-Cambio-TipoServicio" style="margin-left: 20px;">
+                                            <input class="form-check-input" type="checkbox" role="switch" name="esatdo" onclick="CambiarEstadoUsuario('{{User.id_usuario}}')" {% if User.estado %}checked{%endif%}>
+                                        </div>
+                                    </form>
+                                </td>
+                                <td>
+                                    {% csrf_token %}
+                                    <button type="button" class="Edit" onclick="EditarUsuario('{{User.id_usuario}}')">
+                                        <i class="mdi mdi-account-edit"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %} {%else%}
+                            <tr>
+                                <td>
+                                    No hay usuarios Registrados
+                                </td>
+                            </tr>
+                            {%endif%}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td>Apodo</td>
+                                <td>Nombres</td>
+                                <td>Apellidos</td>
+                                <td>Télefono</td>
+                                <td>Celular</td>
+                                <td>E-mail</td>
+                                <td>Tipo De Documento</td>
+                                <td>Número De Documento</td>
+                                <td>Dirección</td>
+                                <td>Código Postal</td>
+                                <td>Municipio</td>
+                                <td>Rol</td>
+                                <td>Último Inicio</td>
+                                <td>Estado</td>
+                                <td>Editar</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
         </div>
+
     </div>
 </div>
 
@@ -188,4 +218,6 @@
 {% endblock Contenido %} {% block modal %} {% endblock modal %} {% block scripts %}
 <script src="/static/Proyecto_Ekiria/js/jsTablesInformations.js"></script>
 <script src="/static/ModuloUsuarios/js/mainAdministration.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 {% endblock scripts %}

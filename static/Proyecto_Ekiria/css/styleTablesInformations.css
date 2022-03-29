@@ -78,16 +78,17 @@
 .Table.Content-table {
     position: relative;
     width: 90%;
-    height: 500px;
     padding: 20px;
     margin: 20px 5%;
     border-radius: 20px;
     box-shadow: 0 7px 25px rgba(0, 0, 0, 0.28);
+    overflow: hidden;
 }
-.Table.Content-table .Information .over{
-    overflow-x:  auto;
-    height: 400px;
+
+.Table.Content-table .Information .over {
+    overflow: hidden;
 }
+
 .Table.Content-table .Information .cardHeader {
     position: sticky;
     top: -20px;
@@ -153,7 +154,6 @@
 
 .Table.Content-table .Information table tr .Edit {
     background: none;
-    color: rgb(255, 255, 0);
     border: none;
     padding: 0;
     font: inherit;
@@ -165,5 +165,18 @@
     font-size: 25px;
 }
 
-
+.Table.Content-table .Information table .child{
+    text-align: start;
+}
+.Table.Content-table .Information table .child ul{
+    float: none;
+}
+.Table.Content-table .Information table .child ul i{
+    color: rgb(255, 255, 0);
+}
+.form-check-input{
+    position: relative;
+    right: -100px;
+    top: 11px;
+}
 /*--------------------------Users table layout-------------------------*/
