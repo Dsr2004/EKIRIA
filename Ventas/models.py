@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing_extensions import Required
 from django.db import models
 from django.db.models.signals import pre_save
@@ -199,6 +200,7 @@ class Cita(models.Model):
         return f"el cliente de esta cita es: {self.cliente_id}"
 
 class Calendario(models.Model):
+    #falta el id de este campo importante tambien organizar la parte donde se agendan citas creo
     empleado_id=models.ForeignKey(usuario, on_delete=models.SET_NULL,null=True, db_column="empleado_id", related_name="empleado_calendario_id")
     cliente_id=models.ForeignKey(usuario, on_delete=models.SET_NULL,null=True, db_column="cliente_id",related_name="cliente_calendario_id")
     cita_id=models.ForeignKey(Cita, on_delete=models.SET_NULL,null=True,db_column="cita_id")
@@ -213,6 +215,25 @@ class Calendario(models.Model):
 
     def __str__(self):
         return f"el cliente de esta cita es: {self.cliente_id}"
+
+    @property
+    def titulo(self):
+        title = f"{str(self.cliente_id.nombres).upper()} {str(self.cliente_id.apellidos).upper()}" 
+        return title
+
+    @property
+    def inicio(self):
+        start = self.dia.strftime("%Y-%m-%d")
+        hora = self.horaInicio.strftime("%H:%M:%S")
+        start = f"{start}T{hora}"
+        return start
+
+    @property
+    def fin(self):
+        end = self.dia.strftime("%Y-%m-%d")
+        hora = self.horaFin.strftime("%H:%M:%S")
+        end = f"{end}T{hora}"
+        return end
 
 def pre_save_servicio_receiver(sender, instance, *args, **kwargs):
     if not instance.slug:
