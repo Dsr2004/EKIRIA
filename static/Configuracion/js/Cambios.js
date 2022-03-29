@@ -144,3 +144,18 @@ function CambioLetraFooter() {
         });
     })
 }
+
+function ActualizarCambiosPagina(){
+    let formulario = $("#cambiosPaginaForm")
+    $.ajax({
+        data: formulario.serialize(),
+        url: formulario.attr("action"),
+        type: formulario.attr("method"),
+        success: function(response){
+            location.reload()
+        },
+        error: function(error){
+            alert("no ",error)
+        }
+    })
+}

@@ -1,3 +1,4 @@
+from webbrowser import get
 from django.shortcuts import redirect, render
 import json
 
@@ -7,7 +8,7 @@ from django.shortcuts import render
 
 
 from django.http import HttpResponse,JsonResponse
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import View, CreateView, UpdateView
 from django.urls import reverse_lazy
 # Create your views here.
 
@@ -83,26 +84,27 @@ class CreateRolView(CreateView):
             else:
                 return HttpResponse("holi")
     
-class CrearCambios(CreateView):
+class CrearCambios(View):
     model = cambios
-    formulario_cambios = CambiosForm
-    formulario2 = FooterForm
-    template_name = 'Cambios.html'
+    form_class = CambiosForm
+
+    def get_object(self, queryset=None):
+        obj = self.model.objects.filter(id_cambios=self.request.POST["id_cambio"]).first()
+        return obj
 
     def post(self,request, *args, **kwargs):
-            if request.method == "POST":
-                formulario=self.formulario_cambios(request.POST)
-                if formulario.is_valid():
-                    formulario.save()
-                    return JsonResponse({"mensaje": f"{self.model.__name__} Se ha creado correctamente", "errores":"No hay errores"})
-                else:
-                    errores=formulario.errors
-                    mensaje=f"{self.model.__name__} No se ha creado correctamente!"
-                    respuesta=JsonResponse({"mensaje":mensaje, "errores":errores})
-                    respuesta.status_code=400
-                    return respuesta
-            else:
-                return HttpResponse("holi")
+        formulario=self.form_class(request.POST, instance=self.get_object())
+        if formulario.is_valid():
+            formulario.save()
+            return JsonResponse({"mensaje": f"{self.model.__name__} Se ha creado correctamente", "errores":"No hay errores"})
+        else:
+            errores=formulario.errors
+            mensaje=f"{self.model.__name__} No se ha creado correctamente!"
+            print(mensaje)
+            respuesta=JsonResponse({"mensaje":mensaje, "errores":errores})
+            respuesta.status_code=400
+            return respuesta
+            
 
 
 
@@ -122,6 +124,7 @@ class EditarRolView(UpdateView):
                     respuesta=JsonResponse({"mensaje":mensaje, "errores":errores})
                     respuesta.status_code=400
                     return respuesta
+                    
             else:
                 return HttpResponse("holi")
     
@@ -142,6 +145,3 @@ class EditarRolView(UpdateView):
 
 
 
-
-
-    
