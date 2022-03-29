@@ -367,6 +367,17 @@ class ServiciosPersonalizados(CreateView):
     template_name = "AddservicioPer.html"
     success_url=reverse_lazy("Ventas:catalogo")
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(ServiciosPersonalizados, self).get_context_data(**kwargs)
+        try:
+            if self.request.session:
+                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
+                imagen = imagen.img_usuario
+                UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen}
+                context["User"]=UserSesion
+                return context
+        except:
+            return context
 
     def form_valid(self, form, *args, **kwargs):
         objeto=form.save()
