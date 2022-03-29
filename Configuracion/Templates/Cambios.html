@@ -36,46 +36,57 @@
             <p id="text2" class="tipo">{{cambios.Texto_Vision}}</p>
                 
           </div>
-          <form action="{% url 'Crear'%}" method="post">
+          <form id="cambiosPaginaForm" action="{% url 'Crear'%}" method="post">
               {% csrf_token %}
             <div class="seleccionar">
               <label for="">Color de Fondo</label>
-                <input type="text" name="select1" id="ColorFondo" placeholder="en ingles " onkeydown="ColorFondo(event);" >
+                <input value="{{cambios.Color_Fondo}}" type="text" name="Color_Fondo" id="ColorFondo" placeholder="en ingles " onkeydown="ColorFondo(event);" >
             </div>
             <br>
             <div class="seleccionar">
               <label for="">Color de Letra</label>
-                <input type="text" name="select2" id="ColorLetra" placeholder="en ingles " onkeydown="ColorLetra(event);" >
+                <input value="{{cambios.Color_Letra}}" type="text" name="Color_Letra" id="ColorLetra" placeholder="en ingles " onkeydown="ColorLetra(event);" >
             </div>
             <br>
             <div class="seleccionar">
               <label for="">Tamaño de Letra del titulo</label>
-                <input type="text" name="select3" id="TamanoLetra"  onkeydown="CambiarTamano(event);" >
+                <input value="{{cambios.tamano_Titulo}}" type="text" name="tamano_Titulo" id="TamanoLetra"  onkeydown="CambiarTamano(event);" >
             </div>
             <br>
             <div class="seleccionar">
               <label for="">Tamaño de Letra del parrafo</label>
-                <input type="text" name="select3" id="TamanoLetra2"  onkeydown="CambiarTamano2(event);" >
+                <input value="{{cambios.tamano_Texto}}" type="text" name="tamano_Texto" id="TamanoLetra2"  onkeydown="CambiarTamano2(event);" >
             </div>
               <br>
               <label for="TipoLetra">tipo de letra</label>
-              <select  id="TipoLetra" onchange="CambioLetra();">
-                <option value="tahoma">Tahoma</option>
-                <option value="arial">Arial</option>
-                <option value="cursive">cursive</option>
+              <select  id="TipoLetra" name="Tipo_Letra" onchange="CambioLetra();">
+                <option {% if cambios.Tipo_Letra == 'tahoma' %} selected {%endif %} value="tahoma">Tahoma</option>
+                <option {% if cambios.Tipo_Letra == 'arial' %} selected {%endif %} value="arial">Arial</option>
+                <option {% if cambios.Tipo_Letra == 'cursive' %} selected {%  endif %} value="cursive">cursive</option>
               </select>
               <br>
               <div class="editarcambios">
                 <div>
                   <label class="separacambios" >Edita la Mision</label>
                   <br><br>
-                  <textarea id="TextoEditar" cols="50" rows="10">{{cambios.Texto_Mision}}</textarea>
+                  <textarea name="Texto_Mision" id="TextoEditar" cols="50" rows="10">{{cambios.Texto_Mision}}</textarea>
                 </div>
                 <div>
                   <label class="separacambios" >Edita la Vision</label>
                   <br><br>
-                  <textarea id="TextoEditar" cols="50" rows="10">{{cambios.Texto_Vision}}</textarea>
+                  <textarea name="Texto_Vision" id="TextoEditar" cols="50" rows="10">{{cambios.Texto_Vision}}</textarea>
+
+                  <input type="hidden" name="id_cambio" value="{{cambios.id_cambios}}">
                 </div>
+                <script>
+                  $(document).ready(function(){
+                    let colorFondo=$("#ColorFondo").val()
+                    let texto = document.getElementById("texto");
+                    texto.style.backgroundColor = colorFondo;
+
+                  });
+                  
+                </script>
                 {%endfor%}
                 {%else%}
                   
@@ -83,7 +94,7 @@
 
                 {%endif%}
               </div>
-              <button type="button" class="btn btn-warning botonEditarCambios" data-bs-toggle="modal" data-bs-target="#CrearConfirmacion" onclick="EditarMV()";>Editar Texto</button>
+              <button type="button" class="btn btn-warning botonEditarCambios" onclick="ActualizarCambiosPagina()">Editar Texto</button>
             </form>
         </div>
         </div>

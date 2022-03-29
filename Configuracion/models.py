@@ -40,7 +40,7 @@ class cambios(models.Model):
         db_table = "Cambios"
 
     def __str__(self):
-        return self.nombre 
+        return str(self.id_cambios)
         
 class cambiosFooter(models.Model):
     id_footer = models.AutoField(primary_key=True, unique=True)
@@ -57,4 +57,4 @@ class cambiosFooter(models.Model):
         db_table = "footer"
 
     def __str__(self):
-        return self.nombre
+        return str(self.id_footer)
