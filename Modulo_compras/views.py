@@ -67,6 +67,23 @@ class Crearprod(CreateView):
                 response.status_code=400
                 return response
 
+class Modificarprod(UpdateView):
+    model= Producto
+    form_class=ProductosForm
+    template_name='modalprod/modificarprod.html'
+
+    def post(self,request, *args, **kwargs):  
+            producto_form = ProductosForm(request.POST)
+            if producto_form.is_valid():
+                producto_form.save()
+                return redirect('listarprod')
+            else:
+                errors=producto_form.errors
+                mensaje=f"{self.model.__name__} no ha sido registrado"
+                response=JsonResponse({"errors":errors,"mensaje":mensaje})
+                response.status_code=400
+                return response
+
 
 
 class Creartp(CreateView):
@@ -187,7 +204,22 @@ def cambiarestado(request):
                 return redirect('listarprov')
     return JsonResponse({"kiwi":"yes"})
   
-
+def cambiarestadoProducto(request):
+    if request.is_ajax:
+        if request.method=="POST":
+            id = request.POST["estado"]
+            update=Producto.objects.get(id_producto=id)
+            estatus=update.estado
+            if estatus==True:
+                update.estado=False
+                update.save()
+            elif estatus==False:
+                update.estado=True
+                update.save()
+            else:
+                return redirect('listarprov')
+    return JsonResponse({"kiwi":"yes"})
+  
 
 
    

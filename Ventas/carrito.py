@@ -19,6 +19,8 @@ def actualizarItem(request):
         servicio= Servicio.objects.get(id_servicio=servicioid)
         itemPedio, creado = PedidoItem.objects.get_or_create(pedido_id=pedido,servicio_id=servicio)
         itemPedio.delete()
+        pedido.total_pagar = pedido.get_total_carrito
+        pedido.save()
     elif accion == "removePer":
         servicio= Servicio_Personalizado.objects.get(id_servicio_personalizado=servicioid)
         itemPedio, creado = PedidoItem.objects.get_or_create(pedido_id=pedido,servicio_personalizado_id=servicio)
@@ -40,5 +42,7 @@ def actualizarItem(request):
     else:
         servicio= Servicio.objects.get(id_servicio=servicioid)
         itemPedio, creado = PedidoItem.objects.get_or_create(pedido_id=pedido,servicio_id=servicio)
+        pedido.total_pagar = pedido.get_total_carrito
+        pedido.save()
     
     return JsonResponse('Item fue anadido', safe=False)

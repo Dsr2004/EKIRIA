@@ -8,13 +8,14 @@ urlpatterns = [
     path('AgregarCita/', AgregarCita.as_view(), name="agregarCita"),
     path('ListadoCitas/', ListarCita.as_view(), name="listarCitas"),
     path('DetalleCita/', DetalleCita.as_view(), name="detalleCita"),
-    path('EditarCita/', EditarCita.as_view(), name="editarCita"),
+    path('EditarCita/<int:pk>', EditarCita.as_view(), name="editarCita"),
+    path('CambiarEstadoCita/', CambiarEstadoDeCita.as_view(), name="cambiarEstadoCita"),
 
     path("BuscarEmpleadoParaCita/", BuscarDisponibilidadEmpleado.as_view(), name="buscarEmpleadoParaCita"),
 
     path('Catalogo/', Catalogo.as_view(), name="catalogo"),
     path('AgregarServicioCatalogo/', AgregarServicioalCatalogo.as_view(), name="agregarServicioCatalogo"),
-    path("CambiarEstadoServicioEnCatalogo/",CambiarEstadoServicioEnCatalogo, name="cambiarEstadoServicioEnCatalogo"),
+    path("CambiarEstadoServicioEnCatalogo/",CambiarEstadoServicioEnCatalogo, name="cambiarEstadoServicioEnCatalogo"), 
     
     path('pruebas/', pruebas, name="pruebas"), 
 

@@ -199,3 +199,7 @@ main {
 
 
 }
+
+.form-switch .form-check-input{
+	left: 0 !important;
+  }

@@ -1,7 +1,7 @@
 
 
 function eliminarprov(id_proveedor) {
-  let path = "/compras/eliminarprov/"
+  let path = "Compras/eliminarprov/"
   var ruta = path+id_proveedor
   console.log(ruta)
     const swalWithBootstrapButtons = Swal.mixin({
@@ -44,6 +44,13 @@ function eliminarprov(id_proveedor) {
 
 function agregarprod(url){
   $("#agregar_prod").load(url,function() {
+    $(this).modal('show')
+  })
+ 
+};
+
+function modificarprod(url){
+  $("#modificar_prod").load(url,function() {
     $(this).modal('show')
   })
  
@@ -207,9 +214,8 @@ function registrarmp(){
 }
 
 function cambioestado(id){
-  let ids= id
+  let ids=  id
   let token = $("#camestado").find('input[name=csrfmiddlewaretoken]').val()
-  console.log(token)
   swal.fire({
     title: 'Are you sure?',
     text: "You won't be able to revert this!",

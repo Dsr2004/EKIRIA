@@ -29,11 +29,18 @@
                {% for cita in citas %}
                <tr>
                   <th scope="row">{{cita.cliente_id.nombres | upper}} {{cita.cliente_id.apellidos | upper}}</th>
-                  <td>$45.000</td>
-                  <td>28 de Noviembre del 2021</td>
-                  <td>Pendiente</td>
-                  <td><a href="{%url 'Ventas:editarCita'%}"><i class="fas fa-eye" style="font-size: 25px;"></i></a></td>
-                  <td><a type="button" onclick="ConfirmarCita()"><i class="fas fa-check-circle" style="font-size: 25px;" onclick=""></i></a></td>
+                  <td>${{cita.pedido_id.total_pagar}}</td>
+                  <td>{{cita.diaCita}}</td>
+                  <td>{% if cita.estado == True %}Confirmado {% else %}Pendiente{% endif %}</td>
+                  <td><a href="{%url 'Ventas:editarCita' cita.id_cita %}"><i class="fas fa-eye" style="font-size: 25px;"></i></a></td>
+                  <td>
+                     {% if cita.estado == True %}
+                     <!-- onclick="CancelarCita3('{{cita.id_cita}}')" -->
+                       <i class="fas fa-check-circle" style="font-size: 25px; color: green;" ></i>
+                     {% else %}
+                        <a type="button" onclick="ConfirmarCita('{{cita.id_cita}}')"><i class="fas fa-clock" style="font-size: 25px; color: orange;" ></i></a>
+                     {% endif %}
+                  </td>
                </tr
                {% endfor %}
                {% else  %}
@@ -50,5 +57,6 @@
 {% block scripts %}
 <script src="/static/Ventas/js/Ventas.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
 {% endblock scripts %}
 {% endblock Contenido %}

@@ -64,7 +64,7 @@
           </tr>
         </thead>
         <tbody>
-
+          
   {%if Productos%}
 
   {%for prod in Productos%}
@@ -74,16 +74,17 @@
             <td>{{prod.proveedor}}</td>
             <td>{{prod.tipo_producto}}</td>
             <td>{{prod.cantidad}}</td>
-            <td><div class="form-switch">
-              <form action="{%url 'camestado' %}" method="POST" id="camestado">
+            <td>
+              <form action="{%url 'camestadoProducto' %}" method="POST" id="camestado">
                 {%csrf_token%}
-                  <input style="margin-top: -8px;" class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" {%if prov.estado == True  %} checked {%endif%} onclick="cambioestado('{{prov.id_proveedor}}')">
+                <div class="form-check form-switch" style="top: -10px;">
+                  <input class="form-check-input" type="checkbox" role="switch" {%if prod.estado == True  %} checked {%endif%} onclick="cambioestado('{{prod.id_producto}}')">
+                </div>
               </form>
-  
-              </div>
             </td>
-
-       
+            <td>
+              <button class="btn" onclick="agregarprod('{%url 'modificarprod' prod.id_producto %}')"><i style="font-size:20px; margin-top: 5px;" class="fas fa-pencil"></i></button>
+            </td>
           </tr>
 
     {%endfor%} 
@@ -108,6 +109,9 @@
 {% block modal %}
 
 <div class="modal fade" id="agregar_prod" role="dialog" >
+    
+</div>
+<div class="modal fade" id="modificar_prod" role="dialog" >
     
 </div>
 

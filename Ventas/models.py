@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta, time
 from operator import truediv
-from typing_extensions import Required
+from typing_extensions import Required, Self
 from django.db import models
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, m2m_changed
 from django.utils.text import slugify
 from django.shortcuts import reverse 
 from django.conf import settings
@@ -184,7 +184,7 @@ class Cita(models.Model):
     descripcion=models.TextField("Descripcion",null=True ,blank=True)
     fecha_creacion=models.DateField("Fecha de Creacion", auto_now=False, auto_now_add=True)
     fecha_actualizacion= models.DateTimeField("Fecha de Actualizacion", auto_now=True, auto_now_add=False)
-    estado=models.BooleanField("Estado", default=True)
+    estado=models.BooleanField("Estado", default=False)
 
     class Meta:
         db_table = 'citas'
@@ -250,6 +250,14 @@ def pre_save_cita_receiver(sender, instance, *args, **kwargs):
         fin = datetime(1970, 1, 1, inicio.hour, inicio.minute, inicio.second) + timedelta(minutes=instance.pedido_id.get_cantidad)            
         instance.horaFinCita = time(fin.hour, fin.minute, fin.second)
 
+# def pre_save_pedido_receiver(sender, **kwargs):
+#     if sender.total_pagar == None:
+#            sender.total_pagar = 0
+#     else:   
+#         sender.total_pagar = sender.get_total_carrito
+
 
 pre_save.connect(pre_save_servicio_receiver,sender=Servicio)
 pre_save.connect(pre_save_cita_receiver,sender=Cita)
+# pre_save.connect(pre_save_pedido_receiver,sender=Pedido)
+# m2m_changed.connect(changed_pedido_receiver, sender=Pedido)

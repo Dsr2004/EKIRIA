@@ -27,13 +27,14 @@
         </div>
 
         <div class="row " style="background-color: rgba(253, 253, 253, 0.795); margin-top: 30px;" >
-            <div class="col-3"><img src="/static/Ventas/img/Persona.jfif" alt="" width="200" style="margin-top: 20px;"></div>
-            <div class="col-7">
+            <div class="col-md-1"></div>
+            <div class="col-md-2"><img src="/media/{{object.cliente_id.img_usuario}}" alt="" width="200" style=""></div>
+            <div class="col-md-9">
                 <div class="row" style="margin-top:50px;" >
-                    <h3><strong>Nombre: </strong>Maria Eugenia Davila</h3>
-                    <h3><strong>Celular: </strong>3006558978</h3>
-                    <h3><strong>Email: </strong>mariaE45@gmail.com</h3>
-                    <h3><strong>Direccion: </strong>CLL 107 F #78 B-04</h3>
+                    <h3><strong>Nombre: </strong>{{object.cliente_id.nombres}}</h3>
+                    <h3><strong>Celular: </strong>{{object.cliente_id.celular}}</h3>
+                    <h3><strong>Email: </strong>{{object.cliente_id.email}}</h3>
+                    <h3><strong>Direccion: </strong>{{object.cliente_id.direccion}}</h3>
                 </div>
             </div>
         </div>
@@ -54,7 +55,7 @@
             </div>
                <br><br>
             
-                <table class="table table-striped " style="background-color: rgba(253, 253, 253, 0.795);">
+                <table class="table table-striped" style="background-color: rgba(253, 253, 253, 0.795);">
                     <thead>
                         <tr>
                             <th scope="col">#</th>
@@ -65,35 +66,42 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td><img src="{%static 'Ventas/img/arociris.jpg'%}" class="" width="150" height="100"></td>
-                            <td>Uñas Sencillas</td>
-                            <td>$15000</td>
-            
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td><img src="{%static 'Ventas/img/arociris.jpg'%}" class="" width="150" height="100"></td>
-                            <td>Uñas Sencillas</td>
-                            <td>$15000</td>
-            
-                        </tr>
+                        {% if servicios %}
+                            {% for servicio in servicios %}
+                            <tr>
+                                <th scope="row">{{ forloop.counter}}</th>
+                                <td><img src="/media/{{servicio.servicio_id.img_servicio}}" class="" width="150" height="100"></td>
+                                <td>{{servicio.servicio_id.nombre}}</td>
+                                <td>{{servicio.servicio_id.precio}}</td>
+                
+                            </tr>
+                            {% endfor %}
+                            {% else %}
+                            <h1>No hay Servicos que mostrar </h1>       
+                        {% endif %}
+                       
                     </tbody>
                 </table>
                 <br><br>
                 <div class="col Datos1DetalleCita">
                     <Label><strong>Fecha de la cita: </strong></Label>
-                    <input type="datetime-local" value="2021-06-12T19:30" style="font-size: 20px;">
+                    <h2>{{object.diaCita}}</h2>
+                </div>
+                <br>
+                <div class="col Datos1DetalleCita">
+                    <div class="row">
+                        <div class="col">
+                            aqui va la de inicio
+                        </div>
+                        <div class="col">
+                            aqui la de fin
+                        </div>
+                    </div>
                 </div>
                 <br>
             <div class="col Datos1DetalleCita">
                     <Label><strong>Comentarios: </strong></Label>
-                    <div class="form-floating container descripcion">
-        
-                        <textarea class="form-control personalizarServicio"></textarea>
-                        <label style="font-size: 20px;">Comentario</label>
-                    </div>
+                        <textarea class="form-control personalizarServicio">{% if object.descripcion %} {{object.descripcion}} {% else %} No hay descripcion{% endif %}</textarea>
                 </div>
 
                 <br><br>

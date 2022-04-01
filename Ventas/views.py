@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 import re
 
 from sre_constants import SUCCESS
+from statistics import mode
 from webbrowser import get
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
@@ -253,6 +254,8 @@ class AgandarCita(CreateView):
             calendarioSave = models.Calendario(dia=object.diaCita, horaInicio=object.horaInicioCita, horaFin=object.horaFinCita, cita_id=object, cliente_id=object.cliente_id, empleado_id=object.empleado_id)
             calendarioSave.save()
             form.save()
+            pedido.completado = True
+            pedido.save()
             return redirect("Ventas:calendario")
         else:
             return render(request, self.template_name, {"form":self.form_class})
@@ -692,19 +695,41 @@ class ListarCita(ListView):
     
    
     
-class EditarCita(TemplateView):
+class EditarCita(UpdateView):
+    model = Cita
     template_name = "EditarCita.html"
-    def get(self, request, *args, **kwargs):
-        try:
-            if request.session:
-                imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-                imagen = imagen.img_usuario
-                UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen}
-                return render(request, self.template_name, {"User":UserSesion})
-        except:
-            return redirect("UNR")
+    form_class = CitaForm
+    success_url = reverse_lazy('Ventas:listarServicios')
 
-class DetalleCita(TemplateView):
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(EditarCita, self).get_context_data(**kwargs)
+        try:
+            if self.request.session:
+                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
+                imagen = imagen.img_usuario
+                UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen}
+                context["User"]=UserSesion
+        
+        except:
+            pass
+        citax = models.Cita.objects.get(id_cita=self.kwargs["pk"])
+        pedido = models.Pedido.objects.get(id_pedido = citax.pedido_id.id_pedido)
+        items = pedido.pedidoitem_set.all()
+        serviciosx=[]
+        serviciosPerx=[]
+        if items:
+            for i in items:
+                if not i.servicio_id ==  None:
+                    serviciosx.append(i)
+                    context["servicios"]=serviciosx
+                if not i.servicio_personalizado_id == None:
+                    serviciosPerx.append(i)
+                    context["serviciosPer"]=serviciosPerx
+        return context
+   
+
+class DetalleCita(DetailView):
    template_name = "DetalleCita.html"
    def get(self, request, *args, **kwargs):
         try:
@@ -715,6 +740,22 @@ class DetalleCita(TemplateView):
                 return render(request, self.template_name, {"User":UserSesion})
         except:
             return redirect("UNR")
+
+class CambiarEstadoDeCita(TemplateView):
+   template_name = "DetalleCita.html"
+   def post(self, request, *args, **kwargs):
+        id = request.POST["estado"]
+        update=Cita.objects.get(id_cita=id) 
+        estatus=update.estado
+        if estatus==True:
+            update.estado=False
+            update.save()
+        elif estatus==False:
+            update.estado=True
+            update.save()
+        else:
+            return redirect("Ventas:listarCitas")
+        return HttpResponse(update)
 
 """
 <----------------------------------------------------------------->
