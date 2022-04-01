@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from operator import truediv
 from typing_extensions import Required
 from django.db import models
@@ -180,7 +180,7 @@ class Cita(models.Model):
     pedido_id=models.ForeignKey(Pedido, verbose_name="Id del Pedido",db_column="pedido_id", on_delete=models.SET_NULL, null=True)
     diaCita=models.DateField("Dia de la cita")
     horaInicioCita=models.TimeField("Fecha de Inicio de la Cita")
-    horaFinCita=models.TimeField("Fecha de Fin de la Cita", null=True, blank= True)
+    horaFinCita=models.TimeField("Fecha de Fin de la Cita")
     descripcion=models.TextField("Descripcion",null=True ,blank=True)
     fecha_creacion=models.DateField("Fecha de Creacion", auto_now=False, auto_now_add=True)
     fecha_actualizacion= models.DateTimeField("Fecha de Actualizacion", auto_now=True, auto_now_add=False)
@@ -242,4 +242,14 @@ def pre_save_servicio_receiver(sender, instance, *args, **kwargs):
     if not instance.slug:
         instance.slug=slugify(instance.nombre)
 
+        
+def pre_save_cita_receiver(sender, instance, *args, **kwargs):
+    if not instance.horaFinCita:
+
+        inicio = instance.horaInicioCita
+        fin = datetime(1970, 1, 1, inicio.hour, inicio.minute, inicio.second) + timedelta(minutes=instance.pedido_id.get_cantidad)            
+        instance.horaFinCita = time(fin.hour, fin.minute, fin.second)
+
+
 pre_save.connect(pre_save_servicio_receiver,sender=Servicio)
+pre_save.connect(pre_save_cita_receiver,sender=Cita)

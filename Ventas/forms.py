@@ -101,13 +101,13 @@ class Servicio_PersonalizadoForm(forms.ModelForm):
 class CitaForm(forms.ModelForm):
     class Meta:
         model= Cita
-        fields =["empleado_id","diaCita","horaInicioCita","horaFinCita","descripcion", "cliente_id", "pedido_id"]
+        fields =["empleado_id","diaCita","horaInicioCita","descripcion", "cliente_id", "pedido_id"]
         widgets={
             "diaCita":forms.DateInput(attrs={"class":"form-control","id":"DiaCita","type":"text","autocomplete":"off"}),
             "horaInicioCita":forms.TimeInput(attrs={"class":"form-control","id":"horaInicio","type":"text","autocomplete":"off"}),
             "empleado_id":forms.Select(attrs={"class":"form-select","id":"empleado","type":"text"}),
             "descripcion":forms.Textarea(attrs={"class":"form-control","cols":"60","rows":"10"}),
-            "horaFinCita":forms.TimeInput(attrs={"class":"form-control","id":"horaFin","type":"text","autocomplete":"off"}),
+           
         }
     def __init__(self, *args, **kwargs):
         super(CitaForm, self).__init__(*args, **kwargs) 

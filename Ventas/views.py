@@ -223,62 +223,98 @@ class AgandarCita(CreateView):
             return render(request, "TerminarPedido.html",contexto)
     
     def post(self, request, *args, **kwargs):
-        
-        horaInicio = request.POST["horaInicioCita"]
-        horaInicio=datetime.strptime(horaInicio, "%H:%M %p").strftime("%H:%M:%S")
+        """
+            esta parte de la hora de fin se debe hacer en el metodo save del modelo es mas facil en el video de los calendarios de developer.pe
+            se explica muy bien 
+        """
+    
+        # duracion = timedelta(minutes=duracion)
+        # horaFin = horaInicio + duracion
+        # horaFin = horaFin.strftime("%H:%M:%S")
 
+        horaInicio = request.POST["horaInicioCita"]
+        diaCita = request.POST["diaCita"]
+        empleado = request.POST["empleado_id"]
+        descripcion = request.POST["descripcion"]
+        horaInicio=datetime.strptime(horaInicio, "%H:%M %p").strftime("%H:%M:%S")
         cliente=Usuario.objects.get(username=self.request.session['username'])
         pedido,creado = Pedido.objects.get_or_create(cliente_id=cliente, completado=False)
 
-        postViejo = request.POST._mutable
-        request.POST._mutable = True
+        
 
-        request.POST["horaInicioCita"]=horaInicio
-        request.POST["cliente_id"]=cliente
-        request.POST["pedido_id"]=pedido
-        form = self.form_class(request.POST)
-        if form.is_valid():
+        # request.POST["horaFinCita"]=horaFin
+        
+
+        datosParaGuardar = {"pedido_id":pedido,"horaInicioCita":horaInicio,"cliente_id":cliente, "empleado_id":empleado,
+        "descripcion":descripcion,"diaCita":diaCita}
+        form = self.form_class(datosParaGuardar)
+        if form.is_valid:
             object=form.save()
             calendarioSave = models.Calendario(dia=object.diaCita, horaInicio=object.horaInicioCita, horaFin=object.horaFinCita, cita_id=object, cliente_id=object.cliente_id, empleado_id=object.empleado_id)
             calendarioSave.save()
             form.save()
             return redirect("Ventas:calendario")
         else:
-            cliente=Usuario.objects.get(username=self.request.session['username'])
-            if cliente:
-                pedido,creado = Pedido.objects.get_or_create(cliente_id=cliente, completado=False)
-                items= pedido.pedidoitem_set.all()
-                serviciosx=[]
-                serviciosPerx=[]
-                if items:
-                    for i in items:
-                        if not i.servicio_id ==  None:
-                            serviciosx.append(i)
-                        if not i.servicio_personalizado_id == None:
-                            serviciosPerx.append(i)  
-                contexto={"items":items, "pedido":pedido,"form":form,"serviciosx":serviciosx,"serviciosPerx":serviciosPerx}
-            else:
-                items=[]
-                pedido={"get_total_carrito":0,"get_items_carrito":0}
-                contexto={"items":items, "pedido":pedido,"form":form}
+            return render(request, self.template_name, {"form":self.form_class})
+       
+        
+        
+        return self.success_url
+        # horaInicio = request.POST["horaInicioCita"]
+        # horaInicio=datetime.strptime(horaInicio, "%H:%M %p").strftime("%H:%M:%S")
+
+        # cliente=Usuario.objects.get(username=self.request.session['username'])
+        # pedido,creado = Pedido.objects.get_or_create(cliente_id=cliente, completado=False)
+
+        # postViejo = request.POST._mutable
+        # request.POST._mutable = True
+
+        # request.POST["horaInicioCita"]=horaInicio
+        # request.POST["cliente_id"]=cliente
+        # request.POST["pedido_id"]=pedido
+        # form = self.form_class(request.POST)
+        # if form.is_valid():
+        #     object=form.save()
+        #     calendarioSave = models.Calendario(dia=object.diaCita, horaInicio=object.horaInicioCita, horaFin=object.horaFinCita, cita_id=object, cliente_id=object.cliente_id, empleado_id=object.empleado_id)
+        #     calendarioSave.save()
+        #     form.save()
+        #     return redirect("Ventas:calendario")
+        # else:
+        #     cliente=Usuario.objects.get(username=self.request.session['username'])
+        #     if cliente:
+        #         pedido,creado = Pedido.objects.get_or_create(cliente_id=cliente, completado=False)
+        #         items= pedido.pedidoitem_set.all()
+        #         serviciosx=[]
+        #         serviciosPerx=[]
+        #         if items:
+        #             for i in items:
+        #                 if not i.servicio_id ==  None:
+        #                     serviciosx.append(i)
+        #                 if not i.servicio_personalizado_id == None:
+        #                     serviciosPerx.append(i)  
+        #         contexto={"items":items, "pedido":pedido,"form":form,"serviciosx":serviciosx,"serviciosPerx":serviciosPerx}
+        #     else:
+        #         items=[]
+        #         pedido={"get_total_carrito":0,"get_items_carrito":0}
+        #         contexto={"items":items, "pedido":pedido,"form":form}
 
 
-            try:
-                if self.request.session:
-                    imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
-                    imagen = imagen.img_usuario
-                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen}
-                    contexto["User"]=UserSesion
+        #     try:
+        #         if self.request.session:
+        #             imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
+        #             imagen = imagen.img_usuario
+        #             UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen}
+        #             contexto["User"]=UserSesion
 
-            except:
-                pass
+        #     except:
+        #         pass
 
 
-            if is_list_empty(items):
-                contexto["mensaje"]=True
-                return render(request, "Carrito.html",contexto)
-            else:
-                return render(request, "TerminarPedido.html",contexto)
+        #     if is_list_empty(items):
+        #         contexto["mensaje"]=True
+        #         return render(request, "Carrito.html",contexto)
+        #     else:
+        #         return render(request, "TerminarPedido.html",contexto)
     
             
        
@@ -342,7 +378,6 @@ class BuscarDisponibilidadEmpleado(View):
 
     
 
-
 class Calendario(TemplateView):
     template_name = "Calendario.html"
     def get(self, request, *args, **kwargs):
@@ -355,8 +390,10 @@ class Calendario(TemplateView):
             return redirect("UNR")
 
         #contexto
+        citas=models.Calendario.objects.filter(cliente_id=request.session['pk'])
         context={
             "User":UserSesion,
+            "citas":citas
         }
         
         return render(request, self.template_name, context)
