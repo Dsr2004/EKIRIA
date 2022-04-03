@@ -37,7 +37,7 @@ from Ventas.models import Servicio
 #-----------------------------------------More---------------------------------------------------
 from Usuarios.authentication_mixins import Authentication
 from datetime import datetime
-from Usuarios.forms import Cambiar, Regitro, Editar
+from Usuarios.forms import Cambiar, Regitro, Editar, CustomAuthForm
 
 #--------------------------------------Templates Loaders------------------------------------
 
@@ -117,8 +117,9 @@ def Loguot(request):
     return redirect('Inicio')
 
 def Login(request):
+    Error = "";
     if request.method == "POST":
-        form = AuthenticationForm(request, data=request.POST)
+        form = CustomAuthForm(request, data=request.POST)
         if form.is_valid():
             username= form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
@@ -131,12 +132,11 @@ def Login(request):
                 request.session['Admin'] = usuario.administrador
                 print(usuario.id_usuario)
                 return redirect("Inicio")
-            else:
-                return HttpResponse("Apodo o Contraseñas incorrectos")
-        return HttpResponse( "Credenciales incorrectas")
+        else:
+            Error = "Los datos ingresados no son correctos.\n si no tienes un usuario puedes registrarte."
             
-    form = AuthenticationForm()
-    return render(request, "registration/login.html", {'form': form})
+    form = CustomAuthForm()
+    return render(request, "registration/login.html", {'form': form, 'message':Error})
             
 def PassR(request):
     return render(request, "UserInformation/PasswordRecovery.html")
@@ -152,7 +152,7 @@ def Perfil(request):
         if request.session:
             imagen = Usuario.objects.get(id_usuario=request.session['pk'])
             imagen = imagen.img_usuario
-            UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen}
+            UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
         usuario = Usuario.objects.get(id_usuario=request.session['pk'])
         return render(request, "UserInformation/Perfil.html", {"Usuario":usuario, "User":UserSesion})
     except:
@@ -240,7 +240,7 @@ def Admin(request):
             imagen = Usuario.objects.get(id_usuario=request.session['pk'])
             imagen = imagen.img_usuario
             if request.session['Admin'] == True:
-                UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen}
+                UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
             else:
                 return redirect("SinPermisos")
         model = Usuario
@@ -266,11 +266,14 @@ class CreateUser(CreateView):
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
-                UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen}
+                if self.request.session['Admin'] == True:
+                    UserSesion = {"username":self.request.session['username'], "titulo":"Crear Usuario", "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                else:
+                    return redirect("SinPermisos")
                 context["User"]=UserSesion
                 return context
         except:
-            return context
+            return redirect("UNR")
 
 class UpdateUser(UpdateView):
     model = Usuario    
@@ -283,11 +286,14 @@ class UpdateUser(UpdateView):
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
-                UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen}
+                if self.request.session['Admin'] == True:
+                    UserSesion = {"username":self.request.session['username'], "titulo":"Editar Usuario", "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                else:
+                    return redirect("SinPermisos")
                 context["User"]=UserSesion
                 return context
         except:
-            return context
+            return redirect("UNR")
 # class Notification(View):
 #     template_name = 'UserInformation/Notification.html'
 # class Notificacion(TemplateView):
@@ -299,7 +305,7 @@ def Notification(request):
     if request.session:
         imagen = Usuario.objects.get(id_usuario=request.session['pk'])
         imagen = imagen.img_usuario
-        UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen}
+        UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
     return render(request, "UserInformation/Notification.html", {"User":UserSesion})
     
 def CambiarEstadoUsuario(request):

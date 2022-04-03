@@ -27,7 +27,8 @@
     margin-left: 20px;
     margin-top: 12px;
 }
-.Perfil_informacion label{
+
+.Perfil_informacion label {
     font-weight: 700;
 }
 
@@ -71,7 +72,6 @@
     -ms-flex: 1 1 auto;
     flex: 1 1 auto;
     padding: 1rem;
-    overflow: auto;
 }
 
 .Perfil_modificar-header {

@@ -37,12 +37,6 @@ urlpatterns = [
     path('ListadoServicios/', ListarServicio.as_view(), name="listarServicios"),
     path('CambiarEstadoServicio/', CambiarEstadoServicio, name="cambiarEstadoServicio"),
     path('EditarServicio/<int:pk>', EditarServicio.as_view(), name="editarServicio"),
-    path('<slug>/', ServicioDetalle.as_view(), name="detalleSer"), 
-    
-
- 
-
-    
-                         
+    path('<slug>/', ServicioDetalle.as_view(), name="detalleSer"),                    
 ]
 
