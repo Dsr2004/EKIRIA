@@ -47,6 +47,7 @@ class Catalogo(ListView):
                 imagen = imagen.img_usuario
                 if self.request.session['Admin'] == True:
                     UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                    context["User"]=UserSesion
                 else:
                     return redirect("SinPermisos")
                 context["User"]=UserSesion
@@ -183,7 +184,7 @@ def Carrito(request):
     except:
             return redirect("UNR")
 
-    contexto={"pedido":pedido,"User":UserSesion,"serviciosx":serviciosx,"serviciosPerx":serviciosPerx}
+    contexto={"pedido":pedido,"User":UserSesion,"serviciosx":serviciosx,"serviciosPerx":serviciosPerx, "User":UserSesion}
 
     return render(request, "Carrito.html",contexto)
 
@@ -219,6 +220,7 @@ class AgandarCita(CreateView):
                 imagen = imagen.img_usuario
                 if self.request.session['Admin'] == True:
                     UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                    contexto["User"]=UserSesion
                 else:
                     return redirect("SinPermisos")
                 contexto["User"]=UserSesion
@@ -233,15 +235,6 @@ class AgandarCita(CreateView):
             return render(request, "TerminarPedido.html",contexto)
     
     def post(self, request, *args, **kwargs):
-        """
-            esta parte de la hora de fin se debe hacer en el metodo save del modelo es mas facil en el video de los calendarios de developer.pe
-            se explica muy bien 
-        """
-    
-        # duracion = timedelta(minutes=duracion)
-        # horaFin = horaInicio + duracion
-        # horaFin = horaFin.strftime("%H:%M:%S")
-
         horaInicio = request.POST["horaInicioCita"]
         diaCita = request.POST["diaCita"]
         empleado = request.POST["empleado_id"]
@@ -268,81 +261,6 @@ class AgandarCita(CreateView):
             return redirect("Ventas:calendario")
         else:
             return render(request, self.template_name, {"form":self.form_class})
-       
-        
-        
-        return self.success_url
-        # horaInicio = request.POST["horaInicioCita"]
-        # horaInicio=datetime.strptime(horaInicio, "%H:%M %p").strftime("%H:%M:%S")
-
-        # cliente=Usuario.objects.get(username=self.request.session['username'])
-        # pedido,creado = Pedido.objects.get_or_create(cliente_id=cliente, completado=False)
-
-        # postViejo = request.POST._mutable
-        # request.POST._mutable = True
-
-        # request.POST["horaInicioCita"]=horaInicio
-        # request.POST["cliente_id"]=cliente
-        # request.POST["pedido_id"]=pedido
-        # form = self.form_class(request.POST)
-        # if form.is_valid():
-        #     object=form.save()
-        #     calendarioSave = models.Calendario(dia=object.diaCita, horaInicio=object.horaInicioCita, horaFin=object.horaFinCita, cita_id=object, cliente_id=object.cliente_id, empleado_id=object.empleado_id)
-        #     calendarioSave.save()
-        #     form.save()
-        #     return redirect("Ventas:calendario")
-        # else:
-        #     cliente=Usuario.objects.get(username=self.request.session['username'])
-        #     if cliente:
-        #         pedido,creado = Pedido.objects.get_or_create(cliente_id=cliente, completado=False)
-        #         items= pedido.pedidoitem_set.all()
-        #         serviciosx=[]
-        #         serviciosPerx=[]
-        #         if items:
-        #             for i in items:
-        #                 if not i.servicio_id ==  None:
-        #                     serviciosx.append(i)
-        #                 if not i.servicio_personalizado_id == None:
-        #                     serviciosPerx.append(i)  
-        #         contexto={"items":items, "pedido":pedido,"form":form,"serviciosx":serviciosx,"serviciosPerx":serviciosPerx}
-        #     else:
-        #         items=[]
-        #         pedido={"get_total_carrito":0,"get_items_carrito":0}
-        #         contexto={"items":items, "pedido":pedido,"form":form}
-
-
-        #     try:
-        #         if self.request.session:
-        #             imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
-        #             imagen = imagen.img_usuario
-        #             UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen}
-        #             contexto["User"]=UserSesion
-
-        #     except:
-        #         pass
-
-
-        #     if is_list_empty(items):
-        #         contexto["mensaje"]=True
-        #         return render(request, "Carrito.html",contexto)
-        #     else:
-        #         return render(request, "TerminarPedido.html",contexto)
-    
-            
-       
-        
-        
-      
-    
-
-
-        # object = Servicio.objects.get(request.POST.get(""))
-        # object.horafin = horaFin
-        # object.save(    )
-        
-
-       
-        
 
 
 class BuscarDisponibilidadEmpleado(View):
@@ -427,6 +345,7 @@ class ServiciosPersonalizados(CreateView):
                 imagen = imagen.img_usuario
                 if self.request.session['Admin'] == True:
                     UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                    context["User"]=UserSesion
                 else:
                     return redirect("SinPermisos")
                 context["User"]=UserSesion
@@ -589,17 +508,20 @@ class AgregarServicio(CreateView):#crear
     form_class = ServicioForm
     template_name = "AgregarServicio.html"
     success_url = reverse_lazy('Ventas:listarServicios')
-    def get(self, request, *args, **kwargs):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         try:
-            if request.session:
-                imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+            if self.request.session:
+                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
-                if request.session['Admin'] == True:
-                    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+                if self.request.session['Admin'] == True:
+                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                    context["User"]=UserSesion
                 else:
                     return redirect("SinPermisos")
         except:
             return redirect("UNR")
+        return context
     def form_valid(self, form, **kwargs):
         objeto=form.save()
         if objeto.estado == True:
@@ -623,6 +545,7 @@ class EditarServicio(UpdateView):#actualizar
                 imagen = imagen.img_usuario
                 if self.request.session['Admin'] == True:
                     UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                    context["User"]=UserSesion
                 else:
                     return redirect("SinPermisos")
                 context["User"]=UserSesion
@@ -653,6 +576,7 @@ class ListarServicio(ListView):#listar
                 imagen = imagen.img_usuario
                 if self.request.session['Admin'] == True:
                     UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                    context["User"]=UserSesion
                 else:
                     return redirect("SinPermisos")
                 context["User"]=UserSesion
@@ -693,17 +617,21 @@ Seccion de las Vistas donde se administran las citas
 
 class AgregarCita(TemplateView):
     template_name = "AgregarCita.html"
-    def get(self, request, *args, **kwargs):
+    def get_context_data(self, *args, **kwargs):
+        context = super(AgregarCita, self).get_context_data(**kwargs)
         try:
-            if request.session:
-                imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+            if self.request.session:
+                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
-                if request.session['Admin'] == True:
-                    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+                if self.request.session['Admin'] == True:
+                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                    context["User"] = UserSesion
+                    return context
                 else:
                     return redirect("SinPermisos")
         except:
-            return redirect("UNR")
+            pass
+        return context
 
 class ListarCita(ListView):
     queryset = Cita.objects.all()
@@ -717,6 +645,8 @@ class ListarCita(ListView):
                 imagen = imagen.img_usuario
                 if self.request.session['Admin'] == True:
                     UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                    context["User"] = UserSesion
+                    return context
                 else:
                     return redirect("SinPermisos")
         except:
@@ -767,6 +697,10 @@ class EditarCita(UpdateView):
     model = Cita
     template_name = "EditarCita.html"
     form_class = CitaForm
+    success_url = reverse_lazy("Ventas:calendario")
+
+    def get_object(self, queryset=None):
+        return self.model.objects.get(pk=self.kwargs["pk"])
 
     def get_context_data(self, *args, **kwargs):
         context = super(EditarCita, self).get_context_data(**kwargs)
@@ -776,9 +710,9 @@ class EditarCita(UpdateView):
                 imagen = imagen.img_usuario
                 if self.request.session['Admin'] == True:
                     UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                    context["User"]=UserSesion
                 else:
-                    return redirect("SinPermisos")
-        
+                    return redirect("SinPermisos")  
         except:
             return redirect("UNR")
         citax = models.Cita.objects.get(id_cita=self.kwargs["pk"])
@@ -795,7 +729,8 @@ class EditarCita(UpdateView):
                     serviciosPerx.append(i)
                     context["serviciosPer"]=serviciosPerx
         return context
-   
+    
+    
 
 class DetalleCita(DetailView):
    template_name = "DetalleCita.html"

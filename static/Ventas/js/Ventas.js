@@ -115,6 +115,49 @@ function ConfirmarCita(id){
       }
     });
 }
+
+function ActualizarCita(id){
+  let ids=id
+  
+    swal({
+      title: "Estas seguro?",
+      text: "Se modificara  la cita",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then((changeStatus) => {
+      if (changeStatus) {
+        $(document).ready(function(){
+        $.ajax({
+          data: {"csrfmiddlewaretoken":csrftoken, "estado":ids},
+          url: '/Ventas/CambiarEstadoCita/',
+          type: 'POST',
+          success: function(datas){
+            swal("OK! Se ha confirmado la cita, en este momento se esta notificando al cliente", {
+                icon: "success",
+              }).then(function(){
+                location.reload()
+              });
+          },
+          error: function(error){
+            swal("¡ERROR! ha ocurrido un error inesperado", {
+              icon: "error",
+            }).then(function(){
+              location.reload()
+            });
+          }
+        }); 
+        })
+      } else {
+        swal("OK! no se han aplicado cambios").then(function(){
+          location.reload()
+        });
+        
+      }
+    });
+}
+
+
 function CancelarCita3(id){
   let ids=id
   
@@ -186,3 +229,4 @@ function abrir_modal_detalleServicio(url){
 function abrir_modal_img_servicioPer(modalAabrir){
   $("#"+modalAabrir).appendTo("body").modal("show");
 }
+
