@@ -26,6 +26,8 @@ class Inicio(View):
                 print(request.session)
                 imagen = Usuario.objects.get(id_usuario=request.session['pk'])
                 imagen = imagen.img_usuario
+                if request.session['Admin']:
+                    pass
                 UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
             return render(request, 'index.html', {'User':UserSesion})
         except:

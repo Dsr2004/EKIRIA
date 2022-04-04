@@ -4,7 +4,6 @@
 
 .contenido {
     position: relative;
-    top: 50px;
     text-align: center;
     margin: auto;
     width: 85%;
@@ -14,10 +13,10 @@
 }
 
 .logo {
-    position: absolute;
-    top: -50px;
+    position: relative;
+    top: 10px;
     height: 100px;
-    margin-left: -80px;
+    margin-left: 20px;
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
