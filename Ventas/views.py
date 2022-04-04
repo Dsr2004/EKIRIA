@@ -47,6 +47,7 @@ class Catalogo(ListView):
                 imagen = imagen.img_usuario
                 if self.request.session['Admin'] == True:
                     UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                    context["User"]=UserSesion
                 else:
                     return redirect("SinPermisos")
                 context["User"]=UserSesion
