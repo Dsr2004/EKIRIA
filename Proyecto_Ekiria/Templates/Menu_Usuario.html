@@ -8,35 +8,35 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/Proyecto_Ekiria/Img/Logo Ekiria.png">
     <title>Menú Usuario</title>
-
     {% endblock head %}
-    
+
 </head>
 <!-- Zona de menú Horizontal header tamaño maximo 50px                  -->
 <header>
 </header>
 
 <body>{% if User %}
-            
+
     <div class="toggle ">
         <i class="abrir fas fa-bars "></i>
         <i class="cerrar fas fa-times "></i>
     </div>
 
     {% else %}
-        <div class="Init__Sec">
-          <a href="{%url 'IniciarSesion'%}" style="color: white;">Iniciar Sesion</a>
-        </div>
+    <div class="Init__Sec">
+        <a href="{%url 'IniciarSesion'%}" style="color: white;">Iniciar Sesion</a>
+    </div>
     {% endif %}
     <div class="menus">
 
         <ul>
             <li><a class="links " href="# "><i class="mdi mdi-account-group " style="margin-top: -3px; "></i><p class="atext ">Nosotros</p></a></li>
-            
+
             {% if User %}
-                
-                
+
+
             <li>
                 <div class="notification-box">
                     <ul class="list-inline mb-0 ">
@@ -60,81 +60,80 @@
                 0
                 {% endif %}
                     </span></a></li>
-                    {% endif %}
+            {% endif %}
         </ul>
     </div>
     <div class="grid">
-        
+
         {% if User %}
-            
+
         <!--          Creación del menú lateral        -->
-            <nav class="nav">
-                <div class="menul">
-                    <!--Para usar los bloques li copiad y pegar toda la info, ademas agregad la clase activar a la parte donde esta parada-->
+        <nav class="nav">
+            <div class="menul">
+                <!--Para usar los bloques li copiad y pegar toda la info, ademas agregad la clase activar a la parte donde esta parada-->
 
-                    <!--           Zona de links de navegación     -->
-                    <div class="Perfil">
-                        <a href="{%url 'Perfil'%}">
-                            <img src="/media/{{User.imagen}}" class="foto_perfil">
-                            <p class="escon">{{User.username}} <sup>{{User.rol}}</sup> </p>
-                        </a>
-                    </div>
-                    <ul class="list_content">
-                        <li class="list_item list_item--click">
+                <!--           Zona de links de navegación     -->
+                <div class="Perfil">
+                    <a href="{%url 'Perfil'%}">
+                        <img src="/media/{{User.imagen}}" class="foto_perfil">
+                        <p class="escon">{{User.username}} <sup>{{User.rol}}</sup> </p>
+                    </a>
+                </div>
+                <ul class="list_content">
+                    <li class="list_item list_item--click">
 
-                            <div class="list  {% if request.path == '/Inicio/'%}activar{% endif %}">
-                                <i class="mdi mdi-home centrado"></i>
-                                <a class="nav_link escon" href="{%url 'Inicio'%}"> Inicio</a>
-                            </div>
-                        </li>
-                        
-                        {% if User.admin %}
-                            
-                            
-                        <li class="list_item list_item--click">
-                            <div class="list 
+                        <div class="list  {% if request.path == '/Inicio/'%}activar{% endif %}">
+                            <i class="mdi mdi-home centrado"></i>
+                            <a class="nav_link escon" href="{%url 'Inicio'%}"> Inicio</a>
+                        </div>
+                    </li>
+
+                    {% if User.admin %}
+
+
+                    <li class="list_item list_item--click">
+                        <div class="list 
                             {%if request.path == '/InformacionUsuario/Administracion/'%}activar{% endif %}
                             {%if request.path == '/InformacionUsuario/Administracion/'%}activar{% endif %}
                             ">
-                                <i class="mdi mdi-view-dashboard centrado"></i>
-                                <a class="nav_link escon"> Configuración</a>
-                                <i class="list_arrow mdi mdi-chevron-right escon"></i>
-                            </div>
-                            <ul class="list_show">
-                                <li class="nav_link--inside"><a href="{%url 'Administracion'%}">Administración de Usuarios</a></li>
-                                <li class="nav_link--inside"><a href="{%url 'Configuracion'%}">Administración</a></li>
-                                <li class="nav_link--inside"><a href="{%url 'Roles'%}">Roles del usuario</a></li>
-                                <li class="nav_link--inside"><a href="{%url 'Cambios'%}">Cambios de pagina</a></li>
-                                <li class="nav_link--inside"><a href="{%url 'Permisos'%}">Permisos</a></li>
-                                <br>
-                            </ul>
-                        </li>
-                        
-                        {% endif %}
-                        {% if User.admin %}
-                        <li class="list_item list_item--click">
-                            <div class="list 
+                            <i class="mdi mdi-view-dashboard centrado"></i>
+                            <a class="nav_link escon"> Configuración</a>
+                            <i class="list_arrow mdi mdi-chevron-right escon"></i>
+                        </div>
+                        <ul class="list_show">
+                            <li class="nav_link--inside"><a href="{%url 'Administracion'%}">Administración de Usuarios</a></li>
+                            <li class="nav_link--inside"><a href="{%url 'Configuracion'%}">Administración</a></li>
+                            <li class="nav_link--inside"><a href="{%url 'Roles'%}">Roles del usuario</a></li>
+                            <li class="nav_link--inside"><a href="{%url 'Cambios'%}">Cambios de pagina</a></li>
+                            <li class="nav_link--inside"><a href="{%url 'Permisos'%}">Permisos</a></li>
+                            <br>
+                        </ul>
+                    </li>
+
+                    {% endif %} {% if User.admin %}
+                    <li class="list_item list_item--click">
+                        <div class="list 
                                 {% if request.path == '/Compras/listarprov/'%}activar{% endif %} 
                                 {% if request.path == '/Compras/listarprod/'%}activar{% endif %}
                                 {% if request.path == '/Compras/listartp/'%}activar{% endif %}
                                 {% if request.path == '/Compras/listarcompra/'%}activar{% endif %}list_button--click">
-                                <i class="mdi mdi-archive centrado"></i>
-                                <a class="nav_link escon"> Productos</a>
-                                <i class="list_arrow mdi mdi-chevron-right escon"></i>
-                            </div>
-                            <ul class="list_show">
+                            <i class="mdi mdi-archive centrado"></i>
+                            <a class="nav_link escon"> Productos</a>
+                            <i class="list_arrow mdi mdi-chevron-right escon"></i>
+                        </div>
+                        <ul class="list_show">
 
-                                <li class="nav_link--inside"><a href="{%url 'listarprov' %}">Proveedor</a></li>
-                                <li class="nav_link--inside"><a href="{%url 'listarprod' %}">Productos</a></li>
-                                <li class="nav_link--inside"><a href="{%url 'listartp' %}">Tipo de producto</a></li>
-                                <li class="nav_link--inside"><a href="{%url 'listarcompra' %}">Compras</a></li>
-                                <br>
-                            </ul>
-                        </li>
-                        {%endif%}
-                        
-                        <li class="list_item list_item--click">
-                            <div class="list 
+                            <li class="nav_link--inside"><a href="{%url 'listarprov' %}">Proveedor</a></li>
+                            <li class="nav_link--inside"><a href="{%url 'listarprod' %}">Productos</a></li>
+                            <li class="nav_link--inside"><a href="{%url 'listartp' %}">Tipo de producto</a></li>
+                            <li class="nav_link--inside"><a href="{%url 'listarcompra' %}">Compras</a></li>
+                            <br>
+                        </ul>
+                    </li>
+                    {%endif%}
+
+                    <li class="list_item list_item--click">
+                        <div class="list 
                             {% if request.path == '/Ventas/Catalogo/'%}activar{% endif %} 
                             {% if request.path == '/Ventas/Calendario/'%}activar{% endif %}
                             {% if User.admin %}
@@ -150,61 +149,60 @@
                             {% if request.path == '/Ventas/EditarCita/'%}activar{% endif %}
                             {%endif%}
                             list_button--click">
-                                <i class="mdi mdi-basket centrado"></i>
-                                <a class="nav_link escon"> Servicios</a>
-                                <i class="list_arrow mdi mdi-chevron-right escon"></i>
-                            </div>
-                            <ul class="list_show">
-
-                                <li class="nav_link--inside"><a href="{%url 'Ventas:catalogo'%}">Catalogo</a></li>
-                                <li class="nav_link--inside"><a href="{%url 'Ventas:calendario'%}">Calendario</a></li>{% if User.admin %}
-                                <li class="nav_link--inside"><a href="{%url 'Ventas:adminVentas'%}">Administración de ventas</a></li>
-                                <li class="nav_link--inside"><a href="{%url 'Ventas:listarServicios'%}">Servicios</a></li> 
-                                <li class="nav_link--inside"><a href="{%url 'Ventas:listarCitas'%}">Citas</a></li>
-                                <li class="nav_link--inside"><a href="{%url 'Ventas:agregarCita'%}">Agregar cita</a></li>
-                                <li class="nav_link--inside"><a href="{%url 'Ventas:agregarServicio'%}">Agregar Servicios</a></li>  
-                                {%endif%}
-                                <br>
-                            </ul>
-                        </li>
-                    </ul>
-                    <li class="salir" id="salir">
-                        <div class="cerrar">
-                            <a href="{% url 'IniciarSesion' %}" class="icon"><i class="mdi mdi-power centrado"></i> </a>
-                            <a href="{% url 'CerrarSesion' %}" class="escon text"> Cerrar Sesión</a>
+                            <i class="mdi mdi-basket centrado"></i>
+                            <a class="nav_link escon"> Servicios</a>
+                            <i class="list_arrow mdi mdi-chevron-right escon"></i>
                         </div>
+                        <ul class="list_show">
+
+                            <li class="nav_link--inside"><a href="{%url 'Ventas:catalogo'%}">Catalogo</a></li>
+                            <li class="nav_link--inside"><a href="{%url 'Ventas:calendario'%}">Calendario</a></li>{% if User.admin %}
+                            <li class="nav_link--inside"><a href="{%url 'Ventas:adminVentas'%}">Administración de ventas</a></li>
+                            <li class="nav_link--inside"><a href="{%url 'Ventas:listarServicios'%}">Servicios</a></li>
+                            <li class="nav_link--inside"><a href="{%url 'Ventas:listarCitas'%}">Citas</a></li>
+                            <li class="nav_link--inside"><a href="{%url 'Ventas:agregarCita'%}">Agregar cita</a></li>
+                            <li class="nav_link--inside"><a href="{%url 'Ventas:agregarServicio'%}">Agregar Servicios</a></li>
+                            {%endif%}
+                            <br>
+                        </ul>
                     </li>
-                </div>
-            </nav>
+                </ul>
+                <li class="salir" id="salir">
+                    <div class="cerrar">
+                        <a href="{% url 'IniciarSesion' %}" class="icon"><i class="mdi mdi-power centrado"></i> </a>
+                        <a href="{% url 'CerrarSesion' %}" class="escon text"> Cerrar Sesión</a>
+                    </div>
+                </li>
+            </div>
+        </nav>
         {%endif%}
-        
+
 
         <div class="content ">
 
             <div class="fondo "></div>
             <div class="relle">
 
-                
+
 
                 <div class="contentDiv" id="div">
-                    <br><br><br>
-                    {% block Contenido %}
+                    <br><br><br> {% block Contenido %}
                     <div>
                         <input type="search ">
                     </div>
 
                     <li><a href="{% url 'Ventas:carrito' %}" type="button" class=" btn position-relative" style="margin-top: -7px;"><i class="fas fa-shopping-cart"></i><span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span></a></li>
-                </ul>
-            </div>
-
-                    <div>Hola 2</div>
-                    {% endblock Contenido %}
-                    
-                    
-                        
+                    </ul>
                 </div>
+
+                <div>Hola 2</div>
+                {% endblock Contenido %}
+
+
+
             </div>
         </div>
+    </div>
 
     </div>
     {% block modal %} {% endblock modal %}
@@ -213,7 +211,7 @@
     <script src="/static/Proyecto_Ekiria/assets/js/jquery.app.js "></script>
     <script src="/static/Proyecto_Ekiria/assets/plugins/jquery-ui/jquery-ui.min.js "></script>
     <script src="/static/Proyecto_Ekiria/assets/plugins/moment/moment.js "></script>
-    
+
 
 </body>
 

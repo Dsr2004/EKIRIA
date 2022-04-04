@@ -11,136 +11,43 @@
 </head>
 
 <body>
-    <div class="fondo"></div>
-    <div class="difuminacion"></div>
+
     <div class="contenido">
-        <div class="contLogo">
-            <img class="logo" src="/static/Proyecto_Ekiria/Img/Logo Ekiria.png">
-        </div>
+        <a href="{%url 'Inicio'%}"><img class="logo" src="/static/Proyecto_Ekiria/Img/Logo Ekiria Negro 1.png"></a>
         <form method="POST">
             <h1>Registro</h1>
+            {% csrf_token %}
             <div class="form">
-                {% csrf_token %}
-                <div class="frid">
-                    <div class="flexbox">
-                        {{form.nombres}}
-                        <label class="lbl-nombre">
-                        <span class="text-nomb"><strong>Nombres</strong></span>
-                        </label>
-                    </div> <br>
-                    <div class="flexbox">
-                        {{form.apellidos}}
-                        <label class="lbl-nombre">
-                        <span class="text-nomb"><strong>Apellidos</strong></span>
-                        </label>
-                    </div>
-                </div>
-                <br>
-                <div class="frid">
-                    <div class="flexbox">
-                        {{form.email}}
-                        <label class="lbl-nombre">
-                        <span class="text-nomb"><strong>E-mail</strong></span>
-                        </label>
-                    </div> <br>
-                    <div class="flexbox">
-                        {{form.direccion}}
-                        <label class="lbl-nombre">
-                        <span class="text-nomb"><strong>Dirección</strong></span>
-                        </label>
-                    </div>
-                </div>
-                <br>
-                <div class="frid">
-                    <div class="flexbox">
-                        {{form.telefono}}
-                        <label class="lbl-nombre">
-                        <span class="text-nomb"><strong>Telefono</strong></span>
-                        </label>
-                    </div> <br>
-                    <div class="flexbox">
-                        {{form.celular}}
-                        <label class="lbl-nombre">
-                        <span class="text-nomb"><strong>Celular</strong></span>
-                        </label>
-                    </div>
-                </div>
-                <br>
-                <div class="frid">
-                    <div class="flexbox lbl-select">
-                        <label>
-                        <span class="text-nomb"><strong>Municipio</strong></span>
-                        </label> <br>{{form.municipio}}
-                    </div> <br>
-                    <div class="flexbox">
-                        {{form.cod_postal}}
-                        <label class="lbl-nombre">
-                        <span class="text-nomb"><strong>Código Postal</strong></span>
-                        </label>
-                    </div>
-                </div>
-                <br>
-                <div class="frid">
-                    <div class="flexbox lbl-select">
-                        <label>
-                        <span class="text-nomb"><strong>Tipo de documento</strong></span>
-                        </label> <br>{{form.tipo_documento}}
-                    </div><br>
-                    <div class="flexbox">
-                        {{form.num_documento}}
-                        <label class="lbl-nombre">
-                        <span class="text-nomb"><strong>Número de Documento</strong></span>
-                        </label>
-                    </div>
-                </div><br>
-                <div>
-                    <div class="flexbox" style="width: 95%;">
-                        {{form.fec_nac}}
-                        <label class="lbl-nombre">
-                        <span class="text-nomb" style="transform: translateY(-150%);
-                        font-size: 14px;"><strong>Fecha de nacimiento</strong></span>
-                        </label>
-                    </div> <br>
-                </div>
-                <div class="frid">
-                    <div class="flexbox">
-                        {{form.password1}}
-                        <label class="lbl-nombre">
-                        <span class="text-nomb"><strong>Contraseña</strong></span>
-                        </label>
-                    </div> <br>
-                    <div class="flexbox">
-                        {{form.password2}}
-                        <label class="lbl-nombre">
-                        <span class="text-nomb"><strong>Confirmar Contraseña</strong></span>
-                        </label>
-                    </div>
-                </div>
-                <br>
-                <div>
-                    <div class="flexbox" style="width: 95%;">
-                        {{form.username}}
-                        <label class="lbl-nombre">
-                        <span class="text-nomb"><strong>Apodo</strong></span>
-                        </label>
-                    </div>
-                </div>
-                <br>
-                <button type="submit" class="boton"><strong>Registrarme</strong></button>
-                <br>
-                <div style="text-align: center; margin-left: -60px;">
-                    <a href="{% url 'IniciarSesion'%}" style="color: aliceblue;">¿Ya tienes cuenta?</a>
-                </div>
-                <p>
-                    {%for field in form%}{%for error in field.errors%}{{error}}<br> {%endfor%}{%endfor%}
-                </p>
+                <div class="apodo">{{form.username}}</div>
+                <div class="email">{{form.email}}</div>
+                <div class="nombres">{{form.nombres}}</div>
+                <div class="apellidos">{{form.apellidos}}</div>
+                <div class="dir">{{form.direccion}}</div>
+                <div class="fec">
+                    <b>Fecha de nacimiento:</b> {{form.fec_nac}}</div>
+                <div class="tel">{{form.telefono}}</div>
+                <div class="cel">{{form.celular}} </div>
+                <div class="mun"><b>Municipio:</b>{{form.municipio}}</div>
+                <div class="cod">{{form.cod_postal}} </div>
+                <div class="tipo"><b>Tipo de documento:</b>{{form.tipo_documento}}</div>
+                <div class="num"> {{form.num_documento}}</div>
+                <div class="pass1">{{form.password1}}</div>
+                <div class="pass2"> {{form.password2}}</div>
             </div>
+            <br>
+            <button type="submit" class="boton"><strong>Registrarme</strong></button>
             <br><br>
-        </form>
+            <div style="text-align: center;">
+                <a href="{% url 'IniciarSesion'%}">¿Ya tienes cuenta?</a>
+            </div>
+            <p>
+                {%for field in form%}{%for error in field.errors%}{{error}}<br> {%endfor%}{%endfor%}
+            </p>
     </div>
     <script src="/static/ModuloUsuarios/js/mainRegistration.js"></script>
 </body>
 
 <script>
 </script>
+
 </html>

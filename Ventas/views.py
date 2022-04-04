@@ -42,10 +42,13 @@ class Catalogo(ListView):
     def get_context_data(self, *args, **kwargs):
         context = super(Catalogo, self).get_context_data(**kwargs)
         try:
-            if self.request.session:
+           if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
-                UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen}
+                if self.request.session['Admin'] == True:
+                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                else:
+                    return redirect("SinPermisos")
                 context["User"]=UserSesion
                 return context
         except:
@@ -171,9 +174,12 @@ def Carrito(request):
 
     try:
         if request.session:
-            imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-            imagen = imagen.img_usuario
-            UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen}
+                imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+                imagen = imagen.img_usuario
+                if request.session['Admin'] == True:
+                    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+                else:
+                    return redirect("SinPermisos")
     except:
             return redirect("UNR")
 
@@ -211,7 +217,10 @@ class AgandarCita(CreateView):
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
-                UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen}
+                if self.request.session['Admin'] == True:
+                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                else:
+                    return redirect("SinPermisos")
                 contexto["User"]=UserSesion
 
         except:
@@ -388,7 +397,10 @@ class Calendario(TemplateView):
             if request.session:
                 imagen = Usuario.objects.get(id_usuario=request.session['pk'])
                 imagen = imagen.img_usuario
-                UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen}
+                if request.session['Admin'] == True:
+                    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+                else:
+                    return redirect("SinPermisos")
         except:
             return redirect("UNR")
 
@@ -413,7 +425,10 @@ class ServiciosPersonalizados(CreateView):
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
-                UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen}
+                if self.request.session['Admin'] == True:
+                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                else:
+                    return redirect("SinPermisos")
                 context["User"]=UserSesion
                 return context
         except:
@@ -457,7 +472,10 @@ class AdminVentas(TemplateView):
             if request.session:
                 imagen = Usuario.objects.get(id_usuario=request.session['pk'])
                 imagen = imagen.img_usuario
-                UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen}
+                if request.session['Admin'] == True:
+                    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+                else:
+                    return redirect("SinPermisos")
         except:
             return redirect("UNR")
 
@@ -576,8 +594,10 @@ class AgregarServicio(CreateView):#crear
             if request.session:
                 imagen = Usuario.objects.get(id_usuario=request.session['pk'])
                 imagen = imagen.img_usuario
-                UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen}
-                return render(request, self.template_name, {"User":UserSesion,"form":self.form_class})
+                if request.session['Admin'] == True:
+                    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+                else:
+                    return redirect("SinPermisos")
         except:
             return redirect("UNR")
     def form_valid(self, form, **kwargs):
@@ -601,7 +621,10 @@ class EditarServicio(UpdateView):#actualizar
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
-                UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen}
+                if self.request.session['Admin'] == True:
+                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                else:
+                    return redirect("SinPermisos")
                 context["User"]=UserSesion
                 return context
         except:
@@ -628,7 +651,10 @@ class ListarServicio(ListView):#listar
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
-                UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen}
+                if self.request.session['Admin'] == True:
+                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                else:
+                    return redirect("SinPermisos")
                 context["User"]=UserSesion
                 return context
         except:
@@ -672,8 +698,10 @@ class AgregarCita(TemplateView):
             if request.session:
                 imagen = Usuario.objects.get(id_usuario=request.session['pk'])
                 imagen = imagen.img_usuario
-                UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen}
-                return render(request, self.template_name, {"User":UserSesion})
+                if request.session['Admin'] == True:
+                    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+                else:
+                    return redirect("SinPermisos")
         except:
             return redirect("UNR")
 
@@ -687,9 +715,10 @@ class ListarCita(ListView):
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
-                UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen}
-                context["User"]=UserSesion
-                return context
+                if self.request.session['Admin'] == True:
+                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                else:
+                    return redirect("SinPermisos")
         except:
             return context
     
@@ -745,11 +774,13 @@ class EditarCita(UpdateView):
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
-                UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen}
-                context["User"]=UserSesion
+                if self.request.session['Admin'] == True:
+                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                else:
+                    return redirect("SinPermisos")
         
         except:
-            pass
+            return redirect("UNR")
         citax = models.Cita.objects.get(id_cita=self.kwargs["pk"])
         pedido = models.Pedido.objects.get(id_pedido = citax.pedido_id.id_pedido)
         items = pedido.pedidoitem_set.all()
@@ -773,8 +804,10 @@ class DetalleCita(DetailView):
             if request.session:
                 imagen = Usuario.objects.get(id_usuario=request.session['pk'])
                 imagen = imagen.img_usuario
-                UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen}
-                return render(request, self.template_name, {"User":UserSesion})
+                if request.session['Admin'] == True:
+                    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+                else:
+                    return redirect("SinPermisos")
         except:
             return redirect("UNR")
 
@@ -810,7 +843,10 @@ def pruebas(request):
         if request.session:
             imagen = Usuario.objects.get(id_usuario=request.session['pk'])
             imagen = imagen.img_usuario
-            UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen}
+            if request.session['Admin'] == True:
+                UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+            else:
+                return redirect("SinPermisos")
     except:
             return redirect("UNR")
     cont={
