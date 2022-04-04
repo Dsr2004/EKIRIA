@@ -695,12 +695,49 @@ class ListarCita(ListView):
     
    
     
+class EditarCitaDetalle(DetailView):
+    model = Cita
+    template_name = "DetalleEditarCita.html"
+    form_class = CitaForm
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(EditarCitaDetalle, self).get_context_data(**kwargs)
+        try:
+            if self.request.session:
+                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
+                imagen = imagen.img_usuario
+                UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen}
+                context["User"]=UserSesion
+        
+        except:
+            pass
+        citax = models.Cita.objects.get(id_cita=self.kwargs["pk"])
+        pedido = models.Pedido.objects.get(id_pedido = citax.pedido_id.id_pedido)
+        items = pedido.pedidoitem_set.all()
+        serviciosx=[]
+        serviciosPerx=[]
+        if items:
+            for i in items:
+                if not i.servicio_id ==  None:
+                    serviciosx.append(i)
+                    context["servicios"]=serviciosx
+                if not i.servicio_personalizado_id == None:
+                    serviciosPerx.append(i)
+                    context["serviciosPer"]=serviciosPerx
+        hoy = datetime.today()
+        diaCita = citax.diaCita
+        tresDias =  datetime(diaCita.year, diaCita.month, diaCita.day) - timedelta(days=3)
+        print(tresDias)
+        print(diaCita)
+        if hoy < tresDias:
+            context["SePuedeModificar"] = True
+        else:
+            context["SePuedeModificar"] = False
+        return context
 class EditarCita(UpdateView):
     model = Cita
     template_name = "EditarCita.html"
     form_class = CitaForm
-    success_url = reverse_lazy('Ventas:listarServicios')
-
 
     def get_context_data(self, *args, **kwargs):
         context = super(EditarCita, self).get_context_data(**kwargs)

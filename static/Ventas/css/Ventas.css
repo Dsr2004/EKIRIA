@@ -312,8 +312,13 @@
   }
   
 
-/* DETALLES DE LA CITAS  */
+/* DETALLES DE LA CITAS PARA ACTUALIZAR*/
 
+.imgServicioPerCita:hover{
+    opacity: 100;
+    background-color: rgba(128, 128, 128, 0.211);
+    cursor: pointer;
+}
 
 /* AGREGAR SERVICIOS  */
 

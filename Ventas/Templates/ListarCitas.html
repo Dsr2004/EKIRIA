@@ -32,7 +32,7 @@
                   <td>${{cita.pedido_id.total_pagar}}</td>
                   <td>{{cita.diaCita}}</td>
                   <td>{% if cita.estado == True %}Confirmado {% else %}Pendiente{% endif %}</td>
-                  <td><a href="{%url 'Ventas:editarCita' cita.id_cita %}"><i class="fas fa-eye" style="font-size: 25px;"></i></a></td>
+                  <td><a href="{%url 'Ventas:detalleEditarCita' cita.id_cita %}"><i class="fas fa-eye" style="font-size: 25px;"></i></a></td>
                   <td>
                      {% if cita.estado == True %}
                      <!-- onclick="CancelarCita3('{{cita.id_cita}}')" -->

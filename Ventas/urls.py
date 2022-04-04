@@ -8,6 +8,7 @@ urlpatterns = [
     path('AgregarCita/', AgregarCita.as_view(), name="agregarCita"),
     path('ListadoCitas/', ListarCita.as_view(), name="listarCitas"),
     path('DetalleCita/', DetalleCita.as_view(), name="detalleCita"),
+    path('DetalleEditarCita/<int:pk>', EditarCitaDetalle.as_view(), name="detalleEditarCita"),
     path('EditarCita/<int:pk>', EditarCita.as_view(), name="editarCita"),
     path('CambiarEstadoCita/', CambiarEstadoDeCita.as_view(), name="cambiarEstadoCita"),
 

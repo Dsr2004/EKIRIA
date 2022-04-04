@@ -58,14 +58,21 @@ function ConfirmarNoGuardarCita(){
   });
 }
 
-function GuardarCita(){
+function IraModificarCita(url){
   swal({
-    title: "Hecho",
-    text: "Cita guardada",
-    icon: "success",
-  }).then(function() {
-    window.location.href = "/Ventas/ListadoCitas/";
- });
+    title: "¡Cuidado!",
+    text: "Esta a punto de modificar datos sensibles.",
+    icon: "info",
+    buttons: true,
+    dangerMode: true,
+  }).then((done) =>{
+    if (done){
+      location.href = url
+     }
+     else{
+       swal.close()
+     }
+  })
 }
 
 function ConfirmarCita(id){
@@ -176,4 +183,6 @@ function abrir_modal_detalleServicio(url){
   });
 }
 
-
+function abrir_modal_img_servicioPer(modalAabrir){
+  $("#"+modalAabrir).appendTo("body").modal("show");
+}
