@@ -175,7 +175,6 @@
 .ContMision:hover, .contfooter:hover, .principalPermisos:hover{
     box-shadow: 0.5rem 0.5rem black, -0.5rem -0.5rem #AF8DBB;
     background-color: rgb(240, 240, 247);
-    
     animation-iteration-count: infinite;
     transition-property: all;
     transition-duration: 0.3s;
@@ -185,15 +184,25 @@
     text-align: center;
 }
 /* permisos */
+.jldghajkldgjkfdhgk{
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
 .principalPermisos{
     align-items: center;
-    margin-left: 16%;
+    padding-left: 15%;
     width: 70%;
     height: auto;
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: initial;
+}
+.principalPermisos .con1{
+    width: 200px;
+    height: 100%;
+    margin: 0 20px;
 }
 .color{
     

@@ -1,3 +1,5 @@
+from msilib.schema import ListView
+from re import template
 from webbrowser import get
 from django.shortcuts import redirect, render
 import json
@@ -8,8 +10,10 @@ from django.shortcuts import render
 
 
 from django.http import HttpResponse,JsonResponse
-from django.views.generic import View, CreateView, UpdateView
+from django.views.generic import View, CreateView, UpdateView, ListView
 from django.urls import reverse_lazy
+from django.contrib.auth.models import Permission
+from Usuarios.models import Usuario
 # Create your views here.
 
 from .models import Rol, cambios, cambiosFooter
@@ -17,23 +21,67 @@ from .forms import RolForm, CambiosForm, FooterForm
 
 
 def Configuracion(request):
-    return render(request, "Configuracion.html")
+        try:
+            if request.session:
+                imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+                imagen = imagen.img_usuario
+                if request.session['Admin'] == True:
+                    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+                else:
+                    return redirect("SinPermisos")
+                return render(request, "Configuracion.html", {'User':UserSesion})
+        except:
+            return redirect("UNR")
 
 def Roles(request):
-    return render(request, "Roles.html")
+        try:
+            if request.session:
+                imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+                imagen = imagen.img_usuario
+                if request.session['Admin'] == True:
+                    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+                else:
+                    return redirect("SinPermisos")
+                return render(request, "Roles.html", {'User':UserSesion})
+        except:
+            return redirect("UNR")
 
 def Cambios(request):
+    UserSesion = ""
     formulario = CambiosForm
     ListarCambios = cambios.objects.all()
     formulario2 = FooterForm
     Listarfooter =cambiosFooter.objects.all()
+    try:
+        if request.session:
+            imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+            imagen = imagen.img_usuario
+            if request.session['Admin'] == True:
+                UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+            else:
+                return redirect("SinPermisos")
+    except:
+        pass
     contexto = {'Cambios' :ListarCambios, 'footer' :Listarfooter}
+    contexto["User"]=UserSesion
+    
     return render (request, "Cambios.html",contexto)
 
 def Permisos(request):
-    return render(request, "Permisos.html")
+        try:
+            if request.session:
+                imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+                imagen = imagen.img_usuario
+                if request.session['Admin'] == True:
+                    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+                else:
+                    return redirect("SinPermisos") 
+                return render(request, "Permisos.html", {'User':UserSesion})
+        except:
+            return redirect("UNR")
     
 def Admin(request):
+    
     return render(request, "Administrador.html")
 
 def Empleado(request):
@@ -46,7 +94,18 @@ def Cliente(request):
 def ListarRol(request):
     formulario=RolForm
     ListRoles = Rol.objects.all()
+    try:
+        if request.session:
+            imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+            imagen = imagen.img_usuario
+            if request.session['Admin'] == True:
+                UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+            else:
+                return redirect("SinPermisos")
+    except:
+        pass
     contexto= {'roles':ListRoles}
+    contexto["User"]=UserSesion
     return render(request, "Roles.html", contexto)
 
 
@@ -83,6 +142,20 @@ class CreateRolView(CreateView):
                     return respuesta
             else:
                 return HttpResponse("holi")
+    def get_context_data(self, *args, **kwargs):
+        context = super(CreateRolView, self).get_context_data(**kwargs)
+        try:
+            if self.request.session:
+                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
+                imagen = imagen.img_usuario
+                if self.request.session['Admin'] == True:
+                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                else:
+                    return redirect("SinPermisos")
+                context["User"]=UserSesion
+                return context
+        except:
+            return redirect("UNR")
     
 class CrearCambios(View):
     model = cambios
@@ -104,6 +177,20 @@ class CrearCambios(View):
             respuesta=JsonResponse({"mensaje":mensaje, "errores":errores})
             respuesta.status_code=400
             return respuesta
+    def get_context_data(self, *args, **kwargs):
+        context = super(CrearCambios, self).get_context_data(**kwargs)
+        try:
+            if self.request.session:
+                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
+                imagen = imagen.img_usuario
+                if self.request.session['Admin'] == True:
+                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                else:
+                    return redirect("SinPermisos")
+                context["User"]=UserSesion
+                return context
+        except:
+            return redirect("UNR")
     
 class CrearCambiosFooter(View):
     model = cambiosFooter
@@ -125,6 +212,20 @@ class CrearCambiosFooter(View):
             respuesta=JsonResponse({"mensaje":mensaje, "errores":errores})
             respuesta.status_code=400
             return respuesta
+    def get_context_data(self, *args, **kwargs):
+        context = super(CrearCambiosFooter, self).get_context_data(**kwargs)
+        try:
+            if self.request.session:
+                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
+                imagen = imagen.img_usuario
+                if self.request.session['Admin'] == True:
+                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                else:
+                    return redirect("SinPermisos")
+                context["User"]=UserSesion
+                return context
+        except:
+            return redirect("UNR")
 
 
 
@@ -147,21 +248,39 @@ class EditarRolView(UpdateView):
                     
             else:
                 return HttpResponse("holi")
+    def get_context_data(self, *args, **kwargs):
+        context = super(EditarRolView, self).get_context_data(**kwargs)
+        try:
+            if self.request.session:
+                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
+                imagen = imagen.img_usuario
+                if self.request.session['Admin'] == True:
+                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                else:
+                    return redirect("SinPermisos")
+                context["User"]=UserSesion
+                return context
+        except:
+            return redirect("UNR")
     
 
    
-
-# def EstadoRol(self,request,*args, **kwargs):
-#     roles = Rol.objects.get(id_rol=request.POST['id_rol'])
-#     if request.POST['estado']:
-#         id_rol=self.id_rol(request.POST)
-#         if form.is_valid():
-#             nuevo_usuario=
-#             pass
-#     else:
-# #         pass
-# template_name = 'CrearRol.html'
-# success_url=reverse_lazy('Roles')
-
-
-
+class listarPermisos(ListView):
+    model = Permission
+    template_name = 'Permisos.html'
+    context_object_name = "Permisos"
+    def get_context_data(self, *args, **kwargs):
+        context = super(listarPermisos, self).get_context_data(**kwargs)
+        try:
+            if self.request.session:
+                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
+                imagen = imagen.img_usuario
+                if self.request.session['Admin'] == True:
+                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                else:
+                    return redirect("SinPermisos")
+                context["User"]=UserSesion
+                return context
+        except:
+            return redirect("UNR")
+    

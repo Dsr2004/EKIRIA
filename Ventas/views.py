@@ -658,7 +658,7 @@ class ListarServicio(ListView):#listar
                 context["User"]=UserSesion
                 return context
         except:
-            return context
+            return redirect("UNR")
 
 class ServicioDetalle(DetailView):#detalle
     queryset = Servicio.objects.all()
