@@ -23,6 +23,7 @@ class TipoDocumento(models.Model):
     def __str__(self) :
         return self.nom_tipo_documento
 
+
 class Municipio(models.Model):
     id_municipio = models.AutoField(primary_key=True)
     nom_municipio = models.CharField(max_length=60)

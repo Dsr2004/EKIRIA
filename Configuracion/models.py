@@ -14,7 +14,7 @@ class Permiso(models.Model):
  
 class Rol(models.Model):
     id_rol =  models.AutoField(primary_key=True, unique=True)
-    nombre = models.CharField(max_length=40, unique=True, null=False, blank=False)
+    nombre = models.CharField(max_length=40, unique=True, null=False, blank=False, default='Cliente')
     descripcion= models.CharField(max_length=500, null=False, blank=False)
     permiso_id=models.ManyToManyField(Permiso, db_column="permiso_id")
     estado = models.BooleanField(default=True)

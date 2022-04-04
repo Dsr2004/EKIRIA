@@ -1,3 +1,4 @@
+from unicodedata import name
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.forms.widgets import PasswordInput, TextInput
@@ -8,6 +9,7 @@ class Regitro(forms.ModelForm):
             'id':"password",
             'requerid':'requerid',
             'placeholder':'Contraseña',
+            'name':'password',
         }
     ))
     password2 = forms.CharField(label="Confirmar contraseña",widget=forms.PasswordInput(
@@ -44,6 +46,7 @@ class Regitro(forms.ModelForm):
                     'required':'requerid',
                     'autocomplete':'off',
                     'placeholder':'Email',
+                    'name':'email',
                 }
             ),
             'img_usuario': forms.FileInput(
@@ -51,6 +54,7 @@ class Regitro(forms.ModelForm):
                     'id':'imagen',
                     'style':'display:none;',
                     'type':'file',
+                    'name':'img_usuario',
                 }
             ),
             'username': forms.TextInput(
@@ -58,6 +62,7 @@ class Regitro(forms.ModelForm):
                     'required':'requerid',
                     'autocomplete':'off',
                     'placeholder':'Apodo',
+                    'name':'username',
                 }
             ),
             'nombres': forms.TextInput(
@@ -65,6 +70,7 @@ class Regitro(forms.ModelForm):
                     'required':'requerid',
                     'autocomplete':'off',
                     'placeholder':'Nombres',
+                    'name':'nombres',
                 }
             ),
             'apellidos': forms.TextInput(
@@ -72,12 +78,14 @@ class Regitro(forms.ModelForm):
                     'required':'requerid',
                     'autocomplete':'off',
                     'placeholder':'Apellidos',
+                    'name':'apellidos',
                 }
             ),
             'telefono': forms.TextInput(
                 attrs={
                     'autocomplete':'off',
                     'placeholder':'Telefono',
+                    'name':'telefono',
                 }
             ),
             'celular': forms.TextInput(
@@ -85,6 +93,7 @@ class Regitro(forms.ModelForm):
                     'required':'requerid',
                     'autocomplete':'off',
                     'placeholder':'Celular',
+                    'name':'celular',
                 }
             ),
             'fec_nac': forms.DateInput(
@@ -94,12 +103,14 @@ class Regitro(forms.ModelForm):
                     'autocomplete':'off',
                     'style':'color:grey;',
                     'placeholder':'Fecha de nacimiento',
+                    'name':'fec_nac',
                 }
             ),
             'tipo_documento': forms.Select(
                 attrs={
                     'required':'requerid',
                     'autocomplete':'off',
+                    'name':'tipo_documento',
                 }
             ),
             'num_documento': forms.TextInput(
@@ -108,18 +119,21 @@ class Regitro(forms.ModelForm):
                     'autocomplete':'off',
                     'type':'number',
                     'placeholder':'Número de documento',
+                    'name':'num_documento',
                 }
             ),
             'municipio': forms.Select(
                 attrs={
                     'required':'requerid',
                     'autocomplete':'off',
+                    'name':'municipio',
                 }
             ),
             'direccion': forms.TextInput(
                 attrs={
                     'autocomplete':'off',
                     'placeholder':'Dirección',
+                    'name':'direccion',
                 }
             ),
             'cod_postal': forms.TextInput(
@@ -127,6 +141,7 @@ class Regitro(forms.ModelForm):
                     'required':'requerid',
                     'autocomplete':'off',
                     'placeholder':'Codigó postal',
+                    'name':'cod_postal',
                 }
             ),
         }
@@ -157,7 +172,6 @@ class Editar(forms.ModelForm):
         model = Usuario
         
         fields=[
-            'username',
             'img_usuario',
             'telefono',
             'celular',
@@ -179,12 +193,6 @@ class Editar(forms.ModelForm):
                 attrs={
                     'id':'imagen',
                     'style':'display:none;',
-                }
-            ),
-            'username': forms.TextInput(
-                attrs={
-                    'style':'display:none;',
-                    'autocomplete':'off',
                 }
             ),
             'telefono': forms.TextInput(
@@ -222,12 +230,14 @@ class Cambiar(forms.ModelForm):
         attrs={
             'id':"password",
             'requerid':'requerid',
+            'name':'password1',
         }
     ))
     password2 = forms.CharField(label="Confirmar contraseña",widget=forms.PasswordInput(
         attrs={
             'id':"confpassword",
             'requerid':'requerid',
+            'name':'password2',
         }
     ))
     

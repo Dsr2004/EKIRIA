@@ -351,7 +351,7 @@ class ServiciosPersonalizados(CreateView):
                 context["User"]=UserSesion
                 return context
         except:
-            return context
+            return redirect("UNR")
 
     def form_valid(self, form, *args, **kwargs):
         objeto=form.save()
