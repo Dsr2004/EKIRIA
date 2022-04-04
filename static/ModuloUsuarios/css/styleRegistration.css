@@ -160,3 +160,26 @@ form h1 {
     color: #fff;
     cursor: pointer;
 }
+/* Icono mostrar input password */
+
+.contenido form label {
+    position: relative;
+    width: 100%;
+}
+
+.contenido form label i {
+    position: absolute;
+    top: 0px;
+    right: 10px;
+    font-size: 1.2em;
+    color: #979797;
+    cursor: pointer;
+}
+
+.contenido form label i.show {
+    display: block;
+}
+
+.contenido form label i.hide {
+    display: none;
+}

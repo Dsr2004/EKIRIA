@@ -4,6 +4,9 @@
     box-sizing: border-box;
     z-index: 0;
 }
+.no-Display{
+    display: none;
+}
 /* TARJETAS DEL CATALOGO  */
 .body{
     background-color: hsl(0, 0%, 98%);

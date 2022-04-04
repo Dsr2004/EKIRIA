@@ -1,25 +1,28 @@
-{% extends "Menu_Usuario.html" %} {% load static %} {% block head %}
-
+{% extends "Menu_Usuario.html" %} 
+{% load static %}
+{% block head %}
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calendario</title>
     <link rel="stylesheet" href="{% static 'Ventas/css/Ventas.css' %}">
-    <link rel="icon" href="{% static 'Proyecto_Ekiria/Img/Logo Ekiria.png' %}">
-    <link rel="stylesheet" href="{% static 'Plugins/fullcalendar/lib/main.css' %}">
+   <link rel="icon" href="{% static 'Proyecto_Ekiria/Img/Logo Ekiria.png' %}">
+   <link rel="stylesheet" href="{% static 'Plugins/fullcalendar/lib/main.css' %}">
+   
 
-
-
+ 
 
 </head>
-{% endblock head %} {% block Contenido %}
+{% endblock head %}
+
+{% block Contenido %}
 <div class="container">
   <h1>Calendario</h1>
 <div class="row">
-     <div class="col-md-7">
+     <div class="col-md-8">
        <!--aqui va el calendario-->
-       <div id="calendar" style="padding: 15px;"></div>
+       <div id="calendar" style="padding: 10px;"></div>
       </div> 
     <div class="col-md-4 ContainerHistorialCitas">
         <legend>Historial</legend>
@@ -56,8 +59,8 @@
             
             </tbody>
           </table>
-
     </div>
+</div>
 </div>
 
 <!-- scripts -->
@@ -68,35 +71,38 @@
 <script src="/static/Ventas/js/jquery.fullcalendar.js"></script> -->
 
 
-{% endblock Contenido %} {%block scripts%}
+{% endblock Contenido %}
+
+{%block scripts%}
 <script src="{% static 'Plugins/fullcalendar/lib/main.js' %}"></script>
 <script src="{% static 'Plugins/fullcalendar/lib/locales-all.js' %}"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var calendarUI = document.getElementById("calendar")
-        var calendar = new FullCalendar.Calendar(calendarUI, {
-            headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
-            },
-            events: [{ %
-                    for cita in citas %
-                } {
-                    title: "{{cita.titulo}}",
-                    start: "{{cita.inicio}}",
-                    end: "{{cita.fin}}",
-                }, { % endfor %
-                }
-
-            ],
-            dateClick: function(arg) {
-                console.log('dateClick', calendar.formatIso(arg.date));
-                // aqui se cargara las modales que mostraran la info de la cita
-            },
-        });
-        calendar.render();
-        calendar.setOption('locale', 'es')
+  
+  document.addEventListener('DOMContentLoaded', function(){
+    var calendarUI  = document.getElementById("calendar")
+    var calendar = new FullCalendar.Calendar(calendarUI,{
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+      },
+      events: [
+        {% for cita in citas %}
+        {
+          title:"{{cita.titulo}}",
+          start: "{{cita.inicio}}",
+          end: "{{cita.fin}}",
+        },
+        {% endfor %}
+        
+      ],
+      dateClick: function(arg) {
+        console.log('dateClick', calendar.formatIso(arg.date));
+        // aqui se cargara las modales que mostraran la info de la cita
+      },
     });
+    calendar.render();
+    calendar.setOption('locale','es')
+  });
 </script>
 {%endblock scripts%}

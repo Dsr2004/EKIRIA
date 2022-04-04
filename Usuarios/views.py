@@ -118,7 +118,7 @@ def Loguot(request):
     return redirect('Inicio')
 
 def Login(request):
-    Error = "";
+    Error = ""
     if request.method == "POST":
         form = CustomAuthForm(request, data=request.POST)
         if form.is_valid():
@@ -133,11 +133,13 @@ def Login(request):
                 request.session['Admin'] = usuario.administrador
                 print(usuario.id_usuario)
                 return redirect("Inicio")
+            else:
+                Error = "El Usuario o la contraseña no son correctos"
         else:
             Error = "Los datos ingresados no son correctos.\n si no tienes un usuario puedes registrarte."
-            Error.status_code = 400 
             
     form = CustomAuthForm()
+
     return render(request, "registration/login.html", {'form': form, 'message':Error})
             
 def PassR(request):
