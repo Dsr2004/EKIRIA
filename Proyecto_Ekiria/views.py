@@ -8,6 +8,7 @@ from Usuarios.authentication_mixins import Authentication
 from django.views.generic import View
 from rest_framework.views import APIView
 from Usuarios.models import Usuario, VistasDiarias
+from Configuracion.models import cambios, cambiosFooter
 from datetime import datetime
 #--------------------------------------Cargadores de templates------------------------------------
 class Inicio(View):
@@ -22,12 +23,14 @@ class Inicio(View):
             Vista.Contador = Vista.Contador + 1
             Vista.save()
         try:
+            cambiosQueryset = cambios.objects.all()
+            cambiosfQueryset = cambiosFooter.objects.all()
             if request.session:
                 print(request.session)
                 imagen = Usuario.objects.get(id_usuario=request.session['pk'])
                 imagen = imagen.img_usuario
                 UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
-            return render(request, 'index.html', {'User':UserSesion})
+            return render(request, 'index.html', {'User':UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
         except:
             return render(request, 'index.html')
             
