@@ -133,41 +133,41 @@
       <!-- foteeer -->
         <div class="contactenos" >
             {%if footer%}
-            {%for cambiosFooter in footer%}
+            {%for Footers in footer%}
             <div class="recuadro" id="texto2">
               <h1 id="text3" class="tipo2">Contactenos</h1>
-              <a href="https://wa.me/{{cambiosFooter.Telefono}}" target="_blank" ><img class="imgwhats" src="{%static 'Configuracion/img/whatsapp.png'%}" ></a><hr>
-              <h3 id="text4" class="tipo2">Direccion: {{cambiosFooter.Direccion}}</h3><hr>
-              <h3 id="text4" class="tipo2">&copy;Todos los derechos reservados Ekiria {{cambiosFooter.Derechos}} - Sena</h3><hr>
+              <a href="https://wa.me/{{Footers.Telefono}}" target="_blank" ><img class="imgwhats" src="{%static 'Configuracion/img/whatsapp.png'%}" ></a><hr>
+              <h3 id="text4" class="tipo2">Direccion: {{Footers.Direccion}}</h3><hr>
+              <h3 id="text4" class="tipo2">&copy;Todos los derechos reservados Ekiria {{Footers.Derechos}} - Sena</h3><hr>
           </div>
           <form id="CambiosFooterForm" action="{% url 'CrearFooter'%}" method="post">
             {% csrf_token %}
             <div class="seleccionar2">
                 <div class="seleccionar">
                     <label for="">Color de Fondo</label>
-                    <input type="text" name="Footer_Color_Fondo" id="ColorFondo2" placeholder="en ingles " onkeydown="ColorFondoFooter2(event);" >
+                    <input type="text" value="{{Footers.Footer_Color_Fondo}}" name="Footer_Color_Fondo" id="ColorFondo2" placeholder="en ingles " onkeydown="ColorFondoFooter2(event);" >
                 </div>
                 <br>
                 <div class="seleccionar">
                     <label for="">Color de Letra</label>
-                    <input type="text" name="Footer_Color_Letra" id="ColorLetra2" placeholder="en ingles " onkeydown="ColorLetraFooter2(event);" >
+                    <input type="text" value="{{Footers.Footer_Color_Letra}}" name="Footer_Color_Letra" id="ColorLetra2" placeholder="en ingles " onkeydown="ColorLetraFooter2(event);" >
                 </div>
               <br>
               <div class="seleccionar">
                   <label for="">Tamaño de Letra del titulo</label>
-                  <input type="text" name="Footer_tamano_Titulo" id="TamanoLetra3"  onkeydown="CambiarTamanoFooter2(event);" >
+                  <input type="text" value="{{Footers.Footer_tamano_Titulo}}" name="Footer_tamano_Titulo" id="TamanoLetra3"  onkeydown="CambiarTamanoFooter2(event);" >
               </div>
               <br>
               <div class="seleccionar">
                   <label for="">Tamaño de Letra del parrafo</label>
-                    <input type="text" name="Footer_tamano_Texto" id="TamanoLetra4"  onkeydown="CambiarTamano2Footer(event);" >
+                    <input type="text" value="{{Footers.Footer_tamano_Texto}}" name="Footer_tamano_Texto" id="TamanoLetra4"  onkeydown="CambiarTamano2Footer(event);" >
               </div>
               <br>
               <label for="TipoLetra2">tipo de letra</label>
               <select  id="TipoLetra2" name="Footer_Tipo_Letra" onchange="CambioLetraFooter2();">
-                  <option {% if cambiosFooter.Footer_Tipo_Letra == 'tahoma' %} selected {%endif %} value="tahoma">Tahoma</option>
-                  <option {% if cambiosFooter.Footer_Tipo_Letra == 'arial' %} selected {%endif %} value="arial">Arial</option>
-                  <option {% if cambiosFooter.Footer_Tipo_Letra == 'cursive' %} selected {%  endif %} value="cursive">cursive</option>
+                  <option {% if Footers.Footer_Tipo_Letra == 'tahoma' %} selected {%endif %} value="tahoma">Tahoma</option>
+                  <option {% if Footers.Footer_Tipo_Letra == 'arial' %} selected {%endif %} value="arial">Arial</option>
+                  <option {% if Footers.Footer_Tipo_Letra == 'cursive' %} selected {%  endif %} value="cursive">cursive</option>
                 </select>
               <br>
               <br>
@@ -175,19 +175,64 @@
                   <div><hr>
                       <label class="separacambios" >Edita el Derechos</label>
                       <br><br>
-                      <textarea id="EditarDerechos" name="Derechos" cols="10" rows="2">{{cambiosFooter.Derechos}}</textarea>
+                      <textarea id="EditarDerechos" value="{{Footers.Derechos}}" name="Derechos" cols="10" rows="2">{{Footers.Derechos}}</textarea>
                   </div><hr>
                   <div>
                     <label class="separacambios" >Edita la Direccion</label>
                     <br><br>
-                    <textarea id="EditarDireccion" name="Direccion" cols="30" rows="10">{{cambiosFooter.Direccion}}</textarea>
+                    <textarea id="EditarDireccion" value="{{Footers.Direccion}}" name="Direccion" cols="30" rows="10">{{Footers.Direccion}}</textarea>
                   </div>
                   <div>
                     <label class="separacambios" >Edita el Telefono</label>
                     <br><br>
-                    <textarea id="EditarTelefono" name="Telefono" cols="30" rows="10">{{cambiosFooter.Telefono}}</textarea>
+                    <textarea id="EditarTelefono" value="{{Footers.Telefono}}" name="Telefono" cols="30" rows="10">{{Footers.Telefono}}</textarea>
                   </div>
-                  <input type="hidden" name="id_footer" value="{{cambiosFooter.id_footer}}">
+                  <input type="hidden" name="id_footer" value="{{Footers.id_footer}}">
+                  <script>
+                    $(document).ready(function(){
+                      let FondoFooter=$("#ColorFondo2").val()
+                      let texto2 = document.getElementById("texto2");
+                      texto2.style.backgroundColor = FondoFooter;
+  
+                      let TipoLetraFooter = document.querySelector("#TipoLetra2").value;
+                      let body2 = document.querySelectorAll(".tipo2");
+                      body2.forEach(texto2 => {
+                          if (texto2.style.fontFamily = TipoLetraFooter) {
+                              texto2.style.fontFamily = TipoLetraFooter
+                              texto2 = texto2.style.fontFamily = TipoLetraFooter;
+                          }
+                      });
+                      
+                  });
+                  </script>
+                  <script>
+                    let ColorLetra2 = document.querySelector("#ColorLetra2").value;
+                      let texto3 = document.querySelectorAll(".tipo2");
+                      texto3.forEach(textos3 =>{
+                          if (textos3.style.color = ColorLetra2) {
+                              textos3.style.color = ColorLetra2
+                              textos3 = textos3.style.color = ColorLetra2 
+                          }
+                      });
+  
+                      let TamanoLetra3 = document.querySelector("#TamanoLetra3").value;
+                      let tamano3 = document.querySelectorAll("#text3");
+                      tamano3.forEach(tamanos3 =>{
+                          if (tamanos3.style.fontSize = TamanoLetra3) {
+                              tamanos3.style.fontSize = TamanoLetra3+("px")
+                              tamanos3 = tamanos3.style.fontSize = TamanoLetra3+("px") 
+                          }
+                      });
+  
+                      let TamanoLetra4 = document.querySelector("#TamanoLetra4").value;
+                      let tamano4 = document.querySelectorAll("#text4");
+                      tamano4.forEach(tamanos4 =>{
+                          if (tamanos4.style.fontSize = TamanoLetra4) {
+                              tamanos4.style.fontSize = TamanoLetra4+("px")
+                              tamanos4 = tamanos4.style.fontSize = TamanoLetra4+("px") 
+                          }
+                      });
+                  </script>
                   {%endfor%}
                   {%else%}
                     

@@ -79,7 +79,7 @@ function ColorFondoFooter2(event) {
         let ColorFondo2 = document.getElementById("ColorFondo2").value;
         let body2 = document.getElementById("texto2");
         body2.style.backgroundColor = ColorFondo2;
-    }
+    } 
     
 }
 function ColorLetraFooter2(event) {

@@ -76,6 +76,105 @@
         }
         const csrftoken = getToken('csrftoken');
     </script>
+    <!-- lo mio -->
+    
+    {% for cambio in cambios %}
+              
+    <script>
+        $(document).ready(function(){
+            // Cambios
+            let colorFondo = "{{cambio.Color_Fondo}}"
+            let texto = document.getElementById("texto");
+            texto.style.backgroundColor = colorFondo;
+
+            let TipoLetra = "{{cambio.Tipo_Letra}}"
+            let body = document.querySelectorAll(".tipo");
+            body.forEach(texto => {
+                if (texto.style.fontFamily = TipoLetra) {
+                    texto.style.fontFamily = TipoLetra
+                    texto = texto.style.fontFamily = TipoLetra;
+                }
+            });
+          
+            let ColorLetra = "{{cambio.Color_Letra}}";
+            body.forEach(textos =>{
+                if (textos.style.color = ColorLetra) {
+                    textos.style.color = ColorLetra
+                    textos = textos.style.color = ColorLetra 
+                }
+            });
+            let TamanoLetra = "{{cambio.tamano_Titulo}}"
+            let tamano = document.querySelectorAll("#text");
+            tamano.forEach(tamanos =>{
+                if (tamanos.style.fontSize = TamanoLetra) {
+                    tamanos.style.fontSize = TamanoLetra+("px")
+                    tamanos = tamanos.style.fontSize = TamanoLetra+("px") 
+                }
+            });
+            let TamanoLetra2 = "{{cambio.tamano_Texto}}"
+            let tamano2 = document.querySelectorAll("#text2");
+            tamano2.forEach(tamanos2 =>{
+                if (tamanos2.style.fontSize = TamanoLetra2) {
+                    tamanos2.style.fontSize = TamanoLetra2+("px")
+                    tamanos2 = tamanos2.style.fontSize = TamanoLetra2+("px") 
+                }
+            });
+            }); 
+    
+    </script>
+    {% endfor %}
+    {% for footer in footer %}
+      
+    <script>
+            // Cambios footer
+            $(document).ready(function(){
+            let FondoFooter="{{footer.Footer_Color_Fondo}}";
+            let texto2 = document.getElementById("texto2");
+            texto2.style.backgroundColor = FondoFooter;
+
+            let TipoLetraFooter ="{{footer.Footer_Tipo_Letra}}";
+            let body2 = document.querySelectorAll(".tipo2");
+            body2.forEach(texto2 => {
+                if (texto2.style.fontFamily = TipoLetraFooter) {
+                    texto2.style.fontFamily = TipoLetraFooter
+                    texto2 = texto2.style.fontFamily = TipoLetraFooter;
+                }
+                });
+            let ColorLetra2 ="{{footer.Footer_Color_Letra}}";
+            let texto3 = document.querySelectorAll(".tipo2");
+            texto3.forEach(textos3 =>{
+                if (textos3.style.color = ColorLetra2) {
+                    textos3.style.color = ColorLetra2
+                    textos3 = textos3.style.color = ColorLetra2 
+                }
+            });
+
+            let TamanoLetra3 = "{{footer.Footer_tamano_Titulo}}";
+            let tamano3 = document.querySelectorAll("#text3");
+            tamano3.forEach(tamanos3 =>{
+                if (tamanos3.style.fontSize = TamanoLetra3) {
+                    tamanos3.style.fontSize = TamanoLetra3+("px")
+                    tamanos3 = tamanos3.style.fontSize = TamanoLetra3+("px") 
+                }
+            });
+
+            let TamanoLetra4 = "{{footer.Footer_tamano_Texto}}";
+            let tamano4 = document.querySelectorAll("#text4");
+            tamano4.forEach(tamanos4 =>{
+                if (tamanos4.style.fontSize = TamanoLetra4) {
+                    tamanos4.style.fontSize = TamanoLetra4+("px")
+                    tamanos4 = tamanos4.style.fontSize = TamanoLetra4+("px") 
+                }
+            });
+           
+        }); 
+
+          
+
+          
+        </script>
+      
+    {% endfor %}
 </body>
 
 </html>
