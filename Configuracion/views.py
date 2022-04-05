@@ -21,6 +21,7 @@ from .forms import RolForm, CambiosForm, FooterForm
 
 
 def Configuracion(request):
+        UserSesion=""
         try:
             if request.session:
                 imagen = Usuario.objects.get(id_usuario=request.session['pk'])
@@ -34,6 +35,7 @@ def Configuracion(request):
             return redirect("UNR")
 
 def Roles(request):
+        UserSesion = ""
         try:
             if request.session:
                 imagen = Usuario.objects.get(id_usuario=request.session['pk'])
@@ -61,13 +63,14 @@ def Cambios(request):
             else:
                 return redirect("SinPermisos")
     except:
-        pass
+        return redirect("UNR")
     contexto = {'Cambios' :ListarCambios, 'footer' :Listarfooter}
     contexto["User"]=UserSesion
     
     return render (request, "Cambios.html",contexto)
 
 def Permisos(request):
+        UserSesion=""
         try:
             if request.session:
                 imagen = Usuario.objects.get(id_usuario=request.session['pk'])
@@ -92,6 +95,7 @@ def Cliente(request):
 
 
 def ListarRol(request):
+    UserSesion=""
     formulario=RolForm
     ListRoles = Rol.objects.all()
     try:
@@ -144,6 +148,7 @@ class CreateRolView(CreateView):
                 return HttpResponse("holi")
     def get_context_data(self, *args, **kwargs):
         context = super(CreateRolView, self).get_context_data(**kwargs)
+        UserSesion=""
         try:
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
@@ -179,6 +184,7 @@ class CrearCambios(View):
             return respuesta
     def get_context_data(self, *args, **kwargs):
         context = super(CrearCambios, self).get_context_data(**kwargs)
+        UserSesion=""
         try:
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
@@ -214,6 +220,7 @@ class CrearCambiosFooter(View):
             return respuesta
     def get_context_data(self, *args, **kwargs):
         context = super(CrearCambiosFooter, self).get_context_data(**kwargs)
+        UserSesion=""
         try:
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
@@ -250,6 +257,7 @@ class EditarRolView(UpdateView):
                 return HttpResponse("holi")
     def get_context_data(self, *args, **kwargs):
         context = super(EditarRolView, self).get_context_data(**kwargs)
+        UserSesion=""
         try:
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
@@ -271,6 +279,7 @@ class listarPermisos(ListView):
     context_object_name = "Permisos"
     def get_context_data(self, *args, **kwargs):
         context = super(listarPermisos, self).get_context_data(**kwargs)
+        UserSesion=""
         try:
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
