@@ -8,6 +8,7 @@ from multiprocessing import context
 from pyexpat import model
 from pyexpat.errors import messages
 from re import template
+import re
 from tkinter.messagebox import NO
 from urllib import response
 #-----------------------------------------Django---------------------------------------------------
@@ -35,6 +36,7 @@ from Usuarios.Serializers.general_serializers import UsuarioTokenSerializer
 #-----------------------------------------Models---------------------------------------------------
 from Usuarios.models import Usuario, VistasDiarias
 from Ventas.models import Servicio
+from Configuracion.models import cambiosFooter, cambios
 #-----------------------------------------More---------------------------------------------------
 from Usuarios.authentication_mixins import Authentication
 from datetime import datetime
@@ -120,23 +122,26 @@ def Loguot(request):
 def Login(request):
     Error = ""
     if request.method == "POST":
-        form = CustomAuthForm(request, data=request.POST)
-        if form.is_valid():
-            username= form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            usuario = authenticate(username=username, password=password)
-            if usuario is not None:
-                login(request, usuario)
-                request.session['username'] = usuario.username
-                request.session['rol']= usuario.rol.nombre
-                request.session['pk'] = usuario.id_usuario
-                request.session['Admin'] = usuario.administrador
-                print(usuario.id_usuario)
-                return redirect("Inicio")
+        try:
+            form = CustomAuthForm(request, data=request.POST)
+            if form.is_valid():
+                username= form.cleaned_data.get('username')
+                password = form.cleaned_data.get('password')
+                usuario = authenticate(username=username, password=password)
+                if usuario is not None:
+                    login(request, usuario)
+                    request.session['username'] = usuario.username
+                    request.session['rol']= usuario.rol.nombre
+                    request.session['pk'] = usuario.id_usuario
+                    request.session['Admin'] = usuario.administrador
+                    print(usuario.id_usuario)
+                    return redirect("Inicio")
+                else:
+                    Error = "El Usuario o la contraseña no son correctos"
             else:
-                Error = "El Usuario o la contraseña no son correctos"
-        else:
-            Error = "Los datos ingresados no son correctos.\n si no tienes un usuario puedes registrarte."
+                Error = "Los datos ingresados no son correctos.\n si no tienes un usuario puedes registrarte."
+        except:
+            Error = "Usuario no registrado"
             
     form = CustomAuthForm()
 
@@ -154,6 +159,7 @@ class Register(CreateView):
 
     
 def Perfil(request):
+    UserSesion=""
     try:
         if request.session:
             imagen = Usuario.objects.get(id_usuario=request.session['pk'])
@@ -193,6 +199,7 @@ def Perfil(request):
 #             print(e)
 #             return JsonResponse({"x":e})
 def EditarPerfil(request):
+    UserSesion=""
     try:
         template_name = "UserInformation/EditarPerfil.html"
         if request.session['pk']:
@@ -217,6 +224,7 @@ def EditarPerfil(request):
         return redirect("UNR")
     
 def Change(request):
+    UserSesion=""
     try:
         if request.session['pk']:
             get_object = Usuario.objects.get(id_usuario=request.session['pk'])
@@ -242,6 +250,7 @@ def Change(request):
     except:
         return("UNR")
 def Admin(request):
+    UserSesion=""
     try:
         if request.session:
             imagen = Usuario.objects.get(id_usuario=request.session['pk'])
@@ -269,6 +278,7 @@ class CreateUser(CreateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(CreateUser, self).get_context_data(**kwargs)
+        UserSesion=""
         try:
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
@@ -289,6 +299,7 @@ class UpdateUser(UpdateView):
     success_url=reverse_lazy("Administracion")   
     def get_context_data(self, *args, **kwargs):
         context = super(UpdateUser, self).get_context_data(**kwargs)
+        UserSesion=""
         try:
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])

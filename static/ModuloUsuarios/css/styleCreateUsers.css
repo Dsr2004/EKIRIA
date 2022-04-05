@@ -1,10 +1,12 @@
 * {
     --morado: #572364;
+    
 }
 
 .contenido {
+    overflow: auto;
+    max-height:85%;
     position: relative;
-    top: 50px;
     text-align: center;
     margin: auto;
     width: 85%;
@@ -14,10 +16,8 @@
 }
 
 .logo {
-    position: absolute;
-    top: -50px;
     height: 100px;
-    margin-left: -80px;
+    margin-left:20px;
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
@@ -42,13 +42,17 @@ form {
 
 @media (max-width: 400px) {
     .contenido {
-        width: 70% !important;
+        max-width: 90%;
     }
     form input {
-        width: 100% !important;
+        width: 80% !important;
+
     }
     .form {
-        margin-left: -15px !important;
+        margin-left: -45px !important;
+    }
+    form input {
+    width: calc(100% - 10px)!important;
     }
 }
 
@@ -59,9 +63,10 @@ form {
     .form {
         grid-template-columns: 1fr;
         margin-left: 0;
+        margin-left: -25px;
     }
     form .fec input {
-        width: 40%;
+        width: 30%;
         float: right;
         margin-right: 11px;
     }
@@ -81,6 +86,12 @@ form {
         width: 40%;
         border-radius: 20px;
     }
+    .botonflex{
+        grid-template-columns: 1fr;
+    }
+    form input {
+    width: calc(100% + 10px)!important;
+}
 }
 
 .form div {
@@ -108,7 +119,7 @@ form input {
     outline: transparent;
     padding: 11px 16px;
     transition: border .3s, box-shadow .3s;
-    width: calc(100% - 36px);
+    width: calc(100% - 3px);
 }
 
 form .fec,
@@ -119,7 +130,7 @@ form .tipo {
 }
 
 form .fec input {
-    width: calc(100% - 36px);
+    width: calc(100% - 3px);
 }
 
 form .mun select,
@@ -144,6 +155,7 @@ form h1 {
 }
 
 .boton {
+    position: relative;
     background: none;
     border: 0;
     color: inherit;
@@ -152,14 +164,19 @@ form h1 {
     line-height: normal;
     overflow: visible;
     padding: 0;
-    width: 50%;
+    width: 100%;
     height: 50px;
-    background-color: var(--morado)!important;
+    background-color: var(--morado);
     border-radius: 4px!important;
     font-size: 17px!important;
     font-family: Arial, Helvetica, sans-serif;
     color: #fff;
     cursor: pointer;
+}
+.botonflex{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 10px;
 }
 /* Icono mostrar input password */
 
@@ -170,7 +187,7 @@ form h1 {
 
 .contenido form label i {
     position: absolute;
-    top: 0px;
+    top: 16px;
     right: 10px;
     font-size: 1.2em;
     color: #979797;
