@@ -19,6 +19,7 @@ from django.contrib.sessions.models import Session
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.models import Permission
 #-----------------------------------------Rest Framework---------------------------------------------------
 from rest_framework.decorators import api_view
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -117,7 +118,7 @@ def Loguot(request):
     return redirect('Inicio')
 
 def Login(request):
-    Error = "";
+    Error = ""
     if request.method == "POST":
         form = CustomAuthForm(request, data=request.POST)
         if form.is_valid():
@@ -132,10 +133,13 @@ def Login(request):
                 request.session['Admin'] = usuario.administrador
                 print(usuario.id_usuario)
                 return redirect("Inicio")
+            else:
+                Error = "El Usuario o la contraseña no son correctos"
         else:
             Error = "Los datos ingresados no son correctos.\n si no tienes un usuario puedes registrarte."
             
     form = CustomAuthForm()
+
     return render(request, "registration/login.html", {'form': form, 'message':Error})
             
 def PassR(request):
@@ -145,7 +149,9 @@ class Register(CreateView):
     model = Usuario
     form_class = Regitro
     template_name = 'registration/Registration.html'
-    success_url = reverse_lazy("Inicio")
+    success_url = reverse_lazy("IniciarSesion")
+
+
     
 def Perfil(request):
     try:
@@ -221,16 +227,17 @@ def Change(request):
         else: 
             return redirect("SinPermisos")
         if request.method=="POST":
-            password = request.POST.get('Apassword')
-            if password:
-                form = Cambiar(request.POST or None, request.FILES or None, instance=get_object)
-                if form.is_valid():
-                    form.save()
-                    return redirect("Perfil")
-                else:
-                    e=form.errors
-                    print(e)
-                    return JsonResponse({"x":e})
+            form = CustomAuthForm(request, data=request.POST)
+            if form.is_valid():
+                username= request.session['username']
+                password = form.cleaned_data.get('Apassword')
+                usuario = authenticate(username=username, password=password)
+                if usuario is not None:
+                    cambio = Cambiar(instance=get_object)
+                    
+        else:
+            Error = "Los datos ingresados no son correctos.\n si no tienes un usuario puedes registrarte."
+            Error.status_code = 400
         return render(request, 'UserInformation/ChangePassword.html', {"form":form, "User":UserSesion})
     except:
         return("UNR")
@@ -325,3 +332,7 @@ def CambiarEstadoUsuario(request):
         return HttpResponse(update)
     else:
         return JsonResponse({"x":"no"})
+
+def nada(request):
+    context = Permission.objects.all()
+    return render(request, 'ListarPermisos.html', {'context':context})

@@ -4,7 +4,6 @@
 
 .contenido {
     position: relative;
-    top: 50px;
     text-align: center;
     margin: auto;
     width: 85%;
@@ -14,10 +13,10 @@
 }
 
 .logo {
-    position: absolute;
-    top: -50px;
+    position: relative;
+    top: 10px;
     height: 100px;
-    margin-left: -80px;
+    margin-left: 20px;
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
@@ -160,4 +159,27 @@ form h1 {
     font-family: Arial, Helvetica, sans-serif;
     color: #fff;
     cursor: pointer;
+}
+/* Icono mostrar input password */
+
+.contenido form label {
+    position: relative;
+    width: 100%;
+}
+
+.contenido form label i {
+    position: absolute;
+    top: 0px;
+    right: 10px;
+    font-size: 1.2em;
+    color: #979797;
+    cursor: pointer;
+}
+
+.contenido form label i.show {
+    display: block;
+}
+
+.contenido form label i.hide {
+    display: none;
 }

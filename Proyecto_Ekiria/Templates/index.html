@@ -5,7 +5,46 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="/static/Proyecto_Ekiria/Img/Logo Ekiria.png">
+    <link rel="stylesheet" href="/static/Configuracion/css/estilo.css">
     <title>Inicio</title>
-</head>{% endblock head %} {% block Contenido %} {% endblock Contenido %} {% block modal %} {% endblock modal %} {% block scripts %}
+</head>{% endblock head %} {% block Contenido %}
+    <div class="contenedorcambios">
+        {%if cambios%}
+        {%for cambios in cambios%}
+      <div class="ContenedorMision">
+        <div class="ContMision">
+          <div class="recuadro" id="texto">
+              
+            <h4 id="text" class="tipo">MISIÓN</h4>
+            <p id="text2" class="tipo">{{cambios.Texto_Mision}}</p>
+            <h4 id="text" class="tipo">VISIÓN</h4>
+            <p id="text2" class="tipo">{{cambios.Texto_Vision}}</p>
+                
+          </div>
+        </div>
+    </div>
+    {%endfor%}
+    {%else%}
+    
+    <h1>No hay registros</h1>
+
+    {%endif%}
+</div>
+<div class="contactenos" >
+    {%if footer%}
+    {%for cambiosFooter in footer%}
+    <div class="recuadro" id="texto2">
+      <h1 id="text3" class="tipo2">Contactenos</h1>
+      <a href="https://wa.me/{{cambiosFooter.Telefono}}" target="_blank" ><img class="imgwhats" src="{%static 'Configuracion/img/whatsapp.png'%}" ></a><hr>
+      <h3 id="text4" class="tipo2">Direccion: {{cambiosFooter.Direccion}}</h3><hr>
+      <h3 id="text4" class="tipo2">&copy;Todos los derechos reservados Ekiria {{cambiosFooter.Derechos}} - Sena</h3><hr>
+      {%endfor%}
+        {%else%}
+            
+        <h1>No hay registros</h1>
+
+        {%endif%}
+  </div>
+{% endblock Contenido %} {% block modal %} {% endblock modal %} {% block scripts %}
 <script src=""></script>
 {% endblock scripts %}
