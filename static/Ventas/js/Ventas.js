@@ -128,23 +128,17 @@ function ActualizarCita(id){
     }).then((changeStatus) => {
       if (changeStatus) {
         $(document).ready(function(){
+          ruta = '/Ventas/EditarCita/'+ids
+          form = $("#EditarCitaForm")
         $.ajax({
-          data: {"csrfmiddlewaretoken":csrftoken, "estado":ids},
-          url: '/Ventas/CambiarEstadoCita/',
+          data: form.serialize(),
+          url: form.attr("action"),
           type: 'POST',
           success: function(datas){
-            swal("OK! Se ha confirmado la cita, en este momento se esta notificando al cliente", {
-                icon: "success",
-              }).then(function(){
-                location.reload()
-              });
+            console.log(datas)
           },
           error: function(error){
-            swal("¡ERROR! ha ocurrido un error inesperado", {
-              icon: "error",
-            }).then(function(){
-              location.reload()
-            });
+            console.log(error)
           }
         }); 
         })

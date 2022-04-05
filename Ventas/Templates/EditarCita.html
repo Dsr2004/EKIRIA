@@ -17,7 +17,7 @@
 <div class="container" style="background-color: rgba(253, 253, 253, 0.795); margin-top: 30px;">
     <div class="row">
         <div class="col-md-10"><h1>Editar Cita de {{object.cliente_id.nombres | title}}</h1></div>
-
+        {{cita}}
     </div>
     <h3><sub>Detalles del cliente</sub></h3>
         <div class="row "  >
@@ -25,7 +25,7 @@
             <div class="col-md-2"><img src="/media/{{object.cliente_id.img_usuario}}" alt="" width="130" style="border-radius: 30px;"></div>
             <div class="col-md-9">
                 <div class="row" style="margin-top:10px;" >
-                    <h5><strong>Nombre: </strong>{{object.cliente_id.nombres|capfirst}} {{object.cliente_id.apellidos|capfirst}}</h5>
+                    <h5><strong>Nombre: </strong>{{cita.cliente_id.nombres|capfirst}} {{object.cliente_id.apellidos|capfirst}}</h5>
                     <h5><strong>Celular: </strong>{{object.cliente_id.celular}}</h5>
                     <h5><strong>Email: </strong>{{object.cliente_id.email}}</h5>
                     <h5><strong>Direccion: </strong>{{object.cliente_id.direccion}}</h5>
@@ -115,7 +115,7 @@
                 
                 <br><br>
                 {{form.errors}}
-                <form action="{% url 'Ventas:editarCita' object.id_cita  %}" method="POST">
+                <form action="{% url 'Ventas:editarCita' object.id_cita  %}" method="POST" id="EditarCitaForm">
                     {% csrf_token %}
                     <div class="col Datos1DetalleCita ">
                         <label class="label-control">Seleccione un empleado:</label>
@@ -144,6 +144,7 @@
                             </div>
                         </div>
                     </div>
+                    <input type="hidden" name="id_cita" value="{{object.id_cita}}">
                 <div class="col Datos1DetalleCita">
                         <Label><strong>Comentarios: </strong></Label>
                             {{form.descripcion}}
@@ -160,7 +161,7 @@
                              <a class="btn btn-block btn-secondary" href="{% url 'Ventas:listarCitas' %}" >Salir</a>   <!--onclick="ConfirmarNoGuardarCita()"-->
                         </div>
                         <div class="col">
-                            <button class="btn btn-block btn-success" type="submit" >Modificar</button>
+                            <button class="btn btn-block btn-success" type="button" onclick="ActualizarCita('{{object.id_cita}}')">Modificar</button>
                         </div>
                         <div class="col">
                             <a class="btn btn-block btn-danger" onclick="CancelarCita2()">Cancelar Cita</a>
