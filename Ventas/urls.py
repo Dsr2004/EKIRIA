@@ -11,6 +11,7 @@ urlpatterns = [
     path('DetalleEditarCita/<int:pk>', EditarCitaDetalle.as_view(), name="detalleEditarCita"),
     path('EditarCita/<int:pk>', EditarCita.as_view(), name="editarCita"),
     path('CambiarEstadoCita/', CambiarEstadoDeCita.as_view(), name="cambiarEstadoCita"),
+    path('CancelarCita/', CancelarCita.as_view(), name="cancelarCita"),
 
     path("BuscarEmpleadoParaCita/", BuscarDisponibilidadEmpleado.as_view(), name="buscarEmpleadoParaCita"),
 

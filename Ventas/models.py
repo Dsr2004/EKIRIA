@@ -184,6 +184,7 @@ class Cita(models.Model):
     descripcion=models.TextField("Descripcion",null=True ,blank=True)
     fecha_creacion=models.DateField("Fecha de Creacion", auto_now=False, auto_now_add=True)
     fecha_actualizacion= models.DateTimeField("Fecha de Actualizacion", auto_now=True, auto_now_add=False)
+    cancelado = models.BooleanField(default=False, null=False, blank=False)
     estado=models.BooleanField("Estado", default=False)
 
     class Meta:

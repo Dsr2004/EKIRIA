@@ -686,8 +686,6 @@ class EditarCitaDetalle(DetailView):
         hoy = datetime.today()
         diaCita = citax.diaCita
         tresDias =  datetime(diaCita.year, diaCita.month, diaCita.day) - timedelta(days=3)
-        print(tresDias)
-        print(diaCita)
         if hoy < tresDias:
             context["SePuedeModificar"] = True
         else:
@@ -699,8 +697,6 @@ class EditarCita(UpdateView):
     form_class = CitaForm
     success_url = reverse_lazy("Ventas:calendario")
 
-    def get_object(self, queryset=None):
-        return self.model.objects.get(pk=self.kwargs["pk"])
 
     def get_context_data(self, *args, **kwargs):
         context = super(EditarCita, self).get_context_data(**kwargs)
@@ -728,7 +724,15 @@ class EditarCita(UpdateView):
                 if not i.servicio_personalizado_id == None:
                     serviciosPerx.append(i)
                     context["serviciosPer"]=serviciosPerx
+      
         return context
+
+    def get(self, request, *args, **kwargs):
+        hoy = datetime.today()
+        diaCita = citax.diaCita
+        tresDias =  datetime(diaCita.year, diaCita.month, diaCita.day) - timedelta(days=3)
+        if not hoy < tresDias:
+            return redirect("Ventas:listarCitas")
 
     def post(self, request, *args, **kwargs):
         if request.is_ajax():
@@ -737,6 +741,7 @@ class EditarCita(UpdateView):
             datos._mutable = True
             cita = models.Cita.objects.get(id_cita=request.POST["id_cita"])
             datos["pedido_id"]=cita.pedido_id
+            datos["cliente_id"]=cita.cliente_id
             form = self.form_class(datos, instance=self.get_object())
 
             if form.is_valid():
@@ -784,6 +789,12 @@ class CambiarEstadoDeCita(TemplateView):
             return redirect("Ventas:listarCitas")
         return HttpResponse(update)
 
+class CancelarCita(View):
+    def post(self, request, *args, **kwargs):
+        if request.is_ajax():
+            print(request.POST["cita"])
+        return HttpResponse("Dfdfdf")
+       
 """
 <----------------------------------------------------------------->
 Seccion de las Vistas donde se realizan las pruebas
