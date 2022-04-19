@@ -728,11 +728,14 @@ class EditarCita(UpdateView):
         return context
 
     def get(self, request, *args, **kwargs):
+        citax = models.Cita.objects.get(id_cita=self.kwargs["pk"])
         hoy = datetime.today()
         diaCita = citax.diaCita
         tresDias =  datetime(diaCita.year, diaCita.month, diaCita.day) - timedelta(days=3)
         if not hoy < tresDias:
             return redirect("Ventas:listarCitas")
+        else:
+            return render(request, self.template_name, {"object":citax})
 
     def post(self, request, *args, **kwargs):
         if request.is_ajax():
