@@ -13,6 +13,8 @@ import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+import Proyecto_Ekiria.settings
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -189,6 +191,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
 }
+
 
 #correos
 EMAIL_HOST = 'smtp.gmail.com'
