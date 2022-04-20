@@ -615,6 +615,17 @@ Seccion de las Vistas donde se administran las citas
 <----------------------------------------------------------------->
 """
 
+
+"""<------------------------------------------------------------------->
+    Vista para agendar una cita
+
+    - Explicacion del funcionamiento
+
+    - Explicacion de las funciones
+
+<------------------------------------------------------------------->
+"""
+
 class AgregarCita(TemplateView):
     template_name = "AgregarCita.html"
     def get_context_data(self, *args, **kwargs):
@@ -632,6 +643,7 @@ class AgregarCita(TemplateView):
         except:
             pass
         return context
+
 
 class ListarCita(ListView):
     queryset = Cita.objects.all()
