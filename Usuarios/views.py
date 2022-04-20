@@ -290,7 +290,7 @@ class CreateUser(CreateView):
                 context["User"]=UserSesion
                 return context
         except:
-            return redirect("UNR")
+            return context
 
 class UpdateUser(UpdateView):
     model = Usuario    

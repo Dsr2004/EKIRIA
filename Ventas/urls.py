@@ -19,7 +19,8 @@ urlpatterns = [
     path('AgregarServicioCatalogo/', AgregarServicioalCatalogo.as_view(), name="agregarServicioCatalogo"),
     path("CambiarEstadoServicioEnCatalogo/",CambiarEstadoServicioEnCatalogo, name="cambiarEstadoServicioEnCatalogo"), 
     
-    path('pruebas/', pruebas, name="pruebas"), 
+    path('pruebas/', pruebas, name="pruebas"),
+    path('correo/', correoPrueba, name="correo"),
 
     path('Carrito/', Carrito, name="carrito"),
     path('TerminarPedido/', AgandarCita.as_view(), name="terminarPedido"),

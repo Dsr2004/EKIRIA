@@ -66,7 +66,7 @@ ROOT_URLCONF = 'Proyecto_Ekiria.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['Proyecto_Ekiria/Templates', 'Usuarios/Templates','Modulo_compras/Templates','Configuracion/Templates'],
+        'DIRS': ['Proyecto_Ekiria/Templates', 'Usuarios/Templates','Modulo_compras/Templates','Configuracion/Templates', 'Ventas/Templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -189,3 +189,12 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
 }
+
+#correos
+EMAIL_HOST = 'smtp.gmail.com'
+
+EMAIL_PORT = 587
+
+EMAIL_HOST_USER = 'davitdy2015@gmail.com'
+
+EMAIL_HOST_PASSWORD = 'rctkhosqgrlggjda'
