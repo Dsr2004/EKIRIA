@@ -34,6 +34,7 @@
         <h3><sub>Detalles del pedido</sub></h3>
                <div class="container">
                     {% if servicios %}
+                    <h5>Servicios</h5>
                         <table class="table" style="background-color: rgba(253, 253, 253, 0.795);">
                             <thead>
                                 <tr>
@@ -55,8 +56,7 @@
                         {% endfor %}
                            </tbody>
                         </table>
-                            {% else %}
-                            <h1>No hay Servicos que mostrar</h1>       
+                                  
                         {% endif %}
                         <!-- servicios personalizados -->
                         {% if serviciosPer %}
@@ -100,8 +100,7 @@
                         {% endfor %}
                            </tbody>
                         </table>
-                            {% else %}
-                            <h1>No hay Servicos que mostrar</h1>       
+                                  
                         {% endif %}
                        
                     

@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from multiprocessing import context
 import re
 
 from sre_constants import SUCCESS
@@ -131,9 +132,6 @@ def CambiarEstadoServicioEnCatalogo(request):
     else:
         return redirect("Ventas:listarServicios")  
 
-
-class QuitarServicioalCatalogo(DeleteView):
-    pass
 
 
 def Carrito(request):
@@ -721,7 +719,6 @@ class EditarCita(UpdateView):
     form_class = CitaForm
     success_url = reverse_lazy("Ventas:calendario")
 
-
     def get_context_data(self, *args, **kwargs):
         context = super(EditarCita, self).get_context_data(**kwargs)
         try:
@@ -751,7 +748,9 @@ class EditarCita(UpdateView):
       
         return context
 
-    def get(self, request, *args, **kwargs):
+
+
+
         citax = models.Cita.objects.get(id_cita=self.kwargs["pk"])
         hoy = datetime.today()
         diaCita = citax.diaCita
@@ -759,7 +758,9 @@ class EditarCita(UpdateView):
         if not hoy < tresDias:
             return redirect("Ventas:listarCitas")
         else:
-            return render(request, self.template_name, {"object":citax})
+            contexto = dict(self.get_context_data)
+            print(contexto)
+            return render(request, self.template_name, contexto)
 
     def post(self, request, *args, **kwargs):
         if request.is_ajax():

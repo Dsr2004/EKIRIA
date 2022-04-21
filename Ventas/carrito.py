@@ -1,11 +1,14 @@
 import json
 from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
 
 from Usuarios.models import Usuario
 from .models import *
 
 
+@login_required
 def actualizarItem(request):
+
     data = request.POST
     servicioid = data["servicioId"]
     accion = data["accion"]
@@ -46,3 +49,13 @@ def actualizarItem(request):
         pedido.save()
     
     return JsonResponse('Item fue anadido', safe=False)
+
+
+def buscarPedido(request):
+    cliente = Usuario.objects.get(username=request.session['username'])
+    pedido, = Pedido.objects.get(cliente_id=cliente, completado=False)
+
+    if pedido:
+        return True
+    else:
+        return False

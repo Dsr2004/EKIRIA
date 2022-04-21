@@ -35,7 +35,7 @@ from Usuarios.Serializers.general_serializers import UsuarioTokenSerializer
 from Usuarios.Serializers.general_serializers import UsuarioTokenSerializer
 #-----------------------------------------Models---------------------------------------------------
 from Usuarios.models import Usuario, VistasDiarias
-from Ventas.models import Servicio
+from Ventas.models import Servicio, Pedido
 from Configuracion.models import cambiosFooter, cambios
 #-----------------------------------------More---------------------------------------------------
 from Usuarios.authentication_mixins import Authentication
@@ -135,7 +135,14 @@ def Login(request):
                     request.session['pk'] = usuario.id_usuario
                     request.session['Admin'] = usuario.administrador
                     print(usuario.id_usuario)
-                    return redirect("Inicio")
+
+                    pedido, = Pedido.objects.filter(cliente_id=usuario, completado=False)
+                    request.session["carrito"]=pedido.get_items_carrito
+
+                    if 'next' in request.POST:
+                        return redirect(request.POST.get('next'))
+                    else:
+                        return redirect("Inicio")
                 else:
                     Error = "El Usuario o la contraseña no son correctos"
             else:
