@@ -32,15 +32,15 @@
               {%if roles%}
               {%for Rol in roles%}
                 <tr>
-                  <th scope="row">{{Rol.id_rol}}</th>
-                  <td>{{Rol.nombre}}</td>
-                  <td>{{Rol.descripcion}}</td>
-                  <td><button type="button" class="btn btn-outline-success" onclick="abrir_modal_editar ('{% url 'updateRol' Rol.id_rol %}')">Editar</button></td>
+                  <th scope="row">{{Rol.id}}</th>
+                  <td>{{Rol.name}}</td>
+                  <td>Descripcion</td>
+                  <td><button type="button" class="btn btn-outline-success" onclick="abrir_modal_editar ('{% url 'updateRol' Rol.id %}')">Editar</button></td>
                   <td><button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#GrupoRol">Agregar <br>Nivel</button></td>
                   <td><form method="POST" action="{%url 'estado' %}" id="estadoRol" >
                         <div class="form-check form-switch"> 
                           {%csrf_token%}
-                            <input class="form-check-input" {% if Rol.estado == True %}checked {%endif%} type="checkbox" name="estado" onclick="ds('{{Rol.id_rol}}')"></div>
+                            <input class="form-check-input" type="checkbox" name="estado" onclick="ds('{{Rol.id}}')"></div>
                             <label class="switch"></label>
                       </form>
                     </td> 

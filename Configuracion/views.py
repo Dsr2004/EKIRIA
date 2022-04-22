@@ -12,7 +12,7 @@ from django.shortcuts import render
 from django.http import HttpResponse,JsonResponse
 from django.views.generic import View, CreateView, UpdateView, ListView
 from django.urls import reverse_lazy
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Permission,Group
 from Usuarios.models import Usuario
 # Create your views here.
 
@@ -97,7 +97,7 @@ def Cliente(request):
 def ListarRol(request):
     UserSesion=""
     formulario=RolForm
-    ListRoles = Rol.objects.all()
+    ListRoles = Group.objects.all()
     try:
         if request.session:
             imagen = Usuario.objects.get(id_usuario=request.session['pk'])
@@ -115,7 +115,7 @@ def ListarRol(request):
 
 def EstadoRol(request):
     id_estado=request.POST.get("estado")
-    Object=Rol.objects.get(id_rol=id_estado)
+    Object=Group.objects.get(id_rol=id_estado)
     estado = Object.estado
     if estado == True:
         Object.estado = False
@@ -128,7 +128,7 @@ def EstadoRol(request):
 
 
 class CreateRolView(CreateView):
-    model = Rol
+    model = Group
     form_class = RolForm
     template_name = 'CrearRol.html'
 
@@ -237,7 +237,7 @@ class CrearCambiosFooter(View):
 
 
 class EditarRolView(UpdateView):
-    model = Rol
+    model = Group
     form_class = RolForm
     template_name = 'EditarRol.html'
     def post(self,request, *args, **kwargs):

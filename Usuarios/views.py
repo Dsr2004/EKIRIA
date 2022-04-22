@@ -20,7 +20,8 @@ from django.contrib.sessions.models import Session
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Permission,Group
+
 #-----------------------------------------Rest Framework---------------------------------------------------
 from rest_framework.decorators import api_view
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -113,11 +114,11 @@ from Usuarios.forms import Cambiar, Regitro, Editar, CustomAuthForm
 #             return Response({'error':'No se ha encontrado un usuario con estas credenciales.'}, status = status.HTTP_400_BAD_REQUEST)
 #         except :
 #             return Response({'error': 'No se ha encontrado token en la petición.'}, status = status.HTTP_409_CONFLICT)
-        
 
 def Loguot(request):
     logout(request)
     return redirect('Inicio')
+
 
 def Login(request):
     Error = ""
@@ -130,18 +131,19 @@ def Login(request):
                 usuario = authenticate(username=username, password=password)
                 if usuario is not None:
                     login(request, usuario)
+                    user = Usuario.objects.get(id_usuario = usuario.id_usuario)
+                    print(user)
                     request.session['username'] = usuario.username
-                    request.session['rol']= usuario.rol.nombre
+                    request.session['rol']= usuario.rol.name
                     request.session['pk'] = usuario.id_usuario
                     request.session['Admin'] = usuario.administrador
-                    print(usuario.id_usuario)
                     return redirect("Inicio")
                 else:
                     Error = "El Usuario o la contraseña no son correctos"
             else:
                 Error = "Los datos ingresados no son correctos.\n si no tienes un usuario puedes registrarte."
-        except:
-            Error = "Usuario no registrado"
+        except Exception as e:
+            print(e)
             
     form = CustomAuthForm()
 
@@ -234,19 +236,37 @@ def Change(request):
             UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session["Admin"]}
         else: 
             return redirect("SinPermisos")
-        if request.method=="POST":
-            form = CustomAuthForm(request, data=request.POST)
-            if form.is_valid():
+        Error = ""
+        if request.method == "POST":
+            try:
+                oldPass = request.POST.get('passwordA')
+                Pass1 = request.POST.get('password1')
+                Pass2 = request.POST.get('password2')
                 username= request.session['username']
-                password = form.cleaned_data.get('Apassword')
-                usuario = authenticate(username=username, password=password)
-                if usuario is not None:
-                    cambio = Cambiar(instance=get_object)
-                    
-        else:
-            Error = "Los datos ingresados no son correctos.\n si no tienes un usuario puedes registrarte."
-            Error.status_code = 400
-        return render(request, 'UserInformation/ChangePassword.html', {"form":form, "User":UserSesion})
+                user = authenticate(username=username, password=oldPass)
+                if user is not None:
+                    user = Usuario.objects.get(username = request.session['username'])
+                    if Pass1 == Pass2:
+                        if Pass1 == oldPass:
+                            Error = "Esta contraseña ya está en uso"
+                        else:
+                            if len(Pass1) >= 8:
+                                if any(chr.isdigit() for chr in Pass1):
+                                    user.set_password(Pass1)
+                                    user.save()
+                                    logout(request)
+                                    return redirect('IniciarSesion')
+                                else:
+                                    Error = "la contraseña debe contener al menos un número"
+                            else: 
+                                Error = "La contraseña debe contener más de 8 digitos"
+                    else:
+                        Error = "Las contraseñan no coinciden"
+                else: 
+                    Error ='Contraseña incorrecta'
+            except Exception as e:
+                print(e)
+        return render(request, 'UserInformation/ChangePassword.html', {"form":form, "User":UserSesion,'message':Error})
     except:
         return("UNR")
 def Admin(request):

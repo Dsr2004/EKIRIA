@@ -32,7 +32,7 @@
     <div class="menus">
 
         <ul>
-            <li><a class="links " href="# "><i class="mdi mdi-account-group " style="margin-top: -3px; "></i><p class="atext ">Nosotros</p></a></li>
+            <li><a class="links" href="# "><i class="mdi mdi-account-group " style="margin-top: -3px;"></i><p class="atext">Contactenos</p></a></li>
 
             {% if User %}
 
@@ -52,7 +52,8 @@
                     </ul>
                 </div>
             </li>
-            <li><a href="/Ventas/Carrito/ " type="button " class=" btn position-relative " data-bs-toggle="offcanvas " data-bs-target="#Carrito " aria-controls="offcanvasTop " style="margin-top: -7px; "><i class="fas fa-shopping-cart
+
+            <li><a href="/Ventas/Carrito/ " type="button " class=" btn position-relative" data-bs-toggle="offcanvas " data-bs-target="#Carrito " aria-controls="offcanvasTop " style="margin-top: -7px; "><i class="fas fa-shopping-cart
                 "></i><span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger "> 
                 {% if request.session.carrito %}
                 {{request.session.carrito}}

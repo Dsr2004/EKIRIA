@@ -1,4 +1,5 @@
 from django.db import models
+# from django.contrib.auth.models import Group
 # # declare a new model with a name "GeeksModel"
 class Permiso(models.Model):
     id_permiso =  models.AutoField(primary_key=True, unique=True)
