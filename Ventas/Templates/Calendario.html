@@ -20,11 +20,11 @@
 <div class="container">
   <h1>Calendario</h1>
 <div class="row">
-     <div class="col-md-8">
+     <div class="col-md-7">
        <!--aqui va el calendario-->
        <div id="calendar" style="padding: 10px;"></div>
       </div> 
-    <div class="col-md-4 ContainerHistorialCitas">
+    <div class="col-md-5 ContainerHistorialCitas">
         <legend>Historial</legend>
         <table class="table  historialCitas">
             <thead>
@@ -36,27 +36,28 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <th scope="row">01-01-2022</th>
-                <td>$33.000</td>
-                <td><div class="containerEstadoCita EnEspera"><p class="EstadoCitaTextoCalendario">En espera</p></div></td>
-                <td><a href="{% url 'Ventas:detalleCita' %}" class="LinkDetalleCita"><i class="fas fa-info-circle verMasDetalleCitaCalendario"></a></i></td>
-              </tr>
-              <tr>
-                <th scope="row">02-10-2021</th>
-                <td>$50.000</td>
-                <td><div class="containerEstadoCita Cancelado"><p class="EstadoCitaTextoCalendario">Cancelado</p></div></td>
-                <td><a href="{% url 'Ventas:detalleCita' %}" class="LinkDetalleCita"><i class="fas fa-info-circle verMasDetalleCitaCalendario"></a></i></td>
-              </tr>
-              <tr>
-                <th scope="row">07-09-2021</th>
-                <td>$25.000</td>
-                <td><div class="containerEstadoCita Realizado"><p class="EstadoCitaTextoCalendario">Realizado</p></div></td>
-                <td><a href="{% url 'Ventas:detalleCita' %}" class="LinkDetalleCita"><i class="fas fa-info-circle verMasDetalleCitaCalendario"></a></i></td>
-              </tr>
-            
               
-            
+              {% if citas %}
+                  {% for cita in citas %}
+                  <tr>
+                    <th scope="row">{{cita.diaCita}}</th>
+                    <td>${{cita.pedido_id.get_total_carrito}}</td>
+                    {% if cita.cancelado == True %} 
+                    <td><div class="containerEstadoCita Cancelado"><p class="EstadoCitaTextoCalendario">Cancelado</p></div></td>
+                    {% else %}
+                      {% if cita.EstadoCita %}
+                      <td><div class="containerEstadoCita Realizado"><p class="EstadoCitaTextoCalendario">Realizado</p></div></td>
+                      {% else %}
+                      <td><div class="containerEstadoCita EnEspera"><p class="EstadoCitaTextoCalendario">Pedndiente</p></div></td>
+                      {% endif %}
+                    {% endif %}
+                   
+                    <td><a href="{% url 'Ventas:detalleCita' cita.id_cita%}" class="LinkDetalleCita"><i class="fas fa-info-circle verMasDetalleCitaCalendario"></a></i></td>
+                  </tr>
+                  {% endfor %}
+              {% else %}
+                  <h4>No hay citas que mostrar</h4>
+              {% endif %}
             </tbody>
           </table>
     </div>

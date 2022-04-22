@@ -325,7 +325,7 @@ class Calendario(TemplateView):
             return redirect("UNR")
 
         #contexto
-        citas=models.Calendario.objects.filter(cliente_id=request.session['pk'])
+        citas=models.Cita.objects.filter(cliente_id=request.session['pk'])
         context={
             "User":UserSesion,
             "citas":citas
@@ -788,18 +788,22 @@ class EditarCita(UpdateView):
     
 
 class DetalleCita(DetailView):
-   template_name = "DetalleCita.html"
-   def get(self, request, *args, **kwargs):
+    model = Cita
+    template_name = "DetalleCita.html"
+    def get_context_data(self, *args, **kwargs):
+        context = super(DetalleCita, self).get_context_data(**kwargs)
         try:
-            if request.session:
-                imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+            if self.request.session:
+                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
-                if request.session['Admin'] == True:
-                    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+                if self.request.session['Admin'] == True:
+                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                    context["User"]=UserSesion
                 else:
-                    return redirect("SinPermisos")
+                    return redirect("SinPermisos")  
         except:
             return redirect("UNR")
+        return context
 
 class CambiarEstadoDeCita(TemplateView):
    template_name = "DetalleCita.html"

@@ -195,13 +195,35 @@ class Cita(models.Model):
     def __str__(self):
         return f"el cliente de esta cita es: {self.cliente_id}"
 
-    # def save(self, *args, **kwargs):
-    #     print(self.horaInicioCita)
-    #     print(type(self.horaInicioCita))
-    #     hora = self.horaInicioCita + timedelta(minutes=self.pedido_id.get_cantidad)
-    #     print(hora)
-    #     #se restan horas del datetimepicker
-    #     super().save(*args, **kwargs)
+    @property
+    def titulo(self):
+        title = f"{str(self.cliente_id.nombres).upper()} {str(self.cliente_id.apellidos).upper()}" 
+        return title
+
+    @property
+    def inicio(self):
+        start = self.diaCita.strftime("%Y-%m-%d")
+        hora = self.horaInicioCita.strftime("%H:%M:%S")
+        start = f"{start}T{hora}"
+        return start
+
+    @property
+    def fin(self):
+        end = self.diaCita.strftime("%Y-%m-%d")
+        hora = self.horaFinCita.strftime("%H:%M:%S")
+        end = f"{end}T{hora}"
+        return end
+
+    @property 
+    def EstadoCita(self):
+        hoy = datetime.today()
+        fechaCita = datetime(self.diaCita.year, self.diaCita.month, self.diaCita.day)
+        if hoy>fechaCita:
+            estado = False
+        else:
+            estado = True
+        return estado
+
 
 class Calendario(models.Model):
     #falta el id de este campo importante tambien organizar la parte donde se agendan citas creo
