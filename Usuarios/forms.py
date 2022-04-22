@@ -14,7 +14,7 @@ class Regitro(forms.ModelForm):
     ))
     password2 = forms.CharField(label="Confirmar contraseña",widget=forms.PasswordInput(
         attrs={
-            'id':"confpassword",
+            'id':"password1",
             'requerid':'requerid',
             'placeholder':'Confirmar contraseña',
         }
@@ -157,6 +157,11 @@ class Regitro(forms.ModelForm):
         
         if password1 and password2 and password1 != password2:
             raise forms.ValidationError('La Contraseña no coincide')
+        if len(password1) <= 8:
+            raise forms.ValidationError('La contraseña debe contener más de 8 digitos')
+            print(any(chr.isdigit() for chr in password1) )
+        if any(chr.isdigit() for chr in password1) is False:
+            raise forms.ValidationsError('la contraseña debe contener al menos un número')
         return password2
     
     def save(self,commit = True):
@@ -266,6 +271,7 @@ class Cambiar(forms.ModelForm):
         if commit:
             user.save()
         return user
+        
 class CustomAuthForm(AuthenticationForm):
     username = forms.CharField(widget=TextInput(attrs={'class':'validate','placeholder': 'Username'}))
     password = forms.CharField(widget=PasswordInput(attrs={'placeholder':'Password','id':'password'}))

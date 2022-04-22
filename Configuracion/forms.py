@@ -3,15 +3,15 @@ from django import forms
 from .models import Rol
 from .models import cambios,cambiosFooter
 from crispy_forms.helper import FormHelper
+from django.contrib.auth.models import Group
 
 class RolForm(forms.ModelForm):
     
     class Meta:
-        model = Rol
-        fields = ('nombre', 'descripcion')
+        model = Group
+        fields = ('name',)
         widgets={
-            'nombre':forms.TextInput(attrs={"class":"form-control"}),
-            'descripcion':forms.Textarea(attrs={"class":"form-control", 'rows':"5", 'cols':"60"})
+            'name':forms.TextInput(attrs={"class":"form-control"}),
         }
 
     def __init__(self, *args, **kwargs):

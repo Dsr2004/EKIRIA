@@ -50,6 +50,9 @@ body {
     flex-wrap: wrap;
     justify-content: center;
 }
+.Perfil a img{
+    image-rendering: crisp-edges;
+}
 
 .Perfil a p {
     padding-top: 5px;
@@ -326,11 +329,10 @@ body {
 }
 
 .menus .notification-box {
-    margin-top: -45px;
+    margin-top: -47px;
     margin-left: 25px;
     margin-right: -40px;
 }
-
 .menus ul i {
     margin-left: 40%;
     font-size: 20px;
@@ -348,7 +350,9 @@ body {
 .menus ul .links .atext {
     margin-left: 10px !important;
 }
-
+.menus ul .links i{
+    margin-top: -4px!important;
+}
 .menus ul li {
     margin-top: 10px;
 }
@@ -434,6 +438,9 @@ body {
         width: 50px;
         height: 50px;
     }
+    .content{
+        width: 100%;
+    }
 }
 
 
@@ -460,6 +467,12 @@ body {
     }
     .content.activar {
         width: 0%;
+        display:none;
+        transition: .3s;
+    }
+    .content{
+        width: 100%;
+        overflow: auto
     }
     .nav .menul li {
         margin-left: 10px;

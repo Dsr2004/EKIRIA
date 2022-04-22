@@ -2,8 +2,7 @@
 from email.policy import default
 from turtle import width
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-from Configuracion.models import Rol
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Group
 
 class VistasDiarias(models.Model):
     id_dia = models.CharField(primary_key=True, max_length=10)
@@ -22,7 +21,6 @@ class TipoDocumento(models.Model):
         
     def __str__(self) :
         return self.nom_tipo_documento
-
 
 class Municipio(models.Model):
     id_municipio = models.AutoField(primary_key=True)
@@ -52,6 +50,11 @@ class UsuarioManager(BaseUserManager):
         usuario.set_password(password)
         usuario.save()
         return usuario
+
+
+
+
+
     def create_superuser(self,email,username,nombres,apellidos,celular,fec_nac,num_documento, direccion, cod_postal, password):
         usuario = self.create_user(
             email,
@@ -89,7 +92,7 @@ class Usuario(AbstractBaseUser):
     municipio = models.ForeignKey(Municipio, null=True, blank=True, on_delete=models.CASCADE)
     direccion = models.CharField(blank=True, null=True, max_length=250)
     cod_postal = models.CharField(max_length=20, null=True)
-    rol = models.ForeignKey(Rol, default=1, null=True, blank=True, on_delete=models.CASCADE)
+    rol = models.ForeignKey(Group, default=2, null=True, blank=True, on_delete=models.CASCADE)
     estado = models.BooleanField(default = True) 
     administrador = models.BooleanField(default=False)
     objects = UsuarioManager()

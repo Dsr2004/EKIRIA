@@ -149,6 +149,8 @@ CRISPY_TEMPLATE_PACK='bootstrap4'
 
 AUTH_USER_MODEL = 'Usuarios.Usuario'
 
+AUTH_GROUP_MODEL = 'Configuracion.Rol'
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
