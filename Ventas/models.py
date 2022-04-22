@@ -218,7 +218,7 @@ class Cita(models.Model):
     def EstadoCita(self):
         hoy = datetime.today()
         fechaCita = datetime(self.diaCita.year, self.diaCita.month, self.diaCita.day)
-        if hoy>fechaCita:
+        if hoy<fechaCita:
             estado = False
         else:
             estado = True
