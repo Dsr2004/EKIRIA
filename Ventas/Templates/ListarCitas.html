@@ -31,22 +31,29 @@
                   <th scope="row">{{cita.cliente_id.nombres | upper}} {{cita.cliente_id.apellidos | upper}}</th>
                   <td>${{cita.pedido_id.total_pagar}}</td>
                   <td>{{cita.diaCita}}</td>
-                  <td>{% if cita.estado == True %}Confirmado {% else %}Pendiente{% endif %}</td>
+                  <td>{% if cita.cancelado == True %} Cancelado {% else %}{% if cita.estado == True %}Confirmado {% else %}Pendiente{% endif %}{% endif %}
+
+                  </td>
                   <td><a href="{%url 'Ventas:detalleEditarCita' cita.id_cita %}"><i class="fas fa-eye" style="font-size: 25px;"></i></a></td>
                   <td>
-                     {% if cita.estado == True %}
-                     <!-- onclick="CancelarCita3('{{cita.id_cita}}')" -->
-                       <i class="fas fa-check-circle" style="font-size: 25px; color: green;" ></i>
+                     {% if cita.cancelado == True %}
+                     <i class="fas fa-times-circle" style="font-size: 25px; color: red;" ></i>
                      {% else %}
-                        <a type="button" onclick="ConfirmarCita('{{cita.id_cita}}')"><i class="fas fa-clock" style="font-size: 25px; color: orange;" ></i></a>
+                        {% if cita.estado == True %}
+                        <!-- onclick="CancelarCita3('{{cita.id_cita}}')" -->
+                           <i class="fas fa-check-circle" style="font-size: 25px; color: green;" ></i>
+                        {% else %}
+                           <a type="button" onclick="ConfirmarCita('{{cita.id_cita}}')"><i class="fas fa-clock" style="font-size: 25px; color: orange;" ></i></a>
+                        {% endif %}
                      {% endif %}
+                    
                   </td>
-               </tr
+               </tr>
                {% endfor %}
                {% else  %}
                <h1>No hay registros</h1>
            {% endif %}
-           >
+           
          
         
         </tbody>

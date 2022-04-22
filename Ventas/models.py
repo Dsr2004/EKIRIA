@@ -175,15 +175,16 @@ class PedidoItem(models.Model):
     
 class Cita(models.Model):
     id_cita=models.AutoField("Id de la Cita", primary_key=True, unique=True)
-    empleado_id=models.ForeignKey(usuario, on_delete=models.SET_NULL, blank=True, null=True, db_column="empleado_id", related_name="empleado_id")
-    cliente_id=models.ForeignKey(usuario, on_delete=models.SET_NULL, blank=True, null=True, db_column="cliente_id",related_name="cliente_id")
+    empleado_id=models.ForeignKey(usuario, on_delete=models.SET_NULL, blank=False, null=True, db_column="empleado_id", related_name="empleado_id")
+    cliente_id=models.ForeignKey(usuario, on_delete=models.SET_NULL, blank=False, null=True, db_column="cliente_id",related_name="cliente_id")
     pedido_id=models.ForeignKey(Pedido, verbose_name="Id del Pedido",db_column="pedido_id", on_delete=models.SET_NULL, null=True)
     diaCita=models.DateField("Dia de la cita")
-    horaInicioCita=models.TimeField("Fecha de Inicio de la Cita")
-    horaFinCita=models.TimeField("Fecha de Fin de la Cita")
+    horaInicioCita=models.TimeField("Fecha de Inicio de la Cita",null=False, blank=False)
+    horaFinCita=models.TimeField("Fecha de Fin de la Cita",null=False, blank=False)
     descripcion=models.TextField("Descripcion",null=True ,blank=True)
     fecha_creacion=models.DateField("Fecha de Creacion", auto_now=False, auto_now_add=True)
     fecha_actualizacion= models.DateTimeField("Fecha de Actualizacion", auto_now=True, auto_now_add=False)
+    cancelado = models.BooleanField(default=False, null=False, blank=False)
     estado=models.BooleanField("Estado", default=False)
 
     class Meta:
@@ -204,7 +205,8 @@ class Cita(models.Model):
 
 class Calendario(models.Model):
     #falta el id de este campo importante tambien organizar la parte donde se agendan citas creo
-    empleado_id=models.ForeignKey(usuario, on_delete=models.SET_NULL,null=True, db_column="empleado_id", related_name="empleado_calendario_id")
+    id_calendario = models.AutoField("Id del la cita en el calendario", primary_key=True, unique=True)
+    empleado_id=models.ForeignKey(usuario, on_delete=models.SET_NULL,null=True, db_column="empleado_id", related_name="empleado_calendario_id", blank=False)
     cliente_id=models.ForeignKey(usuario, on_delete=models.SET_NULL,null=True, db_column="cliente_id",related_name="cliente_calendario_id")
     cita_id=models.ForeignKey(Cita, on_delete=models.SET_NULL,null=True,db_column="cita_id")
     dia=models.DateField(null=False, blank=False)

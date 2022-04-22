@@ -1,8 +1,10 @@
 from datetime import datetime, timedelta
+from multiprocessing import context
 import re
 
 from sre_constants import SUCCESS
 from statistics import mode
+from unittest.mock import seal
 from webbrowser import get
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
@@ -131,9 +133,6 @@ def CambiarEstadoServicioEnCatalogo(request):
         return redirect("Ventas:listarServicios")  
 
 
-class QuitarServicioalCatalogo(DeleteView):
-    pass
-
 
 def Carrito(request):
     cliente=Usuario.objects.get(username=request.session['username'])
@@ -195,24 +194,27 @@ class AgandarCita(CreateView):
     success_url = reverse_lazy("Ventas:calendario")
 
     def get(self, request, *args,**kwargs):
-        cliente=Usuario.objects.get(username=self.request.session['username'])
-        if cliente:
-            pedido,creado = Pedido.objects.get_or_create(cliente_id=cliente, completado=False)
-            items= pedido.pedidoitem_set.all()
-            serviciosx=[]
-            serviciosPerx=[]
-            if items:
-                for i in items:
-                    if not i.servicio_id ==  None:
-                        serviciosx.append(i)
-                    if not i.servicio_personalizado_id == None:
-                        serviciosPerx.append(i)  
-            contexto={"items":items, "pedido":pedido,"form":self.form_class,"serviciosx":serviciosx,"serviciosPerx":serviciosPerx}
-        else:
-            items=[]
-            pedido={"get_total_carrito":0,"get_items_carrito":0}
-            contexto={"items":items, "pedido":pedido,"form":self.form_class}
-
+        try: 
+            username = self.request.session['username']
+            cliente=Usuario.objects.get(username=username)
+            if cliente:
+                pedido,creado = Pedido.objects.get_or_create(cliente_id=cliente, completado=False)
+                items= pedido.pedidoitem_set.all()
+                serviciosx=[]
+                serviciosPerx=[]
+                if items:
+                    for i in items:
+                        if not i.servicio_id ==  None:
+                            serviciosx.append(i)
+                        if not i.servicio_personalizado_id == None:
+                            serviciosPerx.append(i)  
+                contexto={"items":items, "pedido":pedido,"form":self.form_class,"serviciosx":serviciosx,"serviciosPerx":serviciosPerx}
+            else:
+                items=[]
+                pedido={"get_total_carrito":0,"get_items_carrito":0}
+                contexto={"items":items, "pedido":pedido,"form":self.form_class}
+        except: 
+            return redirect("UNR")
 
         try:
             if self.request.session:
@@ -615,23 +617,38 @@ Seccion de las Vistas donde se administran las citas
 <----------------------------------------------------------------->
 """
 
+
+"""<------------------------------------------------------------------->
+    Vista para agendar una cita
+
+    - Explicacion del funcionamiento
+
+    - Explicacion de las funciones
+
+<------------------------------------------------------------------->
+"""
+
 class AgregarCita(TemplateView):
     template_name = "AgregarCita.html"
     def get_context_data(self, *args, **kwargs):
         context = super(AgregarCita, self).get_context_data(**kwargs)
         try:
+            UserSesion=""
+            print("2113124")
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
+                print("_______________________1")
                 if self.request.session['Admin'] == True:
                     UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
                     context["User"] = UserSesion
                     return context
                 else:
                     return redirect("SinPermisos")
-        except:
-            pass
+        except Exception as e:
+            print(e)
         return context
+
 
 class ListarCita(ListView):
     queryset = Cita.objects.all()
@@ -660,16 +677,20 @@ class EditarCitaDetalle(DetailView):
     form_class = CitaForm
 
     def get_context_data(self, *args, **kwargs):
+        UserSesion = ""
         context = super(EditarCitaDetalle, self).get_context_data(**kwargs)
         try:
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
-                UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen}
+                UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
                 context["User"]=UserSesion
-        
+            else:
+                return redirect("SinPermisos")
         except:
-            pass
+            return context
+
+
         citax = models.Cita.objects.get(id_cita=self.kwargs["pk"])
         pedido = models.Pedido.objects.get(id_pedido = citax.pedido_id.id_pedido)
         items = pedido.pedidoitem_set.all()
@@ -686,21 +707,17 @@ class EditarCitaDetalle(DetailView):
         hoy = datetime.today()
         diaCita = citax.diaCita
         tresDias =  datetime(diaCita.year, diaCita.month, diaCita.day) - timedelta(days=3)
-        print(tresDias)
-        print(diaCita)
         if hoy < tresDias:
             context["SePuedeModificar"] = True
         else:
             context["SePuedeModificar"] = False
         return context
+
 class EditarCita(UpdateView):
     model = Cita
     template_name = "EditarCita.html"
     form_class = CitaForm
     success_url = reverse_lazy("Ventas:calendario")
-
-    def get_object(self, queryset=None):
-        return self.model.objects.get(pk=self.kwargs["pk"])
 
     def get_context_data(self, *args, **kwargs):
         context = super(EditarCita, self).get_context_data(**kwargs)
@@ -728,7 +745,22 @@ class EditarCita(UpdateView):
                 if not i.servicio_personalizado_id == None:
                     serviciosPerx.append(i)
                     context["serviciosPer"]=serviciosPerx
+      
         return context
+
+
+
+
+        citax = models.Cita.objects.get(id_cita=self.kwargs["pk"])
+        hoy = datetime.today()
+        diaCita = citax.diaCita
+        tresDias =  datetime(diaCita.year, diaCita.month, diaCita.day) - timedelta(days=3)
+        if not hoy < tresDias:
+            return redirect("Ventas:listarCitas")
+        else:
+            contexto = dict(self.get_context_data)
+            print(contexto)
+            return render(request, self.template_name, contexto)
 
     def post(self, request, *args, **kwargs):
         if request.is_ajax():
@@ -737,6 +769,7 @@ class EditarCita(UpdateView):
             datos._mutable = True
             cita = models.Cita.objects.get(id_cita=request.POST["id_cita"])
             datos["pedido_id"]=cita.pedido_id
+            datos["cliente_id"]=cita.cliente_id
             form = self.form_class(datos, instance=self.get_object())
 
             if form.is_valid():
@@ -784,6 +817,12 @@ class CambiarEstadoDeCita(TemplateView):
             return redirect("Ventas:listarCitas")
         return HttpResponse(update)
 
+class CancelarCita(View):
+    def post(self, request, *args, **kwargs):
+        if request.is_ajax():
+            print(request.POST["cita"])
+        return HttpResponse("Dfdfdf")
+       
 """
 <----------------------------------------------------------------->
 Seccion de las Vistas donde se realizan las pruebas
@@ -812,3 +851,7 @@ def pruebas(request):
         "User":UserSesion
     }
     return render(request, 'prueba.html',cont)
+
+
+def correoPrueba(request):
+    return  render(request, "Correo/send_email.html")

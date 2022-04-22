@@ -255,6 +255,7 @@ body {
 
 @media (min-width: 950px) {
     .content {
+        padding-top:10px !important;
         width: 100%;
         top: 0px;
         margin-right: 0px;

@@ -135,10 +135,22 @@ function ActualizarCita(id){
           url: form.attr("action"),
           type: 'POST',
           success: function(datas){
-            console.log(datas)
+            swal({
+              title: "Esta hecho",
+              text: "Se modifico  la cita",
+              icon: "success",
+            }).then((update)=>{
+              location.href = "/Ventas/ListadoCitas/"
+            })
           },
           error: function(error){
-            console.log(error)
+            wal({
+              title: "¡HO NO!",
+              text: "Ha ocurrido un error   ",
+              icon: "error",
+            }).then((update)=>{
+              location.href = "/Ventas/ListadoCitas/"
+            })
           }
         }); 
         })
@@ -193,7 +205,7 @@ function CancelarCita3(id){
     });
 }
 
-function CancelarCita2(){
+function CancelarCita2(id){
   swal({
       title: "Tenga cuidado!",
       text: "Esta opcion no se puede desaser!",
@@ -201,11 +213,26 @@ function CancelarCita2(){
       buttons: true,
     }).then((willDelete) => {
       if (willDelete) {
-        swal("OK! Se ha cancelado su cita", {
-          icon: "success",
-        }).then(function() {
-        window.location.href = "/Ventas/ListadoCitas/";
-     });
+        $.ajax({
+          data: {"csrfmiddlewaretoken":csrftoken, "cita":id},
+          url: '/Ventas/CancelarCita/',
+          type: 'POST',
+          success: function(data){
+            swal("OK! Se ha cancelado su cita", {
+              icon: "success",
+            }).then(function() {
+            window.location.href = "/Ventas/ListadoCitas/";
+         });
+          },
+          error: function(error){
+            swal("ha habido un error", {
+              icon: "error",
+            }).then(function() {
+            window.location.href = "/Ventas/ListadoCitas/";
+         });
+          }
+        })
+       
       } else {
         swal("OK! No se cancelo la cita ");
       }
