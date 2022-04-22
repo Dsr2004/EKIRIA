@@ -35,10 +35,11 @@
 .Admin.Events .Information .cardbox .Card {
     width: 100%;
     display: grid;
-    cursor: pointer;
     grid-template-columns: 75% 25%;
 }
-
+.Admin.Events .Information .cardbox .Card.cursor{
+    cursor: pointer;
+}
 .Admin.Events .Information .cardbox .Card .numbers {
     position: relative;
     font-weight: 500;

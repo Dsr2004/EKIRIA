@@ -57,3 +57,6 @@ function CambiarEstadoUsuario(id) {
     });
 
 }
+function redirect(url){
+    window.location.href = url;
+}

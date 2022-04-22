@@ -137,10 +137,6 @@ def Login(request):
                     request.session['rol']= usuario.rol.name
                     request.session['pk'] = usuario.id_usuario
                     request.session['Admin'] = usuario.administrador
-                    print(usuario.id_usuario)
-
-                    pedido, = Pedido.objects.filter(cliente_id=usuario, completado=False)
-                    request.session["carrito"]=pedido.get_items_carrito
 
                     if 'next' in request.POST:
                         return redirect(request.POST.get('next'))

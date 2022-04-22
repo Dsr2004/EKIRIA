@@ -12,7 +12,9 @@ django.setup()
 def Roles():
     Roles = [{'id':'1','name':'Administrador'},{'id':'2', 'name':'Nivel 1'}]
     for rol in Roles:
-        if Group.objects.filter(pk = rol['id']) :
+        if Group.objects.filter(pk = rol['id']):
             Group.objects.create(id = rol['id'], name  = rol['name'])
         print(roles)
+
+        
 Roles()

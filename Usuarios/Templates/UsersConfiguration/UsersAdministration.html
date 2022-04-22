@@ -40,8 +40,8 @@
             let Usuario = document.getElementById('NumUser');
             Usuario.innerHTML = CantUsuarios
         </script>
-        <div class="cardbox">
-            <div class="Card">
+        <div class="cardbox" onclick="redirect('{%url "Ventas:listarServicios"%}')">
+            <div class="Card cursor">
                 <div>
                     <div class="numbers" id="NumSer">
 
@@ -84,7 +84,7 @@
         <script>
         </script>
         <div class="cardbox">
-            <div class="Card">
+            <div class="Card cursor">
                 <div>
                     <div class="numbers">127</div>
                     <div class="cardName">Comentarios</div>
