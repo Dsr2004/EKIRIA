@@ -13,6 +13,8 @@ import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+import Proyecto_Ekiria.settings
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -66,7 +68,7 @@ ROOT_URLCONF = 'Proyecto_Ekiria.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['Proyecto_Ekiria/Templates', 'Usuarios/Templates','Modulo_compras/Templates','Configuracion/Templates'],
+        'DIRS': ['Proyecto_Ekiria/Templates', 'Usuarios/Templates','Modulo_compras/Templates','Configuracion/Templates', 'Ventas/Templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -172,6 +174,8 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'),)
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+
+LOGIN_URL = "/IniciarSesion/"
 LOGIN_REDIRECT_URL = 'Inicio'
 LOGOUT_REDIRECT_URL = '/'
 
@@ -191,3 +195,13 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
 }
+
+
+#correos
+EMAIL_HOST = 'smtp.gmail.com'
+
+EMAIL_PORT = 587
+
+EMAIL_HOST_USER = 'davitdy2015@gmail.com'
+
+EMAIL_HOST_PASSWORD = 'rctkhosqgrlggjda'
