@@ -146,7 +146,7 @@ function ActualizarCita(id){
           error: function(error){
             wal({
               title: "¡HO NO!",
-              text: "Ha ocurrido un error   ",
+              text: "Ha ocurrido un error",
               icon: "error",
             }).then((update)=>{
               location.href = "/Ventas/ListadoCitas/"

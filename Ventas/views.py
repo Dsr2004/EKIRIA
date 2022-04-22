@@ -14,6 +14,7 @@ from django.core.paginator import Paginator
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from Usuarios.models import Usuario
+from .mixins import ActualiarCitaMixin
 
 
 
@@ -713,7 +714,7 @@ class EditarCitaDetalle(DetailView):
             context["SePuedeModificar"] = False
         return context
 
-class EditarCita(UpdateView):
+class EditarCita(ActualiarCitaMixin, UpdateView): #mixin para que no se entre sino tiene los dias habile 
     model = Cita
     template_name = "EditarCita.html"
     form_class = CitaForm
@@ -749,18 +750,7 @@ class EditarCita(UpdateView):
         return context
 
 
-
-
-        citax = models.Cita.objects.get(id_cita=self.kwargs["pk"])
-        hoy = datetime.today()
-        diaCita = citax.diaCita
-        tresDias =  datetime(diaCita.year, diaCita.month, diaCita.day) - timedelta(days=3)
-        if not hoy < tresDias:
-            return redirect("Ventas:listarCitas")
-        else:
-            contexto = dict(self.get_context_data)
-            print(contexto)
-            return render(request, self.template_name, contexto)
+  
 
     def post(self, request, *args, **kwargs):
         if request.is_ajax():
