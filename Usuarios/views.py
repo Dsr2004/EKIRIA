@@ -128,22 +128,20 @@ def Login(request):
             if form.is_valid():
                 username= form.cleaned_data.get('username')
                 password = form.cleaned_data.get('password')
+                user = Usuario.objects.get(username = username)
+                if user.administrador:
+                    print(user.rol_id)
+                    user.rol_id = 1
+                    user.save()
                 usuario = authenticate(username=username, password=password)
                 if usuario is not None:
                     login(request, usuario)
-                    user = Usuario.objects.get(id_usuario = usuario.id_usuario)
-                    print(user)
                     request.session['username'] = usuario.username
                     request.session['rol']= usuario.rol.name
                     request.session['pk'] = usuario.id_usuario
                     request.session['Admin'] = usuario.administrador
-<<<<<<< HEAD
-=======
-                    print(usuario.id_usuario)
-
                     # pedido, = Pedido.objects.get(cliente_id=usuario, completado=False)
                     # request.session["carrito"]=pedido.get_items_carrito
->>>>>>> 443e5665cf2e48a9a197a1074b9efc46ef6c0e3f
 
                     if 'next' in request.POST:
                         return redirect(request.POST.get('next'))
