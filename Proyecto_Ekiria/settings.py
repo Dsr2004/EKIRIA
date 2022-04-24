@@ -150,8 +150,6 @@ CRISPY_TEMPLATE_PACK='bootstrap4'
 
 AUTH_USER_MODEL = 'Usuarios.Usuario'
 
-AUTH_GROUP_MODEL = 'Configuracion.Rol'
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -176,7 +174,7 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'),)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 
-LOGIN_URL = "/IniciarSesion/"
+LOGIN_URL = "/UsuarioNoRegistrado"
 LOGIN_REDIRECT_URL = 'Inicio'
 LOGOUT_REDIRECT_URL = '/'
 

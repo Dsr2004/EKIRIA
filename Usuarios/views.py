@@ -21,6 +21,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import Permission,Group
+from django.contrib.auth.decorators import login_required
+
 
 #-----------------------------------------Rest Framework---------------------------------------------------
 from rest_framework.decorators import api_view
@@ -130,7 +132,6 @@ def Login(request):
                 password = form.cleaned_data.get('password')
                 user = Usuario.objects.get(username = username)
                 if user.administrador:
-                    print(user.rol_id)
                     user.rol_id = 1
                     user.save()
                 usuario = authenticate(username=username, password=password)
@@ -142,7 +143,6 @@ def Login(request):
                     request.session['Admin'] = usuario.administrador
                     # pedido, = Pedido.objects.get(cliente_id=usuario, completado=False)
                     # request.session["carrito"]=pedido.get_items_carrito
-
                     if 'next' in request.POST:
                         return redirect(request.POST.get('next'))
                     else:
@@ -169,6 +169,7 @@ class Register(CreateView):
 
 
     
+@login_required(redirect_field_name='Inicio')
 def Perfil(request):
     UserSesion=""
     try:
