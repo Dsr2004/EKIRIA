@@ -34,11 +34,11 @@ def Roles():
         Rol = Group.objects.filter(pk = rol['id'])
         if Rol is None:
             Group.objects.create(id = rol['id'], name  = rol['name'])
-        else:
-            Objecto = Group.objects.get(pk=rol['id'])
-            Objecto.id = rol['id']
-            Objecto.name = rol['name']
-            Objecto.save()
+        # else:
+        #     Objecto = Group.objects.get(pk=rol['id'])
+        #     Objecto.id = rol['id']
+        #     Objecto.name = rol['name']
+        #     Objecto.save()
             
 
 def Municipios():
