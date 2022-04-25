@@ -21,6 +21,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import Permission,Group
+from django.contrib.auth.decorators import login_required
+
 
 #-----------------------------------------Rest Framework---------------------------------------------------
 from rest_framework.decorators import api_view
@@ -115,6 +117,7 @@ from Usuarios.forms import Cambiar, Regitro, Editar, CustomAuthForm
 #         except :
 #             return Response({'error': 'No se ha encontrado token en la petición.'}, status = status.HTTP_409_CONFLICT)
 
+@login_required()
 def Loguot(request):
     logout(request)
     return redirect('Inicio')
@@ -130,7 +133,6 @@ def Login(request):
                 password = form.cleaned_data.get('password')
                 user = Usuario.objects.get(username = username)
                 if user.administrador:
-                    print(user.rol_id)
                     user.rol_id = 1
                     user.save()
                 usuario = authenticate(username=username, password=password)
@@ -142,7 +144,6 @@ def Login(request):
                     request.session['Admin'] = usuario.administrador
                     # pedido, = Pedido.objects.get(cliente_id=usuario, completado=False)
                     # request.session["carrito"]=pedido.get_items_carrito
-
                     if 'next' in request.POST:
                         return redirect(request.POST.get('next'))
                     else:
@@ -169,17 +170,15 @@ class Register(CreateView):
 
 
     
+@login_required()
 def Perfil(request):
     UserSesion=""
-    try:
-        if request.session:
-            imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-            imagen = imagen.img_usuario
-            UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
-        usuario = Usuario.objects.get(id_usuario=request.session['pk'])
-        return render(request, "UserInformation/Perfil.html", {"Usuario":usuario, "User":UserSesion})
-    except:
-        return redirect("UNR")
+    if request.session:
+        imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+        imagen = imagen.img_usuario
+        UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+    usuario = Usuario.objects.get(id_usuario=request.session['pk'])
+    return render(request, "UserInformation/Perfil.html", {"Usuario":usuario, "User":UserSesion})
 
 # def Admin(request):
 #     context = {1,2,3,3,4,5,6,7,8,9,10}
@@ -209,96 +208,92 @@ def Perfil(request):
 #             e=form.errors
 #             print(e)
 #             return JsonResponse({"x":e})
-def EditarPerfil(request):
+@login_required()
+def EditarPerfil(request):  
     UserSesion=""
-    try:
-        template_name = "UserInformation/EditarPerfil.html"
-        if request.session['pk']:
-            get_object = Usuario.objects.get(id_usuario=request.session['pk'])
-            form = Editar(instance=get_object)
-            imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-            imagen = imagen.img_usuario
-            UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session["Admin"]}
-        else: 
-            return redirect("SinPermisos")
-        if request.method=="POST":
-            form = Editar(request.POST or None, request.FILES or None, instance=get_object)
-            if form.is_valid():
-                form.save()
-                return redirect("Perfil")
-            else:
-                e=form.errors
-                print(e)
-                return JsonResponse({"x":e})
-        return render(request, template_name, {"form":form, "User":UserSesion})
-    except:
-        return redirect("UNR")
+    template_name = "UserInformation/EditarPerfil.html"
+    if request.session['pk']:
+        get_object = Usuario.objects.get(id_usuario=request.session['pk'])
+        form = Editar(instance=get_object)
+        imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+        imagen = imagen.img_usuario
+        UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session["Admin"]}
+    else: 
+        return redirect("SinPermisos")
+    if request.method=="POST":
+        form = Editar(request.POST or None, request.FILES or None, instance=get_object)
+        if form.is_valid():
+            form.save()
+            return redirect("Perfil")
+        else:
+            e=form.errors
+            print(e)
+            return JsonResponse({"x":e})
+    return render(request, template_name, {"form":form, "User":UserSesion})
     
+@login_required()
 def Change(request):
     UserSesion=""
-    try:
-        if request.session['pk']:
-            get_object = Usuario.objects.get(id_usuario=request.session['pk'])
-            form = Cambiar(instance=get_object)
-            imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-            imagen = imagen.img_usuario
-            UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session["Admin"]}
-        else: 
-            return redirect("SinPermisos")
-        Error = ""
-        if request.method == "POST":
-            try:
-                oldPass = request.POST.get('passwordA')
-                Pass1 = request.POST.get('password1')
-                Pass2 = request.POST.get('password2')
-                username= request.session['username']
-                user = authenticate(username=username, password=oldPass)
-                if user is not None:
-                    user = Usuario.objects.get(username = request.session['username'])
-                    if Pass1 == Pass2:
-                        if Pass1 == oldPass:
-                            Error = "Esta contraseña ya está en uso"
-                        else:
-                            if len(Pass1) >= 8:
-                                if any(chr.isdigit() for chr in Pass1):
-                                    user.set_password(Pass1)
-                                    user.save()
-                                    logout(request)
-                                    return redirect('IniciarSesion')
-                                else:
-                                    Error = "la contraseña debe contener al menos un número"
-                            else: 
-                                Error = "La contraseña debe contener más de 8 digitos"
+    if request.session['pk']:
+        get_object = Usuario.objects.get(id_usuario=request.session['pk'])
+        form = Cambiar(instance=get_object)
+        imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+        imagen = imagen.img_usuario
+        UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session["Admin"]}
+    else: 
+        return redirect("SinPermisos")
+    Error = ""
+    if request.method == "POST":
+        try:
+            oldPass = request.POST.get('passwordA')
+            Pass1 = request.POST.get('password1')
+            Pass2 = request.POST.get('password2')
+            username= request.session['username']
+            user = authenticate(username=username, password=oldPass)
+            if user is not None:
+                user = Usuario.objects.get(username = request.session['username'])
+                if Pass1 == Pass2:
+                    if Pass1 == oldPass:
+                        Error = "Esta contraseña ya está en uso"
                     else:
-                        Error = "Las contraseñan no coinciden"
-                else: 
-                    Error ='Contraseña incorrecta'
-            except Exception as e:
-                print(e)
-        return render(request, 'UserInformation/ChangePassword.html', {"form":form, "User":UserSesion,'message':Error})
-    except:
-        return("UNR")
+                        if len(Pass1) >= 8:
+                            if any(chr.isdigit() for chr in Pass1):
+                                user.set_password(Pass1)
+                                user.save()
+                                logout(request)
+                                return redirect('IniciarSesion')
+                            else:
+                                Error = "la contraseña debe contener al menos un número"
+                        else: 
+                            Error = "La contraseña debe contener más de 8 digitos"
+                else:
+                    Error = "Las contraseñan no coinciden"
+            else: 
+                Error ='Contraseña incorrecta'
+        except Exception as e:
+            print(e)
+    return render(request, 'UserInformation/ChangePassword.html', {"form":form, "User":UserSesion,'message':Error})
+
+@login_required()
 def Admin(request):
     UserSesion=""
-    try:
-        if request.session:
-            imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-            imagen = imagen.img_usuario
-            if request.session['Admin'] == True:
-                UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
-            else:
-                return redirect("SinPermisos")
-        model = Usuario
-        filter = "yes"
-        template_name = "UsersConfiguration/UsersAdministration.html"
-        if request.method=="GET":
-            queryset = model.objects.all()
-            Servicios = Servicio.objects.all()
-            Vistas = VistasDiarias.objects.get(id_dia=datetime.today().strftime('%Y-%m-%d'))
-        return render(request, template_name, {"Usuario":queryset,"contexto":Servicios, "User":UserSesion, "Vistas":Vistas})
-    except:
-        return redirect("UNR")    
-    
+    if request.session:
+        imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+        imagen = imagen.img_usuario
+        if request.session['Admin'] == True:
+            UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+        else:
+            return redirect("SinPermisos")
+    model = Usuario
+    filter = "yes"
+    template_name = "UsersConfiguration/UsersAdministration.html"
+    if request.method=="GET":
+        queryset = model.objects.all()
+        Servicios = Servicio.objects.all()
+        Vistas = VistasDiarias.objects.get(id_dia=datetime.today().strftime('%Y-%m-%d'))
+    return render(request, template_name, {"Usuario":queryset,"contexto":Servicios, "User":UserSesion, "Vistas":Vistas})
+
+@login_required()    
 class CreateUser(CreateView):
     model = Usuario
     form_class = Regitro
@@ -321,6 +316,7 @@ class CreateUser(CreateView):
         except:
             return context
 
+@login_required()
 class UpdateUser(UpdateView):
     model = Usuario    
     template_name = 'UsersConfiguration/CreateUsers.html'
@@ -329,24 +325,23 @@ class UpdateUser(UpdateView):
     def get_context_data(self, *args, **kwargs):
         context = super(UpdateUser, self).get_context_data(**kwargs)
         UserSesion=""
-        try:
-            if self.request.session:
-                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
-                imagen = imagen.img_usuario
-                if self.request.session['Admin'] == True:
-                    UserSesion = {"username":self.request.session['username'], "titulo":"Editar Usuario", "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
-                else:
-                    return redirect("SinPermisos")
-                context["User"]=UserSesion
-                return context
-        except:
-            return redirect("UNR")
+        if self.request.session:
+            imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
+            imagen = imagen.img_usuario
+            if self.request.session['Admin'] == True:
+                UserSesion = {"username":self.request.session['username'], "titulo":"Editar Usuario", "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+            else:
+                return redirect("SinPermisos")
+            context["User"]=UserSesion
+            return context
+
 # class Notification(View):
 #     template_name = 'UserInformation/Notification.html'
 # class Notificacion(TemplateView):
 #     template_name="UserInformation/Notification.html"
 
 @csrf_exempt
+@login_required()
 def Notification(request):
     UserSesion = ""
     if request.session:
@@ -373,6 +368,3 @@ def CambiarEstadoUsuario(request):
     else:
         return JsonResponse({"x":"no"})
 
-def nada(request):
-    context = Permission.objects.all()
-    return render(request, 'ListarPermisos.html', {'context':context})
