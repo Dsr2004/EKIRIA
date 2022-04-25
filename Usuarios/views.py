@@ -137,17 +137,20 @@ def Login(request):
                     user.save()
                 usuario = authenticate(username=username, password=password)
                 if usuario is not None:
-                    login(request, usuario)
-                    request.session['username'] = usuario.username
-                    request.session['rol']= usuario.rol.name
-                    request.session['pk'] = usuario.id_usuario
-                    request.session['Admin'] = usuario.administrador
-                    # pedido, = Pedido.objects.get(cliente_id=usuario, completado=False)
-                    # request.session["carrito"]=pedido.get_items_carrito
-                    if 'next' in request.POST:
-                        return redirect(request.POST.get('next'))
+                    if usuario.estado:
+                        login(request, usuario)
+                        request.session['username'] = usuario.username
+                        request.session['rol']= usuario.rol.name
+                        request.session['pk'] = usuario.id_usuario
+                        request.session['Admin'] = usuario.administrador
+                        # pedido, = Pedido.objects.get(cliente_id=usuario, completado=False)
+                        # request.session["carrito"]=pedido.get_items_carrito
+                        if 'next' in request.POST:
+                            return redirect(request.POST.get('next'))
+                        else:
+                            return redirect("Inicio")
                     else:
-                        return redirect("Inicio")
+                        Error = "Este Usuario se encuentra inhabilitado"
                 else:
                     Error = "El Usuario o la contraseña no son correctos"
             else:

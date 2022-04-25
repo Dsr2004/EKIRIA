@@ -49,8 +49,6 @@ INSTALLED_APPS = [
     'Modulo_compras',
     'rest_framework', 
     'rest_framework.authtoken',
-    
-
 ]
 
 
