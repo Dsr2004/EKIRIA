@@ -75,7 +75,7 @@ class Servicio_Personalizado(models.Model):
     id_servicio_personalizado=models.AutoField("Id del Servicio Personalizado", primary_key=True, unique=True)
     descripcion=models.TextField("Descripcion",null=True,blank=True)
     img_servicio=models.ImageField("Imagen del Servicio", upload_to="Ventas/servicios_personalizados",null=False, blank=False)
-    precio=models.IntegerField("Precio",null=True, blank=True)
+    precio=models.IntegerField("Precio",default=0)
     tipo_servicio_id=models.ForeignKey(Tipo_servicio, verbose_name="Tipo de Servicio", on_delete=models.CASCADE,null=False, blank=False, db_column="tipo_servicio_id")
     duracion=models.PositiveIntegerField(default=0)
     fecha_creacion=models.DateField("Fecha de Creacion", auto_now=False, auto_now_add=True)
