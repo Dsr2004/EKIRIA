@@ -19,6 +19,7 @@ from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from Usuarios.models import *
 from Ventas.models import *
+from Configuracion.models import *
 # ---------------------------------Import information-------------------------
 # ---------------------------------Django setup-------------------------------
 django.setup()
@@ -281,7 +282,73 @@ def Rol_Permisos():
             for permiso in Permisos:
                 rol.permissions.add(permiso)
                 rol.save()
-            
+
+def Cambios():
+    Cambios = {
+        'id':'1',
+        'Color_letra':'#000', 
+        'Color_fondo':'#fff', 
+        'tamano_Titulo':'24', 
+        'tamano_Texto':'18', 
+        'Tipo_Letra':'Arial', 
+        'Texto_Mision':'hola',
+        'Texto_Vision':'hola2',
+        }
+    try: 
+        Objecto = cambios.objects.get(pk = Cambios['id'])
+        Objecto.Color_Letra = Cambios['Color_letra']
+        Objecto.Color_Fondo = Cambios['Color_fondo']
+        Objecto.tamano_Titulo = Cambios['tamano_Titulo']
+        Objecto.tamano_Texto = Cambios['tamano_Texto']
+        Objecto.Tipo_Letra = Cambios['Tipo_Letra']
+        Objecto.Texto_Mision = Cambios['Texto_Mision']
+        Objecto.Texto_Vision = Cambios['Texto_Vision']
+        Objecto.save()
+    except:
+        cambios.objects.create(pk = Cambios['id'],
+        Color_Letra = Cambios['Color_letra'],
+        Color_Fondo = Cambios['Color_fondo'],
+        tamano_Titulo = Cambios['tamano_Titulo'],
+        tamano_Texto = Cambios['tamano_Texto'],
+        Tipo_Letra = Cambios['Tipo_Letra'],
+        Texto_Mision = Cambios['Texto_Mision'],
+        Texto_Vision = Cambios['Texto_Vision'],
+        )
+
+def Footer():
+    Footer = {
+        'id':'1',
+        'Direccion':'Cr 13 Cll 10 -A', 
+        'Telefono':'3206374472', 
+        'Derechos':'2022', 
+        'Footer_Color_Letra':'#000', 
+        'Footer_Color_Fondo':'#c4c4c4', 
+        'Footer_tamano_Titulo':'24',
+        'Footer_tamano_Texto':'18',
+        'Footer_Tipo_Letra':'Sans-serif',
+        }
+    try: 
+        Objecto = cambiosFooter.objects.get(pk = Footer['id'])
+        Objecto.Direccion = Footer['Direccion']
+        Objecto.Telefono = Footer['Telefono']
+        Objecto.Derechos = Footer['Derechos']
+        Objecto.Footer_Color_Letra = Footer['Footer_Color_Letra']
+        Objecto.Footer_Color_Fondo = Footer['Footer_Color_Fondo']
+        Objecto.Footer_tamano_Titulo = Footer['Footer_tamano_Titulo']
+        Objecto.Footer_tamano_Texto = Footer['Footer_tamano_Texto']
+        Objecto.Footer_Tipo_Letra = Footer['Footer_Tipo_Letra'],
+        Objecto.save()
+    except:
+        cambiosFooter.objects.create(pk = Footer['id'],
+        Direccion = Footer['Direccion'],
+        Telefono = Footer['Telefono'],
+        Derechos = Footer['Derechos'],
+        Footer_Color_Letra = Footer['Footer_Color_Letra'],
+        Footer_Color_Fondo = Footer['Footer_Color_Fondo'],
+        Footer_tamano_Titulo = Footer['Footer_tamano_Titulo'],
+        Footer_tamano_Texto = Footer['Footer_tamano_Texto'],
+        Footer_Tipo_Letra = Footer['Footer_Tipo_Letra'],
+        )
 # -----------------------------------Perfomance---------------------------
 
 def Seeders():
@@ -290,5 +357,7 @@ def Seeders():
     Tipo_Documento()
     Tiposervicio()
     Rol_Permisos()
+    Cambios()
+    Footer()
     
 Seeders()

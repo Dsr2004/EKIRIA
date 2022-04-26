@@ -1,6 +1,8 @@
 from unicodedata import name
 from django.urls import path
 from Usuarios.views import PassR, Perfil, Admin, Notification, CreateUser, UpdateUser,EditarPerfil, CambiarEstadoUsuario, Change
+from django.contrib.auth.decorators import login_required
+
 urlpatterns = [
     path('RecuperarContraseña/', PassR, name="RecuperarContraseña"),
     path('CambiarContraseña/', Change, name="Cambiar"),
@@ -8,8 +10,8 @@ urlpatterns = [
     path('Perfil', Perfil, name="Perfil"),
     path('Administracion/', Admin, name="Administracion"),
     path('Notificaciones/', Notification, name="Notify"),
-    path('CrearUsuario/', CreateUser, name="CreateUser"),
-    path('CrearUsuario/<int:pk>', UpdateUser, name="UpdateUser"),
+    path('CrearUsuario/', login_required(CreateUser.as_view()), name="CreateUser"),
+    path('CrearUsuario/<int:pk>', login_required(UpdateUser.as_view()), name="UpdateUser"),
     path('EditarPerfil/', EditarPerfil, name="EditarPerfil"),
     # path('', Usertoken.as_view(), name = "refresh_token"),
 ]
