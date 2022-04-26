@@ -20,11 +20,6 @@ function EditarRol(){
                 input.addClass("is-invalid")
                 $('#'+item).text(error.responseJSON["errores"][item])
                 
-            for(let item in error.responseJSON["errores"]){
-                let textarea=$("#EditarRoles").find('textarea[name='+item+']')
-                textarea.addClass("is-invalid")
-                $('#'+item).text(error.responseJSON["errores"][item])
-            }
         }
         
     }

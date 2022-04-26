@@ -263,7 +263,6 @@ class AgandarCita(CreateView):
             pedido.completado = True
             pedido.save()
             datos = {}
-            AgendarCitaCorreo()
 
             return redirect("Ventas:calendario")
 

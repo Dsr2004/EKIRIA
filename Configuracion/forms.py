@@ -1,12 +1,10 @@
 from dataclasses import fields
 from django import forms
-from .models import Rol
 from .models import cambios,cambiosFooter
 from crispy_forms.helper import FormHelper
 from django.contrib.auth.models import Group
 
 class RolForm(forms.ModelForm):
-    
     class Meta:
         model = Group
         fields = ('name',)

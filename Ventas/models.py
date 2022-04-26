@@ -7,21 +7,11 @@ from django.template.loader import render_to_string
 from datetime import datetime, timedelta, time
 
 from django.db import models
-<<<<<<< HEAD
-from django.db.models.signals import pre_save, m2m_changed, post_save
-=======
 from django.db.models.signals import pre_save, post_save
->>>>>>> fee08ee5987ba486db500865043d0c3b662d3f6c
 from django.utils.text import slugify
 from django.shortcuts import reverse 
 
 from django.conf import settings
-
-<<<<<<< HEAD
-
-=======
-from .correos import AgendarCitaCorreo
->>>>>>> fee08ee5987ba486db500865043d0c3b662d3f6c
 
 usuario=settings.AUTH_USER_MODEL
 
