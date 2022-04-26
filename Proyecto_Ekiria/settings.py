@@ -199,6 +199,6 @@ EMAIL_HOST = 'smtp.gmail.com'
 
 EMAIL_PORT = 587
 
-EMAIL_HOST_USER = 'davitdy2015@gmail.com'
+EMAIL_HOST_USER = 'davidparaekiria@gmail.com'
 
-EMAIL_HOST_PASSWORD = 'rctkhosqgrlggjda'
+EMAIL_HOST_PASSWORD = 'rkirzqseahrqwmsu'
