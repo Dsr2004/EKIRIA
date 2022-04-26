@@ -1,4 +1,4 @@
-from operator import truediv
+
 import smtplib
 from Proyecto_Ekiria.wsgi import *
 from email.mime.text import MIMEText
@@ -7,36 +7,43 @@ from django.template.loader import render_to_string
 from Proyecto_Ekiria import settings
 
 
-def AgendarCitaCorreo(datos):
-    try:
-         #Estableciendo conexion con el servidor
-        Servidor = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT )
-        #establecindo protocolo tls 
-        Servidor.starttls()
-        #logeandose con los datos de los settings
-        Servidor.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+# def conexion():
+#     try:
+#         Servidor = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
+#         print(Servidor.ehlo())
+#         Servidor.starttls()
+#         print(Servidor.ehlo())
+#         Servidor.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+#         print("conexion establecida")
+#     except Exception as e:
+#         print(e)
 
-        #construyendo mensaje para quien de donde y el asunto
+
+def AgendarCitaCorreo(datos):
+    print("llego a la funcion")
+    for dato in datos:
+        print(datos[dato])
+    try:
+        Servidor = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
+        Servidor.starttls()
+        Servidor.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+        print("conexion establecida")
+
         mensaje = MIMEMultipart()
         mensaje['From'] = settings.EMAIL_HOST_USER
-        mensaje['To'] = settings.EMAIL_HOST_USER
-        mensaje['Subject'] = "Tienes un correo"
+        mensaje['To'] = datos.cliente
+        mensaje['Subject'] = "Correo de Agendamiento de cita"
 
-        cliente = f"{datos.cliente_id.nombres} {datos.cliente_id.apellidos}"
-        contexto={"cliente": cliente, "dia":datos.diaCita, "hora":datos.horaInicioCita, "url":"sdfdf"}
-
-        #cuerpo del correo
-        content = render_to_string("Correo/AgendarCitaCorreo.html",)
-        #renderizando la plantilla
+        content = render_to_string("Correo/send_email.html")
         mensaje.attach(MIMEText(content, 'html'))
 
-        #enviando el correo con la configuracion de los setings y de el mensaje contruido anteriormente
         Servidor.sendmail(settings.EMAIL_HOST_USER,
-                            settings.EMAIL_HOST_USER,
+                            datos.cliente,
                             mensaje.as_string())
-        
-        return 
 
         print("Se envio el correo")
     except Exception as e:
-        return str(e)
+        print(e)
+
+
+

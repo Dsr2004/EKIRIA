@@ -74,15 +74,16 @@
 {% endblock Contenido %}
 
 {% block modal %} 
-      <!-- <div class="modal fade" id="CreateRol" role="dialog"></div> -->
+
 <!-- Modal Crear Rol -->
-<!-- <div class="modal fade" id="CrearRol" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
+<div class="modal fade" id="CreateRol" role="dialog"></div>
+  <div class="modal fade" id="CrearRol" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Crear Rol</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
+        </div>
       <div class="modal-body">
       
         <form method='post' id=CrearRoles action="{%url 'CreateRol'%}" enctype="multipart/form-data">
@@ -91,9 +92,7 @@
         {{createform.errors}}
         <div id="errores"></div>
         <label for="nombreRol" >Nombre</label><br>
-        {{crear.nombre}}
-        <label for="descripRol" >Descripcion</label><br>
-        {{crear.descripcion}}
+        {{crear.name}}
         <br>
          <div class="modal-footer" id="botones">
         <button type="submit" class="btn btn-warning" onclick="CrearUsuario();">Confirmar</button>
@@ -103,7 +102,7 @@
       </div>
     </div>
   </div>
-</div>  -->
+</div> 
 
 
 
