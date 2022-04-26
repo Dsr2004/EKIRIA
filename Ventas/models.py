@@ -2,10 +2,12 @@ from datetime import datetime, timedelta, time
 from operator import truediv
 from typing_extensions import Required, Self
 from django.db import models
-from django.db.models.signals import pre_save, m2m_changed
+from django.db.models.signals import pre_save, m2m_changed, post_save
 from django.utils.text import slugify
 from django.shortcuts import reverse 
 from django.conf import settings
+
+
 
 usuario=settings.AUTH_USER_MODEL
 
@@ -269,19 +271,16 @@ def pre_save_servicio_receiver(sender, instance, *args, **kwargs):
         
 def pre_save_cita_receiver(sender, instance, *args, **kwargs):
     if not instance.horaFinCita:
-
         inicio = instance.horaInicioCita
-        fin = datetime(1970, 1, 1, inicio.hour, inicio.minute, inicio.second) + timedelta(minutes=instance.pedido_id.get_cantidad)            
+        fin = datetime(1970, 1, 1, inicio.hour, inicio.minute, inicio.second) + timedelta(minutes=instance.pedido_id.get_cantidad)           
         instance.horaFinCita = time(fin.hour, fin.minute, fin.second)
+    
+def post_save_cita(sender, instance, *args, **kwargs):
+   if instance:
+       AgendarCitaCorreo(instance)
 
-# def pre_save_pedido_receiver(sender, **kwargs):
-#     if sender.total_pagar == None:
-#            sender.total_pagar = 0
-#     else:   
-#         sender.total_pagar = sender.get_total_carrito
 
 
 pre_save.connect(pre_save_servicio_receiver,sender=Servicio)
 pre_save.connect(pre_save_cita_receiver,sender=Cita)
-# pre_save.connect(pre_save_pedido_receiver,sender=Pedido)
-# m2m_changed.connect(changed_pedido_receiver, sender=Pedido)
+post_save.connect(post_save_cita,sender=Cita)

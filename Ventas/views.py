@@ -22,6 +22,7 @@ from .forms import ServicioForm, Tipo_servicioForm, EditarTipoServicioForm,Catal
 from .models import *
 from Ventas import models
 
+from .correos import AgendarCitaCorreo
 
 
 
@@ -134,7 +135,6 @@ def CambiarEstadoServicioEnCatalogo(request):
         return redirect("Ventas:listarServicios")  
 
 
-
 def Carrito(request):
     cliente=Usuario.objects.get(username=request.session['username'])
     if cliente:
@@ -187,6 +187,7 @@ def Carrito(request):
     contexto={"pedido":pedido,"User":UserSesion,"serviciosx":serviciosx,"serviciosPerx":serviciosPerx, "User":UserSesion}
 
     return render(request, "Carrito.html",contexto)
+
 
 class AgandarCita(CreateView):
     model = Cita
@@ -261,7 +262,11 @@ class AgandarCita(CreateView):
             form.save()
             pedido.completado = True
             pedido.save()
+            datos = {}
+            AgendarCitaCorreo()
+
             return redirect("Ventas:calendario")
+
         else:
             return render(request, self.template_name, {"form":self.form_class})
 
@@ -671,7 +676,7 @@ class ListarCita(ListView):
             return context
     
    
-    
+
 class EditarCitaDetalle(DetailView):
     model = Cita
     template_name = "DetalleEditarCita.html"
@@ -714,7 +719,7 @@ class EditarCitaDetalle(DetailView):
             context["SePuedeModificar"] = False
         return context
 
-class EditarCita(ActualiarCitaMixin, UpdateView): #mixin para que no se entre sino tiene los dias habile 
+class EditarCita(ActualiarCitaMixin, UpdateView): 
     model = Cita
     template_name = "EditarCita.html"
     form_class = CitaForm
@@ -751,7 +756,7 @@ class EditarCita(ActualiarCitaMixin, UpdateView): #mixin para que no se entre si
 
 
   
-
+    
     def post(self, request, *args, **kwargs):
         if request.is_ajax():
             datos = request.POST
