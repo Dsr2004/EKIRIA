@@ -12,7 +12,7 @@ from django.shortcuts import render
 from django.http import HttpResponse,JsonResponse
 from django.views.generic import View, CreateView, UpdateView, ListView, DetailView
 from django.urls import reverse_lazy
-from django.contrib.auth.models import Permission,Group, group_Permissions
+from django.contrib.auth.models import Permission,Group
 from Usuarios.models import Usuario
 # Create your views here.
 
@@ -312,6 +312,7 @@ class EditarRolView(UpdateView):
 class listarPermisos(ListView):
     model = Permission
     template_name = 'Permisos.html'
+    context_object_name="Permisos"
     def get_context_data(self, *args, **kwargs):
         context = super(listarPermisos, self).get_context_data(**kwargs)
         UserSesion=""
