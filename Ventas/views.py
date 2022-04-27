@@ -640,7 +640,6 @@ class AgregarCita(TemplateView):
         context = super(AgregarCita, self).get_context_data(**kwargs)
         try:
             UserSesion=""
-            print("2113124")
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
@@ -652,6 +651,7 @@ class AgregarCita(TemplateView):
                 else:
                     return redirect("SinPermisos")
         except Exception as e:
+            print("agendar cita")
             print(e)
         return context
 
@@ -757,8 +757,6 @@ class EditarCita(ActualiarCitaMixin, UpdateView):
       
         return context
 
-
-  
     
     def post(self, request, *args, **kwargs):
         if request.is_ajax():
@@ -768,11 +766,11 @@ class EditarCita(ActualiarCitaMixin, UpdateView):
             cita = models.Cita.objects.get(id_cita=request.POST["id_cita"])
             datos["pedido_id"]=cita.pedido_id
             datos["cliente_id"]=cita.cliente_id
+            print(datos)
             form = self.form_class(datos, instance=self.get_object())
 
             if form.is_valid():
                 object = form.save()
-                print(object)
                 calendario = models.Calendario.objects.get(cita_id=object.id_cita)
                 calendario.empleado_id = object.empleado_id
                 calendario.diaCita = object.diaCita
@@ -835,10 +833,13 @@ class CambiarEstadoDeCita(TemplateView):
         return HttpResponse(update)
 
 class CancelarCita(View):
+    model = Cita
     def post(self, request, *args, **kwargs):
         if request.is_ajax():
-            print(request.POST["cita"])
-        return HttpResponse("Dfdfdf")
+            cita = self.model.objects.get(id_cita=request.POST["cita"])
+            cita.cancelado = True
+            cita.save()
+        return HttpResponse("Se ha cancelado la cita")
        
 """
 <----------------------------------------------------------------->

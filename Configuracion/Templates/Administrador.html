@@ -77,4 +77,11 @@
             </div>
         </div>
     </div>
+
+    <hr>
+    {% for i in permisos %}
+        
+        <br>
+        <h6>{{i}} {{forloop.counter}}</h6>
+    {% endfor %}
     {% endblock Contenido %}

@@ -272,6 +272,14 @@ def pre_save_servicio_receiver(sender, instance, *args, **kwargs):
     if not instance.slug:
         instance.slug=slugify(instance.nombre)
 
+def pre_save_servicio_personalizado_receiver(sender, instance, *args, **kwargs):
+    if instance:
+        if instance.tipo_servicio_id.nombre == "Manicure" or instance.tipo_servicio_id.nombre == "manicure" or instance.tipo_servicio_id.nombre == "MANICURE":
+            instance.duracion = 120
+        elif instance.tipo_servicio_id.nombre == "Pedicure" or instance.tipo_servicio_id.nombre == "pedicure" or instance.tipo_servicio_id.nombre == "PEDICURE":
+            instance.duracion = 120
+        else:
+            instance.duracion = 0
         
 def pre_save_cita_receiver(sender, instance, *args, **kwargs):
     if not instance.horaFinCita:
@@ -306,5 +314,6 @@ def post_save_cita(sender, instance, *args, **kwargs):
             print(e)
 
 pre_save.connect(pre_save_servicio_receiver,sender=Servicio)
+pre_save.connect(pre_save_servicio_personalizado_receiver,sender=Servicio_Personalizado)
 pre_save.connect(pre_save_cita_receiver,sender=Cita)
 post_save.connect(post_save_cita,sender=Cita)

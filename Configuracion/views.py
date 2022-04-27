@@ -10,7 +10,7 @@ from django.shortcuts import render
 
 
 from django.http import HttpResponse,JsonResponse
-from django.views.generic import View, CreateView, UpdateView, ListView
+from django.views.generic import View, CreateView, UpdateView, ListView, DetailView
 from django.urls import reverse_lazy
 from django.contrib.auth.models import Permission,Group
 from Usuarios.models import Usuario
@@ -83,9 +83,33 @@ def Permisos(request):
         except:
             return redirect("UNR")
     
-def Admin(request):
-    
-    return render(request, "Administrador.html")
+class Admin(DetailView):
+    model = Permission
+    template_name = 'Administrador.html'
+    def get(self, request,*args, **kwargs):
+        context = {}
+        UserSesion=""
+        try:
+            if self.request.session:
+                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
+                imagen = imagen.img_usuario
+                if self.request.session['Admin'] == True:
+                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                else:
+                    return redirect("SinPermisos")
+                context["User"]=UserSesion
+        
+        except:
+            return redirect("UNR")
+
+        permisos = Group.objects.get(id=self.kwargs["pk"])
+        permisos = permisos.permissions.all()
+
+        context["permisos"] = permisos
+
+        return render(request, self.template_name, context)
+
+        
 
 def Empleado(request):
     return render(request, "Empleado.html")
@@ -299,6 +323,7 @@ class listarPermisos(ListView):
                 else:
                     return redirect("SinPermisos")
                 context["User"]=UserSesion
+                context["grupos"] = Group.objects.all()
                 return context
         except:
             return redirect("UNR")
