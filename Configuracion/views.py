@@ -102,9 +102,10 @@ class Admin(DetailView):
         except:
             return redirect("UNR")
 
-        permisos = Group.objects.get(id=self.kwargs["pk"])
-        permisos = permisos.permissions.all()
-
+        rol = Group.objects.get(id=self.kwargs["pk"])
+        permisos = rol.permissions.all()
+        
+        context["rol"] = rol
         context["permisos"] = permisos
 
         return render(request, self.template_name, context)
