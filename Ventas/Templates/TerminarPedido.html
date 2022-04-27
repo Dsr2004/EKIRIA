@@ -144,6 +144,7 @@
   timepicker:false,
     format:'d/m/Y',
     minDate: 0,
+    validateOnBlur: false,
     onChangeDateTime:function(dp,$input){
       let empleado=$("#empleado").val()
       $.ajax({
@@ -159,6 +160,7 @@
           console.log(error.responseJSON)
         }
       })
+      event.preventDefault()
     },
     disabledDates:['2022/03/17'],
   })
