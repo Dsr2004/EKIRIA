@@ -13,14 +13,19 @@
         {%block Contenido%}
     <div class="PermiAdmin">
         <div class="PermiAdmin2" >
-                <h3>Permisos para el administrador</h3>
+                {% for permiso in Permisos %}
+                {%for grupo in Groups %}
+                <h3>Permisos para el {{grupo.name}}</h3>
             <div class="custom-control custom-switch">
                 <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
-                    <label class="form-check-label" for="flexSwitchCheckChecked">Permiso 1</label>
+                    <label class="form-check-label" for="flexSwitchCheckChecked">Permiso{{forloop.counter}}</label>
                 </div>
                     <br>
-                <div class="form-check form-switch">
+                
+                {% endfor %}
+                {% endfor %}
+                <!-- <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
                         <label class="form-check-label" for="flexSwitchCheckChecked">Permiso 2</label>
                 </div>
@@ -73,7 +78,7 @@
                 <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
                     <label class="form-check-label" for="flexSwitchCheckChecked">Permiso 12</label>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
