@@ -611,14 +611,34 @@ body {
 
 /* Footer*/
 
-.footer {
-    color: var(--white);
-    background-color: var(--black);
-    text-decoration: underline;
-    text-decoration-style: solid;
-    margin-top: 5%;
-    text-decoration: none;
-    z-index: 15;
-    bottom: 0px;
+.footerE {
+    position: fixed;
+    bottom: 0;
+    margin:0;
+    width: 100%;
+    padding: 0;
+    margin:0;
+}
+.footerE .footerContent{
     padding: 5px;
+    list-style: none;
+}
+.footerE .footerContent .Principal ul{
+    padding-top: 5px;
+    list-style: none;
+    display:flex;
+    justify-content:space-between;
+    padding-right: 15px;
+    font-size:18px;
+    margin-bottom:0px;
+}
+.footerE .footerContent:hover .Segundario{
+    display: block;
+    padding: 0 20px;
+}
+.footerE .footerContent .Segundario{
+    display: none;
+}
+.footerE .footerContent .imgwhatsapp{
+    height: 30px;
 }
