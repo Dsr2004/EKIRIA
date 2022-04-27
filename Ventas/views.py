@@ -330,7 +330,8 @@ class Calendario(TemplateView):
             return redirect("UNR")
 
         #contexto
-        citas=models.Cita.objects.filter(cliente_id=request.session['pk'])
+        citas=models.Cita.objects.filter(cliente_id=request.session['pk']).order_by('-fecha_creacion')
+      
         context={
             "User":UserSesion,
             "citas":citas
@@ -659,6 +660,9 @@ class ListarCita(ListView):
     queryset = Cita.objects.all()
     context_object_name = "citas"
     template_name = "ListarCitas.html"
+
+    
+
     def get_context_data(self, *args, **kwargs):
         context = super(ListarCita, self).get_context_data(**kwargs)
         try:
@@ -784,6 +788,7 @@ class EditarCita(ActualiarCitaMixin, UpdateView):
 class DetalleCita(DetailView):
     model = Cita
     template_name = "DetalleCita.html"
+
     def get_context_data(self, *args, **kwargs):
         context = super(DetalleCita, self).get_context_data(**kwargs)
         try:
@@ -797,6 +802,20 @@ class DetalleCita(DetailView):
                     return redirect("SinPermisos")  
         except:
             return redirect("UNR")
+
+        citax = models.Cita.objects.get(id_cita=self.kwargs["pk"])
+        pedido = models.Pedido.objects.get(id_pedido = citax.pedido_id.id_pedido)
+        items = pedido.pedidoitem_set.all()
+        serviciosx=[]
+        serviciosPerx=[]
+        if items:
+            for i in items:
+                if not i.servicio_id ==  None:
+                    serviciosx.append(i)
+                    context["servicios"]=serviciosx
+                if not i.servicio_personalizado_id == None:
+                    serviciosPerx.append(i)
+                    context["serviciosPer"]=serviciosPerx
         return context
 
 class CambiarEstadoDeCita(TemplateView):

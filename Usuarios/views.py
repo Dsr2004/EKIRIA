@@ -295,8 +295,7 @@ def Admin(request):
         Servicios = Servicio.objects.all()
         Vistas = VistasDiarias.objects.get(id_dia=datetime.today().strftime('%Y-%m-%d'))
     return render(request, template_name, {"Usuario":queryset,"contexto":Servicios, "User":UserSesion, "Vistas":Vistas})
-
-@login_required()    
+  
 class CreateUser(CreateView):
     model = Usuario
     form_class = Regitro
@@ -319,7 +318,6 @@ class CreateUser(CreateView):
         except:
             return context
 
-@login_required()
 class UpdateUser(UpdateView):
     model = Usuario    
     template_name = 'UsersConfiguration/CreateUsers.html'

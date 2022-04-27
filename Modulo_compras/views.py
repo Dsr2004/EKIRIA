@@ -9,28 +9,61 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DeleteView, View
+from Usuarios.models import *
+from django.contrib.auth.decorators import login_required
 
-
-
+@login_required()
 def Listproductos (request):
+    UserSesion=""
+    if request.session:
+        imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+        imagen = imagen.img_usuario
+        if request.session['Admin'] == True:
+            UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+        else:
+            return redirect("SinPermisos")
     Productos=Producto.objects.all()
     producto_form=ProductosForm
-    return render(request,'Productos.html',{'producto_form':producto_form , 'Productos': Productos})
-
+    return render(request,'Productos.html',{'producto_form':producto_form , 'Productos': Productos, 'User':UserSesion})
+@login_required()
 def Listcompra(request):
+    UserSesion=""
+    if request.session:
+        imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+        imagen = imagen.img_usuario
+        if request.session['Admin'] == True:
+            UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+        else:
+            return redirect("SinPermisos")
     Compras=Compra.objects.all()
     compra_form=ComprasForm
-    return render(request,'compra.html',{'compra_form':compra_form , 'Compras': Compras})
-
+    return render(request,'compra.html',{'compra_form':compra_form , 'Compras': Compras, 'User':UserSesion})
+@login_required()
 def Listarprov(request):
+    UserSesion=""
+    if request.session:
+        imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+        imagen = imagen.img_usuario
+        if request.session['Admin'] == True:
+            UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+        else:
+            return redirect("SinPermisos")
     Proveedores=Proveedor.objects.all()
     prov_form=ProveedorForm
-    return render(request,'proveedores.html',{'prov_form':prov_form , 'proveedores': Proveedores})
-
+    return render(request,'proveedores.html',{'prov_form':prov_form , 'proveedores': Proveedores, 'User':UserSesion})
+@login_required()
 def Listartp(request):
+    UserSesion=""
+    if request.session:
+        imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+        imagen = imagen.img_usuario
+        if request.session['Admin'] == True:
+            UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+        else:
+            return redirect("SinPermisos")
     Tp=Tipo_producto.objects.all()
     tp_form=Tipo_productoForm
-    return render(request,'tipoprod.html',{'tp_form':tp_form , 'Tp': Tp})
+    return render(request,'tipoprod.html',{'tp_form':tp_form , 'Tp': Tp, 'User':UserSesion})
 
 
 # class Tipoprod(View):
@@ -66,6 +99,21 @@ class Crearprod(CreateView):
                 response=JsonResponse({"errors":errors,"mensaje":mensaje})
                 response.status_code=400
                 return response
+    def get_context_data(self, *args, **kwargs):
+        context = super(Crearprod, self).get_context_data(**kwargs)
+        try:
+           if self.request.session:
+                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
+                imagen = imagen.img_usuario
+                if self.request.session['Admin'] == True:
+                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                    context["User"]=UserSesion
+                else:
+                    return redirect("SinPermisos")
+                context["User"]=UserSesion
+                return context
+        except:
+            return context
 
 class Modificarprod(UpdateView):
     model= Producto
@@ -83,7 +131,21 @@ class Modificarprod(UpdateView):
                 response=JsonResponse({"errors":errors,"mensaje":mensaje})
                 response.status_code=400
                 return response
-
+    def get_context_data(self, *args, **kwargs):
+        context = super(Modificarprod, self).get_context_data(**kwargs)
+        try:
+           if self.request.session:
+                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
+                imagen = imagen.img_usuario
+                if self.request.session['Admin'] == True:
+                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                    context["User"]=UserSesion
+                else:
+                    return redirect("SinPermisos")
+                context["User"]=UserSesion
+                return context
+        except:
+            return context
 
 
 class Creartp(CreateView):
@@ -102,7 +164,21 @@ class Creartp(CreateView):
                 response=JsonResponse({"errors":errors,"mensaje":mensaje})
                 response.status_code=400
                 return response
-
+    def get_context_data(self, *args, **kwargs):
+        context = super(Creartp, self).get_context_data(**kwargs)
+        try:
+           if self.request.session:
+                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
+                imagen = imagen.img_usuario
+                if self.request.session['Admin'] == True:
+                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                    context["User"]=UserSesion
+                else:
+                    return redirect("SinPermisos")
+                context["User"]=UserSesion
+                return context
+        except:
+            return context
 
 
 
@@ -122,7 +198,21 @@ class Crearprov(CreateView):
                 response=JsonResponse({"errors":errors,"mensaje":mensaje})
                 response.status_code=400
                 return response
-   
+    def get_context_data(self, *args, **kwargs):
+        context = super(Crearprov, self).get_context_data(**kwargs)
+        try:
+           if self.request.session:
+                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
+                imagen = imagen.img_usuario
+                if self.request.session['Admin'] == True:
+                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                    context["User"]=UserSesion
+                else:
+                    return redirect("SinPermisos")
+                context["User"]=UserSesion
+                return context
+        except:
+            return context
         
 
 class Crearcompra(CreateView):
@@ -138,6 +228,22 @@ class Crearcompra(CreateView):
             "form":form
         }
         return render(request, self.template_name,contexto)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(Crearcompra, self).get_context_data(**kwargs)
+        try:
+           if self.request.session:
+                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
+                imagen = imagen.img_usuario
+                if self.request.session['Admin'] == True:
+                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                    context["User"]=UserSesion
+                else:
+                    return redirect("SinPermisos")
+                context["User"]=UserSesion
+                return context
+        except:
+            return context
 
     def post(self,request, *args, **kwargs): 
             if request.is_ajax():
@@ -179,6 +285,22 @@ class modificarprov(UpdateView):
                 response=JsonResponse({"errors":errors,"mensaje":mensaje})
                 response.status_code=400
                 return response
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(modificarprov, self).get_context_data(**kwargs)
+        try:
+           if self.request.session:
+                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
+                imagen = imagen.img_usuario
+                if self.request.session['Admin'] == True:
+                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                    context["User"]=UserSesion
+                else:
+                    return redirect("SinPermisos")
+                context["User"]=UserSesion
+                return context
+        except:
+            return context
 
 def Actprov (request):
     pk = request.POST.get("id_proveedor")

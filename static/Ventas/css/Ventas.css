@@ -214,7 +214,9 @@
     max-height: 685px;
     top: 10px;
     overflow: auto;
+    height: 500px;
 }
+
 
 
 .ContainerHistorialCitas legend{
