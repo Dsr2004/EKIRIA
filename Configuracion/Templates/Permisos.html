@@ -1,4 +1,6 @@
 {%extends 'Menu_Usuario.html'%}
+{%load i18n%}
+
     {% block head %}
 <head>
     <meta charset="UTF-8">
@@ -19,7 +21,9 @@
                 <div class="color">
                     <p class="letraDes">Descripcion</p>
                     <div class="dentropermi">
-                        <p>{{permiso.name}}</p>
+                        {% language 'es' %}
+                        <p>{{permiso.name}}hello</p>
+                        {% endlanguage  %}
                     </div>
                 </div>
             </div>
