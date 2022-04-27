@@ -22,6 +22,7 @@ from .forms import ServicioForm, Tipo_servicioForm, EditarTipoServicioForm,Catal
 from .models import *
 from Ventas import models
 
+from .correos import AgendarCitaCorreo
 
 
 
@@ -134,7 +135,6 @@ def CambiarEstadoServicioEnCatalogo(request):
         return redirect("Ventas:listarServicios")  
 
 
-
 def Carrito(request):
     cliente=Usuario.objects.get(username=request.session['username'])
     if cliente:
@@ -187,6 +187,7 @@ def Carrito(request):
     contexto={"pedido":pedido,"User":UserSesion,"serviciosx":serviciosx,"serviciosPerx":serviciosPerx, "User":UserSesion}
 
     return render(request, "Carrito.html",contexto)
+
 
 class AgandarCita(CreateView):
     model = Cita
@@ -261,7 +262,10 @@ class AgandarCita(CreateView):
             form.save()
             pedido.completado = True
             pedido.save()
+            datos = {}
+
             return redirect("Ventas:calendario")
+
         else:
             return render(request, self.template_name, {"form":self.form_class})
 
@@ -636,7 +640,6 @@ class AgregarCita(TemplateView):
         context = super(AgregarCita, self).get_context_data(**kwargs)
         try:
             UserSesion=""
-            print("2113124")
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
@@ -648,6 +651,7 @@ class AgregarCita(TemplateView):
                 else:
                     return redirect("SinPermisos")
         except Exception as e:
+            print("agendar cita")
             print(e)
         return context
 
@@ -675,7 +679,7 @@ class ListarCita(ListView):
             return context
     
    
-    
+
 class EditarCitaDetalle(DetailView):
     model = Cita
     template_name = "DetalleEditarCita.html"
@@ -718,7 +722,7 @@ class EditarCitaDetalle(DetailView):
             context["SePuedeModificar"] = False
         return context
 
-class EditarCita(ActualiarCitaMixin, UpdateView): #mixin para que no se entre sino tiene los dias habile 
+class EditarCita(ActualiarCitaMixin, UpdateView): 
     model = Cita
     template_name = "EditarCita.html"
     form_class = CitaForm
@@ -753,9 +757,7 @@ class EditarCita(ActualiarCitaMixin, UpdateView): #mixin para que no se entre si
       
         return context
 
-
-  
-
+    
     def post(self, request, *args, **kwargs):
         if request.is_ajax():
             datos = request.POST
@@ -764,11 +766,11 @@ class EditarCita(ActualiarCitaMixin, UpdateView): #mixin para que no se entre si
             cita = models.Cita.objects.get(id_cita=request.POST["id_cita"])
             datos["pedido_id"]=cita.pedido_id
             datos["cliente_id"]=cita.cliente_id
+            print(datos)
             form = self.form_class(datos, instance=self.get_object())
 
             if form.is_valid():
                 object = form.save()
-                print(object)
                 calendario = models.Calendario.objects.get(cita_id=object.id_cita)
                 calendario.empleado_id = object.empleado_id
                 calendario.diaCita = object.diaCita
@@ -831,10 +833,13 @@ class CambiarEstadoDeCita(TemplateView):
         return HttpResponse(update)
 
 class CancelarCita(View):
+    model = Cita
     def post(self, request, *args, **kwargs):
         if request.is_ajax():
-            print(request.POST["cita"])
-        return HttpResponse("Dfdfdf")
+            cita = self.model.objects.get(id_cita=request.POST["cita"])
+            cita.cancelado = True
+            cita.save()
+        return HttpResponse("Se ha cancelado la cita")
        
 """
 <----------------------------------------------------------------->

@@ -13,8 +13,6 @@ from django.shortcuts import reverse
 
 from django.conf import settings
 
-from .correos import AgendarCitaCorreo
-
 usuario=settings.AUTH_USER_MODEL
 
 
@@ -274,12 +272,19 @@ def pre_save_servicio_receiver(sender, instance, *args, **kwargs):
     if not instance.slug:
         instance.slug=slugify(instance.nombre)
 
+def pre_save_servicio_personalizado_receiver(sender, instance, *args, **kwargs):
+    if instance:
+        if instance.tipo_servicio_id.nombre == "Manicure" or instance.tipo_servicio_id.nombre == "manicure" or instance.tipo_servicio_id.nombre == "MANICURE":
+            instance.duracion = 120
+        elif instance.tipo_servicio_id.nombre == "Pedicure" or instance.tipo_servicio_id.nombre == "pedicure" or instance.tipo_servicio_id.nombre == "PEDICURE":
+            instance.duracion = 120
+        else:
+            instance.duracion = 0
         
 def pre_save_cita_receiver(sender, instance, *args, **kwargs):
     if not instance.horaFinCita:
-
         inicio = instance.horaInicioCita
-        fin = datetime(1970, 1, 1, inicio.hour, inicio.minute, inicio.second) + timedelta(minutes=instance.pedido_id.get_cantidad)            
+        fin = datetime(1970, 1, 1, inicio.hour, inicio.minute, inicio.second) + timedelta(minutes=instance.pedido_id.get_cantidad)           
         instance.horaFinCita = time(fin.hour, fin.minute, fin.second)
 
 def post_save_cita(sender, instance, *args, **kwargs):
@@ -309,5 +314,6 @@ def post_save_cita(sender, instance, *args, **kwargs):
             print(e)
 
 pre_save.connect(pre_save_servicio_receiver,sender=Servicio)
+pre_save.connect(pre_save_servicio_personalizado_receiver,sender=Servicio_Personalizado)
 pre_save.connect(pre_save_cita_receiver,sender=Cita)
 post_save.connect(post_save_cita,sender=Cita)

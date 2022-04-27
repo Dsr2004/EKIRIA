@@ -1,9 +1,11 @@
+
 import smtplib
 from Proyecto_Ekiria.wsgi import *
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from django.template.loader import render_to_string
 from Proyecto_Ekiria import settings
+
 
 # def conexion():
 #     try:
@@ -42,7 +44,6 @@ def AgendarCitaCorreo(datos):
         print("Se envio el correo")
     except Exception as e:
         print(e)
-
 
 
 

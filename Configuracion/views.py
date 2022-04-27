@@ -10,13 +10,13 @@ from django.shortcuts import render
 
 
 from django.http import HttpResponse,JsonResponse
-from django.views.generic import View, CreateView, UpdateView, ListView
+from django.views.generic import View, CreateView, UpdateView, ListView, DetailView
 from django.urls import reverse_lazy
 from django.contrib.auth.models import Permission,Group, group_Permissions
 from Usuarios.models import Usuario
 # Create your views here.
 
-from .models import Rol, cambios, cambiosFooter
+from .models import  cambios, cambiosFooter
 from .forms import RolForm, CambiosForm, FooterForm
 
 
@@ -83,14 +83,12 @@ def Permisos(request):
         except:
             return redirect("UNR")
     
-class Admin(ListView):
+
+class Admin(DetailView):
     model = Permission
-    model2 = Group
-    template_name = "Administrador.html"
-    context_object_name = "Permisos"
-    context_object_name2="Groups"
-    def get_context_data(self, *args, **kwargs):
-        context = super(Admin, self).get_context_data(**kwargs)
+    template_name = 'Administrador.html'
+    def get(self, request,*args, **kwargs):
+        context = {}
         UserSesion=""
         try:
             if self.request.session:
@@ -101,11 +99,19 @@ class Admin(ListView):
                 else:
                     return redirect("SinPermisos")
                 context["User"]=UserSesion
-                context ['Groups'] = self.model2.objects.all()
-                return context
+
+        
         except:
             return redirect("UNR")
-    
+
+        rol = Group.objects.get(id=self.kwargs["pk"])
+        permisos = rol.permissions.all()
+        
+        context["rol"] = rol
+        context["permisos"] = permisos
+
+        return render(request, self.template_name, context)
+
 
 def Empleado(request):
     return render(request, "Empleado.html")
@@ -275,6 +281,16 @@ class EditarRolView(UpdateView):
                     
             else:
                 return HttpResponse("holi")
+
+        #         else:
+        #         errores=form.errors
+        #         mensaje = f"{self.model.__name__} no se ha podido actualizar!"
+        #         response = JsonResponse({"mensaje":mensaje, 'errors': errores})
+        #         response.status_code = 400
+        #         return response
+        # else:
+        #     return redirect("Ventas:adminVentas")
+
     def get_context_data(self, *args, **kwargs):
         context = super(EditarRolView, self).get_context_data(**kwargs)
         UserSesion=""
@@ -308,6 +324,7 @@ class listarPermisos(ListView):
                 else:
                     return redirect("SinPermisos")
                 context["User"]=UserSesion
+                context["grupos"] = Group.objects.all()
                 return context
         except:
             return redirect("UNR")
