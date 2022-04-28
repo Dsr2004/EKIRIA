@@ -42,4 +42,11 @@ menuToggle.onclick = function() {
     }
     /**  Transformador scrollbar por tamaño de lista */
 
-/** Submenu */
+/** Footer */
+
+function Footer() {
+    let contenedor = document.getElementById("texto2")
+    let br = document.getElementById("br")
+    contenedor.classList.toggle('activar')
+    br.classList.toggle('block')
+}

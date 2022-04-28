@@ -14,6 +14,7 @@ from django.core.paginator import Paginator
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from Usuarios.models import Usuario
+from Configuracion.models import cambios, cambiosFooter
 from .mixins import ActualiarCitaMixin
 
 
@@ -49,12 +50,16 @@ class Catalogo(ListView):
            if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
+                cambiosQueryset = cambios.objects.all()
+                cambiosfQueryset = cambiosFooter.objects.all()
                 if self.request.session['Admin'] == True:
                     UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
                     context["User"]=UserSesion
                 else:
                     return redirect("SinPermisos")
                 context["User"]=UserSesion
+                context['cambios']=cambiosQueryset
+                context['footer']=cambiosfQueryset
                 return context
         except:
             return context
@@ -77,13 +82,16 @@ class AgregarServicioalCatalogo(View):
         posts = paginado.get_page(pagina)
         pagina_actual=int(pagina)
         paginas=range(1,posts.paginator.num_pages+1)
-
+        cambiosQueryset = cambios.objects.all()
+        cambiosfQueryset = cambiosFooter.objects.all()
         contexto={
             "form":self.form_class,
             "servicios":ServiciosNoEnCatalogo,
             "NoEnCatalogo":posts,
             'paginas':paginas,
-            'pagina_actual':pagina_actual
+            'pagina_actual':pagina_actual,
+            'cambios':cambiosQueryset,
+            'footer':cambiosfQueryset,
         }
 
         return render(request, self.template_name, contexto)
@@ -105,13 +113,17 @@ class AgregarServicioalCatalogo(View):
             pagina_actual=int(pagina)
             paginas=range(1,posts.paginator.num_pages+1)
             #contexto
+            cambiosQueryset = cambios.objects.all()
+            cambiosfQueryset = cambiosFooter.objects.all()
             contexto={
                 'Tipo_Servicios':Tipo_servicio.objects.all(),
                 'form_Tipo_Servicio':formTipo_Servicio,
                 'servicios':posts,
                 'paginas':paginas,
                 'pagina_actual':pagina_actual,
-                "errores": "No se puede realizar su solicitud, el error es: "+str(e)
+                "errores": "No se puede realizar su solicitud, el error es: "+str(e),
+                'cambios':cambiosQueryset,
+                'footer':cambiosfQueryset,
             }
 
             return render(request, "Ventas.html", contexto)
@@ -177,6 +189,8 @@ def Carrito(request):
         if request.session:
                 imagen = Usuario.objects.get(id_usuario=request.session['pk'])
                 imagen = imagen.img_usuario
+                cambiosQueryset = cambios.objects.all()
+                cambiosfQueryset = cambiosFooter.objects.all()
                 if request.session['Admin'] == True:
                     UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
                 else:
@@ -184,7 +198,7 @@ def Carrito(request):
     except:
             return redirect("UNR")
 
-    contexto={"pedido":pedido,"User":UserSesion,"serviciosx":serviciosx,"serviciosPerx":serviciosPerx, "User":UserSesion}
+    contexto={"pedido":pedido,"User":UserSesion,"serviciosx":serviciosx,"serviciosPerx":serviciosPerx, "User":UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset}
 
     return render(request, "Carrito.html",contexto)
 
@@ -222,12 +236,16 @@ class AgandarCita(CreateView):
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
+                cambiosQueryset = cambios.objects.all()
+                cambiosfQueryset = cambiosFooter.objects.all()
                 if self.request.session['Admin'] == True:
                     UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
                     contexto["User"]=UserSesion
                 else:
                     return redirect("SinPermisos")
                 contexto["User"]=UserSesion
+                contexto['cambios']=cambiosQueryset
+                contexto['footer']=cambiosfQueryset
 
         except:
             pass
@@ -322,6 +340,8 @@ class Calendario(TemplateView):
             if request.session:
                 imagen = Usuario.objects.get(id_usuario=request.session['pk'])
                 imagen = imagen.img_usuario
+                cambiosQueryset = cambios.objects.all()
+                cambiosfQueryset = cambiosFooter.objects.all()
                 if request.session['Admin'] == True:
                     UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
                 else:
@@ -334,7 +354,9 @@ class Calendario(TemplateView):
       
         context={
             "User":UserSesion,
-            "citas":citas
+            "citas":citas, 
+            'cambios':cambiosQueryset, 
+            'footer':cambiosfQueryset
         }
         
         return render(request, self.template_name, context)
@@ -351,12 +373,16 @@ class ServiciosPersonalizados(CreateView):
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
+                cambiosQueryset = cambios.objects.all()
+                cambiosfQueryset = cambiosFooter.objects.all()
                 if self.request.session['Admin'] == True:
                     UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
                     context["User"]=UserSesion
                 else:
                     return redirect("SinPermisos")
                 context["User"]=UserSesion
+                context['cambios']=cambiosQueryset
+                context['footer']=cambiosfQueryset
                 return context
         except:
             return redirect("UNR")
@@ -399,6 +425,8 @@ class AdminVentas(TemplateView):
             if request.session:
                 imagen = Usuario.objects.get(id_usuario=request.session['pk'])
                 imagen = imagen.img_usuario
+                cambiosQueryset = cambios.objects.all()
+                cambiosfQueryset = cambiosFooter.objects.all()
                 if request.session['Admin'] == True:
                     UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
                 else:
@@ -414,6 +442,8 @@ class AdminVentas(TemplateView):
             'paginas':paginas,
             'pagina_actual':pagina_actual,
             "User":UserSesion,
+            'cambios':cambiosQueryset,
+            'footer':cambiosfQueryset
         }
         
         return render(request, self.template_name, context)
@@ -522,9 +552,13 @@ class AgregarServicio(CreateView):#crear
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
+                cambiosQueryset = cambios.objects.all()
+                cambiosfQueryset = cambiosFooter.objects.all()
                 if self.request.session['Admin'] == True:
                     UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
                     context["User"]=UserSesion
+                    context['cambios']=cambiosQueryset
+                    context['footer']=cambiosfQueryset
                 else:
                     return redirect("SinPermisos")
         except:
@@ -551,12 +585,18 @@ class EditarServicio(UpdateView):#actualizar
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
+                cambiosQueryset = cambios.objects.all()
+                cambiosfQueryset = cambiosFooter.objects.all()
                 if self.request.session['Admin'] == True:
                     UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
                     context["User"]=UserSesion
+                    context['cambios']=cambiosQueryset
+                    context['footer']=cambiosfQueryset
                 else:
                     return redirect("SinPermisos")
                 context["User"]=UserSesion
+                context['cambios']=cambiosQueryset
+                context['footer']=cambiosfQueryset
                 return context
         except:
             return context
@@ -582,12 +622,18 @@ class ListarServicio(ListView):#listar
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
+                cambiosQueryset = cambios.objects.all()
+                cambiosfQueryset = cambiosFooter.objects.all()
                 if self.request.session['Admin'] == True:
                     UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
                     context["User"]=UserSesion
+                    context['cambios']=cambiosQueryset
+                    context['footer']=cambiosfQueryset
                 else:
                     return redirect("SinPermisos")
                 context["User"]=UserSesion
+                context['footer']=cambiosfQueryset
+                context['cambios']=cambiosQueryset
                 return context
         except:
             return redirect("UNR")
@@ -643,10 +689,14 @@ class AgregarCita(TemplateView):
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
+                cambiosQueryset = cambios.objects.all()
+                cambiosfQueryset = cambiosFooter.objects.all()
                 print("_______________________1")
                 if self.request.session['Admin'] == True:
                     UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
                     context["User"] = UserSesion
+                    context['cambios']=cambiosQueryset
+                    context['footer']=cambiosfQueryset
                     return context
                 else:
                     return redirect("SinPermisos")
@@ -669,9 +719,13 @@ class ListarCita(ListView):
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
+                cambiosQueryset = cambios.objects.all()
+                cambiosfQueryset = cambiosFooter.objects.all()
                 if self.request.session['Admin'] == True:
                     UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
                     context["User"] = UserSesion
+                    context['cambios']=cambiosQueryset
+                    context['footer']=cambiosfQueryset
                     return context
                 else:
                     return redirect("SinPermisos")
@@ -692,8 +746,13 @@ class EditarCitaDetalle(DetailView):
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
+                cambiosQueryset = cambios.objects.all()
+                cambiosfQueryset = cambiosFooter.objects.all()
+                
                 UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
                 context["User"]=UserSesion
+                context['cambios']=cambiosQueryset
+                context['footer']=cambiosfQueryset
             else:
                 return redirect("SinPermisos")
         except:
@@ -734,9 +793,13 @@ class EditarCita(ActualiarCitaMixin, UpdateView):
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
+                cambiosQueryset = cambios.objects.all()
+                cambiosfQueryset = cambiosFooter.objects.all()
                 if self.request.session['Admin'] == True:
                     UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
                     context["User"]=UserSesion
+                    context['cambios']=cambiosQueryset
+                    context['footer']=cambiosfQueryset
                 else:
                     return redirect("SinPermisos")  
         except:
@@ -793,9 +856,13 @@ class DetalleCita(DetailView):
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
+                cambiosQueryset = cambios.objects.all()
+                cambiosfQueryset = cambiosFooter.objects.all()
                 if self.request.session['Admin'] == True:
                     UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
                     context["User"]=UserSesion
+                    context['cambios']=cambiosQueryset
+                    context['footer']=cambiosfQueryset
                 else:
                     return redirect("SinPermisos")  
         except:
@@ -857,6 +924,8 @@ def pruebas(request):
         if request.session:
             imagen = Usuario.objects.get(id_usuario=request.session['pk'])
             imagen = imagen.img_usuario
+            cambiosQueryset = cambios.objects.all()
+            cambiosfQueryset = cambiosFooter.objects.all()
             if request.session['Admin'] == True:
                 UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
             else:
@@ -866,7 +935,9 @@ def pruebas(request):
     cont={
         "servicios":servicios,
         "form":form,
-        "User":UserSesion
+        "User":UserSesion,
+        'cambios':cambiosQueryset, 
+        'footer':cambiosfQueryset
     }
     return render(request, 'prueba.html',cont)
 

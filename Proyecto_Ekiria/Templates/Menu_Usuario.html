@@ -180,7 +180,7 @@
 
 
         <div class="content ">
-            
+
             <div class="fondo "></div>
             <div class="relle">
 
@@ -198,24 +198,52 @@
 
                 <div>Hola 2</div>
                 {% endblock Contenido %}
+                <br><br><br><br><br><br><br>
 
-
+                <div class="display" id="br">
+                    <br><br><br><br><br><br>
+                </div>
+                <div class="screen">
+                    <br><br><br><br><br>
+                </div>
 
             </div>
+        </div> {% block footer %}
+        <div class="footerE">
+            {%if footer%} {%for cambiosFooter in footer%}
+            <div class="footerContent" id="texto2">
+                <div class="Principal">
+                    <ul>
+                        <li>
+                            <h3 id="text4" class="tipo2">&copy; Todos los derechos reservados Ekiria {{cambiosFooter.Derechos}} - Sena</h3>
+                        </li>
+                        <li onclick="Footer()"><i class="fa fa-angle-up icon_show"></i><i class="fa fa-angle-down icon_hide"></i></li>
+                    </ul>
+                </div>
+                <div class="Segundario">
+                    <h3 id="text4" class="tipo2">Direccion: {{cambiosFooter.Direccion}}</h3>
+                    <hr>
+                    <h3><a style="color:{{cambiosFooter.Footer_Color_Letra}};" href="https://wa.me/{{cambiosFooter.Telefono}}" target="_blank"><i class="fa-brands fa-whatsapp"></i> WhatsApp: {{cambiosFooter.Telefono}}</a></h3>
+
+                </div>
+            </div>
+            {%endfor%} {%else%}
+
+            <h1>No hay registros</h1>
+
+            {%endif%}
         </div>
+        {% endblock footer %}
     </div>
 
     </div>
-    {% block footer %}
-      
-    {% endblock footer %}
     {% block modal %} {% endblock modal %}
     <!---->{%block scripts%} {%endblock scripts%}
     <script src="/static/Proyecto_Ekiria/js/jsMenuL.js "></script>
     <script src="/static/Proyecto_Ekiria/assets/js/jquery.app.js "></script>
     <script src="/static/Proyecto_Ekiria/assets/plugins/jquery-ui/jquery-ui.min.js "></script>
     <script src="/static/Proyecto_Ekiria/assets/plugins/moment/moment.js "></script>
-    
+
 
 </body>
 
