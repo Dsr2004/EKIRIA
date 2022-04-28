@@ -1,7 +1,7 @@
 from django.contrib import admin
-from .models import Rol
-from .models import Permiso
+# from .models import Rol
+# from .models import Permiso
 
-admin.site.register(Rol)
+# admin.site.register(Rol)
 
-admin.site.register(Permiso)
+# admin.site.register(Permiso)
