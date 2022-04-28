@@ -1,5 +1,5 @@
 import smtplib
-from Proyecto_Ekiria.wsgi import *
+
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from django.template.loader import render_to_string
@@ -13,7 +13,7 @@ from django.shortcuts import reverse
 
 from django.conf import settings
 
-from .correos import AgendarCitaCorreo
+
 
 usuario=settings.AUTH_USER_MODEL
 
