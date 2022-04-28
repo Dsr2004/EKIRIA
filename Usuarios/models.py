@@ -32,6 +32,7 @@ class Municipio(models.Model):
         
     def __str__(self) :
         return self.nom_municipio
+        
 class UsuarioManager(BaseUserManager):
     def create_user(self,email,username,nombres,apellidos,celular,fec_nac,num_documento,direccion, cod_postal,password=None):
         if  not email:

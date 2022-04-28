@@ -50,7 +50,8 @@ body {
     flex-wrap: wrap;
     justify-content: center;
 }
-.Perfil a img{
+
+.Perfil a img {
     image-rendering: crisp-edges;
 }
 
@@ -103,7 +104,7 @@ body {
     margin-top: 500px;
     position: sticky;
     bottom: 0;
-    width: 100%;
+    width: 101%;
     background-color: #161616;
     box-shadow: 0px -5px 5px 2px #0f0f0f;
     border-radius: 0;
@@ -123,11 +124,17 @@ body {
 /*    Scrollbar menu lateral de usuario     */
 
 .list_content::-webkit-scrollbar {
+    padding-left: 10px;
     width: 5px;
 }
 
 .list_content::-webkit-scrollbar-thumb {
     border: 3px outset #adadad;
+    border-radius: 1px;
+}
+
+.list_content::-webkit-scrollbar-thumb:hover {
+    border: 3px outset var(--ShinyPurple);
     border-radius: 1px;
 }
 
@@ -157,8 +164,8 @@ body {
 }
 
 .list_content {
-    width: 100%;
     height: 60vh;
+    padding-right: 5px;
     margin-left: -20px;
     overflow: auto;
 }
@@ -256,9 +263,13 @@ body {
 
 /* Contenedor de contenido*/
 
+.content::-webkit-scrollbar {
+    display: none;
+}
+
 @media (min-width: 950px) {
     .content {
-        padding-top:10px !important;
+        padding-top: 10px !important;
         width: 100%;
         top: 0px;
         margin-right: 0px;
@@ -266,12 +277,10 @@ body {
         float: right;
         transition: 0.2s;
     }
-}
-
- ::-webkit-scrollbar-thumb:hover {
-    border: 3px outset var(--shinyPurple);
-    border-radius: 0px;
-    box-shadow: inset 10px 10px 30px 0px var(--black)000;
+    .grid.activar .footerE {
+        width: 80%;
+        transition: .3s;
+    }
 }
 
 
@@ -333,6 +342,7 @@ body {
     margin-left: 25px;
     margin-right: -40px;
 }
+
 .menus ul i {
     margin-left: 40%;
     font-size: 20px;
@@ -350,9 +360,11 @@ body {
 .menus ul .links .atext {
     margin-left: 10px !important;
 }
-.menus ul .links i{
+
+.menus ul .links i {
     margin-top: -4px!important;
 }
+
 .menus ul li {
     margin-top: 10px;
 }
@@ -438,8 +450,13 @@ body {
         width: 50px;
         height: 50px;
     }
-    .content{
+    .content {
         width: 100%;
+        overflow: auto
+    }
+    .grid.activar .footerE {
+        width: 75%;
+        transition: .3s;
     }
 }
 
@@ -448,7 +465,7 @@ body {
 
 @media (max-width: 700px) {
     .nav .Perfil {
-        width: 103%;
+        width: 105%;
         margin-top: 0px;
         padding-top: 10px;
         text-align: center;
@@ -467,10 +484,10 @@ body {
     }
     .content.activar {
         width: 0%;
-        display:none;
+        display: none;
         transition: .3s;
     }
-    .content{
+    .content {
         width: 100%;
         overflow: auto
     }
@@ -516,7 +533,7 @@ body {
         transition: 0.1s;
     }
     .list_content {
-        width: 100%;
+        width: 105%;
         height: 60vh;
         margin-left: -20px;
         overflow: auto;
@@ -603,42 +620,95 @@ body {
     }
     #salir {
         position: sticky;
-        margin-left: -10px;
+        margin-left: -5px;
         bottom: 0px;
+    }
+    .screen {
+        display: block!important;
+    }
+    .footerE .footerContent .Principal ul {
+        list-style: none;
+        margin-left: -10px;
+        display: grid !important;
+        grid-template-columns: 140% 0%;
+        font-size: 18px;
+        margin-bottom: 0px;
     }
 }
 
 
 /* Footer*/
 
+.display {
+    display: none;
+}
+
+.screen {
+    display: none;
+}
+
+.display.block {
+    display: block;
+}
+
 .footerE {
     position: fixed;
     bottom: 0;
-    margin:0;
+    margin: 0;
     width: 100%;
     padding: 0;
-    margin:0;
+    margin: 0;
 }
-.footerE .footerContent{
+
+.footerE .footerContent {
     padding: 5px;
     list-style: none;
 }
-.footerE .footerContent .Principal ul{
-    padding-top: 5px;
+
+.footerE .footerContent .Principal ul {
     list-style: none;
-    display:flex;
-    justify-content:space-between;
+    display: flex;
+    justify-content: space-between;
     padding-right: 15px;
-    font-size:18px;
-    margin-bottom:0px;
+    font-size: 18px;
+    margin-bottom: 0px;
 }
-.footerE .footerContent:hover .Segundario{
-    display: block;
-    padding: 0 20px;
+
+.footerE .footerContent .Principal ul li i {
+    font-size: 32px;
+    padding-bottom: 2px;
+    margin-top: 6px;
+    padding: 0 7.5px 5px 7px;
 }
-.footerE .footerContent .Segundario{
+
+.footerE .footerContent .Principal ul li i:hover {
+    border: 1px solid #fff;
+    border-radius: 5px;
+}
+
+.footerE .footerContent .Principal ul li .icon_hide {
     display: none;
 }
-.footerE .footerContent .imgwhatsapp{
+
+.footerE .footerContent.activar .Principal ul li .icon_hide {
+    display: block;
+}
+
+.footerE .footerContent.activar .Principal ul li .icon_show {
+    display: none;
+}
+
+.footerE .footerContent.activar .Segundario {
+    display: block;
+    padding: 0 20px;
+    transition: 1s;
+}
+
+.footerE .footerContent .Segundario {
+    display: none;
+    transition: 1s;
+}
+
+.footerE .footerContent .imgwhatsapp {
     height: 30px;
 }

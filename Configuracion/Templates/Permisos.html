@@ -38,9 +38,10 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                        <a href="{% url 'Admin' %}">Administrador</a><br>
-                        <a href="{% url 'Empleado' %}">Empleado</a><br>
-                        <a href="{% url 'Cliente' %}">Cliente</a><br>
+                    {% for grupo in grupos %}
+                    <a href="{% url 'Admin' grupo.id %}">{{grupo.name}}</a><br>
+                    {% endfor %}
+                        
                     <br>
                     
                 </div>
