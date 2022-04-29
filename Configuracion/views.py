@@ -17,40 +17,47 @@ from django.views.generic import View, CreateView, UpdateView, ListView, DetailV
 from django.urls import reverse_lazy
 from django.contrib.auth.models import Permission,Group
 from Usuarios.models import Usuario
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 from .models import  cambios, cambiosFooter
 from .forms import RolForm, CambiosForm, FooterForm
 
-
+@login_required()
 def Configuracion(request):
         UserSesion=""
         try:
             if request.session:
                 imagen = Usuario.objects.get(id_usuario=request.session['pk'])
                 imagen = imagen.img_usuario
+                cambiosQueryset = cambios.objects.all()
+                cambiosfQueryset = cambiosFooter.objects.all()
                 if request.session['Admin'] == True:
                     UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
                 else:
                     return redirect("SinPermisos")
-                return render(request, "Configuracion.html", {'User':UserSesion})
+                return render(request, "Configuracion.html", {'User':UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
         except:
             return redirect("UNR")
 
+@login_required()
 def Roles(request):
         UserSesion = ""
         try:
             if request.session:
                 imagen = Usuario.objects.get(id_usuario=request.session['pk'])
                 imagen = imagen.img_usuario
+                cambiosQueryset = cambios.objects.all()
+                cambiosfQueryset = cambiosFooter.objects.all()
                 if request.session['Admin'] == True:
                     UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
                 else:
                     return redirect("SinPermisos")
-                return render(request, "Roles.html", {'User':UserSesion})
+                return render(request, "Roles.html", {'User':UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
         except:
             return redirect("UNR")
 
+@login_required()
 def Cambios(request):
     UserSesion = ""
     formulario = CambiosForm
@@ -61,6 +68,7 @@ def Cambios(request):
         if request.session:
             imagen = Usuario.objects.get(id_usuario=request.session['pk'])
             imagen = imagen.img_usuario
+            cambiosQueryset = cambios.objects.all()
             if request.session['Admin'] == True:
                 UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
             else:
@@ -69,20 +77,24 @@ def Cambios(request):
         return redirect("UNR")
     contexto = {'Cambios' :ListarCambios, 'footer' :Listarfooter}
     contexto["User"]=UserSesion
+    contexto['cambios']=cambiosQueryset
     
     return render (request, "Cambios.html",contexto)
 
+@login_required()
 def Permisos(request):
         UserSesion=""
         try:
             if request.session:
                 imagen = Usuario.objects.get(id_usuario=request.session['pk'])
                 imagen = imagen.img_usuario
+                cambiosQueryset = cambios.objects.all()
+                cambiosfQueryset = cambiosFooter.objects.all()
                 if request.session['Admin'] == True:
                     UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
                 else:
                     return redirect("SinPermisos") 
-                return render(request, "Permisos.html", {'User':UserSesion})
+                return render(request, "Permisos.html", {'User':UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
         except:
             return redirect("UNR")
     
@@ -97,11 +109,15 @@ class Admin(DetailView):
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
+                cambiosQueryset = cambios.objects.all()
+                cambiosfQueryset = cambiosFooter.objects.all()
                 if self.request.session['Admin'] == True:
                     UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
                 else:
                     return redirect("SinPermisos")
                 context["User"]=UserSesion
+                context['cambios']=cambiosQueryset
+                context['footer']=cambiosfQueryset
 
         
         except:
@@ -122,7 +138,7 @@ def Empleado(request):
 def Cliente(request):
     return render(request, "Cliente.html")
 
-
+@login_required()
 def ListarRol(request):
     UserSesion=""
     formulario=RolForm
@@ -131,6 +147,8 @@ def ListarRol(request):
         if request.session:
             imagen = Usuario.objects.get(id_usuario=request.session['pk'])
             imagen = imagen.img_usuario
+            cambiosQueryset = cambios.objects.all()
+            cambiosfQueryset = cambiosFooter.objects.all()
             if request.session['Admin'] == True:
                 UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
             else:
@@ -139,6 +157,8 @@ def ListarRol(request):
         pass
     contexto= {'roles':ListRoles}
     contexto["User"]=UserSesion
+    contexto['cambios']=cambiosQueryset
+    contexto['footer']=cambiosfQueryset
     return render(request, "Roles.html", contexto)
 
 
@@ -182,11 +202,15 @@ class CreateRolView(CreateView):
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
+                cambiosQueryset = cambios.objects.all()
+                cambiosfQueryset = cambiosFooter.objects.all()
                 if self.request.session['Admin'] == True:
                     UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
                 else:
                     return redirect("SinPermisos")
                 context["User"]=UserSesion
+                context['cambios']=cambiosQueryset
+                context['footer']=cambiosfQueryset
                 return context
         except:
             return redirect("UNR")
@@ -218,11 +242,15 @@ class CrearCambios(View):
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
+                cambiosQueryset = cambios.objects.all()
+                cambiosfQueryset = cambiosFooter.objects.all()
                 if self.request.session['Admin'] == True:
                     UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
                 else:
                     return redirect("SinPermisos")
                 context["User"]=UserSesion
+                context['cambios']=cambiosQueryset
+                context['footer']=cambiosfQueryset
                 return context
         except:
             return redirect("UNR")
@@ -254,11 +282,15 @@ class CrearCambiosFooter(View):
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
+                cambiosQueryset = cambios.objects.all()
+                cambiosfQueryset = cambiosFooter.objects.all()
                 if self.request.session['Admin'] == True:
                     UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
                 else:
                     return redirect("SinPermisos")
                 context["User"]=UserSesion
+                context['cambios']=cambiosQueryset
+                context['footer']=cambiosfQueryset
                 return context
         except:
             return redirect("UNR")
@@ -301,11 +333,15 @@ class EditarRolView(UpdateView):
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
+                cambiosQueryset = cambios.objects.all()
+                cambiosfQueryset = cambiosFooter.objects.all()
                 if self.request.session['Admin'] == True:
                     UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
                 else:
                     return redirect("SinPermisos")
                 context["User"]=UserSesion
+                context['cambios']=cambiosQueryset
+                context['footer']=cambiosfQueryset
                 return context
         except:
             return redirect("UNR")
@@ -339,16 +375,20 @@ class listarPermisos(ListView):
             context = super(listarPermisos, self).get_context_data(**kwargs)
             UserSesion=""
         try:
-                if self.request.session:
-                    imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
-                    imagen = imagen.img_usuario
-                    if self.request.session['Admin'] == True:
-                        UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
-                    else:
-                        return redirect("SinPermisos")
-                    context["User"]=UserSesion
-                    context["grupos"] = Group.objects.all()
-                    return context
+            if self.request.session:
+                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
+                imagen = imagen.img_usuario
+                cambiosQueryset = cambios.objects.all()
+                cambiosfQueryset = cambiosFooter.objects.all()
+                if self.request.session['Admin'] == True:
+                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                else:
+                    return redirect("SinPermisos")
+                context["User"]=UserSesion
+                context["grupos"] = Group.objects.all()
+                context['cambios']=cambiosQueryset
+                context['footer']=cambiosfQueryset
+                return context
         except:
             return redirect("UNR")
 

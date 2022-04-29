@@ -180,8 +180,10 @@ def Perfil(request):
         imagen = Usuario.objects.get(id_usuario=request.session['pk'])
         imagen = imagen.img_usuario
         UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+        cambiosQueryset = cambios.objects.all()
+        cambiosfQueryset = cambiosFooter.objects.all()
     usuario = Usuario.objects.get(id_usuario=request.session['pk'])
-    return render(request, "UserInformation/Perfil.html", {"Usuario":usuario, "User":UserSesion})
+    return render(request, "UserInformation/Perfil.html", {"Usuario":usuario, "User":UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
 
 # def Admin(request):
 #     context = {1,2,3,3,4,5,6,7,8,9,10}
@@ -220,6 +222,8 @@ def EditarPerfil(request):
         form = Editar(instance=get_object)
         imagen = Usuario.objects.get(id_usuario=request.session['pk'])
         imagen = imagen.img_usuario
+        cambiosQueryset = cambios.objects.all()
+        cambiosfQueryset = cambiosFooter.objects.all()
         UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session["Admin"]}
     else: 
         return redirect("SinPermisos")
@@ -232,7 +236,7 @@ def EditarPerfil(request):
             e=form.errors
             print(e)
             return JsonResponse({"x":e})
-    return render(request, template_name, {"form":form, "User":UserSesion})
+    return render(request, template_name, {"form":form, "User":UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
     
 @login_required()
 def Change(request):
@@ -242,6 +246,8 @@ def Change(request):
         form = Cambiar(instance=get_object)
         imagen = Usuario.objects.get(id_usuario=request.session['pk'])
         imagen = imagen.img_usuario
+        cambiosQueryset = cambios.objects.all()
+        cambiosfQueryset = cambiosFooter.objects.all()
         UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session["Admin"]}
     else: 
         return redirect("SinPermisos")
@@ -275,7 +281,7 @@ def Change(request):
                 Error ='Contraseña incorrecta'
         except Exception as e:
             print(e)
-    return render(request, 'UserInformation/ChangePassword.html', {"form":form, "User":UserSesion,'message':Error})
+    return render(request, 'UserInformation/ChangePassword.html', {"form":form, "User":UserSesion,'message':Error, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
 
 @login_required()
 def Admin(request):
@@ -283,18 +289,19 @@ def Admin(request):
     if request.session:
         imagen = Usuario.objects.get(id_usuario=request.session['pk'])
         imagen = imagen.img_usuario
+        cambiosQueryset = cambios.objects.all()
+        cambiosfQueryset = cambiosFooter.objects.all()
         if request.session['Admin'] == True:
             UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
         else:
             return redirect("SinPermisos")
-    model = Usuario
     filter = "yes"
     template_name = "UsersConfiguration/UsersAdministration.html"
     if request.method=="GET":
-        queryset = model.objects.all()
+        queryset = Usuario.objects.all()
         Servicios = Servicio.objects.all()
         Vistas = VistasDiarias.objects.get(id_dia=datetime.today().strftime('%Y-%m-%d'))
-    return render(request, template_name, {"Usuario":queryset,"contexto":Servicios, "User":UserSesion, "Vistas":Vistas})
+    return render(request, template_name, {"Usuario":queryset,"contexto":Servicios, "User":UserSesion, "Vistas":Vistas, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
   
 class CreateUser(CreateView):
     model = Usuario
@@ -309,11 +316,15 @@ class CreateUser(CreateView):
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
                 imagen = imagen.img_usuario
+                cambiosQueryset = cambios.objects.all()
+                cambiosfQueryset = cambiosFooter.objects.all()
                 if self.request.session['Admin'] == True:
                     UserSesion = {"username":self.request.session['username'], "titulo":"Crear Usuario", "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
                 else:
                     return redirect("SinPermisos")
                 context["User"]=UserSesion
+                context['cambios']=cambiosQueryset
+                context['footer']=cambiosfQueryset
                 return context
         except:
             return context
@@ -329,11 +340,15 @@ class UpdateUser(UpdateView):
         if self.request.session:
             imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
             imagen = imagen.img_usuario
+            cambiosQueryset = cambios.objects.all()
+            cambiosfQueryset = cambiosFooter.objects.all()
             if self.request.session['Admin'] == True:
                 UserSesion = {"username":self.request.session['username'], "titulo":"Editar Usuario", "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
             else:
                 return redirect("SinPermisos")
             context["User"]=UserSesion
+            context['cambios']=cambiosQueryset
+            context['footer']=cambiosfQueryset
             return context
 
 # class Notification(View):
@@ -348,8 +363,10 @@ def Notification(request):
     if request.session:
         imagen = Usuario.objects.get(id_usuario=request.session['pk'])
         imagen = imagen.img_usuario
+        cambiosQueryset = cambios.objects.all()
+        cambiosfQueryset = cambiosFooter.objects.all()
         UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
-    return render(request, "UserInformation/Notification.html", {"User":UserSesion})
+    return render(request, "UserInformation/Notification.html", {"User":UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
     
 def CambiarEstadoUsuario(request):
     print(request.POST)

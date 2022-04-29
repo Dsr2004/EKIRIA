@@ -1,5 +1,5 @@
 * {
-    --morado: #572364;
+    --morado: var(--Purple);
 }
 
 .contenido {
@@ -160,6 +160,8 @@ form h1 {
     color: #fff;
     cursor: pointer;
 }
+
+
 /* Icono mostrar input password */
 
 .contenido form label {
