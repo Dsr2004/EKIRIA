@@ -1,12 +1,15 @@
+from ast import If
 from msilib.schema import ListView
 from re import template
+import re
 from webbrowser import get
-from django.shortcuts import redirect, render
 import json
 
 # Create your views here.
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.shortcuts import redirect, render
+from django.db.models import Q
 
 
 from django.http import HttpResponse,JsonResponse
@@ -313,20 +316,39 @@ class listarPermisos(ListView):
     model = Permission
     template_name = 'Permisos.html'
     context_object_name="Permisos"
+
+    # def get(self):
+        
+        # print(queryset)
+        # if queryset:
+        #     contexto = self.model.objects.filter(
+        #         Q(name__icontains=queryset)
+        #     )
+        # return contexto
+        
     def get_context_data(self, *args, **kwargs):
-        context = super(listarPermisos, self).get_context_data(**kwargs)
-        UserSesion=""
+
+        queryset = self.request.GET.get("buscar")
+        print(queryset)
+        if queryset:
+            contexto = self.model.objects.filter(
+                Q(name__icontains = queryset)
+            )
+            return {"buscar":contexto}
+        else:
+            context = super(listarPermisos, self).get_context_data(**kwargs)
+            UserSesion=""
         try:
-            if self.request.session:
-                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
-                imagen = imagen.img_usuario
-                if self.request.session['Admin'] == True:
-                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
-                else:
-                    return redirect("SinPermisos")
-                context["User"]=UserSesion
-                context["grupos"] = Group.objects.all()
-                return context
+                if self.request.session:
+                    imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
+                    imagen = imagen.img_usuario
+                    if self.request.session['Admin'] == True:
+                        UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                    else:
+                        return redirect("SinPermisos")
+                    context["User"]=UserSesion
+                    context["grupos"] = Group.objects.all()
+                    return context
         except:
             return redirect("UNR")
 
