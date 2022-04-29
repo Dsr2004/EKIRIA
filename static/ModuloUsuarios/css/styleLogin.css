@@ -1,6 +1,6 @@
 * {
     --separador: 120px;
-    --morado: #572364;
+    --morado: var(--Purple);
 }
 
 body {

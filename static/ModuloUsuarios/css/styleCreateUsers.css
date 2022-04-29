@@ -1,11 +1,10 @@
 * {
-    --morado: #572364;
-    
+    --morado: var(--Purple);
 }
 
 .contenido {
     overflow: auto;
-    max-height:85%;
+    max-height: 85%;
     position: relative;
     text-align: center;
     margin: auto;
@@ -17,7 +16,7 @@
 
 .logo {
     height: 100px;
-    margin-left:20px;
+    margin-left: 20px;
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
@@ -46,13 +45,12 @@ form {
     }
     form input {
         width: 80% !important;
-
     }
     .form {
         margin-left: -45px !important;
     }
     form input {
-    width: calc(100% - 10px)!important;
+        width: calc(100% - 10px)!important;
     }
 }
 
@@ -86,12 +84,12 @@ form {
         width: 40%;
         border-radius: 20px;
     }
-    .botonflex{
+    .botonflex {
         grid-template-columns: 1fr;
     }
     form input {
-    width: calc(100% + 10px)!important;
-}
+        width: calc(100% + 10px)!important;
+    }
 }
 
 .form div {
@@ -173,11 +171,14 @@ form h1 {
     color: #fff;
     cursor: pointer;
 }
-.botonflex{
+
+.botonflex {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: 10px;
 }
+
+
 /* Icono mostrar input password */
 
 .contenido form label {
@@ -201,6 +202,7 @@ form h1 {
 .contenido form label i.hide {
     display: none;
 }
+
 .Error {
     width: 100%;
     height: auto;

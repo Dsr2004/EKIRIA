@@ -37,9 +37,11 @@
     display: grid;
     grid-template-columns: 75% 25%;
 }
-.Admin.Events .Information .cardbox .Card.cursor{
+
+.Admin.Events .Information .cardbox .Card.cursor {
     cursor: pointer;
 }
+
 .Admin.Events .Information .cardbox .Card .numbers {
     position: relative;
     font-weight: 500;
@@ -57,8 +59,6 @@
     font-size: 3.5em;
     color: #3d3d3d;
 }
-
-
 
 
 /*-------------------------Fin DiseÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â±o bloques de informaciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n--------------------*/
@@ -168,4 +168,11 @@
 
 .Perfil_modificar-footer button {
     margin: 0 10px;
+}
+
+.form-switch {
+    top: -37px;
+    padding: 0;
+    margin: 0;
+    margin-bottom: -25px;
 }
