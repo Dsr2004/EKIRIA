@@ -1,4 +1,5 @@
 {%extends 'Menu_Usuario.html'%}
+
     {% block head %}
 <head>
     <meta charset="UTF-8">
@@ -10,9 +11,28 @@
     {% endblock head %}
     {% block Contenido %}
     <h3 class="tituloCambios">Listado de Permisos</h3>
+    <div class="container">
+        <div class="row">
+            <div class=" col-md-12 search">
+                <form method="GET">
+                    <div id="custom-search-input">
+                        <div class="input-group col-md-14">
+                            <input type="text" class="form-control" name="buscar" placeholder="Buscar...">
+                            <span class="input-group-list">
+                                <i class="icon icon-search"></i>
+                                <button type="submit" class=" botonlist btn-primary" style="height: 38px;"  >Buscar</button>
+                            </span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <div class="jldghajkldgjkfdhgk">
     <div class="principalPermisos">
-        {% for permiso in Permisos %}
+        {% for permiso in buscar %}
+        <!-- jhorman me dijo que pusiera buscar en ves de Permisos y
+        esto enlista solo lo que yo busque mas no los permisos que tengo no tenga nada -->
         <div class="con1">
             <h3>- Permiso {{forloop.counter}}</h3>
             <div>

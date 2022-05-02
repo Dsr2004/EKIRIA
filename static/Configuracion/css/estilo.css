@@ -158,7 +158,9 @@
     padding: 5%;
 }
 .tituloCambios{
+    margin-top: 2%;
     text-align: center;
+    text-decoration: overline purple 2px ;
 }
 /* permisos */
 .jldghajkldgjkfdhgk{
@@ -169,7 +171,7 @@
 .principalPermisos{
     align-items: center;
     padding-left: 15%;
-    width: 70%;
+    width: 100%;
     height: auto;
     display: flex;
     flex-wrap: wrap;

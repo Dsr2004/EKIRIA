@@ -295,11 +295,10 @@ def Admin(request):
             UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
         else:
             return redirect("SinPermisos")
-    model = Usuario
     filter = "yes"
     template_name = "UsersConfiguration/UsersAdministration.html"
     if request.method=="GET":
-        queryset = model.objects.all()
+        queryset = Usuario.objects.all()
         Servicios = Servicio.objects.all()
         Vistas = VistasDiarias.objects.get(id_dia=datetime.today().strftime('%Y-%m-%d'))
     return render(request, template_name, {"Usuario":queryset,"contexto":Servicios, "User":UserSesion, "Vistas":Vistas, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})

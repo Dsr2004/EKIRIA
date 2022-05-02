@@ -8,8 +8,7 @@
     <title>Administracion de usuarios</title>
     <link rel="stylesheet" href="/static/Proyecto_Ekiria/css/styleTablesInformations.css">
     <link rel="stylesheet" href="/static/ModuloUsuarios/css/styleAdministration.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css">
+
 </head>{% endblock head %} {% block Contenido %}
 <!----------------------------------------Dashborad Usuarios---------------------------------------->
 
@@ -40,18 +39,20 @@
             let Usuario = document.getElementById('NumUser');
             Usuario.innerHTML = CantUsuarios
         </script>
-        <div class="cardbox" onclick="redirect('{%url "Ventas:listarServicios"%}')">
-            <div class="Card cursor">
-                <div>
-                    <div class="numbers" id="NumSer">
+        <div class="cardbox">
+            <a href="{%url 'Ventas:listarServicios'%}">
+                <div class="Card cursor">
+                    <div>
+                        <div class="numbers" id="NumSer">
 
+                        </div>
+                        <div class="cardName">Servicios</div>
                     </div>
-                    <div class="cardName">Servicios</div>
+                    <div class="iconA">
+                        <i class="mdi mdi-basket centrado"></i>
+                    </div>
                 </div>
-                <div class="iconA">
-                    <i class="mdi mdi-basket centrado"></i>
-                </div>
-            </div>
+            </a>
         </div>
         {%if contexto%} {% for Servicio in contexto %} {% if Servicio.estado == True%}
         <script>
@@ -96,28 +97,15 @@
         </div>
     </div>
 </div>
-
-
-<div class="Table Header-table">
-    <div class="Table search">
-        <label>
-        <input type="search" id="search" placeholder="Search here" aria-controls="TableUsers">
-        <i class="fas fa-search"></i>
-    </label>
-    </div>
-    <div class="Table Add">
-        <button type="button" onclick="añadirUsuario()" class="Add img">
-            <i class="fas fa-user-plus"></i>
-        </button>
-    </div>
-</div>
-
 <div class="Table Content-table">
     <div class="Information">
         <div class="cardHeader">
-            <i class="fas fa-angle-left"></i>
             <h2> Usuarios Registrados </h2>
-            <i class="fas fa-angle-right"></i>
+        </div>
+        <div class="Table Add">
+            <button type="button" onclick="añadirUsuario()" class="Add img">
+                <i class="fas fa-user-plus"></i>
+            </button>
         </div>
         <div class="container">
             <div class="row">
@@ -143,34 +131,34 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {%if Usuario%} {% for User in Usuario%}
+                            {%if Usuario%} {% for user in Usuario%}
                             <tr>
-                                <td>{{User.username}}</td>
-                                <td>{{User.nombres}}</td>
-                                <td>{{User.apellidos}}</td>
+                                <td>{{user.username}}</td>
+                                <td>{{user.nombres}}</td>
+                                <td>{{user.apellidos}}</td>
                                 <td>
-                                    {% if User.telefono %} {{User.telefono}} {%else%} No Aplica {% endif %}
+                                    {% if user.telefono %} {{user.telefono}} {%else%} No Aplica {% endif %}
                                 </td>
-                                <td>{{User.celular}}</td>
-                                <td>{{User.email}}</td>
-                                <td>{{User.tipo_documento}}</td>
-                                <td>{{User.num_documento}}</td>
-                                <td>{% if User.direccion %} {{User.direccion}} {%else%} No Aplica {% endif %}</td>
-                                <td>{{User.cod_postal}}</td>
-                                <td>{{User.municipio}}</td>
-                                <td>{{User.rol}}</td>
-                                <td>{% if User.last_login %} {{User.last_login}} {%else%} No ha iniciado sesión {% endif %}</td>
+                                <td>{{user.celular}}</td>
+                                <td>{{user.email}}</td>
+                                <td>{{user.tipo_documento}}</td>
+                                <td>{{user.num_documento}}</td>
+                                <td>{% if user.direccion %} {{user.direccion}} {%else%} No Aplica {% endif %}</td>
+                                <td>{{user.cod_postal}}</td>
+                                <td>{{user.municipio}}</td>
+                                <td>{{user.rol}}</td>
+                                <td>{% if user.last_login %} {{user.last_login}} {%else%} No ha iniciado sesión {% endif %}</td>
                                 <td>
                                     <form id="EstadoUsuarioForm" method="post" action="{% url 'editarEstadoUsuario' %}">
                                         {%csrf_token%}
                                         <div class="form-check form-switch switch-Cambio-TipoServicio" style="margin-left: 20px;">
-                                            <input class="form-check-input" type="checkbox" role="switch" name="esatdo" onclick="CambiarEstadoUsuario('{{User.id_usuario}}')" {% if User.estado %}checked{%endif%}>
+                                            <input class="form-check-input" type="checkbox" role="switch" name="esatdo" onclick="CambiarEstadoUsuario('{{user.id_usuario}}')" {% if user.estado %}checked{%endif%}>
                                         </div>
                                     </form>
                                 </td>
                                 <td>
                                     {% csrf_token %}
-                                    <button type="button" class="Edit" onclick="EditarUsuario('{{User.id_usuario}}')">
+                                    <button type="button" class="Edit" onclick="EditarUsuario('{{user.id_usuario}}')">
                                         <i class="mdi mdi-account-edit"></i>
                                     </button>
                                 </td>
@@ -218,6 +206,8 @@
 {% endblock Contenido %} {% block modal %} {% endblock modal %} {% block scripts %}
 <script src="/static/Proyecto_Ekiria/js/jsTablesInformations.js"></script>
 <script src="/static/ModuloUsuarios/js/mainAdministration.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+
+
+
+
 {% endblock scripts %}

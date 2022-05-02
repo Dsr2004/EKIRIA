@@ -1,12 +1,16 @@
+from ast import If
 from msilib.schema import ListView
+from pyexpat import model
 from re import template
+import re
 from webbrowser import get
-from django.shortcuts import redirect, render
 import json
 
 # Create your views here.
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.shortcuts import redirect, render
+from django.db.models import Q
 
 
 from django.http import HttpResponse,JsonResponse
@@ -349,8 +353,21 @@ class listarPermisos(ListView):
     model = Permission
     template_name = 'Permisos.html'
     context_object_name="Permisos"
+        
     def get_context_data(self, *args, **kwargs):
+        contexto="" 
+        # este es porque daña un error el contexto por no definirlo cono string
+        queryset = self.request.GET.get("buscar")
+        if queryset:
+            contexto = self.model.objects.filter(
+                Q(name__icontains = queryset)
+            )
+        print(queryset)
+            # return {'buscar':contexto}
+            # print({'buscar':contexto} )
+            # funciona
         context = super(listarPermisos, self).get_context_data(**kwargs)
+        # contexto= self.model.objects.all() este metodo era para intentar mostrar la consulta pero no dio
         UserSesion=""
         try:
             if self.request.session:
@@ -366,6 +383,7 @@ class listarPermisos(ListView):
                 context["grupos"] = Group.objects.all()
                 context['cambios']=cambiosQueryset
                 context['footer']=cambiosfQueryset
+                context['buscar']=contexto
                 return context
         except:
             return redirect("UNR")

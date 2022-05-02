@@ -5,10 +5,8 @@
 
 .Table.Header-table {
     position: relative;
-    display: grid;
-    grid-template-columns: 3fr 1fr;
     width: 95%;
-    margin: 0 -1%;
+    margin: 0 2.5%;
 }
 
 .Table.Add {
@@ -16,57 +14,22 @@
     position: relative;
     display: flex;
     justify-content: end;
+    margin-top: -65px;
+    margin-bottom: 20px;
 }
 
 .Table.Add .Add.img {
     background: none;
     color: inherit;
     border: 2px solid;
-    padding: 10px 15px;
+    padding: 10px 13px;
     font: inherit;
     font-size: 20px;
     border-radius: 50%;
     cursor: pointer;
     outline: inherit;
-    margin-top: 10px;
-}
-
-.Table.search {
-    display: flex;
-    width: 40%;
-    margin: 10px 50%;
-    justify-content: center;
-}
-
-.Table.search label {
-    position: relative;
-    width: 100%;
-}
-
-@media (max-width: 700px) {
-    .Table.search {
-        width: 90%;
-        margin: 10px 5%;
-    }
-}
-
-.Table.search label input {
-    position: relative;
-    border-radius: 40px;
-    padding: 5px 20px;
-    padding-left: 35px;
-    font-size: 18px;
-    width: 100%;
-    outline: none;
-    border: none;
-    box-shadow: 0 7px 25px rgba(0, 0, 0, 0.18);
-}
-
-.Table.search label i {
-    position: absolute;
-    top: 11px;
-    left: 10px;
-    font-size: 1.2em;
+    margin-top: 0px;
+    z-index: 1;
 }
 
 
@@ -81,12 +44,6 @@
     padding: 20px;
     margin: 20px 5%;
     border-radius: 20px;
-    box-shadow: 0 7px 25px rgba(0, 0, 0, 0.28);
-    overflow: hidden;
-}
-
-.Table.Content-table .Information .over {
-    overflow: hidden;
 }
 
 .Table.Content-table .Information .cardHeader {
@@ -97,9 +54,12 @@
     padding: 10px;
     padding-top: 20px;
     margin-left: -10px;
-    display: flex;
-    justify-content: space-between;
     width: 100%;
+    z-index: 1;
+}
+
+table.dataTable {
+    border-collapse: collapse!important;
 }
 
 .Table.Content-table .Information .cardHeader h2 {
@@ -116,11 +76,53 @@
 
 .Table.Content-table .Information table {
     width: 100%;
-    border-color: collapse;
-    margin-top: 10px;
 }
 
-.Table.Content-table .Information table thead td {
+.sorting_1::before {
+    margin-top: -5px !important;
+}
+
+.Table.Content-table .Information table thead {
+    background-color: var(--ShinyPurple);
+}
+
+.Table.Content-table .Information table tfoot td {
+    background-color: rgba(162, 0, 200, 0.38);
+}
+
+.dataTables_filter label,
+.dataTables_length label {
+    font-family: 'Tahoma';
+}
+
+.dataTables_length label select {
+    position: relative;
+    border-radius: 20px;
+    padding-left: 20px;
+    font-size: 18px;
+    width: 100%;
+    outline: none;
+    border: none;
+    box-shadow: 0 7px 25px rgba(0, 0, 0, 0.1);
+}
+
+#TableUsers {
+    margin-left: 5%;
+}
+
+.dataTables_filter label input {
+    position: relative;
+    border-radius: 40px;
+    padding: 5px 15px;
+    font-size: 18px;
+    width: 100%;
+    outline: none;
+    border: none;
+    box-shadow: 0 7px 25px rgba(0, 0, 0, 0.18);
+}
+
+.Table.Content-table .Information table thead td,
+.Table.Content-table .Information table tfoot td {
     font-weight: 600;
 }
 
@@ -140,7 +142,7 @@
 }
 
 .Table.Content-table .Information table tbody tr:hover {
-    background-color: rgba(162, 0, 255, 0.1)
+    background-color: rgba(162, 0, 255, 0.3)
 }
 
 .Table.Content-table .Information table tr td {
@@ -165,18 +167,23 @@
     font-size: 25px;
 }
 
-.Table.Content-table .Information table .child{
+.Table.Content-table .Information table .child {
     text-align: start;
 }
-.Table.Content-table .Information table .child ul{
+
+.Table.Content-table .Information table .child ul {
     float: none;
 }
-.Table.Content-table .Information table .child ul i{
+
+.Table.Content-table .Information table .child ul i {
     color: rgb(255, 255, 0);
 }
-.form-check-input{
+
+.form-check-input {
     position: relative;
     right: -100px;
     top: 11px;
 }
+
+
 /*--------------------------Users table layout-------------------------*/
