@@ -906,6 +906,29 @@ class CancelarCita(View):
             cita = self.model.objects.get(id_cita=request.POST["cita"])
             cita.cancelado = True
             cita.save()
+            try:
+                Servidor = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
+                Servidor.starttls()
+                Servidor.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+                print("conexion establecida")
+
+                mensaje = MIMEMultipart()
+                mensaje['From'] = settings.EMAIL_HOST_USER
+                mensaje['To'] = cita.cliente_id.email
+                mensaje['Subject'] = "Su cita se ha cancelado"
+
+                cliente = f"{str(cita.cliente_id.nombres).capitalize()} {str(cita.cliente_id.apellidos).capitalize()}"
+
+                content = render_to_string("Correo/CancelarCitaCorreo.html", {"cliente":cliente, "dia":cita.diaCita, "hora":cita.horaInicioCita,"url":cita.id_cita})
+                mensaje.attach(MIMEText(content, 'html'))
+
+                Servidor.sendmail(settings.EMAIL_HOST_USER,
+                                    cita.cliente_id.email,
+                                    mensaje.as_string())
+
+                print("Se envio el correo")
+            except Exception as e:
+                print(e)
         return HttpResponse("Se ha cancelado la cita")
        
 """

@@ -103,7 +103,7 @@ class Pedido(models.Model):
     id_pedido=models.AutoField("Id del Pedido", primary_key=True, unique=True)
     cliente_id=models.ForeignKey(usuario, on_delete=models.SET_NULL, blank=True, null=True, db_column="cliente_id")
     completado=models.BooleanField(default=False, null=True, blank=False)
-    total_pagar=models.IntegerField("Total a pagar",null=True,blank=True)
+    total_pagar=models.IntegerField("Total a pagar", default=0)
     
     esPersonalizado=models.BooleanField("Es personalizado", default=False)
     fecha_creacion=models.DateField("Fecha de Creacion", auto_now=False, auto_now_add=True)
