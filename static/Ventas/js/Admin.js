@@ -13,7 +13,7 @@
      });
  }
 
- //ELIMINAR TIPO DE SERVICIO
+ //ELIMINAR TIPO DE SERVICIO 
  function abrir_modal_eliminar(url){ 
    $("#EliminarTipoServicio").load(url, function (){ 
      $(this).appendTo("body").modal('show');
