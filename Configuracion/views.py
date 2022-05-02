@@ -104,8 +104,16 @@ class Admin(DetailView):
     model = Permission
     template_name = 'Administrador.html'
     def get(self, request,*args, **kwargs):
+        grupo = kwargs['pk']
+        print(grupo)
         context = {}
+        queryset = self.request.GET.get("buscar")
         UserSesion=""
+        contexto= self.model.objects.all()
+        if queryset:
+            contexto = self.model.objects.filter(
+                Q(name__icontains = queryset)
+            )
         try:
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
@@ -117,6 +125,8 @@ class Admin(DetailView):
                 else:
                     return redirect("SinPermisos")
                 context["User"]=UserSesion
+                context['buscar']=contexto
+                context['grupo']=grupo
                 context['cambios']=cambiosQueryset
                 context['footer']=cambiosfQueryset
 
@@ -358,16 +368,17 @@ class listarPermisos(ListView):
         contexto="" 
         # este es porque daña un error el contexto por no definirlo cono string
         queryset = self.request.GET.get("buscar")
+        
+        contexto= self.model.objects.all()
         if queryset:
             contexto = self.model.objects.filter(
                 Q(name__icontains = queryset)
             )
-        print(queryset)
             # return {'buscar':contexto}
             # print({'buscar':contexto} )
             # funciona
         context = super(listarPermisos, self).get_context_data(**kwargs)
-        # contexto= self.model.objects.all() este metodo era para intentar mostrar la consulta pero no dio
+        # este metodo era para intentar mostrar la consulta pero no dio
         UserSesion=""
         try:
             if self.request.session:

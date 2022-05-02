@@ -52,11 +52,8 @@ class Catalogo(ListView):
                 imagen = imagen.img_usuario
                 cambiosQueryset = cambios.objects.all()
                 cambiosfQueryset = cambiosFooter.objects.all()
-                if self.request.session['Admin'] == True:
-                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
-                    context["User"]=UserSesion
-                else:
-                    return redirect("SinPermisos")
+                UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                context["User"]=UserSesion
                 context["User"]=UserSesion
                 context['cambios']=cambiosQueryset
                 context['footer']=cambiosfQueryset
@@ -342,10 +339,7 @@ class Calendario(TemplateView):
                 imagen = imagen.img_usuario
                 cambiosQueryset = cambios.objects.all()
                 cambiosfQueryset = cambiosFooter.objects.all()
-                if request.session['Admin'] == True:
-                    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
-                else:
-                    return redirect("SinPermisos")
+                UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
         except:
             return redirect("UNR")
 
