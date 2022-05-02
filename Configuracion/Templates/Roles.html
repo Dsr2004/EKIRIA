@@ -22,10 +22,9 @@
               <tr>
                 <th scope="col">Id</th>
                 <th scope="col">Nombre</th>
-                <th scope="col">Descripcion</th>
                 <th scope="col">Editar</th>
                 <th scope="col">Permiso</th>
-                <th scope="col">Estado</th>
+                <!-- <th scope="col">Estado</th> -->
               </tr>
             </thead>
             <tbody>
@@ -34,14 +33,13 @@
                 <tr>
                   <th scope="row">{{Rol.id}}</th>
                   <td>{{Rol.name}}</td>
-                  <td>Descripcion</td>
                   <td><button type="button" class="btn btn-outline-success" onclick="abrir_modal_editar ('{% url 'updateRol' Rol.id %}')">Editar</button></td>
-                  <td><button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#GrupoRol">Agregar <br>Nivel</button></td>
-                  <td><form method="POST" action="{%url 'estado' %}" id="estadoRol" >
-                        <div class="form-check form-switch"> 
+                  <td><a type="button" class="btn btn-outline-primary"  href="{% url 'Admin' Rol.id %}">Agregar <br>Permisos</a></td>
+                  <!-- <td><form method="POST" action="{%url 'estado' %}" id="estadoRol" > -->
+                        <!-- <div class="form-check form-switch"> 
                           {%csrf_token%}
                             <input class="form-check-input" type="checkbox" name="estado" onclick="ds('{{Rol.id}}')"></div>
-                            <label class="switch"></label>
+                            <label class="switch"></label> -->
                       </form>
                     </td> 
                 </tr>
