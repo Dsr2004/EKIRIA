@@ -358,6 +358,8 @@ class listarPermisos(ListView):
         contexto="" 
         # este es porque daña un error el contexto por no definirlo cono string
         queryset = self.request.GET.get("buscar")
+        
+        contexto= self.model.objects.all()
         if queryset:
             contexto = self.model.objects.filter(
                 Q(name__icontains = queryset)
@@ -367,7 +369,7 @@ class listarPermisos(ListView):
             # print({'buscar':contexto} )
             # funciona
         context = super(listarPermisos, self).get_context_data(**kwargs)
-        # contexto= self.model.objects.all() este metodo era para intentar mostrar la consulta pero no dio
+        # este metodo era para intentar mostrar la consulta pero no dio
         UserSesion=""
         try:
             if self.request.session:
