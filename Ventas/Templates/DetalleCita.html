@@ -18,9 +18,11 @@
         <div class="col-md-2" style="margin-top: 20px;"><button type="button" class="btn btn-primary" onclick="print()">Imprimir</button></div>
     </div>
         <h3><sub>Detalles del pedido</sub></h3>
+        <br>
                <div class="container">
                     {% if servicios %}
-                    <h5>Servicios</h5>
+                        <h6><left><strong>Servicios</strong></left></h6>
+                        <hr>
                         <table class="table" style="background-color: rgba(253, 253, 253, 0.795);">
                             <thead>
                                 <tr>
@@ -46,7 +48,8 @@
                         {% endif %}
                         <!-- servicios personalizados -->
                         {% if serviciosPer %}
-                        <h5>Servicios personalizados</h5>
+                        <h6><left><strong>Servicios personalizados</strong></left></h6>
+                        <hr>
                         <table class="table" style="background-color: rgba(253, 253, 253, 0.795);">
                             <thead>
                                 <tr>

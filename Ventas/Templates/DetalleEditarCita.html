@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/static/Ventas/css/Ventas.css">
     <link rel="icon" href="/static/Proyecto_Ekiria/Img/Logo Ekiria.png">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </head>{% endblock head %}
 
 {% block Contenido %}
@@ -60,7 +61,7 @@
                         {% endif %}
                         <!-- servicios personalizados -->
                         {% if serviciosPer %}
-                        <h5>Servicios personalizados</h5>
+                        <h5><center>Servicios personalizadoss</center></h5>  
                         <table class="table" style="background-color: rgba(253, 253, 253, 0.795);">
                             <thead>
                                 <tr>
@@ -145,13 +146,20 @@
                          <a class="btn btn-block btn-secondary" href="{% url 'Ventas:listarCitas' %}" >Salir</a>   <!--onclick="ConfirmarNoGuardarCita()"-->
                     </div>
                     <div class="col d-grid gap-2">
-                        {% if SePuedeModificar == False %} 
-                        <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"  title="Lo sentimos" data-bs-content="Pero usted no puede modificar esta cita. No cumple con los 3 días de antelación que son requeridos para modificar la cita">
-                            <button class="btn btn-block btn-success" type="button" disabled>Modificar</button>
+                        {% if Cancelado == True %}
+                            <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"  title="Lo sentimos" data-bs-content="Esta cita fue cancelada por lo que no le puede aplicar cambios">
+                            <button class="btn btn-block btn-danger" type="button" disabled>Cita Cancelada</button>
                           </span>
-                         {% else %}
-                         <a class="btn btn-block btn-success"  onclick="IraModificarCita('{% url 'Ventas:editarCita' object.id_cita %}')">Modificar</a>
+                          {% else %}
+                          {% if SePuedeModificar == False %} 
+                          <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"  title="Lo sentimos" data-bs-content="Pero usted no puede modificar esta cita. No cumple con los 3 días de antelación que son requeridos para modificar la cita">
+                              <button class="btn btn-block btn-success" type="button" disabled>Modificar</button>
+                            </span>
+                           {% else %}
+                           <a class="btn btn-block btn-success"  onclick="IraModificarCita('{% url 'Ventas:editarCita' object.id_cita %}')">Modificar</a>
+                          {% endif %}
                         {% endif %}
+                        
                         
                     </div>
                 </div>

@@ -773,6 +773,11 @@ class EditarCitaDetalle(DetailView):
             context["SePuedeModificar"] = True
         else:
             context["SePuedeModificar"] = False
+
+        if citax.cancelado == True:
+            context["Cancelado"]=True
+        else:
+            context["Cancelado"]=False
         return context
 
 class EditarCita(ActualiarCitaMixin, UpdateView): 
@@ -815,29 +820,6 @@ class EditarCita(ActualiarCitaMixin, UpdateView):
         return context
 
     
-    def post(self, request, *args, **kwargs):
-        if request.is_ajax():
-            datos = request.POST
-            datosViejos = datos._mutable
-            datos._mutable = True
-            cita = models.Cita.objects.get(id_cita=request.POST["id_cita"])
-            datos["pedido_id"]=cita.pedido_id
-            datos["cliente_id"]=cita.cliente_id
-            print(datos)
-            form = self.form_class(datos, instance=self.get_object())
-
-            if form.is_valid():
-                object = form.save()
-                calendario = models.Calendario.objects.get(cita_id=object.id_cita)
-                calendario.empleado_id = object.empleado_id
-                calendario.diaCita = object.diaCita
-                calendario.horaInicioCita = object.horaInicioCita
-                calendario.horaFinCita = object.horaFinCita
-                calendario.save()
-                object.save()
-                return HttpResponse(calendario)
-            else:
-                return JsonResponse({"errors":form.errors})
     
 
 class DetalleCita(DetailView):
