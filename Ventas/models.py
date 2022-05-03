@@ -303,7 +303,7 @@ def post_save_cita(sender, instance, *args, **kwargs):
 
             cliente = f"{str(instance.cliente_id.nombres).capitalize()} {str(instance.cliente_id.apellidos).capitalize()}"
 
-            content = render_to_string("Correo/send_email.html", {"cliente":cliente, "dia":instance.diaCita, "hora":instance.horaInicioCita,"url":instance.id_cita})
+            content = render_to_string("Correo/AgendarCitaCorreo.html", {"cliente":cliente, "dia":instance.diaCita, "hora":instance.horaInicioCita,"url":instance.id_cita})
             mensaje.attach(MIMEText(content, 'html'))
 
             Servidor.sendmail(settings.EMAIL_HOST_USER,
