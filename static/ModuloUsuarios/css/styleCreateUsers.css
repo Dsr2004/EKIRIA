@@ -1,6 +1,4 @@
-* {
-    --morado: var(--Purple);
-}
+
 
 .contenido {
     overflow: auto;
@@ -148,7 +146,7 @@ form .fec b {
 }
 
 form h1 {
-    color: var(--morado);
+    color: var(--Purple);
     text-align: center;
 }
 
@@ -164,7 +162,7 @@ form h1 {
     padding: 0;
     width: 100%;
     height: 50px;
-    background-color: var(--morado);
+    background-color: var(--Purple);
     border-radius: 4px!important;
     font-size: 17px!important;
     font-family: Arial, Helvetica, sans-serif;

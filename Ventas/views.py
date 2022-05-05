@@ -52,11 +52,8 @@ class Catalogo(ListView):
                 imagen = imagen.img_usuario
                 cambiosQueryset = cambios.objects.all()
                 cambiosfQueryset = cambiosFooter.objects.all()
-                if self.request.session['Admin'] == True:
-                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
-                    context["User"]=UserSesion
-                else:
-                    return redirect("SinPermisos")
+                UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                context["User"]=UserSesion
                 context["User"]=UserSesion
                 context['cambios']=cambiosQueryset
                 context['footer']=cambiosfQueryset
@@ -342,10 +339,7 @@ class Calendario(TemplateView):
                 imagen = imagen.img_usuario
                 cambiosQueryset = cambios.objects.all()
                 cambiosfQueryset = cambiosFooter.objects.all()
-                if request.session['Admin'] == True:
-                    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
-                else:
-                    return redirect("SinPermisos")
+                UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
         except:
             return redirect("UNR")
 
@@ -779,6 +773,11 @@ class EditarCitaDetalle(DetailView):
             context["SePuedeModificar"] = True
         else:
             context["SePuedeModificar"] = False
+
+        if citax.cancelado == True:
+            context["Cancelado"]=True
+        else:
+            context["Cancelado"]=False
         return context
 
 class EditarCita(ActualiarCitaMixin, UpdateView): 
@@ -821,29 +820,6 @@ class EditarCita(ActualiarCitaMixin, UpdateView):
         return context
 
     
-    def post(self, request, *args, **kwargs):
-        if request.is_ajax():
-            datos = request.POST
-            datosViejos = datos._mutable
-            datos._mutable = True
-            cita = models.Cita.objects.get(id_cita=request.POST["id_cita"])
-            datos["pedido_id"]=cita.pedido_id
-            datos["cliente_id"]=cita.cliente_id
-            print(datos)
-            form = self.form_class(datos, instance=self.get_object())
-
-            if form.is_valid():
-                object = form.save()
-                calendario = models.Calendario.objects.get(cita_id=object.id_cita)
-                calendario.empleado_id = object.empleado_id
-                calendario.diaCita = object.diaCita
-                calendario.horaInicioCita = object.horaInicioCita
-                calendario.horaFinCita = object.horaFinCita
-                calendario.save()
-                object.save()
-                return HttpResponse(calendario)
-            else:
-                return JsonResponse({"errors":form.errors})
     
 
 class DetalleCita(DetailView):
@@ -906,6 +882,29 @@ class CancelarCita(View):
             cita = self.model.objects.get(id_cita=request.POST["cita"])
             cita.cancelado = True
             cita.save()
+            try:
+                Servidor = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
+                Servidor.starttls()
+                Servidor.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+                print("conexion establecida")
+
+                mensaje = MIMEMultipart()
+                mensaje['From'] = settings.EMAIL_HOST_USER
+                mensaje['To'] = cita.cliente_id.email
+                mensaje['Subject'] = "Su cita se ha cancelado"
+
+                cliente = f"{str(cita.cliente_id.nombres).capitalize()} {str(cita.cliente_id.apellidos).capitalize()}"
+
+                content = render_to_string("Correo/CancelarCitaCorreo.html", {"cliente":cliente, "dia":cita.diaCita, "hora":cita.horaInicioCita,"url":cita.id_cita})
+                mensaje.attach(MIMEText(content, 'html'))
+
+                Servidor.sendmail(settings.EMAIL_HOST_USER,
+                                    cita.cliente_id.email,
+                                    mensaje.as_string())
+
+                print("Se envio el correo")
+            except Exception as e:
+                print(e)
         return HttpResponse("Se ha cancelado la cita")
        
 """

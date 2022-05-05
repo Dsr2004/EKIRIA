@@ -1,5 +1,5 @@
 import smtplib
-from Proyecto_Ekiria.wsgi import *
+
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from django.template.loader import render_to_string
@@ -12,6 +12,7 @@ from django.utils.text import slugify
 from django.shortcuts import reverse 
 
 from django.conf import settings
+
 
 usuario=settings.AUTH_USER_MODEL
 
@@ -102,7 +103,7 @@ class Pedido(models.Model):
     id_pedido=models.AutoField("Id del Pedido", primary_key=True, unique=True)
     cliente_id=models.ForeignKey(usuario, on_delete=models.SET_NULL, blank=True, null=True, db_column="cliente_id")
     completado=models.BooleanField(default=False, null=True, blank=False)
-    total_pagar=models.IntegerField("Total a pagar",null=True,blank=True)
+    total_pagar=models.IntegerField("Total a pagar", default=0)
     
     esPersonalizado=models.BooleanField("Es personalizado", default=False)
     fecha_creacion=models.DateField("Fecha de Creacion", auto_now=False, auto_now_add=True)
@@ -302,7 +303,7 @@ def post_save_cita(sender, instance, *args, **kwargs):
 
             cliente = f"{str(instance.cliente_id.nombres).capitalize()} {str(instance.cliente_id.apellidos).capitalize()}"
 
-            content = render_to_string("Correo/send_email.html", {"cliente":cliente, "dia":instance.diaCita, "hora":instance.horaInicioCita,"url":instance.id_cita})
+            content = render_to_string("Correo/AgendarCitaCorreo.html", {"cliente":cliente, "dia":instance.diaCita, "hora":instance.horaInicioCita,"url":instance.id_cita})
             mensaje.attach(MIMEText(content, 'html'))
 
             Servidor.sendmail(settings.EMAIL_HOST_USER,

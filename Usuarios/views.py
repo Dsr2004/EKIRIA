@@ -190,8 +190,6 @@ def if_admin(request):
     if request.session:
         imagen = Usuario.objects.get(id_usuario=request.session['pk'])
         imagen = imagen.img_usuario
-        cambiosQueryset = cambios.objects.all()
-        cambiosfQueryset = cambiosFooter.objects.all()
         if request.session['Admin'] == True:
             UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
             return UserSesion
@@ -269,7 +267,10 @@ def Change(request):
 
 @login_required()
 def Admin(request):
-    if_admin(request)
+    UserSesion=""
+    if_admin()
+    cambiosQueryset = cambios.objects.all()
+    cambiosfQueryset = cambiosFooter.objects.all()
     filter = "yes"
     template_name = "UsersConfiguration/UsersAdministration.html"
     if request.method=="GET":
