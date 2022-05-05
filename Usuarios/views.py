@@ -185,34 +185,18 @@ def Perfil(request):
     usuario = Usuario.objects.get(id_usuario=request.session['pk'])
     return render(request, "UserInformation/Perfil.html", {"Usuario":usuario, "User":UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
 
-# def Admin(request):
-#     context = {1,2,3,3,4,5,6,7,8,9,10}
-#     return render(request, "UsersConfiguration/UsersAdministration.html",{'rep':context})
-
-# class Perfil(DetailView):
-#     model = Usuario
-#     context_object_name="Usuario"
-#     template_name="UserInformation/Perfil.html"
-#     queryset=Usuario.objects.all()
-    
-
-# class EditarPerfil(UpdateView):
-#     model = Usuario
-#     form_class = Editar
-#     template_name = "UserInformation/EditarPerfil.html"
-#     def post(self, request, *args, **kwargs):
-#         form=self.form_class(request.POST or None, request.FILES or None, instance=self.get_object())
-#         if form.is_valid():
-#             form.save()
-#             print(request.FILES)
-#             username = request.POST.get('username')
-#             Object = Usuario.objects.get(username=username)
-#             id = Object.id_usuario
-#             return redirect("../Perfil/"+str(id))
-#         else:
-#             e=form.errors
-#             print(e)
-#             return JsonResponse({"x":e})
+def if_admin(request):
+    UserSesion=""
+    if request.session:
+        imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+        imagen = imagen.img_usuario
+        cambiosQueryset = cambios.objects.all()
+        cambiosfQueryset = cambiosFooter.objects.all()
+        if request.session['Admin'] == True:
+            UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+            return UserSesion
+        else:
+            return redirect("SinPermisos")
 @login_required()
 def EditarPerfil(request):  
     UserSesion=""
@@ -285,16 +269,7 @@ def Change(request):
 
 @login_required()
 def Admin(request):
-    UserSesion=""
-    if request.session:
-        imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-        imagen = imagen.img_usuario
-        cambiosQueryset = cambios.objects.all()
-        cambiosfQueryset = cambiosFooter.objects.all()
-        if request.session['Admin'] == True:
-            UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
-        else:
-            return redirect("SinPermisos")
+    if_admin(request)
     filter = "yes"
     template_name = "UsersConfiguration/UsersAdministration.html"
     if request.method=="GET":
