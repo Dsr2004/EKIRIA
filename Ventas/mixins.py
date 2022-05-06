@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.urls import resolve
+from django.urls import resolve, reverse_lazy
 from django.http import HttpResponseRedirect
 
 from Ventas.models import Cita
@@ -14,26 +14,25 @@ class ActualiarCitaMixin(object):
         diaCita = citax.diaCita
         tresDias =  datetime(diaCita.year, diaCita.month, diaCita.day) - timedelta(days=3)
         if not hoy < tresDias:
-           if not request.session["Admin"]:
+            if request.session["Admin"]:
                 return redirect("Ventas:listarCitas")
             elif request.session["rol"] == "Empleado":
                 return redirect("Ventas:listarCitas")
             else:
                 return redirect("Ventas:calendario")
-            
 
         if citax.cancelado == True:
             messages.add_message(request, messages.INFO, 'Usted no puede modificar esta cita porque ha sido cancelada.')
             # url = resolve(request.path_info).url_name
             # print(request.META.get('HTTP_REFERER'))
-            if not request.session["Admin"]:
+
+            if request.session["Admin"]:
                 return redirect("Ventas:listarCitas")
             elif request.session["rol"] == "Empleado":
                 return redirect("Ventas:listarCitas")
             else:
                 return redirect("Ventas:calendario")
             
-            # return HttpResponseRedirect(request.META.get['HTTP_REFERRER'])
 
             
             return redirect("Ventas:listarCitas") 
@@ -53,6 +52,28 @@ class PoderEditarCitaMixin(object):
 
 
 
+class EjemploMixin(object):
+    print("si entre")
+    permission_required = ''
+    url_redirect = None
+
+    def get_perms(self):
+       if isinstance(self.permission_required,str):
+           return(self.permission_required)
+        
+       else: return(self.permission_required)
+
+
+    def get_url_redirect(self):
+        if self.url_redirect is None:
+            return reverse_lazy('IniciarSesion')
+        return self.url_redirect
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.has_perms(self.get_perms()):
+            print(request.user.has_perms('citasds'))
+            return super().dispatch(request, *args, **kwargs)
+        return redirect(self.get_url_redirect)
 
 
 
