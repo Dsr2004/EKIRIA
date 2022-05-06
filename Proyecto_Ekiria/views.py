@@ -1,5 +1,6 @@
 #-----------------------------------------Importaciones---------------------------------------------------
 from contextlib import redirect_stderr
+from re import U
 from django.http import HttpResponse
 from django.template import Template, Context, loader 
 from django.shortcuts import render
@@ -10,6 +11,7 @@ from rest_framework.views import APIView
 from Usuarios.models import Usuario, VistasDiarias
 from Configuracion.models import cambios, cambiosFooter
 from datetime import datetime
+from Usuarios.views import *
 #--------------------------------------Cargadores de templates------------------------------------
 class Inicio(View):
     def get(self, request, *args, **kwargs):  
@@ -25,11 +27,7 @@ class Inicio(View):
         try:
             cambiosQueryset = cambios.objects.all()
             cambiosfQueryset = cambiosFooter.objects.all()
-            if request.session:
-                print(request.session)
-                imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-                imagen = imagen.img_usuario
-                UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+            UserSesion = if_User(request)
             return render(request, 'index.html', {'User':UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
         except:
             return render(request, 'index.html')

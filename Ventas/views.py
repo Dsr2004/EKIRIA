@@ -9,7 +9,7 @@ from webbrowser import get
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.views.generic import View, TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, resolve
 from django.core.paginator import Paginator
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -778,6 +778,7 @@ class EditarCitaDetalle(DetailView):
             context["Cancelado"]=True
         else:
             context["Cancelado"]=False
+
         return context
 
 class EditarCita(ActualiarCitaMixin, UpdateView): 

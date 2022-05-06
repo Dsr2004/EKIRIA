@@ -1,5 +1,10 @@
 $(document).ready(function() {
-    $('#example').DataTable({
+    $('#TableUsers').DataTable({
         responsive: true
-    });
+    })
+});
+$(document).ready(function() {
+    $('#TableProveedores').DataTable({
+        responsive: true
+    })
 });
