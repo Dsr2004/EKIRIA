@@ -19,11 +19,13 @@ from django.urls import reverse_lazy
 from django.contrib.auth.models import Permission,Group
 from Usuarios.models import Usuario
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import permission_required
 # Create your views here.
 
 from .models import  cambios, cambiosFooter
 from .forms import RolForm, CambiosForm, FooterForm
 
+@permission_required(['auth_permission.add_rol', 'auth_permission.change_rol', 'auth_permission.delete_rol', 'auth_permission.view_rol'])
 @login_required()
 def Configuracion(request):
         UserSesion=""
@@ -41,6 +43,7 @@ def Configuracion(request):
         except:
             return redirect("UNR")
 
+@permission_required(['auth_permission.add_rol', 'auth_permission.change_rol', 'auth_permission.delete_rol', 'auth_permission.view_rol'])
 @login_required()
 def Roles(request):
         UserSesion = ""
@@ -57,7 +60,7 @@ def Roles(request):
                 return render(request, "Roles.html", {'User':UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
         except:
             return redirect("UNR")
-
+@permission_required(['auth_permission.add_cambios', 'auth_permission.change_cambios', 'auth_permission.delete_cambios', 'auth_permission.view_cambios','auth_permission.add_cambiosfooter', 'auth_permission.change_cambiosfooter', 'auth_permission.delete_cambiosfooter', 'auth_permission.view_cambiosfooter'])
 @login_required()
 def Cambios(request):
     UserSesion = ""
@@ -82,6 +85,7 @@ def Cambios(request):
     
     return render (request, "Cambios.html",contexto)
 
+@permission_required(['auth_permission.add_permission', 'auth_permission.change_permission', 'auth_permission.delete_permission', 'auth_permission.view_permission'])
 @login_required()
 def Permisos(request):
         UserSesion=""
