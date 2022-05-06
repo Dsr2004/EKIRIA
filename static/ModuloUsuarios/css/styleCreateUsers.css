@@ -1,5 +1,3 @@
-
-
 .contenido {
     overflow: auto;
     max-height: 85%;
@@ -35,6 +33,22 @@ form {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: 10px;
+}
+
+@media(max-width:950px) {
+    .grid.activar .footerE {
+        width: 75%;
+        transition: .3s;
+        margin-left: 25%;
+    }
+}
+
+@media(min-width:950px) {
+    .grid.activar .footerE {
+        width: 80%;
+        transition: .3s;
+        margin-left: 20%;
+    }
 }
 
 @media (max-width: 400px) {

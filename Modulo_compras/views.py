@@ -2,6 +2,7 @@ from gc import get_objects
 from itertools import product
 import json
 from pickle import TRUE
+from wsgiref.util import request_uri
 from django.shortcuts import render, redirect
 from Modulo_compras.forms import ProveedorForm, ComprasForm, ProductosForm, Tipo_productoForm
 from .models import Proveedor, Producto, Compra, Tipo_producto
@@ -10,66 +11,42 @@ from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DeleteView, View
 from Usuarios.models import *
+from Usuarios.views import *
 from Configuracion.models import cambios, cambiosFooter
 from django.contrib.auth.decorators import login_required
 
 @login_required()
 def Listproductos (request):
-    UserSesion=""
-    if request.session:
-        imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-        imagen = imagen.img_usuario
-        cambiosQueryset = cambios.objects.all()
-        cambiosfQueryset = cambiosFooter.objects.all()
-        if request.session['Admin'] == True:
-            UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
-        else:
-            return redirect("SinPermisos")
+    UserSesion=if_admin(request)
+    cambiosQueryset = cambios.objects.all()
+    cambiosfQueryset = cambiosFooter.objects.all()
     Productos=Producto.objects.all()
     producto_form=ProductosForm
     return render(request,'Productos.html',{'producto_form':producto_form , 'Productos': Productos, 'User':UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
+
 @login_required()
 def Listcompra(request):
-    UserSesion=""
-    if request.session:
-        imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-        imagen = imagen.img_usuario
-        cambiosQueryset = cambios.objects.all()
-        cambiosfQueryset = cambiosFooter.objects.all()
-        if request.session['Admin'] == True:
-            UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
-        else:
-            return redirect("SinPermisos")
+    UserSesion=if_admin(request)
+    cambiosQueryset = cambios.objects.all()
+    cambiosfQueryset = cambiosFooter.objects.all()
     Compras=Compra.objects.all()
     compra_form=ComprasForm
     return render(request,'compra.html',{'compra_form':compra_form , 'Compras': Compras, 'User':UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
+
 @login_required()
 def Listarprov(request):
-    UserSesion=""
-    if request.session:
-        imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-        imagen = imagen.img_usuario
-        cambiosQueryset = cambios.objects.all()
-        cambiosfQueryset = cambiosFooter.objects.all()
-        if request.session['Admin'] == True:
-            UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
-        else:
-            return redirect("SinPermisos")
+    UserSesion=if_admin(request)
+    cambiosQueryset = cambios.objects.all()
+    cambiosfQueryset = cambiosFooter.objects.all()
     Proveedores=Proveedor.objects.all()
     prov_form=ProveedorForm
     return render(request,'proveedores.html',{'prov_form':prov_form , 'proveedores': Proveedores, 'User':UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
+
 @login_required()
 def Listartp(request):
-    UserSesion=""
-    if request.session:
-        imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-        imagen = imagen.img_usuario
-        cambiosQueryset = cambios.objects.all()
-        cambiosfQueryset = cambiosFooter.objects.all()
-        if request.session['Admin'] == True:
-            UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
-        else:
-            return redirect("SinPermisos")
+    UserSesion=if_admin(request)
+    cambiosQueryset = cambios.objects.all()
+    cambiosfQueryset = cambiosFooter.objects.all()
     Tp=Tipo_producto.objects.all()
     tp_form=Tipo_productoForm
     return render(request,'tipoprod.html',{'tp_form':tp_form , 'Tp': Tp, 'User':UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
@@ -111,20 +88,13 @@ class Crearprod(CreateView):
     def get_context_data(self, *args, **kwargs):
         context = super(Crearprod, self).get_context_data(**kwargs)
         try:
-           if self.request.session:
-                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
-                imagen = imagen.img_usuario
-                cambiosQueryset = cambios.objects.all()
-                cambiosfQueryset = cambiosFooter.objects.all()
-                if self.request.session['Admin'] == True:
-                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
-                    context["User"]=UserSesion
-                else:
-                    return redirect("SinPermisos")
-                context["User"]=UserSesion
-                context['cambios']=cambiosQueryset
-                context['footer']=cambiosfQueryset
-                return context
+            UserSesion=if_admin(self.request)
+            cambiosQueryset = cambios.objects.all()
+            cambiosfQueryset = cambiosFooter.objects.all()
+            context["User"]=UserSesion
+            context['cambios']=cambiosQueryset
+            context['footer']=cambiosfQueryset
+            return context
         except:
             return context
 
@@ -147,20 +117,13 @@ class Modificarprod(UpdateView):
     def get_context_data(self, *args, **kwargs):
         context = super(Modificarprod, self).get_context_data(**kwargs)
         try:
-           if self.request.session:
-                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
-                imagen = imagen.img_usuario
-                cambiosQueryset = cambios.objects.all()
-                cambiosfQueryset = cambiosFooter.objects.all()
-                if self.request.session['Admin'] == True:
-                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
-                    context["User"]=UserSesion
-                else:
-                    return redirect("SinPermisos")
-                context["User"]=UserSesion
-                context['cambios']=cambiosQueryset
-                context['footer']=cambiosfQueryset
-                return context
+            UserSesion=if_admin(self.request)
+            cambiosQueryset = cambios.objects.all()
+            cambiosfQueryset = cambiosFooter.objects.all()
+            context["User"]=UserSesion
+            context['cambios']=cambiosQueryset
+            context['footer']=cambiosfQueryset
+            return context
         except:
             return context
 
@@ -184,22 +147,13 @@ class Creartp(CreateView):
     def get_context_data(self, *args, **kwargs):
         context = super(Creartp, self).get_context_data(**kwargs)
         try:
-           if self.request.session:
-                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
-                imagen = imagen.img_usuario
-                cambiosQueryset = cambios.objects.all()
-                cambiosfQueryset = cambiosFooter.objects.all()
-                if self.request.session['Admin'] == True:
-                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
-                    context["User"]=UserSesion
-                    context['cambios']=cambiosQueryset
-                    context['footer']=cambiosfQueryset
-                else:
-                    return redirect("SinPermisos")
-                context["User"]=UserSesion
-                context['cambios']=cambiosQueryset
-                context['footer']=cambiosfQueryset
-                return context
+            UserSesion=if_admin(self.request)
+            cambiosQueryset = cambios.objects.all()
+            cambiosfQueryset = cambiosFooter.objects.all()
+            context["User"]=UserSesion
+            context['cambios']=cambiosQueryset
+            context['footer']=cambiosfQueryset
+            return context
         except:
             return context
 
@@ -224,22 +178,13 @@ class Crearprov(CreateView):
     def get_context_data(self, *args, **kwargs):
         context = super(Crearprov, self).get_context_data(**kwargs)
         try:
-           if self.request.session:
-                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
-                imagen = imagen.img_usuario
-                cambiosQueryset = cambios.objects.all()
-                cambiosfQueryset = cambiosFooter.objects.all()
-                if self.request.session['Admin'] == True:
-                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
-                    context["User"]=UserSesion
-                    context['cambios']=cambiosQueryset
-                    context['footer']=cambiosfQueryset
-                else:
-                    return redirect("SinPermisos")
-                context["User"]=UserSesion
-                context['cambios']=cambiosQueryset
-                context['footer']=cambiosfQueryset
-                return context
+            UserSesion=if_admin(self.request)
+            cambiosQueryset = cambios.objects.all()
+            cambiosfQueryset = cambiosFooter.objects.all()
+            context["User"]=UserSesion
+            context['cambios']=cambiosQueryset
+            context['footer']=cambiosfQueryset
+            return context
         except:
             return context
         
@@ -261,20 +206,13 @@ class Crearcompra(CreateView):
     def get_context_data(self, *args, **kwargs):
         context = super(Crearcompra, self).get_context_data(**kwargs)
         try:
-           if self.request.session:
-                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
-                imagen = imagen.img_usuario
-                cambiosQueryset = cambios.objects.all()
-                cambiosfQueryset = cambiosFooter.objects.all()
-                if self.request.session['Admin'] == True:
-                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
-                    context["User"]=UserSesion
-                else:
-                    return redirect("SinPermisos")
-                context["User"]=UserSesion
-                context['cambios']=cambiosQueryset
-                context['footer']=cambiosfQueryset
-                return context
+            UserSesion=if_admin(self.request)
+            cambiosQueryset = cambios.objects.all()
+            cambiosfQueryset = cambiosFooter.objects.all()
+            context["User"]=UserSesion
+            context['cambios']=cambiosQueryset
+            context['footer']=cambiosfQueryset
+            return context
         except:
             return context
 
@@ -322,22 +260,13 @@ class modificarprov(UpdateView):
     def get_context_data(self, *args, **kwargs):
         context = super(modificarprov, self).get_context_data(**kwargs)
         try:
-           if self.request.session:
-                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
-                imagen = imagen.img_usuario
-                cambiosQueryset = cambios.objects.all()
-                cambiosfQueryset = cambiosFooter.objects.all()
-                if self.request.session['Admin'] == True:
-                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
-                    context["User"]=UserSesion
-                    context['cambios']=cambiosQueryset
-                    context['footer']=cambiosfQueryset
-                else:
-                    return redirect("SinPermisos")
-                context["User"]=UserSesion
-                context['cambios']=cambiosQueryset
-                context['footer']=cambiosfQueryset
-                return context
+            UserSesion=if_admin(self.request)
+            cambiosQueryset = cambios.objects.all()
+            cambiosfQueryset = cambiosFooter.objects.all()
+            context["User"]=UserSesion
+            context['cambios']=cambiosQueryset
+            context['footer']=cambiosfQueryset
+            return context
         except:
             return context
 

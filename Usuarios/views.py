@@ -135,6 +135,9 @@ def Login(request):
                 if user.administrador:
                     user.rol_id = 1
                     user.save()
+                elif user.rol_id == 1:
+                    user.rol_id = 2
+                    user.save()
                 usuario = authenticate(username=username, password=password)
                 if usuario is not None:
                     if usuario.estado:
@@ -175,40 +178,40 @@ class Register(CreateView):
     
 @login_required()
 def Perfil(request):
-    UserSesion=""
-    if request.session:
-        imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-        imagen = imagen.img_usuario
-        UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
-        cambiosQueryset = cambios.objects.all()
-        cambiosfQueryset = cambiosFooter.objects.all()
+    UserSesion = if_User(request)
+    cambiosQueryset = cambios.objects.all()
+    cambiosfQueryset = cambiosFooter.objects.all()
     usuario = Usuario.objects.get(id_usuario=request.session['pk'])
     return render(request, "UserInformation/Perfil.html", {"Usuario":usuario, "User":UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
 
+def if_User(request):
+    UserSesion=""
+    if request.session:
+        if request.session['pk']:
+            imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+            imagen = imagen.img_usuario
+            UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+            return UserSesion
 def if_admin(request):
     UserSesion=""
     if request.session:
-        imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-        imagen = imagen.img_usuario
-        if request.session['Admin'] == True:
-            UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
-            return UserSesion
-        else:
-            return redirect("SinPermisos")
+        if request.session['pk']:
+            imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+            imagen = imagen.img_usuario
+            if request.session['Admin'] == True:
+                UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+                print(UserSesion)
+                return UserSesion
+            else:
+                return redirect("SinPermisos")
 @login_required()
 def EditarPerfil(request):  
-    UserSesion=""
     template_name = "UserInformation/EditarPerfil.html"
-    if request.session['pk']:
-        get_object = Usuario.objects.get(id_usuario=request.session['pk'])
-        form = Editar(instance=get_object)
-        imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-        imagen = imagen.img_usuario
-        cambiosQueryset = cambios.objects.all()
-        cambiosfQueryset = cambiosFooter.objects.all()
-        UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session["Admin"]}
-    else: 
-        return redirect("SinPermisos")
+    UserSesion = if_User(request)
+    get_object = Usuario.objects.get(id_usuario=request.session['pk'])
+    form = Editar(instance=get_object)
+    cambiosQueryset = cambios.objects.all()
+    cambiosfQueryset = cambiosFooter.objects.all()
     if request.method=="POST":
         form = Editar(request.POST or None, request.FILES or None, instance=get_object)
         if form.is_valid():
@@ -267,8 +270,7 @@ def Change(request):
 
 @login_required()
 def Admin(request):
-    UserSesion=""
-    if_admin()
+    UserSesion = if_admin(request)
     cambiosQueryset = cambios.objects.all()
     cambiosfQueryset = cambiosFooter.objects.all()
     filter = "yes"
@@ -287,21 +289,14 @@ class CreateUser(CreateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(CreateUser, self).get_context_data(**kwargs)
-        UserSesion=""
         try:
-            if self.request.session:
-                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
-                imagen = imagen.img_usuario
-                cambiosQueryset = cambios.objects.all()
-                cambiosfQueryset = cambiosFooter.objects.all()
-                if self.request.session['Admin'] == True:
-                    UserSesion = {"username":self.request.session['username'], "titulo":"Crear Usuario", "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
-                else:
-                    return redirect("SinPermisos")
-                context["User"]=UserSesion
-                context['cambios']=cambiosQueryset
-                context['footer']=cambiosfQueryset
-                return context
+            UserSesion = if_admin(self.request)
+            cambiosQueryset = cambios.objects.all()
+            cambiosfQueryset = cambiosFooter.objects.all()
+            context["User"]=UserSesion
+            context['cambios']=cambiosQueryset
+            context['footer']=cambiosfQueryset
+            return context
         except:
             return context
 
@@ -312,20 +307,13 @@ class UpdateUser(UpdateView):
     success_url=reverse_lazy("Administracion")   
     def get_context_data(self, *args, **kwargs):
         context = super(UpdateUser, self).get_context_data(**kwargs)
-        UserSesion=""
-        if self.request.session:
-            imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
-            imagen = imagen.img_usuario
-            cambiosQueryset = cambios.objects.all()
-            cambiosfQueryset = cambiosFooter.objects.all()
-            if self.request.session['Admin'] == True:
-                UserSesion = {"username":self.request.session['username'], "titulo":"Editar Usuario", "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
-            else:
-                return redirect("SinPermisos")
-            context["User"]=UserSesion
-            context['cambios']=cambiosQueryset
-            context['footer']=cambiosfQueryset
-            return context
+        cambiosQueryset = cambios.objects.all()
+        cambiosfQueryset = cambiosFooter.objects.all()
+        UserSesion = if_admin(self.request)
+        context["User"]=UserSesion
+        context['cambios']=cambiosQueryset
+        context['footer']=cambiosfQueryset
+        return context
 
 # class Notification(View):
 #     template_name = 'UserInformation/Notification.html'
@@ -335,13 +323,9 @@ class UpdateUser(UpdateView):
 @csrf_exempt
 @login_required()
 def Notification(request):
-    UserSesion = ""
-    if request.session:
-        imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-        imagen = imagen.img_usuario
-        cambiosQueryset = cambios.objects.all()
-        cambiosfQueryset = cambiosFooter.objects.all()
-        UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+    UserSesion = if_User(request)
+    cambiosQueryset = cambios.objects.all()
+    cambiosfQueryset = cambiosFooter.objects.all()
     return render(request, "UserInformation/Notification.html", {"User":UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
     
 def CambiarEstadoUsuario(request):
