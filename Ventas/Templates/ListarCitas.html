@@ -15,7 +15,11 @@
 {% block Contenido %}
 <h1>Listar Citas</h1>
 {% if messages %}
-    chi
+    
+    {% for me in messages %}
+       {{me}}
+    {% endfor %}
+       
    {% else  %}
        noo
 {% endif %}

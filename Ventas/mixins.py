@@ -1,8 +1,11 @@
-from Ventas.models import Cita
-
 from datetime import datetime, timedelta
+
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.urls import resolve
+from django.http import HttpResponseRedirect
+
+from Ventas.models import Cita
 
 class ActualiarCitaMixin(object):
     def dispatch(self, request, *args, **kwargs):
@@ -11,17 +14,28 @@ class ActualiarCitaMixin(object):
         diaCita = citax.diaCita
         tresDias =  datetime(diaCita.year, diaCita.month, diaCita.day) - timedelta(days=3)
         if not hoy < tresDias:
-            print("por dia ")
-            return redirect("Ventas:listarCitas")
+           if not request.session["Admin"]:
+                return redirect("Ventas:listarCitas")
+            elif request.session["rol"] == "Empleado":
+                return redirect("Ventas:listarCitas")
+            else:
+                return redirect("Ventas:calendario")
             
 
         if citax.cancelado == True:
-            print("por cancelado 1")
-            messages.add_message(request, messages.INFO, 'Hello world.')
-            print("por cancelado 2")
-            if messages:
-                print(messages)
+            messages.add_message(request, messages.INFO, 'Usted no puede modificar esta cita porque ha sido cancelada.')
+            # url = resolve(request.path_info).url_name
+            # print(request.META.get('HTTP_REFERER'))
+            if not request.session["Admin"]:
+                return redirect("Ventas:listarCitas")
+            elif request.session["rol"] == "Empleado":
+                return redirect("Ventas:listarCitas")
+            else:
+                return redirect("Ventas:calendario")
+            
+            # return HttpResponseRedirect(request.META.get['HTTP_REFERRER'])
 
+            
             return redirect("Ventas:listarCitas") 
         return super().dispatch(request, *args, **kwargs)
 
