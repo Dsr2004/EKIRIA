@@ -60,6 +60,7 @@
 
 table.dataTable {
     border-collapse: collapse!important;
+    width: 100%!important;
 }
 
 .Table.Content-table .Information .cardHeader h2 {
@@ -104,10 +105,6 @@ table.dataTable {
     outline: none;
     border: none;
     box-shadow: 0 7px 25px rgba(0, 0, 0, 0.1);
-}
-
-#TableUsers {
-    margin-left: 5%;
 }
 
 .dataTables_filter label input {
@@ -179,10 +176,17 @@ table.dataTable {
     color: rgb(255, 255, 0);
 }
 
-.form-check-input {
-    position: relative;
-    right: -100px;
-    top: 11px;
+.form-switch .form-check-input {
+    display: block !important;
+    position: relative !important;
+    right: -10px!important;
+    top: -2px!important;
+    margin-left: 0 !important;
+}
+
+.form-switch {
+    margin: 0!important;
+    padding: 0!important;
 }
 
 

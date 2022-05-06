@@ -1,9 +1,3 @@
-$(document).ready(function() {
-    $('#TableUsers').DataTable({
-        responsive: true
-    })
-});
-
 function EditarUsuario(id) {
     window.location.href = "../CrearUsuario/" + id;
 }
@@ -57,6 +51,7 @@ function CambiarEstadoUsuario(id) {
     });
 
 }
-function redirect(url){
+
+function redirect(url) {
     window.location.href = url;
 }
