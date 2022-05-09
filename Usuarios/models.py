@@ -107,7 +107,7 @@ class Usuario(AbstractBaseUser):
     def __str__(self):
         return '{}'.format(self.nombres+' '+self.apellidos)
 
-    def has_perms(self,perm,obj=None):
+    def has_perm(self,perm,obj=None):
         return True
 
     def has_module_perms(self,app_label):

@@ -19,15 +19,15 @@ from django.urls import reverse_lazy
 from django.contrib.auth.models import Permission,Group
 from Usuarios.models import Usuario
 from Usuarios.views import *
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import login_required, permission_required 
 # Create your views here.
 
 from .models import  cambios, cambiosFooter
 from .forms import RolForm, CambiosForm, FooterForm
 
-@permission_required(['auth_permission.add_rol', 'auth_permission.change_rol', 'auth_permission.delete_rol', 'auth_permission.view_rol'])
+
 @login_required()
+# @permission_required(['auth_permission.add_rol', 'auth_permission.change_rol', 'auth_permission.delete_rol', 'auth_permission.view_rol'])
 def Configuracion(request):
     cambiosQueryset = cambios.objects.all()
     cambiosfQueryset = cambiosFooter.objects.all()
@@ -35,8 +35,9 @@ def Configuracion(request):
     return render(request, "Configuracion.html", {'User':UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
 
 
-@permission_required(['auth_permission.add_rol', 'auth_permission.change_rol', 'auth_permission.delete_rol', 'auth_permission.view_rol'])
+
 @login_required()
+# @permission_required(['auth_permission.add_rol', 'auth_permission.change_rol', 'auth_permission.delete_rol', 'auth_permission.view_rol'])
 def Roles(request):
 # @permission_required(['auth_permission.add_cambios', 'auth_permission.change_cambios', 'auth_permission.delete_cambios', 'auth_permission.view_cambios','auth_permission.add_cambiosfooter', 'auth_permission.change_cambiosfooter', 'auth_permission.delete_cambiosfooter', 'auth_permission.view_cambiosfooter'])
     UserSesion=if_admin(request)
@@ -58,8 +59,9 @@ def Cambios(request):
     
     return render (request, "Cambios.html",contexto)
 
-@permission_required(['auth_permission.add_permission', 'auth_permission.change_permission', 'auth_permission.delete_permission', 'auth_permission.view_permission'])
+
 @login_required()
+@permission_required(['auth_permission.add_permission', 'auth_permission.change_permission', 'auth_permission.delete_permission', 'auth_permission.view_permission'])
 def Permisos(request):
     cambiosQueryset = cambios.objects.all()
     cambiosfQueryset = cambiosFooter.objects.all()

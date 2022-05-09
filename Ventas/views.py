@@ -12,10 +12,13 @@ from django.views.generic import View, TemplateView, ListView, DetailView, Creat
 from django.urls import reverse_lazy, resolve
 from django.core.paginator import Paginator
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
+from django.utils.decorators import method_decorator
 from Usuarios.models import Usuario
 from Configuracion.models import cambios, cambiosFooter
 from .mixins import ActualiarCitaMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from Usuarios.views import *
 
 
 
@@ -329,20 +332,18 @@ class BuscarDisponibilidadEmpleado(View):
 
 
     
-
-class Calendario(TemplateView):
+    # @permission_required('usuario.can_change_usuario')
+class Calendario(TemplateView, PermissionRequiredMixin):
     template_name = "Calendario.html"
+    # permission_required = 'auth.can_add_group'
+    # print(error)
+    # @method_decorator(login_required)
     def get(self, request, *args, **kwargs):
-        try:
-            if request.session:
-                imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-                imagen = imagen.img_usuario
-                cambiosQueryset = cambios.objects.all()
-                cambiosfQueryset = cambiosFooter.objects.all()
-                UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
-        except:
-            return redirect("UNR")
-
+        UserSesion=if_User(request)
+        cambiosQueryset = cambios.objects.all()
+        cambiosfQueryset = cambiosFooter.objects.all()
+        # user = Usuario.objects.get(pk = request.session['pk'])
+        # print(user.rol.permissions.set[''])
         #contexto
         citas=models.Cita.objects.filter(cliente_id=request.session['pk']).order_by('-fecha_creacion')
       
