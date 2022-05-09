@@ -54,7 +54,6 @@ class PoderEditarCitaMixin(object):
 
 
 class EjemploMixin(object):
-    print("si entre")
     permission_required = ''
     url_redirect = None
 

@@ -76,7 +76,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                # 'Ventas.Procesos.context_processor.total_carrito',
                 'Usuarios.context_processors.registro_form',
             ],
         },
@@ -147,7 +146,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 CRISPY_TEMPLATE_PACK='bootstrap4'
 
-AUTH_USER_MODEL = 'Usuarios.Usuario'
+
+
+AUTH_USER_MODEL = 'Usuarios.usuario'
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
@@ -203,3 +204,9 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'davidparaekiria@gmail.com'
 
 EMAIL_HOST_PASSWORD = 'rkirzqseahrqwmsu'
+
+MAIL_USE_TLS   = True
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+DEFAULT_FROM_EMAIL  = 'no-reply@ekiria.com'

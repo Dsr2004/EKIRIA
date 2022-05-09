@@ -75,6 +75,8 @@ class UsuarioManager(BaseUserManager):
         usuario.save()
         return usuario
 
+
+
 class Usuario(AbstractBaseUser):
     id_usuario = models.AutoField(unique=True, primary_key=True)
     username = models.CharField('Nombre de usuario', unique = True, max_length=25)
@@ -108,6 +110,9 @@ class Usuario(AbstractBaseUser):
 
     def __str__(self):
         return '{}'.format(self.nombres+' '+self.apellidos)
+
+    # def get_all_permissions(self, obj=None):
+    #     return _user_get_permissions(self, obj, 'all')
 
     def has_perm(self,perm,obj=None):
         return True
