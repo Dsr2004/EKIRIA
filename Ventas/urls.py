@@ -8,9 +8,10 @@ urlpatterns = [
 
     path('AgregarCita/', login_required(AgregarCita.as_view()), name="agregarCita"),
     path('ListadoCitas/', login_required(ListarCita.as_view()), name="listarCitas"),
-    path('DetalleCita/<int:pk>', login_required(DetalleCita.as_view()), name="detalleCita"),
+    path('DetalleCita/<int:pk>', login_required(DetalleCitaCliente.as_view()), name="detalleCita"),
     path('DetalleEditarCita/<int:pk>', login_required(EditarCitaDetalle.as_view()), name="detalleEditarCita"),
     path('EditarCita/<int:pk>', login_required(EditarCita.as_view()), name="editarCita"),
+    path('EditarCitaCliente/<int:pk>', login_required(EditarCitaCliente.as_view()), name="editarCitaCliente"),
     path('CambiarEstadoCita/', login_required(CambiarEstadoDeCita.as_view()), name="cambiarEstadoCita"),
     path('CancelarCita/', login_required(CancelarCita.as_view()), name="cancelarCita"),
 

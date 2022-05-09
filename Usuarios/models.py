@@ -4,6 +4,8 @@ from turtle import width
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Group
 
+
+
 class VistasDiarias(models.Model):
     id_dia = models.CharField(primary_key=True, max_length=10)
     Contador = models.IntegerField(default=0)
@@ -108,6 +110,9 @@ class Usuario(AbstractBaseUser):
         return '{}'.format(self.nombres+' '+self.apellidos)
 
     def has_perm(self,perm,obj=None):
+        return True
+
+    def has_perms(self,perm,obj=None):
         return True
 
     def has_module_perms(self,app_label):

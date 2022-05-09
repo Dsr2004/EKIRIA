@@ -230,6 +230,7 @@ class Cita(models.Model):
         else:
             estado = True
         return estado
+        
 
 
 class Calendario(models.Model):
@@ -288,8 +289,8 @@ def pre_save_cita_receiver(sender, instance, *args, **kwargs):
         fin = datetime(1970, 1, 1, inicio.hour, inicio.minute, inicio.second) + timedelta(minutes=instance.pedido_id.get_cantidad)           
         instance.horaFinCita = time(fin.hour, fin.minute, fin.second)
 
-def post_save_cita(sender, instance, *args, **kwargs):
-    if instance:
+def post_save_cita(sender, instance, created, *args, **kwargs):
+    if created:
         try:
             Servidor = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
             Servidor.starttls()
@@ -312,7 +313,7 @@ def post_save_cita(sender, instance, *args, **kwargs):
 
             print("Se envio el correo")
         except Exception as e:
-            print(e)
+            print(e)    
 
 pre_save.connect(pre_save_servicio_receiver,sender=Servicio)
 pre_save.connect(pre_save_servicio_personalizado_receiver,sender=Servicio_Personalizado)

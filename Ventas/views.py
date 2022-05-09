@@ -16,9 +16,10 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.decorators import method_decorator
 from Usuarios.models import Usuario
 from Configuracion.models import cambios, cambiosFooter
-from .mixins import ActualiarCitaMixin
+from .mixins import ActualiarCitaMixin, EjemploMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from Usuarios.views import *
+
 
 
 
@@ -333,7 +334,8 @@ class BuscarDisponibilidadEmpleado(View):
 
     
     # @permission_required('usuario.can_change_usuario')
-class Calendario(TemplateView, PermissionRequiredMixin):
+class Calendario(EjemploMixin, TemplateView):
+    permission_required = 'cita.can_change_cita'
     template_name = "Calendario.html"
     # permission_required = 'auth.can_add_group'
     # print(error)
@@ -345,7 +347,7 @@ class Calendario(TemplateView, PermissionRequiredMixin):
         # user = Usuario.objects.get(pk = request.session['pk'])
         # print(user.rol.permissions.set[''])
         #contexto
-        citas=models.Cita.objects.filter(cliente_id=request.session['pk']).order_by('-fecha_creacion')
+        citas=models.Cita.objects.filter(cliente_id=request.session['pk']).order_by('fecha_creacion')
       
         context={
             "User":UserSesion,
@@ -821,15 +823,55 @@ class EditarCita(ActualiarCitaMixin, UpdateView):
       
         return context
 
-    
-    
 
-class DetalleCita(DetailView):
+
+class EditarCitaCliente(ActualiarCitaMixin, UpdateView): 
     model = Cita
-    template_name = "DetalleCita.html"
+    template_name = "EditarCitaCliente.html"
+    form_class = CitaForm
+    success_url = reverse_lazy("Ventas:calendario")
 
     def get_context_data(self, *args, **kwargs):
-        context = super(DetalleCita, self).get_context_data(**kwargs)
+        context = super(EditarCitaCliente, self).get_context_data(**kwargs)
+        try:
+            if self.request.session:
+                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
+                imagen = imagen.img_usuario
+                cambiosQueryset = cambios.objects.all()
+                cambiosfQueryset = cambiosFooter.objects.all()
+                if self.request.session['Admin'] == True:
+                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                    context["User"]=UserSesion
+                    context['cambios']=cambiosQueryset
+                    context['footer']=cambiosfQueryset
+                else:
+                    return redirect("SinPermisos")  
+        except:
+            return redirect("UNR")
+        citax = models.Cita.objects.get(id_cita=self.kwargs["pk"])
+        pedido = models.Pedido.objects.get(id_pedido = citax.pedido_id.id_pedido)
+        items = pedido.pedidoitem_set.all()
+        serviciosx=[]
+        serviciosPerx=[]
+        if items:
+            for i in items:
+                if not i.servicio_id ==  None:
+                    serviciosx.append(i)
+                    context["servicios"]=serviciosx
+                if not i.servicio_personalizado_id == None:
+                    serviciosPerx.append(i)
+                    context["serviciosPer"]=serviciosPerx
+      
+        return context
+    
+    
+
+class DetalleCitaCliente(DetailView):
+    model = Cita
+    template_name = "DetalleCitaCliente.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(DetalleCitaCliente, self).get_context_data(**kwargs)
         try:
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
@@ -869,10 +911,33 @@ class CambiarEstadoDeCita(TemplateView):
         estatus=update.estado
         if estatus==True:
             update.estado=False
-            update.save()
+            update.save()    
         elif estatus==False:
             update.estado=True
             update.save()
+            try:
+                Servidor = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
+                Servidor.starttls()
+                Servidor.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+                print("conexion establecida")
+
+                mensaje = MIMEMultipart()
+                mensaje['From'] = settings.EMAIL_HOST_USER
+                mensaje['To'] = update.cliente_id.email
+                mensaje['Subject'] = "Correo de confirmación de cita"
+
+                cliente = f"{str(update.cliente_id.nombres).capitalize()} {str(update.cliente_id.apellidos).capitalize()}"
+
+                content = render_to_string("Correo/ConfirmarCitaCorreo.html", {"cliente":cliente, "dia":update.diaCita, "hora":update.horaInicioCita,"url":update.id_cita})
+                mensaje.attach(MIMEText(content, 'html'))
+
+                Servidor.sendmail(settings.EMAIL_HOST_USER,
+                                    update.cliente_id.email,
+                                    mensaje.as_string())
+
+                print("Se envio el correo")
+            except Exception as e:
+                print(e)
         else:
             return redirect("Ventas:listarCitas")
         return HttpResponse(update)
