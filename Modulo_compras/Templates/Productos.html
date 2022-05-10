@@ -23,29 +23,15 @@
 
 
 <div class="container">
-    <div class="Table Add">
-        <button type="button" class="Add img" onclick="agregarprod('{%url 'crearprod' %}')">
-      <i class="fas fa-user-plus"></i>
-  </button>
-    </div>
-
-    <div class="Table Header-table">
-        <div class="Table search">
-            <label>
-        <input type="text" placeholder="Search here">
-        <i class="fas fa-search"></i>
-    </label>
-        </div>
-    </div>
-
-
-
     <div class="Table Content-table">
         <div class="Information">
             <div class="cardHeader">
-                <i class="fas fa-angle-left"></i>
                 <h2>Productos</h2>
-                <i class="fas fa-angle-right"></i>
+            </div>
+            <div class="Table Add">
+                <button type="button" class="Add img" onclick="agregarprod('{%url 'crearprod' %}')">
+                    <i class="fas fa-user-plus"></i>
+                </button>
             </div>
             <table>
                 <thead>
@@ -73,7 +59,7 @@
                             <form action="{%url 'camestadoProducto' %}" method="POST" id="camestado">
                                 {%csrf_token%}
                                 <div class="form-check form-switch" style="top: -10px;">
-                                    <input class="form-check-input" type="checkbox" role="switch" {%if prod.estado==T rue %} checked {%endif%} onclick="cambioestado('{{prod.id_producto}}')">
+                                    <input class="form-check-input" type="checkbox" role="switch" {%if prod.estado%} checked {%endif%} onclick="cambioestado('{{prod.id_producto}}')">
                                 </div>
                             </form>
                         </td>

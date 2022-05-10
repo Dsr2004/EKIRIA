@@ -14,6 +14,7 @@ class ActualiarCitaMixin(object):
         diaCita = citax.diaCita
         tresDias =  datetime(diaCita.year, diaCita.month, diaCita.day) - timedelta(days=3)
         if not hoy < tresDias:
+
             if request.session["Admin"]:
                 return redirect("Ventas:listarCitas")
             elif request.session["rol"] == "Empleado":
@@ -53,7 +54,6 @@ class PoderEditarCitaMixin(object):
 
 
 class EjemploMixin(object):
-    print("si entre")
     permission_required = ''
     url_redirect = None
 

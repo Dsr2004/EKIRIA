@@ -13,7 +13,7 @@ from django.views.generic import CreateView, UpdateView, DeleteView, View
 from Usuarios.models import *
 from Usuarios.views import *
 from Configuracion.models import cambios, cambiosFooter
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 
 @login_required()
 def Listproductos (request):

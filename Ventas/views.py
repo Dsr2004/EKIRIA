@@ -12,10 +12,21 @@ from django.views.generic import View, TemplateView, ListView, DetailView, Creat
 from django.urls import reverse_lazy, resolve
 from django.core.paginator import Paginator
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
+from django.utils.decorators import method_decorator
 from Usuarios.models import Usuario
 from Configuracion.models import cambios, cambiosFooter
 from .mixins import ActualiarCitaMixin, EjemploMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from Usuarios.views import *
+
+
+
+# correos de Django
+from django.template.loader import render_to_string 
+from django.core.mail import EmailMessage
+
+
 
 
 
@@ -328,23 +339,20 @@ class BuscarDisponibilidadEmpleado(View):
             return JsonResponse({"horasDisponibles":res})
 
 
-
-
-
+    
+    # @permission_required('usuario.can_change_usuario')
 class Calendario(EjemploMixin, TemplateView):
     permission_required =  'usuario.add_usuario'
     template_name = "Calendario.html"
+    # permission_required = 'auth.can_add_group'
+    # print(error)
+    # @method_decorator(login_required)
     def get(self, request, *args, **kwargs):
-        try:
-            if request.session:
-                imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-                imagen = imagen.img_usuario
-                cambiosQueryset = cambios.objects.all()
-                cambiosfQueryset = cambiosFooter.objects.all()
-                UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
-        except:
-            return redirect("UNR")
-
+        UserSesion=if_User(request)
+        cambiosQueryset = cambios.objects.all()
+        cambiosfQueryset = cambiosFooter.objects.all()
+        # user = Usuario.objects.get(pk = request.session['pk'])
+        # print(user.rol.permissions.set[''])
         #contexto
         citas=models.Cita.objects.filter(cliente_id=request.session['pk']).order_by('fecha_creacion')
       
@@ -912,30 +920,23 @@ class CambiarEstadoDeCita(TemplateView):
             update.estado=False
             update.save()    
         elif estatus==False:
-            update.estado=True
-            update.save()
             try:
-                Servidor = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
-                Servidor.starttls()
-                Servidor.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
-                print("conexion establecida")
+                update.estado=True
+                update.save()
+                From = settings.EMAIL_HOST_USER
+                To = update.cliente_id.email
+                Subject = "Correo de confirmación de cita"
 
-                mensaje = MIMEMultipart()
-                mensaje['From'] = settings.EMAIL_HOST_USER
-                mensaje['To'] = update.cliente_id.email
-                mensaje['Subject'] = "Correo de confirmación de cita"
-
+                html_template = 'Correo/ConfirmarCitaCorreo.html'
                 cliente = f"{str(update.cliente_id.nombres).capitalize()} {str(update.cliente_id.apellidos).capitalize()}"
+                contextoCorreo =  {"cliente":cliente, "dia":update.diaCita, "hora":update.horaInicioCita,"url":update.id_cita}
+                html_message = render_to_string(html_template,contextoCorreo)
 
-                content = render_to_string("Correo/ConfirmarCitaCorreo.html", {"cliente":cliente, "dia":update.diaCita, "hora":update.horaInicioCita,"url":update.id_cita})
-                mensaje.attach(MIMEText(content, 'html'))
-
-                Servidor.sendmail(settings.EMAIL_HOST_USER,
-                                    update.cliente_id.email,
-                                    mensaje.as_string())
-
-                print("Se envio el correo")
+                message = EmailMessage(Subject, html_message, from_email=From, to=[To])
+                message.content_subtype = 'html' # this is required because there is no plain text email message
+                message.send()
             except Exception as e:
+                print("error en la linea 921 modulo de veentas archivos view")
                 print(e)
         else:
             return redirect("Ventas:listarCitas")
@@ -983,8 +984,27 @@ def ejemplo(request, id):
     consuta=Servicio.objects.filter(id_servicio=id)
 
 def pruebas(request):
-    servicios=Servicio.objects.all()
-    form=pruebaxForm
+    from django.contrib.auth.models import Permission
+    user = request.user
+    permissions = user.get_all_permissions()
+    print()
+    # update={"cliente_id":{"nombres":"david", "apellidos": "soto rivera"}, "diaCita":"13-02-2004", "horaInicioCita":"05:00", "id_cita":3}
+    # try:
+    #     From = settings.EMAIL_HOST_USER
+    #     To = update.cliente_id.email
+    #     Subject = "Correo de confirmación de cita"
+
+    #     html_template = 'Correo/ConfirmarCitaCorreo.html'
+    #     cliente = f"{str(update.cliente_id.nombres).capitalize()} {str(update.cliente_id.apellidos).capitalize()}"
+    #     contextoCorreo =  {"cliente":cliente, "dia":update.diaCita, "hora":update.horaInicioCita,"url":update.id_cita}
+    #     html_message = render_to_string(html_template,contextoCorreo)
+
+    #     message = EmailMessage(Subject, html_message, from_email=From, to=[To])
+    #     message.content_subtype = 'html' # this is required because there is no plain text email message
+    #     message.send()
+    # except Exception as e:
+    #     print("error en la linea 921 modulo de veentas archivos view")
+    #     print(e)
     try:
         if request.session:
             imagen = Usuario.objects.get(id_usuario=request.session['pk'])
@@ -998,8 +1018,7 @@ def pruebas(request):
     except:
             return redirect("UNR")
     cont={
-        "servicios":servicios,
-        "form":form,
+
         "User":UserSesion,
         'cambios':cambiosQueryset, 
         'footer':cambiosfQueryset

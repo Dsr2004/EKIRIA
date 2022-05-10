@@ -65,6 +65,8 @@ class Producto(models.Model):
 class Compra(models.Model):
     id_compras=models.AutoField("id_compra",primary_key=True, unique=True)
     producto=models.ManyToManyField(Producto)
+    proveedor=models.ForeignKey(Proveedor, on_delete=models.CASCADE)
+    total=models.FloatField(blank=False, null=False)
     estado=models.BooleanField('estado', default=True)
 
     class Meta:

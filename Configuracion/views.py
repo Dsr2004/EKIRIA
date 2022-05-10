@@ -21,13 +21,16 @@ from Usuarios.models import Usuario
 from Usuarios.views import *
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
+
 # Create your views here.
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import get_object_or_404
 from .models import  cambios, cambiosFooter
 from .forms import RolForm, CambiosForm, FooterForm
 
+
 @login_required()
+# @permission_required(['auth_permission.add_rol', 'auth_permission.change_rol', 'auth_permission.delete_rol', 'auth_permission.view_rol'])
 def Configuracion(request):
     
     user = request.user
@@ -68,14 +71,16 @@ def Configuracion(request):
         return render(request, "Configuracion.html",{'User':UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
 
 
+
 @login_required()
+# @permission_required(['auth_permission.add_rol', 'auth_permission.change_rol', 'auth_permission.delete_rol', 'auth_permission.view_rol'])
 def Roles(request):
+# @permission_required(['auth_permission.add_cambios', 'auth_permission.change_cambios', 'auth_permission.delete_cambios', 'auth_permission.view_cambios','auth_permission.add_cambiosfooter', 'auth_permission.change_cambiosfooter', 'auth_permission.delete_cambiosfooter', 'auth_permission.view_cambiosfooter'])
     UserSesion=if_admin(request)
     cambiosQueryset = cambios.objects.all()
     cambiosfQueryset = cambiosFooter.objects.all()
     return render(request, "Roles.html", {'User':UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
-        
-
+    
 @login_required()
 def Cambios(request):
     formulario = CambiosForm
@@ -90,7 +95,9 @@ def Cambios(request):
     
     return render (request, "Cambios.html",contexto)
 
+
 @login_required()
+@permission_required(['auth_permission.add_permission', 'auth_permission.change_permission', 'auth_permission.delete_permission', 'auth_permission.view_permission'])
 def Permisos(request):
     cambiosQueryset = cambios.objects.all()
     cambiosfQueryset = cambiosFooter.objects.all()
