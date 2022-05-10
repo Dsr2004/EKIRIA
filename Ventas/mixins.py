@@ -57,11 +57,11 @@ class EjemploMixin(object):
     permission_required = ''
     url_redirect = None
 
-    # def get_perms(self):
-    #    if isinstance(self.permission_required,str):
-    #        return(self.permission_required)
+    def get_perms(self):
+       if isinstance(self.permission_required,str):
+           return(self.permission_required)
         
-    #    else: return(self.permission_required)
+       else: return(self.permission_required)
 
 
     def get_url_redirect(self):
@@ -69,15 +69,15 @@ class EjemploMixin(object):
             return reverse_lazy('IniciarSesion')
         return self.url_redirect
 
-    # def dispatch(self, request, *args, **kwargs):
-    #     if request.user.has_perm(self.get_perms()):
-    #         # print(request.user.has_perm('citasds'))
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.has_perm(self.get_perms()):
+            # print(request.user.has_perm('citasds'))
         
-    #         user = request.user
-    #         print(user)
+            user = request.user
+            print(user)
         
-    #         return super().dispatch(request, *args, **kwargs)
-    #     return redirect(self.get_url_redirect)
+            return super().dispatch(request, *args, **kwargs)
+        return redirect(self.get_url_redirect)
 
 
 

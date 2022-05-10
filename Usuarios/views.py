@@ -174,7 +174,6 @@ class Register(CreateView):
     template_name = 'registration/Registration.html'
     success_url = reverse_lazy("IniciarSesion")
 
-
     
 @login_required()
 def Perfil(request):
@@ -192,18 +191,20 @@ def if_User(request):
             imagen = imagen.img_usuario
             UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
             return UserSesion
+
 def if_admin(request):
     UserSesion=""
     if request.session:
         if request.session['pk']:
-            imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-            imagen = imagen.img_usuario
-            if request.session['Admin'] == True:
+            if request.session['Admin']:
+                imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+                imagen = imagen.img_usuario
                 UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
                 print(UserSesion)
                 return UserSesion
             else:
-                return redirect("SinPermisos")
+                return False
+
 @login_required()
 def EditarPerfil(request):  
     template_name = "UserInformation/EditarPerfil.html"
