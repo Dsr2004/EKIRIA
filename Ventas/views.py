@@ -342,7 +342,7 @@ class BuscarDisponibilidadEmpleado(View):
     
     # @permission_required('usuario.can_change_usuario')
 class Calendario(EjemploMixin, TemplateView):
-    permission_required = 'cita.can_change_cita'
+    permission_required = ('cita.can_change_cita',)
     template_name = "Calendario.html"
     # permission_required = 'auth.can_add_group'
     # print(error)

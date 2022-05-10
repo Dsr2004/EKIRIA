@@ -115,7 +115,7 @@ class Usuario(AbstractBaseUser):
     #     return _user_get_permissions(self, obj, 'all')
 
     def has_perm(self,perm,obj=None):
-        return True
+        return ()
 
     def has_perms(self,perm,obj=None):
         return True

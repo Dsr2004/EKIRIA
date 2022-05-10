@@ -5,6 +5,8 @@ from django.contrib import messages
 from django.urls import resolve, reverse_lazy
 from django.http import HttpResponseRedirect
 
+from django.contrib.auth.models import Permission,Group
+
 from Ventas.models import Cita
 
 class ActualiarCitaMixin(object):
@@ -71,7 +73,12 @@ class EjemploMixin(object):
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.has_perms(self.get_perms()):
-            print(request.user.has_perms('citasds'))
+            permissions_list = Permission.objects.all()
+            x = request.user.rol.permissions
+            print(x)
+            
+            
+
             return super().dispatch(request, *args, **kwargs)
         return redirect(self.get_url_redirect)
 
