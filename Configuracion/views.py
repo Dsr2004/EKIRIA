@@ -19,18 +19,53 @@ from django.urls import reverse_lazy
 from django.contrib.auth.models import Permission,Group
 from Usuarios.models import Usuario
 from Usuarios.views import *
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import PermissionRequiredMixin
 # Create your views here.
-
+from django.contrib.contenttypes.models import ContentType
+from django.shortcuts import get_object_or_404
 from .models import  cambios, cambiosFooter
 from .forms import RolForm, CambiosForm, FooterForm
 
 @login_required()
 def Configuracion(request):
-    cambiosQueryset = cambios.objects.all()
-    cambiosfQueryset = cambiosFooter.objects.all()
-    UserSesion=if_admin(request)
-    return render(request, "Configuracion.html", {'User':UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
+    
+    user = request.user
+    # any permission check will cache the current set of permissions
+    # user.has_perm('group.change_group')
+
+    # content_type = ContentType.objects.get_for_model(Group)
+    # permission = Permission.objects.get(
+    #     codename='change_group',
+    #     content_type=content_type,
+    # )
+    if user.rol.permissions.get(codename='view_usuario'):
+    # permissions = Permission.objects.filter()
+    # Checking the cached permission set
+    # user.has_perm('group.change_group')  # False
+
+    # Request new instance of User
+    # Be aware that user.refresh_from_db() won't clear the cache.
+    # user = get_object_or_404(Usuario, pk=id_user.id_usuario)
+
+    # Permission cache is repopulated from the database
+    # user.has_perm('group.change_group')  # True
+    # user.user_permission.set([])
+    # user.Usuario_permissions.all().values('codename')
+    # user.get_group_permissions()
+    # print(user.get_all_permissions())
+
+    # if Usuario.has_perm('group.change_group'):
+    #     Usuario.has_perm=True
+    #     print(Usuario.has_perm)
+    # else:
+    #     Usuario.has_perm=False
+    #     print(Usuario.has_perm)
+        
+        cambiosQueryset = cambios.objects.all()
+        cambiosfQueryset = cambiosFooter.objects.all()
+        UserSesion=if_admin(request)
+        return render(request, "Configuracion.html",{'User':UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
 
 
 @login_required()

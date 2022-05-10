@@ -332,7 +332,7 @@ class BuscarDisponibilidadEmpleado(View):
 
 
 class Calendario(EjemploMixin, TemplateView):
-    permission_required = 'cita.can_change_cita'
+    permission_required =  'usuario.add_usuario'
     template_name = "Calendario.html"
     def get(self, request, *args, **kwargs):
         try:

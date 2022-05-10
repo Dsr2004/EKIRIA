@@ -42,7 +42,7 @@ class ActualiarCitaMixin(object):
 class PoderEditarCitaMixin(object):
      def get_context_data(self, **kwargs):
         context = super( self).get_context_data(**kwargs)
-        citax =Cita.objects.get(id_cita=self.kwargs["pk"])
+        citax =Cita.objects.get(id_cita=self.kwargs["pk"]) 
         hoy = datetime.today()
         diaCita = citax.diaCita
         tresDias =  datetime(diaCita.year, diaCita.month, diaCita.day) - timedelta(days=3)
@@ -57,11 +57,11 @@ class EjemploMixin(object):
     permission_required = ''
     url_redirect = None
 
-    def get_perms(self):
-       if isinstance(self.permission_required,str):
-           return(self.permission_required)
+    # def get_perms(self):
+    #    if isinstance(self.permission_required,str):
+    #        return(self.permission_required)
         
-       else: return(self.permission_required)
+    #    else: return(self.permission_required)
 
 
     def get_url_redirect(self):
@@ -69,11 +69,15 @@ class EjemploMixin(object):
             return reverse_lazy('IniciarSesion')
         return self.url_redirect
 
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.has_perms(self.get_perms()):
-            print(request.user.has_perms('citasds'))
-            return super().dispatch(request, *args, **kwargs)
-        return redirect(self.get_url_redirect)
+    # def dispatch(self, request, *args, **kwargs):
+    #     if request.user.has_perm(self.get_perms()):
+    #         # print(request.user.has_perm('citasds'))
+        
+    #         user = request.user
+    #         print(user)
+        
+    #         return super().dispatch(request, *args, **kwargs)
+    #     return redirect(self.get_url_redirect)
 
 
 
