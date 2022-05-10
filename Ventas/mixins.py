@@ -5,6 +5,8 @@ from django.contrib import messages
 from django.urls import resolve, reverse_lazy
 from django.http import HttpResponseRedirect
 
+from django.contrib.auth.models import Permission,Group
+
 from Ventas.models import Cita
 
 class ActualiarCitaMixin(object):

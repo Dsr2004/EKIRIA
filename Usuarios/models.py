@@ -117,6 +117,8 @@ class Usuario(AbstractBaseUser):
     # def get_all_permissions(self, obj=None):
     #     return _user_get_permissions(self, obj, 'all')
 
+    def has_perm(self,perm,obj=None):
+        return ()
 
     def has_module_perms(self, app_label):
         return True

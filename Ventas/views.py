@@ -334,8 +334,6 @@ class BuscarDisponibilidadEmpleado(View):
             return JsonResponse({"horasDisponibles":res})
 
 
-    
-    # @permission_required('usuario.can_change_usuario')
 class Calendario(PermissionMixin, TemplateView):
     permission_required =  ['view_calendario']
     template_name = "Calendario.html"
