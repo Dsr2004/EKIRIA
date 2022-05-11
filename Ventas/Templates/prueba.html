@@ -2,15 +2,34 @@
 {% load static %}
 
 {% block head %}
+
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
 </head>
+
+
 
 {% endblock head %}
     
 
-
 {% block Contenido %}
-    
+
+<style>
+  .cajadeCarga{
+    background-color: grey;
+    width: 100vw;
+    height: 100vh;
+    filter:alpha(opacity=70);
+    -moz-opacity:.70;opacity:.30;
+    position: absolute;
+  }
+</style>
+    <div class="cajaPrueba45">
+
+    </div>
 
 
 {% endblock Contenido %}
@@ -44,13 +63,15 @@
 
 
 
+
+
 {% comment %}
 {% block head %}
 <head>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Static Example</title>
+    <title>Static Exampsdsle</title>
 
     
     <link rel="stylesheet" href="/static/Plugins/datetimepicker/jquery.datetimepicker.css">
