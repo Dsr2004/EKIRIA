@@ -12,10 +12,22 @@ from django.views.generic import View, TemplateView, ListView, DetailView, Creat
 from django.urls import reverse_lazy, resolve
 from django.core.paginator import Paginator
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
+from django.utils.decorators import method_decorator
 from Usuarios.models import Usuario
 from Configuracion.models import cambios, cambiosFooter
-from .mixins import ActualiarCitaMixin, EjemploMixin
+from .mixins import ActualiarCitaMixin
+from Proyecto_Ekiria.Mixin.Mixin import PermissionMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from Usuarios.views import *
+
+
+
+# correos de Django
+from django.template.loader import render_to_string 
+from django.core.mail import EmailMessage
+
+
 
 
 
@@ -188,12 +200,9 @@ def Carrito(request):
                 imagen = imagen.img_usuario
                 cambiosQueryset = cambios.objects.all()
                 cambiosfQueryset = cambiosFooter.objects.all()
-                if request.session['Admin'] == True:
-                    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
-                else:
-                    return redirect("SinPermisos")
+                UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
     except:
-            return redirect("UNR")
+            return redirect("IniciarSesion")
 
     contexto={"pedido":pedido,"User":UserSesion,"serviciosx":serviciosx,"serviciosPerx":serviciosPerx, "User":UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset}
 
@@ -227,7 +236,7 @@ class AgandarCita(CreateView):
                 pedido={"get_total_carrito":0,"get_items_carrito":0}
                 contexto={"items":items, "pedido":pedido,"form":self.form_class}
         except: 
-            return redirect("UNR")
+            return redirect("IniciarSesion")
 
         try:
             if self.request.session:
@@ -235,11 +244,8 @@ class AgandarCita(CreateView):
                 imagen = imagen.img_usuario
                 cambiosQueryset = cambios.objects.all()
                 cambiosfQueryset = cambiosFooter.objects.all()
-                if self.request.session['Admin'] == True:
-                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
-                    contexto["User"]=UserSesion
-                else:
-                    return redirect("SinPermisos")
+                UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                contexto["User"]=UserSesion
                 contexto["User"]=UserSesion
                 contexto['cambios']=cambiosQueryset
                 contexto['footer']=cambiosfQueryset
@@ -328,23 +334,18 @@ class BuscarDisponibilidadEmpleado(View):
             return JsonResponse({"horasDisponibles":res})
 
 
-
-
-
-class Calendario(EjemploMixin, TemplateView):
-    permission_required = 'cita.can_change_cita'
+class Calendario(PermissionMixin, TemplateView):
+    permission_required =  ['view_calendario']
     template_name = "Calendario.html"
+    # permission_required = 'auth.can_add_group'
+    # print(error)
+    # @method_decorator(login_required)
     def get(self, request, *args, **kwargs):
-        try:
-            if request.session:
-                imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-                imagen = imagen.img_usuario
-                cambiosQueryset = cambios.objects.all()
-                cambiosfQueryset = cambiosFooter.objects.all()
-                UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
-        except:
-            return redirect("UNR")
-
+        UserSesion=if_User(request)
+        cambiosQueryset = cambios.objects.all()
+        cambiosfQueryset = cambiosFooter.objects.all()
+        # user = Usuario.objects.get(pk = request.session['pk'])
+        # print(user.rol.permissions.set[''])
         #contexto
         citas=models.Cita.objects.filter(cliente_id=request.session['pk']).order_by('fecha_creacion')
       
@@ -381,7 +382,7 @@ class ServiciosPersonalizados(CreateView):
                 context['footer']=cambiosfQueryset
                 return context
         except:
-            return redirect("UNR")
+            return redirect("IniciarSesion")
 
     def form_valid(self, form, *args, **kwargs):
         objeto=form.save()
@@ -428,7 +429,7 @@ class AdminVentas(TemplateView):
                 else:
                     return redirect("SinPermisos")
         except:
-            return redirect("UNR")
+            return redirect("IniciarSesion")
 
         #contexto
         context={
@@ -558,7 +559,7 @@ class AgregarServicio(CreateView):#crear
                 else:
                     return redirect("SinPermisos")
         except:
-            return redirect("UNR")
+            return redirect("IniciarSesion")
         return context
     def form_valid(self, form, **kwargs):
         objeto=form.save()
@@ -632,7 +633,7 @@ class ListarServicio(ListView):#listar
                 context['cambios']=cambiosQueryset
                 return context
         except:
-            return redirect("UNR")
+            return redirect("IniciarSesion")
 
 class ServicioDetalle(DetailView):#detalle
     queryset = Servicio.objects.all()
@@ -805,7 +806,7 @@ class EditarCita(ActualiarCitaMixin, UpdateView):
                 else:
                     return redirect("SinPermisos")  
         except:
-            return redirect("UNR")
+            return redirect("IniciarSesion")
         citax = models.Cita.objects.get(id_cita=self.kwargs["pk"])
         pedido = models.Pedido.objects.get(id_pedido = citax.pedido_id.id_pedido)
         items = pedido.pedidoitem_set.all()
@@ -846,7 +847,7 @@ class EditarCitaCliente(ActualiarCitaMixin, UpdateView):
                 else:
                     return redirect("SinPermisos")  
         except:
-            return redirect("UNR")
+            return redirect("IniciarSesion")
         citax = models.Cita.objects.get(id_cita=self.kwargs["pk"])
         pedido = models.Pedido.objects.get(id_pedido = citax.pedido_id.id_pedido)
         items = pedido.pedidoitem_set.all()
@@ -877,15 +878,12 @@ class DetalleCitaCliente(DetailView):
                 imagen = imagen.img_usuario
                 cambiosQueryset = cambios.objects.all()
                 cambiosfQueryset = cambiosFooter.objects.all()
-                if self.request.session['Admin'] == True:
-                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
-                    context["User"]=UserSesion
-                    context['cambios']=cambiosQueryset
-                    context['footer']=cambiosfQueryset
-                else:
-                    return redirect("SinPermisos")  
+                UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                context["User"]=UserSesion
+                context['cambios']=cambiosQueryset
+                context['footer']=cambiosfQueryset
         except:
-            return redirect("UNR")
+            return redirect("IniciarSesion")
 
         citax = models.Cita.objects.get(id_cita=self.kwargs["pk"])
         pedido = models.Pedido.objects.get(id_pedido = citax.pedido_id.id_pedido)
@@ -912,9 +910,9 @@ class CambiarEstadoDeCita(TemplateView):
             update.estado=False
             update.save()    
         elif estatus==False:
-            update.estado=True
-            update.save()
             try:
+                update.estado=True
+                update.save() 
                 Servidor = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
                 Servidor.starttls()
                 Servidor.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
@@ -983,8 +981,7 @@ def ejemplo(request, id):
     consuta=Servicio.objects.filter(id_servicio=id)
 
 def pruebas(request):
-    servicios=Servicio.objects.all()
-    form=pruebaxForm
+   
     try:
         if request.session:
             imagen = Usuario.objects.get(id_usuario=request.session['pk'])
@@ -996,10 +993,9 @@ def pruebas(request):
             else:
                 return redirect("SinPermisos")
     except:
-            return redirect("UNR")
+            return redirect("IniciarSesion")
     cont={
-        "servicios":servicios,
-        "form":form,
+
         "User":UserSesion,
         'cambios':cambiosQueryset, 
         'footer':cambiosfQueryset

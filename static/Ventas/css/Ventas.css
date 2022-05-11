@@ -399,3 +399,13 @@
 
     }
 } */
+
+ /* 
+ estilo que se aplica cuando la pagina tarda en caragar, usado especialemente al envio de los correos
+ */
+.cajadeCarga{
+    background-color: grey;
+    filter:alpha(opacity=70);
+    -moz-opacity:.70;opacity:.20;
+    z-index: 999;
+  }

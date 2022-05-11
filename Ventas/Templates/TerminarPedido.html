@@ -16,7 +16,7 @@
 </head>{% endblock head %}
 
 {% block Contenido %}
-  <div class="container">
+  <div class="container" id="conteinerFinal">
       <h1>Finalizar Compra</h1>
       <div class="row" style="margin-top: 10px;">
         <div class="col-lg-6">
@@ -56,7 +56,7 @@
              {{form.descripcion}}
               <br><br>
               <div class="d-grid gap-2">
-                <button class="btn btn-success" type="submit">Continuar</button>
+                <button class="btn btn-success" type="button" onclick="EnviarTerminarPedido()">Continuar</button>
               </div>
             </form>
           </div>

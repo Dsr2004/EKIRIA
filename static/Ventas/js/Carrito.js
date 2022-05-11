@@ -72,3 +72,9 @@ function ActualizarPedidoDeUsuario(servicioId, accion){
        $(this).appendTo("body").modal('show');
      });
  }
+
+
+function EnviarTerminarPedido(){
+  let caja = $("#conteinerFinal")
+  caja.addClass("cajadeCarga")
+}

@@ -5,6 +5,8 @@ from django.contrib import messages
 from django.urls import resolve, reverse_lazy
 from django.http import HttpResponseRedirect
 
+from django.contrib.auth.models import Permission,Group
+
 from Ventas.models import Cita
 
 class ActualiarCitaMixin(object):
@@ -14,6 +16,7 @@ class ActualiarCitaMixin(object):
         diaCita = citax.diaCita
         tresDias =  datetime(diaCita.year, diaCita.month, diaCita.day) - timedelta(days=3)
         if not hoy < tresDias:
+
             if request.session["Admin"]:
                 return redirect("Ventas:listarCitas")
             elif request.session["rol"] == "Empleado":
@@ -42,7 +45,7 @@ class ActualiarCitaMixin(object):
 class PoderEditarCitaMixin(object):
      def get_context_data(self, **kwargs):
         context = super( self).get_context_data(**kwargs)
-        citax =Cita.objects.get(id_cita=self.kwargs["pk"])
+        citax =Cita.objects.get(id_cita=self.kwargs["pk"]) 
         hoy = datetime.today()
         diaCita = citax.diaCita
         tresDias =  datetime(diaCita.year, diaCita.month, diaCita.day) - timedelta(days=3)
@@ -53,7 +56,6 @@ class PoderEditarCitaMixin(object):
 
 
 class EjemploMixin(object):
-    print("si entre")
     permission_required = ''
     url_redirect = None
 
@@ -70,8 +72,12 @@ class EjemploMixin(object):
         return self.url_redirect
 
     def dispatch(self, request, *args, **kwargs):
-        if request.user.has_perms(self.get_perms()):
-            print(request.user.has_perms('citasds'))
+        if request.user.has_perm(self.get_perms()):
+            # print(request.user.has_perm('citasds'))
+        
+            user = request.user
+            print(user)
+        
             return super().dispatch(request, *args, **kwargs)
         return redirect(self.get_url_redirect)
 
