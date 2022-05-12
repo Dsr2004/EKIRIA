@@ -20,7 +20,11 @@ from .mixins import ActualiarCitaMixin
 from Proyecto_Ekiria.Mixin.Mixin import PermissionMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from Usuarios.views import *
+import smtplib
 
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from django.template.loader import render_to_string
 
 
 # correos de Django

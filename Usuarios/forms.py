@@ -159,9 +159,10 @@ class Regitro(forms.ModelForm):
             raise forms.ValidationError('La Contraseña no coincide')
         if len(password1) <= 8:
             raise forms.ValidationError('La contraseña debe contener más de 8 digitos')
-            print(any(chr.isdigit() for chr in password1) )
         if any(chr.isdigit() for chr in password1) is False:
             raise forms.ValidationsError('la contraseña debe contener al menos un número')
+        if any(chr.isupper() for chr in password1):
+            raise forms.ValidationsError('la contraseña debe contener al menos una Mayúscula')
         return password2
     
     def save(self,commit = True):
