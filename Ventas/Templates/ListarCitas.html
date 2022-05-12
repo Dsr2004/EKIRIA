@@ -14,8 +14,14 @@
 
 {% block Contenido %}
 <h1>Listar Citas</h1>
+<div class="text-center quitar"  id="spinnerLoad">
+   <div class="spinner-grow " style="width: 3rem; height: 3rem;" role="status">
+     <span class="visually-hidden">Cargando...</span>
+   </div>
+   <h4 class="quitar" id="titleSpinner">Confirmando cita... <br> <sub> Notificando al cliente...</sub></h4>
 
-<div class="container">
+ </div>
+<div class="container" id="containerInicio">
     <table class="table table-striped">
         <thead>
            <tr>
@@ -63,6 +69,7 @@
      </table>
      
 </div>
+
 
 {% block scripts %}
 <script src="/static/Ventas/js/Ventas.js"></script>
