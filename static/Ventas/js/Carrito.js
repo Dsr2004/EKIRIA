@@ -75,6 +75,45 @@ function ActualizarPedidoDeUsuario(servicioId, accion){
 
 
 function EnviarTerminarPedido(){
-  let caja = $("#conteinerFinal")
-  caja.addClass("cajadeCarga")
+  
+  let cajaI = $("#containerInicio")
+  let spinner = $("#spinnerLoad")
+  let titulo = $("#titleSpinner")
+  let form = $("#TerminarPedidoForm")
+
+  cajaI.css("display", "none")
+  spinner.removeClass("quitar")
+  spinner.css("margin-top", "40vh")
+  titulo.removeClass("quitar")
+  titulo.css("margin-top", "15px")
+  form.find('.text-danger').text('')
+  form.find('.is-invalid').removeClass('is-invalid')
+
+
+  $.ajax({
+    data: form.serialize(),
+    url: form.attr("action"),
+    type: form.attr("method"),
+    success: function(data){
+      location.href="/Ventas/Calendario/"
+    },
+    error: function(error){
+      $("#alertaError").removeClass("quitar")
+      cajaI.css("display", "block")
+      spinner.addClass("quitar")
+      
+      for (let i in error.responseJSON["errores"]){
+        let x=form.find('input[name='+i+']')
+        x.addClass("is-invalid")
+        $("#"+i).text(error.responseJSON["errores"][i])
+    }
+    for (let i in error.responseJSON["errores"]){
+      let x=form.find('select[name='+i+']')
+      x.addClass("is-invalid")
+      $("#"+i).text(error.responseJSON["errores"][i])
+  }
+      
+    }
+  });
+
 }

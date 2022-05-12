@@ -264,31 +264,38 @@ class AgandarCita(CreateView):
         diaCita = request.POST["diaCita"]
         empleado = request.POST["empleado_id"]
         descripcion = request.POST["descripcion"]
-        horaInicio=datetime.strptime(horaInicio, "%H:%M %p").strftime("%H:%M:%S")
-        cliente=Usuario.objects.get(username=self.request.session['username'])
-        pedido,creado = Pedido.objects.get_or_create(cliente_id=cliente, completado=False)
+        errores = {}
+        if not horaInicio:
+            errores["horaInicioCita"] = "Debe completar la hora de la cita."
+            if not diaCita:
+                errores["diaCita"] = "Debe completar el dia  de la cita."
+                if not empleado:
+                    errores["empleado_id"] = "Debe seleccionar un empleado que atienda su cita."
 
-        
-
-        # request.POST["horaFinCita"]=horaFin
-        
-
-        datosParaGuardar = {"pedido_id":pedido,"horaInicioCita":horaInicio,"cliente_id":cliente, "empleado_id":empleado,
-        "descripcion":descripcion,"diaCita":diaCita}
-        form = self.form_class(datosParaGuardar)
-        if form.is_valid:
-            object=form.save()
-            calendarioSave = models.Calendario(dia=object.diaCita, horaInicio=object.horaInicioCita, horaFin=object.horaFinCita, cita_id=object, cliente_id=object.cliente_id, empleado_id=object.empleado_id)
-            calendarioSave.save()
-            form.save()
-            pedido.completado = True
-            pedido.save()
-            datos = {}
-
-            return redirect("Ventas:calendario")
-
+        if errores:
+            response = JsonResponse({"errores":errores})
+            response.status_code = 400
+            return response
         else:
-            return render(request, self.template_name, {"form":self.form_class})
+            horaInicio=datetime.strptime(horaInicio, "%H:%M %p").strftime("%H:%M:%S")
+            cliente=Usuario.objects.get(username=self.request.session['username'])
+            pedido,creado = Pedido.objects.get_or_create(cliente_id=cliente, completado=False)
+            datosParaGuardar = {"pedido_id":pedido,"horaInicioCita":horaInicio,"cliente_id":cliente, "empleado_id":empleado,
+            "descripcion":descripcion,"diaCita":diaCita}
+            form = self.form_class(datosParaGuardar)
+            if form.is_valid:
+                object=form.save()
+                calendarioSave = models.Calendario(dia=object.diaCita, horaInicio=object.horaInicioCita, horaFin=object.horaFinCita, cita_id=object, cliente_id=object.cliente_id, empleado_id=object.empleado_id)
+                calendarioSave.save()
+                form.save()
+                pedido.completado = True
+                pedido.save()
+                datos = {}
+
+                return redirect("Ventas:calendario")
+
+            else:
+                return render(request, self.template_name, {"form":self.form_class})
 
 
 class BuscarDisponibilidadEmpleado(View):
@@ -334,7 +341,7 @@ class BuscarDisponibilidadEmpleado(View):
             return JsonResponse({"horasDisponibles":res})
 
 
-class Calendario(PermissionMixin, TemplateView):
+class Calendario(TemplateView):
     permission_required =  ['view_calendario']
     template_name = "Calendario.html"
     # permission_required = 'auth.can_add_group'

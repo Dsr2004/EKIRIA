@@ -16,11 +16,11 @@ class ActualiarCitaMixin(object):
         diaCita = citax.diaCita
         tresDias =  datetime(diaCita.year, diaCita.month, diaCita.day) - timedelta(days=3)
         if not hoy < tresDias:
-
+            messages.add_message(request, messages.INFO, 'Usted no puede modificar esta cita porque no cuenta con los 3 días requeridos.')
             if request.session["Admin"]:
-                return redirect("Ventas:listarCitas")
+                return redirect("Ventas:detalleEditarCita", pk=self.kwargs["pk"])
             elif request.session["rol"] == "Empleado":
-                return redirect("Ventas:listarCitas")
+                return redirect("Ventas:detalleEditarCita", pk=self.kwargs["pk"])
             else:
                 return redirect("Ventas:calendario")
 
@@ -30,9 +30,9 @@ class ActualiarCitaMixin(object):
             # print(request.META.get('HTTP_REFERER'))
 
             if request.session["Admin"]:
-                return redirect("Ventas:listarCitas")
+                return redirect("Ventas:detalleEditarCita", pk=self.kwargs["pk"])
             elif request.session["rol"] == "Empleado":
-                return redirect("Ventas:listarCitas")
+                return redirect("Ventas:detalleEditarCita", pk=self.kwargs["pk"])
             else:
                 return redirect("Ventas:calendario")
             

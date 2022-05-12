@@ -409,3 +409,7 @@
     -moz-opacity:.70;opacity:.20;
     z-index: 999;
   }
+
+.quitar{
+    display: none;
+}
