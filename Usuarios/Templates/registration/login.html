@@ -40,7 +40,7 @@
                  <input type="hidden" name="next" value="{{ request.GET.next }}"/>
             {% endif %} 
             <br><br>
-            <a href="" class="OTC">¿Olvidaste tu contraseña?</a>
+            <a href="{%url 'EmailRecovery'%}" class="OTC">¿Olvidaste tu contraseña?</a>
             <p class="Reg">¿No tienes una cuenta? <a href="{%url 'Registro'%}" class="OTC">Registrate aquí</a></p>
         </form>
     </div>

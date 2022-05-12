@@ -19,7 +19,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from Proyecto_Ekiria.views import Inicio, menu, SinPermisos, Noregistrado, Error404, Error500, Errors
-from Usuarios.views import Login, Register, Loguot
+from Usuarios.views import Login, Register, Loguot, PassR, PassRec
 from rest_framework.authtoken import views
 from django.conf.urls import handler404, handler500
 urlpatterns = [
@@ -29,6 +29,8 @@ urlpatterns = [
     path('IniciarSesion/', Login, name="IniciarSesion"),
     path('CerrarSesion/', Loguot, name="CerrarSesion"),
     path('Registro/', Register.as_view(), name="Registro"),
+    path('RecuperarContraseña/<str:token>', PassR, name="PassRec"),
+    path('EmailRecovery/', PassRec, name="EmailRecovery"),
     path('InformacionUsuario/', include('Usuarios.urls')),
     path('admin/', admin.site.urls),
     path('Inicio/', Inicio),
@@ -45,7 +47,7 @@ if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     
-    
+
     
 # ----------------------------------------ERROS VIEWS--------------------------------
 handler404 = Error404.as_view()

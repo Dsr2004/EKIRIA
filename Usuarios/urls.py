@@ -3,6 +3,7 @@ from django.urls import path
 from Usuarios.views import PassR, Perfil, Admin, Notification, CreateUser, UpdateUser,EditarPerfil, CambiarEstadoUsuario, Change
 from django.contrib.auth.decorators import login_required
 
+
 urlpatterns = [
     path('RecuperarContraseña/', PassR, name="RecuperarContraseña"),
     path('CambiarContraseña/', Change, name="Cambiar"),
