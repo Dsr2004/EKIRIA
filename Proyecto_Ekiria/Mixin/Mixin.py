@@ -29,7 +29,7 @@ class PermissionMixin(object):
         for permission in self.get_perms():
             try:
                 if request.user.rol.permissions.get(codename=permission):
-                    print(permission)
+                    pass
             except:
                 return self.get_url_redirect()
         

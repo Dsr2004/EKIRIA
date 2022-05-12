@@ -26,6 +26,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import get_object_or_404
 from .models import  cambios, cambiosFooter
+from Proyecto_Ekiria.Mixin.Mixin import PermissionMixin
 from .forms import RolForm, CambiosForm, FooterForm
 
 
@@ -111,7 +112,7 @@ def Permisos(request):
     return render(request, "Permisos.html", {'User':UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
     
 
-class Admin(DetailView):
+class Admin(PermissionMixin,DetailView):
     model = Permission
     template_name = 'Administrador.html'
     def get(self, request,*args, **kwargs):
@@ -121,10 +122,29 @@ class Admin(DetailView):
         queryset = self.request.GET.get("buscar")
         UserSesion=""
         contexto= self.model.objects.all()
+        rol = Group.objects.get(id=self.kwargs["pk"])
+        permisos = rol.permissions.all()
+        lista=[]
         if queryset:
-            contexto = self.model.objects.filter(
+            # contexto = self.model.objects.filter(
+            #     Q(name__icontains = queryset)
+            # )
+            permisos = self.model.objects.filter(
                 Q(name__icontains = queryset)
             )
+           
+        for i in permisos:
+            id = i.codename
+            lista.append(id)
+        permisosexclu = Permission.objects.exclude(codename__in=lista)
+        if queryset: 
+            lista1 = []
+            for permiso2 in permisosexclu:
+                if "delete" in permiso2.codename:
+                        lista1.append(permiso2)
+                        print(permiso2)
+            # permisosexclu = lista1
+
         if if_admin(request):
             UserSesion=if_admin(request)
         else: 
@@ -136,13 +156,9 @@ class Admin(DetailView):
         context['grupo']=grupo
         context['cambios']=cambiosQueryset
         context['footer']=cambiosfQueryset
-
-
-        rol = Group.objects.get(id=self.kwargs["pk"])
-        permisos = rol.permissions.all()
-        
         context["rol"] = rol
         context["permisos"] = permisos
+        context['permisosexclu']=permisosexclu
 
         return render(request, self.template_name, context)
 
