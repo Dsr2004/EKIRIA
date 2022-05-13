@@ -349,9 +349,9 @@ class PassR(TemplateView):
                     messages = "Las contraseñas no coinciden"
             else:
                 messages = "Los campos son obligatorios"
-                context ={
-                    'message':messages
-                }
+            context ={
+                'message':messages
+            }
         return render(request, self.template_name, context)
     
 def PassRec(request):
