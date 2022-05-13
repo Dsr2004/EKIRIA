@@ -16,7 +16,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.decorators import method_decorator
 from Usuarios.models import Usuario
 from Configuracion.models import cambios, cambiosFooter
-from .mixins import ActualiarCitaMixin
+from .mixins import ActualiarCitaMixin, ActualiarCitaClienteMixin
 from Proyecto_Ekiria.Mixin.Mixin import PermissionMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from Usuarios.views import *
@@ -836,7 +836,7 @@ class EditarCita(ActualiarCitaMixin, UpdateView):
 
 
 
-class EditarCitaCliente(ActualiarCitaMixin, UpdateView): 
+class EditarCitaCliente(ActualiarCitaClienteMixin, UpdateView): 
     model = Cita
     template_name = "EditarCitaCliente.html"
     form_class = CitaForm
@@ -909,6 +909,20 @@ class DetalleCitaCliente(DetailView):
                 if not i.servicio_personalizado_id == None:
                     serviciosPerx.append(i)
                     context["serviciosPer"]=serviciosPerx
+
+        hoy = datetime.today()
+        diaCita = citax.diaCita
+        tresDias =  datetime(diaCita.year, diaCita.month, diaCita.day) - timedelta(days=3)
+        if hoy < tresDias:
+            context["SePuedeModificar"] = True
+        else:
+            context["SePuedeModificar"] = False
+
+        if citax.cancelado == True:
+            context["Cancelado"]=True
+        else:
+            context["Cancelado"]=False
+
         return context
 
 class CambiarEstadoDeCita(TemplateView):

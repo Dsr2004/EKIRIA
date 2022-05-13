@@ -85,12 +85,11 @@ function ConfirmarCita(id){
       buttons: true,
       dangerMode: true,
     }).then((changeStatus) => {
-      if (changeStatus) {
+      if (changeStatus) { 
         $(document).ready(function(){
           let cajaI = $("#containerInicio")
           let spinner = $("#spinnerLoad")
-          let titulo = $("#titleSpinner")
-        
+          let titulo = $("#titleSpinner") 
           cajaI.css("display", "none")
           spinner.removeClass("quitar")
           spinner.css("margin-top", "40vh")

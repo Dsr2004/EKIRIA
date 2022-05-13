@@ -41,6 +41,22 @@ class ActualiarCitaMixin(object):
             return redirect("Ventas:listarCitas") 
         return super().dispatch(request, *args, **kwargs)
 
+class ActualiarCitaClienteMixin(object):
+    def dispatch(self, request, *args, **kwargs):
+        citax =Cita.objects.get(id_cita=self.kwargs["pk"])
+        hoy = datetime.today()
+        diaCita = citax.diaCita
+        tresDias =  datetime(diaCita.year, diaCita.month, diaCita.day) - timedelta(days=3)
+        if not hoy < tresDias:
+            messages.add_message(request, messages.INFO, 'Usted no puede modificar esta cita porque no cuenta con los 3 días requeridos.')
+            return redirect("Ventas:detalleCita", pk=self.kwargs["pk"])
+
+        if citax.cancelado == True:
+            messages.add_message(request, messages.INFO, 'Usted no puede modificar esta cita porque ha sido cancelada.')
+            return redirect("Ventas:detalleCita", pk=self.kwargs["pk"])
+            
+        return super().dispatch(request, *args, **kwargs)
+
 
 class PoderEditarCitaMixin(object):
      def get_context_data(self, **kwargs):

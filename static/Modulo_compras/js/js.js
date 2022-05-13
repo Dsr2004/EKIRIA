@@ -1,5 +1,5 @@
 function eliminarprov(id_proveedor) {
-    let path = "Compras/eliminarprov/"
+    let path = "/Compras/eliminarprov/"
     var ruta = path + id_proveedor
     console.log(ruta)
     const swalWithBootstrapButtons = Swal.mixin({
