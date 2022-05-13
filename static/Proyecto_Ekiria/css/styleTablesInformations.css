@@ -77,18 +77,11 @@ table.dataTable {
 
 .Table.Content-table .Information table {
     width: 100%;
+    border: 1px solid;
 }
 
 .sorting_1::before {
     margin-top: -5px !important;
-}
-
-.Table.Content-table .Information table thead {
-    background-color: var(--ShinyPurple);
-}
-
-.Table.Content-table .Information table tfoot td {
-    background-color: rgba(162, 0, 200, 0.38);
 }
 
 .dataTables_filter label,
@@ -135,11 +128,15 @@ table.dataTable {
 } */
 
 .Table.Content-table .Information table tbody tr:last-child {
-    border-bottom: none;
+    border: 1px solid;
 }
 
-.Table.Content-table .Information table tbody tr:hover {
-    background-color: rgba(162, 0, 255, 0.3)
+.Table.Content-table .Information table thead tr:last-child {
+    border: 1px solid;
+}
+
+.Table.Content-table .Information table tfoot tr:last-child {
+    border: 1px solid;
 }
 
 .Table.Content-table .Information table tr td {
@@ -170,10 +167,6 @@ table.dataTable {
 
 .Table.Content-table .Information table .child ul {
     float: none;
-}
-
-.Table.Content-table .Information table .child ul i {
-    color: rgb(255, 255, 0);
 }
 
 .form-switch .form-check-input {
