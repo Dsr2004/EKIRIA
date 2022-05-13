@@ -234,7 +234,7 @@ class Crearcompra(CreateView):
                 return response 
 
 def Eliminarprov(request, id_proveedor):
-    prov_form =Proveedor.objects.get(id_proveedor=id_proveedor)
+    prov_form =Proveedor.objects.filter(pk=id_proveedor)
     prov_form.delete()
     return redirect('listarprov')
     # return render(request,'proveedores.html',{'prov_form':prov_form})

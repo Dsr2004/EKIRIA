@@ -1,6 +1,11 @@
 #-----------------------------------------Imports---------------------------------------------------
 import smtplib
 
+# prueba
+from Proyecto_Ekiria import settings
+from importlib import import_module
+# -----
+
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from django.template.loader import render_to_string
@@ -108,7 +113,7 @@ class Register(CreateView):
     template_name = 'registration/Registration.html'
     success_url = reverse_lazy("IniciarSesion")
 
-    
+  
 @login_required()
 def Perfil(request):
     UserSesion = if_User(request)
@@ -134,7 +139,6 @@ def if_admin(request):
                 imagen = Usuario.objects.get(id_usuario=request.session['pk'])
                 imagen = imagen.img_usuario
                 UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
-                print(UserSesion)
                 return UserSesion
             else:
                 return False
