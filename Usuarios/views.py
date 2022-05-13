@@ -284,34 +284,79 @@ def CambiarEstadoUsuario(request):
     else:
         return JsonResponse({"x":"no"})
 
-@api_view()
-def PassR(request, token):
-    messages= []
-    if request.method=="GET":
+# @api_view(['GET'])
+# def PassR(request):
+#     messages= []
+#     if request.method=="GET":
+#         if request.user.pk is not None:
+#             return redirect('Inicio')
+#         header = {'Authorization':'Token '+request.GET['Slug']}
+#         return Response(headers=header)
+#     if request.method=="POST":
+#         pass1 = request.POST['password1']
+#         pass2 = request.POST['password2']
+#         if pass1 and pass2:
+#             if pass1 == pass2:
+#                 if any(chr.isdigit() for chr in pass1):
+#                     if any(chr.isupper() for chr in pass1):
+#                         pass
+#                     else:
+#                         messages = "La contraseña debe tener al menos una letra Mayúscula"
+#                 else:
+#                     messages ="La contraseña debe tener al menos un número"
+#             else:
+#                 messages = "Las contraseñas no coinciden"
+#         else:
+#             messages = "Los campos son obligatorios"
+#     return render(request, "UserInformation/PasswordRecovery.html", {'message':messages})
+
+class PassR(TemplateView):
+    template_name="UserInformation/PasswordRecovery.html"
+    def get(self, request, *args,**kwargs):
         if request.user.pk is not None:
             return redirect('Inicio')
-        token = token
-        print(token)
-    if request.method=="POST":
-        pass1 = request.POST['password1']
-        pass2 = request.POST['password2']
-        if pass1 and pass2:
-            if pass1 == pass2:
-                if any(chr.isdigit() for chr in pass1):
-                    if any(chr.isupper() for chr in pass1):
-                        pass
-                    else:
-                        messages = "La contraseña debe tener al menos una letra Mayúscula"
-                else:
-                    messages ="La contraseña debe tener al menos un número"
-            else:
-                messages = "Las contraseñas no coinciden"
-        else:
-            messages = "Los campos son obligatorios"
-    return render(request, "UserInformation/PasswordRecovery.html", {'message':messages})
+        user = ""
+        if request.GET['Slug']:
+            key = request.GET['Slug']
+            token = Token.objects.get(key = key)
+            user = token.user
+        else: 
+            return redirect('IniciarSesion')
+        
+        context={
+            'User':user
+        }
 
+        return render(request, self.template_name, context)
+    
+    def post(self,request,*args,**kwargs):
+        if request.POST['user']:
+            user = Usuario.objects.get(pk=request.POST['user'])
+            pass1 = request.POST['password1']
+            pass2 = request.POST['password2']
+            if pass1 and pass2:
+                if pass1 == pass2:
+                    if any(chr.isdigit() for chr in pass1):
+                        if any(chr.isupper() for chr in pass1):
+                            user.set_password(pass1)
+                            user.save()
+                            return redirect('IniciarSesion')
+                        else:
+                            messages = "La contraseña debe tener al menos una letra Mayúscula"
+                    else:
+                        messages ="La contraseña debe tener al menos un número"
+                else:
+                    messages = "Las contraseñas no coinciden"
+            else:
+                messages = "Los campos son obligatorios"
+                context ={
+                    'message':messages
+                }
+        return render(request, self.template_name, context)
+    
 def PassRec(request):
     messages = []
+    success = []
     if request.user.pk is not None:
         return redirect('Inicio')
     if request.method == "POST":
@@ -347,10 +392,10 @@ def PassRec(request):
                                           mensaje.as_string())
 
                         print("Se envio el correo")
-
+                        success = "Se ha enviado el correo correctamente al email "+user.email
                     except Exception as e:
                         print(e)
             else:
                 messages = "El email es requerido"
 
-    return render(request, 'UserInformation/PasswordRecoveryEmail.html', {'message':messages})
+    return render(request, 'UserInformation/PasswordRecoveryEmail.html', {'message':messages, 'success':success})

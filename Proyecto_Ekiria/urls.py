@@ -29,7 +29,7 @@ urlpatterns = [
     path('IniciarSesion/', Login, name="IniciarSesion"),
     path('CerrarSesion/', Loguot, name="CerrarSesion"),
     path('Registro/', Register.as_view(), name="Registro"),
-    path('RecuperarContraseña/<str:token>', PassR, name="PassRec"),
+    path('RecuperarContraseña/', PassR.as_view(), name="PassRec"),
     path('EmailRecovery/', PassRec, name="EmailRecovery"),
     path('InformacionUsuario/', include('Usuarios.urls')),
     path('admin/', admin.site.urls),

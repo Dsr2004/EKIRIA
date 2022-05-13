@@ -10,20 +10,16 @@ class Authentication(object):
     user_token_expired = False
     
     def get_user(self, request):
-        token = get_authorization_header(request).split()
-        if token:
-            try:
-                token = token[1].decode()
-            except:
-                return None
-            
-            token_expired = ExpiringTokenAuthentication()
-            user,token,message, self.user_token_expired = token_expired.authenticate_credentials(token)
-            
-            if user != None and token != None:
-                self.user = user
-                return user
-            return message
+        token = request.GET['Slug']
+        print(token)
+        
+        token_expired = ExpiringTokenAuthentication()
+        user,token,message, self.user_token_expired = token_expired.authenticate_credentials(token)
+        
+        if user != None and token != None:
+            self.user = user
+            return user
+        return message
         
         return None
         
