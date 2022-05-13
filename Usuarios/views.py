@@ -112,6 +112,27 @@ class Register(CreateView):
     form_class = Regitro
     template_name = 'registration/Registration.html'
     success_url = reverse_lazy("IniciarSesion")
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            registro = self.model(
+                img_usuario = form.cleaned_data.get('img_usuario'),
+                username = form.cleaned_data.get('username'),
+                nombres = form.cleaned_data.get('nombres'),
+                apellidos = form.cleaned_data.get('apellidos'),
+                telefono = form.cleaned_data.get('telefono'),
+                celular = form.cleaned_data.get('celular'),
+                email = form.cleaned_data.get('email'),
+                fec_nac = form.cleaned_data.get('fec_nac'),
+                tipo_documento = form.cleaned_data.get('tipo_documento'),
+                num_documento = form.cleaned_data.get('num_documento'),
+                municipio = form.cleaned_data.get('municipio'),
+                direccion = form.cleaned_data.get('direccion'),
+                cod_postal = form.cleaned_data.get('cod_postal'),
+                estado = 0
+            )
+            registro.save()
+            return redirect('IniciarSesion')
 
   
 @login_required()
@@ -288,31 +309,6 @@ def CambiarEstadoUsuario(request):
     else:
         return JsonResponse({"x":"no"})
 
-# @api_view(['GET'])
-# def PassR(request):
-#     messages= []
-#     if request.method=="GET":
-#         if request.user.pk is not None:
-#             return redirect('Inicio')
-#         header = {'Authorization':'Token '+request.GET['Slug']}
-#         return Response(headers=header)
-#     if request.method=="POST":
-#         pass1 = request.POST['password1']
-#         pass2 = request.POST['password2']
-#         if pass1 and pass2:
-#             if pass1 == pass2:
-#                 if any(chr.isdigit() for chr in pass1):
-#                     if any(chr.isupper() for chr in pass1):
-#                         pass
-#                     else:
-#                         messages = "La contraseña debe tener al menos una letra Mayúscula"
-#                 else:
-#                     messages ="La contraseña debe tener al menos un número"
-#             else:
-#                 messages = "Las contraseñas no coinciden"
-#         else:
-#             messages = "Los campos son obligatorios"
-#     return render(request, "UserInformation/PasswordRecovery.html", {'message':messages})
 
 class PassR(TemplateView):
     template_name="UserInformation/PasswordRecovery.html"

@@ -3,6 +3,12 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.forms.widgets import PasswordInput, TextInput
 from Usuarios.models import Usuario
+
+
+class CustomAuthForm(AuthenticationForm):
+    username = forms.CharField(widget=TextInput(attrs={'class':'validate','placeholder': 'Username'}))
+    password = forms.CharField(widget=PasswordInput(attrs={'placeholder':'Password','id':'password'}))
+    
 class Regitro(forms.ModelForm):
     password1 = forms.CharField(label = "Contraseña", widget=forms.PasswordInput(
         attrs={
@@ -37,9 +43,10 @@ class Regitro(forms.ModelForm):
             'municipio',
             'direccion',
             'cod_postal',
+            'estado'
         ]
         widgets = {
-            
+            'estado': forms.HiddenInput(),
             'email': forms.EmailInput(
                 attrs={
                     'id':'Idate',
@@ -273,6 +280,3 @@ class Cambiar(forms.ModelForm):
             user.save()
         return user
         
-class CustomAuthForm(AuthenticationForm):
-    username = forms.CharField(widget=TextInput(attrs={'class':'validate','placeholder': 'Username'}))
-    password = forms.CharField(widget=PasswordInput(attrs={'placeholder':'Password','id':'password'}))
