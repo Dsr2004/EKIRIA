@@ -87,11 +87,27 @@ function ConfirmarCita(id){
     }).then((changeStatus) => {
       if (changeStatus) {
         $(document).ready(function(){
+          let cajaI = $("#containerInicio")
+          let spinner = $("#spinnerLoad")
+          let titulo = $("#titleSpinner")
+        
+          cajaI.css("display", "none")
+          spinner.removeClass("quitar")
+          spinner.css("margin-top", "40vh")
+          titulo.removeClass("quitar")
+          titulo.css("margin-top", "15px")
+
         $.ajax({
           data: {"csrfmiddlewaretoken":csrftoken, "estado":ids},
           url: '/Ventas/CambiarEstadoCita/',
           type: 'POST',
           success: function(datas){
+            cajaI.css("display", "block")
+            spinner.addClass("quitar")
+            spinner.css("margin-top", "0vh")
+            titulo.addClass("quitar")
+            titulo.css("margin-top", "0px")
+
             swal("OK! Se ha confirmado la cita, en este momento se esta notificando al cliente", {
                 icon: "success",
               }).then(function(){
@@ -213,11 +229,26 @@ function CancelarCita2(id){
       buttons: true,
     }).then((willDelete) => {
       if (willDelete) {
+        let cajaI = $("#containerInicio")
+        let spinner = $("#spinnerLoad")
+        let titulo = $("#titleSpinner")
+      
+        cajaI.css("display", "none")
+        spinner.removeClass("quitar")
+        spinner.css("margin-top", "40vh")
+        titulo.removeClass("quitar")
+        titulo.css("margin-top", "15px")
+         
         $.ajax({
           data: {"csrfmiddlewaretoken":csrftoken, "cita":id},
           url: '/Ventas/CancelarCita/',
           type: 'POST',
           success: function(data){
+            cajaI.css("display", "block")
+            spinner.addClass("quitar")
+            spinner.css("margin-top", "0vh")
+            titulo.addClass("quitar")
+            titulo.css("margin-top", "0px")
             swal("OK! Se ha cancelado su cita", {
               icon: "success",
             }).then(function() {

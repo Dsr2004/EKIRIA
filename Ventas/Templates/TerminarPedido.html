@@ -16,107 +16,125 @@
 </head>{% endblock head %}
 
 {% block Contenido %}
-  <div class="container">
-      <h1>Finalizar Compra</h1>
-      {{form.errors}}
-      <div class="row" style="margin-top: 10px;">
-        <div class="col-lg-6">
-          <div class="box-element" id="form-pedido">
-            <form  method="post">
-              {% csrf_token %}
-              <label class="label-control">Seleccione un empleado:</label>
-             {{form.empleado_id}}
-              <br>
-              <div class="row">
-                <div class="col-6" id="DiaCitaBox">
 
-                  <label  class="label-control">Seleccione una Dia:</label>
-                  <div class="input-group">
-                    {{form.diaCita}}
-                    <div class="input-group-text">
-                      <i style="font-size: 15px;" class=" fa-regular fa-calendar"></i>
-                    </div>
-                </div>
-                </div>  
-                <div class="col-6" id="horaInicioBox">
-                  <label class="label-control">Seleccione una Hora:</label>
-                  <br>
-                  <div class="input-group">
-                   {{form.horaInicioCita}}
+<div class="container alert alert-warning  alert-dismissible fade show quitar" role="alert" id="alertaError">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
+    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+  </svg>
+No se pudo agendar la cita porque los datos ingresados son incorrectos
+<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+<div id="conteinerFinal">
+  <!-- spinner -->
+
+  <div class="text-center quitar"  id="spinnerLoad">
+    <div class="spinner-grow " style="width: 3rem; height: 3rem;" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <h4 class="quitar" id="titleSpinner">Agendando cita...</h4>
+  </div> 
+  <div class="container" id="containerInicio">
+    <h1>Finalizar Compra</h1>
+    <div class="row" style="margin-top: 10px;">
+      <div class="col-lg-6">
+        <div class="box-element" id="form-pedido">
+          <form id="TerminarPedidoForm" method="post">
+            {% csrf_token %}
+            <label class="label-control">Seleccione un empleado:</label>
+           {{form.empleado_id}}
+           <p id="empleado_id" class="bg-light text-danger" style="color: #dc3545;"></p>
+            <br>
+            <div class="row">
+              <div class="col-6" id="DiaCitaBox">
+
+                <label  class="label-control">Seleccione una Dia:</label>
+                <div class="input-group">
+                  {{form.diaCita}}
                   <div class="input-group-text">
-                    <i style="font-size: 15px;" class=" fa-regular fa-clock"></i>
+                    <i style="font-size: 15px;" class=" fa-regular fa-calendar"></i>
                   </div>
-                  </div>
-                  
+              </div>
+              <p id="diaCita" class="bg-light text-danger" style="color: #dc3545;"></p>
+              </div>  
+              <div class="col-6" id="horaInicioBox">
+                <label class="label-control">Seleccione una Hora:</label>
+                <br>
+                <div class="input-group">
+                 {{form.horaInicioCita}}
+                <div class="input-group-text">
+                  <i style="font-size: 15px;" class=" fa-regular fa-clock"></i>
                 </div>
+                </div>
+                <p id="horaInicioCita" class="bg-light text-danger" style="color: #dc3545;"></p>
               </div>
-              
-              <br><br>
-              <label class="label-control">Descripción (Opcional):</label>
-              <br>
-             {{form.descripcion}}
-              <br><br>
-              <div class="d-grid gap-2">
-                <button class="btn btn-success" type="submit">Continuar</button>
-              </div>
-            </form>
-          </div>
-        </div>  
-
-        <div class="col-lg-6">
-          <div class="box-element">
-            <a class="btn btn-outline-secondary" href="{% url 'Ventas:carrito' %}">&#x2190;De vuelta al carrito</a>
-            <hr>
-            <h3>Resumen de la cita</h3>
-            <hr>
-           
-            {% if serviciosx %}    
-                        {% for item in serviciosx %}
-                        <div class="fila_carrito">
-                                <div style="flex: 2;">
-                                    <img class="img_carrito" src="/media/{{item.servicio_id.img_servicio}}" alt="">
-                                    </div>
-                                    <div style="flex: 2;">{{item.servicio_id.nombre}}</div>
-                                    <div style="flex: 1;">${{item.servicio_id.precio}}</div>
-                                     
-                        </div>
-                        {% endfor %} 
-                        {% endif %}
-
-                        {% if serviciosPerx %}  
-                        <h6 style="font-family: cursive;">Servicios personalizados</h6>  
-                        {% for item in serviciosPerx %}
-                        <div class="fila_carrito">
-                                <div style="flex: 2;">
-                                    <img class="img_carrito" src="/media/{{item.servicio_personalizado_id.img_servicio}}" alt="">
-                                    </div>
-                                    <div style="flex: 2;">{{item.servicio_personalizado_id.tipo_servicio_id}}</div>
-                                    <div style="flex: 1; overflow: hidden; white-space:nowrap; text-overflow: ellipsis;">{{item.servicio_personalizado_id.descripcion}}</div>
-                                     
-                        </div>
-                        {% endfor %}   
-                        {% endif %}
-                        <h5>Items: {{pedido.get_items_carrito}}</h5>
-                        <h5>Total: ${{pedido.get_total_carrito}}</h5>
-                        
+            </div>
             
-          </div>
+            <br><br>
+            <label class="label-control">Descripción (Opcional):</label>
+            <br>
+           {{form.descripcion}}
+            <br><br>
+            <div class="d-grid gap-2">
+              <button class="btn btn-success" type="button" onclick="EnviarTerminarPedido()">Continuar</button>
+            </div>
+          </form>
+        </div>
+      </div>  
+
+      <div class="col-lg-6">
+        <div class="box-element">
+          <a class="btn btn-outline-secondary" href="{% url 'Ventas:carrito' %}">&#x2190;De vuelta al carrito</a>
+          <hr>
+          <h3>Resumen de la cita</h3>
+          <hr>
+         
+          {% if serviciosx %}    
+                      {% for item in serviciosx %}
+                      <div class="fila_carrito">
+                              <div style="flex: 2;">
+                                  <img class="img_carrito" src="/media/{{item.servicio_id.img_servicio}}" alt="">
+                                  </div>
+                                  <div style="flex: 2;">{{item.servicio_id.nombre}}</div>
+                                  <div style="flex: 1;">${{item.servicio_id.precio}}</div>
+                                   
+                      </div>
+                      {% endfor %} 
+                      {% endif %}
+
+                      {% if serviciosPerx %}  
+                      <h6 style="font-family: cursive;">Servicios personalizados</h6>  
+                      {% for item in serviciosPerx %}
+                      <div class="fila_carrito">
+                              <div style="flex: 2;">
+                                  <img class="img_carrito" src="/media/{{item.servicio_personalizado_id.img_servicio}}" alt="">
+                                  </div>
+                                  <div style="flex: 2;">{{item.servicio_personalizado_id.tipo_servicio_id}}</div>
+                                  <div style="flex: 1; overflow: hidden; white-space:nowrap; text-overflow: ellipsis;">{{item.servicio_personalizado_id.descripcion}}</div>
+                                   
+                      </div>
+                      {% endfor %}   
+                      {% endif %}
+                      <h5>Items: {{pedido.get_items_carrito}}</h5>
+                      <h5>Total: ${{pedido.get_total_carrito}}</h5>
+                      
+          
         </div>
       </div>
-      <br><br>
-      <div class="alert alert-dark alert-dismissible fade show" role="alert">
-        <h4 class="alert-heading">Señor Usuario!</h4>
-        <p>Recuerde que los precios de los servicios que usted este agendando puede variar, este es un precio base, pero si al momento de prestar el servicio se requiere de más materiales estos serán cobrados </p>
-        <hr>
-        <p class="mb-0">Para más información escriba a nuestro WhatsApp <strong>1234567890</strong> o escribanos a nuestro correo <strong>servicioalcliente@ekiria.com</strong> lo atenderemos lo mas pronto posible .</p>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
+    </div>
+    <br><br>
+    <div class="alert alert-dark alert-dismissible fade show" role="alert">
+      <h4 class="alert-heading">Señor Usuario!</h4>
+      <p>Recuerde que los precios de los servicios que usted este agendando puede variar, este es un precio base, pero si al momento de prestar el servicio se requiere de más materiales estos serán cobrados </p>
+      <hr>
+      <p class="mb-0">Para más información escriba a nuestro WhatsApp <strong>1234567890</strong> o escribanos a nuestro correo <strong>servicioalcliente@ekiria.com</strong> lo atenderemos lo mas pronto posible .</p>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 
-     
-      
-  </div>
- 
-  
+   
+    
+</div>
+</div>
+
   <br>
 
 {% endblock Contenido %}

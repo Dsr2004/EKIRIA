@@ -9,13 +9,29 @@ from webbrowser import get
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.views.generic import View, TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, resolve
 from django.core.paginator import Paginator
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
+from django.utils.decorators import method_decorator
 from Usuarios.models import Usuario
 from Configuracion.models import cambios, cambiosFooter
 from .mixins import ActualiarCitaMixin
+from Proyecto_Ekiria.Mixin.Mixin import PermissionMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from Usuarios.views import *
+import smtplib
+
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from django.template.loader import render_to_string
+
+
+# correos de Django
+from django.template.loader import render_to_string 
+from django.core.mail import EmailMessage
+
+
 
 
 
@@ -188,12 +204,9 @@ def Carrito(request):
                 imagen = imagen.img_usuario
                 cambiosQueryset = cambios.objects.all()
                 cambiosfQueryset = cambiosFooter.objects.all()
-                if request.session['Admin'] == True:
-                    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
-                else:
-                    return redirect("SinPermisos")
+                UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
     except:
-            return redirect("UNR")
+            return redirect("IniciarSesion")
 
     contexto={"pedido":pedido,"User":UserSesion,"serviciosx":serviciosx,"serviciosPerx":serviciosPerx, "User":UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset}
 
@@ -227,7 +240,7 @@ class AgandarCita(CreateView):
                 pedido={"get_total_carrito":0,"get_items_carrito":0}
                 contexto={"items":items, "pedido":pedido,"form":self.form_class}
         except: 
-            return redirect("UNR")
+            return redirect("IniciarSesion")
 
         try:
             if self.request.session:
@@ -235,11 +248,8 @@ class AgandarCita(CreateView):
                 imagen = imagen.img_usuario
                 cambiosQueryset = cambios.objects.all()
                 cambiosfQueryset = cambiosFooter.objects.all()
-                if self.request.session['Admin'] == True:
-                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
-                    contexto["User"]=UserSesion
-                else:
-                    return redirect("SinPermisos")
+                UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                contexto["User"]=UserSesion
                 contexto["User"]=UserSesion
                 contexto['cambios']=cambiosQueryset
                 contexto['footer']=cambiosfQueryset
@@ -258,31 +268,38 @@ class AgandarCita(CreateView):
         diaCita = request.POST["diaCita"]
         empleado = request.POST["empleado_id"]
         descripcion = request.POST["descripcion"]
-        horaInicio=datetime.strptime(horaInicio, "%H:%M %p").strftime("%H:%M:%S")
-        cliente=Usuario.objects.get(username=self.request.session['username'])
-        pedido,creado = Pedido.objects.get_or_create(cliente_id=cliente, completado=False)
+        errores = {}
+        if not horaInicio:
+            errores["horaInicioCita"] = "Debe completar la hora de la cita."
+            if not diaCita:
+                errores["diaCita"] = "Debe completar el dia  de la cita."
+                if not empleado:
+                    errores["empleado_id"] = "Debe seleccionar un empleado que atienda su cita."
 
-        
-
-        # request.POST["horaFinCita"]=horaFin
-        
-
-        datosParaGuardar = {"pedido_id":pedido,"horaInicioCita":horaInicio,"cliente_id":cliente, "empleado_id":empleado,
-        "descripcion":descripcion,"diaCita":diaCita}
-        form = self.form_class(datosParaGuardar)
-        if form.is_valid:
-            object=form.save()
-            calendarioSave = models.Calendario(dia=object.diaCita, horaInicio=object.horaInicioCita, horaFin=object.horaFinCita, cita_id=object, cliente_id=object.cliente_id, empleado_id=object.empleado_id)
-            calendarioSave.save()
-            form.save()
-            pedido.completado = True
-            pedido.save()
-            datos = {}
-
-            return redirect("Ventas:calendario")
-
+        if errores:
+            response = JsonResponse({"errores":errores})
+            response.status_code = 400
+            return response
         else:
-            return render(request, self.template_name, {"form":self.form_class})
+            horaInicio=datetime.strptime(horaInicio, "%H:%M %p").strftime("%H:%M:%S")
+            cliente=Usuario.objects.get(username=self.request.session['username'])
+            pedido,creado = Pedido.objects.get_or_create(cliente_id=cliente, completado=False)
+            datosParaGuardar = {"pedido_id":pedido,"horaInicioCita":horaInicio,"cliente_id":cliente, "empleado_id":empleado,
+            "descripcion":descripcion,"diaCita":diaCita}
+            form = self.form_class(datosParaGuardar)
+            if form.is_valid:
+                object=form.save()
+                calendarioSave = models.Calendario(dia=object.diaCita, horaInicio=object.horaInicioCita, horaFin=object.horaFinCita, cita_id=object, cliente_id=object.cliente_id, empleado_id=object.empleado_id)
+                calendarioSave.save()
+                form.save()
+                pedido.completado = True
+                pedido.save()
+                datos = {}
+
+                return redirect("Ventas:calendario")
+
+            else:
+                return render(request, self.template_name, {"form":self.form_class})
 
 
 class BuscarDisponibilidadEmpleado(View):
@@ -328,23 +345,20 @@ class BuscarDisponibilidadEmpleado(View):
             return JsonResponse({"horasDisponibles":res})
 
 
-    
-
 class Calendario(TemplateView):
+    permission_required =  ['view_calendario']
     template_name = "Calendario.html"
+    # permission_required = 'auth.can_add_group'
+    # print(error)
+    # @method_decorator(login_required)
     def get(self, request, *args, **kwargs):
-        try:
-            if request.session:
-                imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-                imagen = imagen.img_usuario
-                cambiosQueryset = cambios.objects.all()
-                cambiosfQueryset = cambiosFooter.objects.all()
-                UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
-        except:
-            return redirect("UNR")
-
+        UserSesion=if_User(request)
+        cambiosQueryset = cambios.objects.all()
+        cambiosfQueryset = cambiosFooter.objects.all()
+        # user = Usuario.objects.get(pk = request.session['pk'])
+        # print(user.rol.permissions.set[''])
         #contexto
-        citas=models.Cita.objects.filter(cliente_id=request.session['pk']).order_by('-fecha_creacion')
+        citas=models.Cita.objects.filter(cliente_id=request.session['pk']).order_by('fecha_creacion')
       
         context={
             "User":UserSesion,
@@ -379,7 +393,7 @@ class ServiciosPersonalizados(CreateView):
                 context['footer']=cambiosfQueryset
                 return context
         except:
-            return redirect("UNR")
+            return redirect("IniciarSesion")
 
     def form_valid(self, form, *args, **kwargs):
         objeto=form.save()
@@ -426,7 +440,7 @@ class AdminVentas(TemplateView):
                 else:
                     return redirect("SinPermisos")
         except:
-            return redirect("UNR")
+            return redirect("IniciarSesion")
 
         #contexto
         context={
@@ -556,7 +570,7 @@ class AgregarServicio(CreateView):#crear
                 else:
                     return redirect("SinPermisos")
         except:
-            return redirect("UNR")
+            return redirect("IniciarSesion")
         return context
     def form_valid(self, form, **kwargs):
         objeto=form.save()
@@ -630,7 +644,7 @@ class ListarServicio(ListView):#listar
                 context['cambios']=cambiosQueryset
                 return context
         except:
-            return redirect("UNR")
+            return redirect("IniciarSesion")
 
 class ServicioDetalle(DetailView):#detalle
     queryset = Servicio.objects.all()
@@ -778,6 +792,7 @@ class EditarCitaDetalle(DetailView):
             context["Cancelado"]=True
         else:
             context["Cancelado"]=False
+
         return context
 
 class EditarCita(ActualiarCitaMixin, UpdateView): 
@@ -802,7 +817,7 @@ class EditarCita(ActualiarCitaMixin, UpdateView):
                 else:
                     return redirect("SinPermisos")  
         except:
-            return redirect("UNR")
+            return redirect("IniciarSesion")
         citax = models.Cita.objects.get(id_cita=self.kwargs["pk"])
         pedido = models.Pedido.objects.get(id_pedido = citax.pedido_id.id_pedido)
         items = pedido.pedidoitem_set.all()
@@ -819,15 +834,16 @@ class EditarCita(ActualiarCitaMixin, UpdateView):
       
         return context
 
-    
-    
 
-class DetalleCita(DetailView):
+
+class EditarCitaCliente(ActualiarCitaMixin, UpdateView): 
     model = Cita
-    template_name = "DetalleCita.html"
+    template_name = "EditarCitaCliente.html"
+    form_class = CitaForm
+    success_url = reverse_lazy("Ventas:calendario")
 
     def get_context_data(self, *args, **kwargs):
-        context = super(DetalleCita, self).get_context_data(**kwargs)
+        context = super(EditarCitaCliente, self).get_context_data(**kwargs)
         try:
             if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
@@ -842,7 +858,43 @@ class DetalleCita(DetailView):
                 else:
                     return redirect("SinPermisos")  
         except:
-            return redirect("UNR")
+            return redirect("IniciarSesion")
+        citax = models.Cita.objects.get(id_cita=self.kwargs["pk"])
+        pedido = models.Pedido.objects.get(id_pedido = citax.pedido_id.id_pedido)
+        items = pedido.pedidoitem_set.all()
+        serviciosx=[]
+        serviciosPerx=[]
+        if items:
+            for i in items:
+                if not i.servicio_id ==  None:
+                    serviciosx.append(i)
+                    context["servicios"]=serviciosx
+                if not i.servicio_personalizado_id == None:
+                    serviciosPerx.append(i)
+                    context["serviciosPer"]=serviciosPerx
+      
+        return context
+    
+    
+
+class DetalleCitaCliente(DetailView):
+    model = Cita
+    template_name = "DetalleCitaCliente.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(DetalleCitaCliente, self).get_context_data(**kwargs)
+        try:
+            if self.request.session:
+                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
+                imagen = imagen.img_usuario
+                cambiosQueryset = cambios.objects.all()
+                cambiosfQueryset = cambiosFooter.objects.all()
+                UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
+                context["User"]=UserSesion
+                context['cambios']=cambiosQueryset
+                context['footer']=cambiosfQueryset
+        except:
+            return redirect("IniciarSesion")
 
         citax = models.Cita.objects.get(id_cita=self.kwargs["pk"])
         pedido = models.Pedido.objects.get(id_pedido = citax.pedido_id.id_pedido)
@@ -867,10 +919,33 @@ class CambiarEstadoDeCita(TemplateView):
         estatus=update.estado
         if estatus==True:
             update.estado=False
-            update.save()
+            update.save()    
         elif estatus==False:
-            update.estado=True
-            update.save()
+            try:
+                update.estado=True
+                update.save() 
+                Servidor = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
+                Servidor.starttls()
+                Servidor.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+                print("conexion establecida")
+
+                mensaje = MIMEMultipart()
+                mensaje['From'] = settings.EMAIL_HOST_USER
+                mensaje['To'] = update.cliente_id.email
+                mensaje['Subject'] = "Correo de confirmación de cita"
+
+                cliente = f"{str(update.cliente_id.nombres).capitalize()} {str(update.cliente_id.apellidos).capitalize()}"
+
+                content = render_to_string("Correo/ConfirmarCitaCorreo.html", {"cliente":cliente, "dia":update.diaCita, "hora":update.horaInicioCita,"url":update.id_cita})
+                mensaje.attach(MIMEText(content, 'html'))
+
+                Servidor.sendmail(settings.EMAIL_HOST_USER,
+                                    update.cliente_id.email,
+                                    mensaje.as_string())
+
+                print("Se envio el correo")
+            except Exception as e:
+                print(e)
         else:
             return redirect("Ventas:listarCitas")
         return HttpResponse(update)
@@ -917,8 +992,7 @@ def ejemplo(request, id):
     consuta=Servicio.objects.filter(id_servicio=id)
 
 def pruebas(request):
-    servicios=Servicio.objects.all()
-    form=pruebaxForm
+   
     try:
         if request.session:
             imagen = Usuario.objects.get(id_usuario=request.session['pk'])
@@ -930,10 +1004,9 @@ def pruebas(request):
             else:
                 return redirect("SinPermisos")
     except:
-            return redirect("UNR")
+            return redirect("IniciarSesion")
     cont={
-        "servicios":servicios,
-        "form":form,
+
         "User":UserSesion,
         'cambios':cambiosQueryset, 
         'footer':cambiosfQueryset

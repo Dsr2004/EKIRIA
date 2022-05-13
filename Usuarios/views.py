@@ -1,4 +1,9 @@
 #-----------------------------------------Imports---------------------------------------------------
+import smtplib
+
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from django.template.loader import render_to_string
 from ast import Return
 from asyncio import transports
 from email import header, message
@@ -34,6 +39,7 @@ from rest_framework.views import APIView
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework import viewsets
 #-----------------------------------------Serializers---------------------------------------------------
+from Proyecto_Ekiria import settings
 from Usuarios.Serializers.general_serializers import UsuarioTokenSerializer
 from Usuarios.Serializers.general_serializers import UsuarioTokenSerializer
 #-----------------------------------------Models---------------------------------------------------
@@ -46,76 +52,6 @@ from datetime import datetime
 from Usuarios.forms import Cambiar, Regitro, Editar, CustomAuthForm
 
 #--------------------------------------Templates Loaders------------------------------------
-
-# class Login(ObtainAuthToken, TemplateView):
-#     template_name = 'registration/login.html'
-#     def post(self,request,*arg, **kwargs):
-        # if request:
-        #     login_serializer = self.serializer_class(data = request.POST , context={'request':request})
-        #     print(request)
-        #     if login_serializer.is_valid():
-        #         user=login_serializer.validated_data['user']
-        #         if user.is_active:
-        #             token,created = Token.objects.get_or_create(user=user)
-        #             user_serializer = UsuarioTokenSerializer(user)
-        #             Client = "http://127.0.0.1:8000/"
-        #             if created:
-        #                 token = Token.objects.create(user = user)
-        #                 # header = {'Authorization':'Token '+token.key}
-        #                 # return Response(headers=header)
-        #                 return HttpResponseRedirect("/")
-        #             else:
-        #                 all_sessions = Session.objects.filter(expire_date__gte = datetime.now())
-        #                 if all_sessions.exists():
-        #                     for session in all_sessions:
-        #                         session_data = session.get_decoded()
-        #                         if user.id_usuario == int(session_data.get('_auth_user_id')):
-        #                             session.delete()
-        #                 token.delete()
-        #                 token = Token.objects.create(user = user)
-        #                 # credentials = 'http://127.0.0.1:8000'
-        #                 # transport = HTTPTransport(credentials=credentials)
-        #                 # client = Client(transports=transport)
-        #                 # print(transport)
-        #                 # return Response(client)
-        #                 header = {'Authorization':'Token '+token.key}
-        #                 return Response(headers=header)
-        #                 # header = {'Authorization':'Token '+token.key}
-        #                 # return Response(headers=header, template_name="index.html")
-                    
-                    
-        #         else:
-        #             return Response({'error':'Este usuario no puede iniciar sesión'}, status = status.HTTP_401_UNAUTHORIZED)
-        #     else:
-        #         return Response({'error':'Contraseña o Usuario incorrectos'},status=status.HTTP_400_BAD_REQUEST)
-
-
-                
-# class Loguot(Authentication, APIView):
-#     def post(self,request,*args,**kwargs):
-#         try:    
-#             token = token
-            
-#             if token:
-                
-#                 user = token.user
-                
-#                 for i in range(2):
-#                     all_sessions = Session.objects.filter(expire_date__gte = datetime.now())
-#                     if all_sessions.exists():
-#                         for session in all_sessions:
-#                             session_data = session.get_decoded()
-#                             if user.id_usuario == int(session_data.get('_auth_user_id')):
-#                                 session.delete()
-                                        
-#                 token.delete()
-                    
-#                 session_message = 'Sesiones de usuario eliminadas.'
-#                 token_message = 'Token eliminado.'
-#                 return Response({'token_message': token_message, 'session_message': session_message}, status = status.HTTP_200_OK)
-#             return Response({'error':'No se ha encontrado un usuario con estas credenciales.'}, status = status.HTTP_400_BAD_REQUEST)
-#         except :
-#             return Response({'error': 'No se ha encontrado token en la petición.'}, status = status.HTTP_409_CONFLICT)
 
 @login_required()
 def Loguot(request):
@@ -164,16 +100,13 @@ def Login(request):
     form = CustomAuthForm()
 
     return render(request, "registration/login.html", {'form': form, 'message':Error})
-            
-def PassR(request):
-    return render(request, "UserInformation/PasswordRecovery.html")
+
 
 class Register(CreateView):
     model = Usuario
     form_class = Regitro
     template_name = 'registration/Registration.html'
     success_url = reverse_lazy("IniciarSesion")
-
 
     
 @login_required()
@@ -192,18 +125,20 @@ def if_User(request):
             imagen = imagen.img_usuario
             UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
             return UserSesion
+
 def if_admin(request):
     UserSesion=""
     if request.session:
         if request.session['pk']:
-            imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-            imagen = imagen.img_usuario
-            if request.session['Admin'] == True:
+            if request.session['Admin']:
+                imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+                imagen = imagen.img_usuario
                 UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
                 print(UserSesion)
                 return UserSesion
             else:
-                return redirect("SinPermisos")
+                return False
+
 @login_required()
 def EditarPerfil(request):  
     template_name = "UserInformation/EditarPerfil.html"
@@ -252,10 +187,13 @@ def Change(request):
                     else:
                         if len(Pass1) >= 8:
                             if any(chr.isdigit() for chr in Pass1):
-                                user.set_password(Pass1)
-                                user.save()
-                                logout(request)
-                                return redirect('IniciarSesion')
+                                if any(chr.isupper() for chr in Pass1):
+                                    user.set_password(Pass1)
+                                    user.save()
+                                    logout(request)
+                                    return redirect('IniciarSesion')
+                                else:
+                                    Error = "La contraseña debe tener al menos una letra Mayúscula"
                             else:
                                 Error = "la contraseña debe contener al menos un número"
                         else: 
@@ -346,3 +284,73 @@ def CambiarEstadoUsuario(request):
     else:
         return JsonResponse({"x":"no"})
 
+@api_view()
+def PassR(request, token):
+    messages= []
+    if request.method=="GET":
+        if request.user.pk is not None:
+            return redirect('Inicio')
+        token = token
+        print(token)
+    if request.method=="POST":
+        pass1 = request.POST['password1']
+        pass2 = request.POST['password2']
+        if pass1 and pass2:
+            if pass1 == pass2:
+                if any(chr.isdigit() for chr in pass1):
+                    if any(chr.isupper() for chr in pass1):
+                        pass
+                    else:
+                        messages = "La contraseña debe tener al menos una letra Mayúscula"
+                else:
+                    messages ="La contraseña debe tener al menos un número"
+            else:
+                messages = "Las contraseñas no coinciden"
+        else:
+            messages = "Los campos son obligatorios"
+    return render(request, "UserInformation/PasswordRecovery.html", {'message':messages})
+
+def PassRec(request):
+    messages = []
+    if request.user.pk is not None:
+        return redirect('Inicio')
+    if request.method == "POST":
+        if request.POST['email']:
+            email = request.POST['email']
+            if email is not None:
+                user = Usuario.objects.get(email = email)
+                if user.is_active:
+                    try:
+                        token = Token.objects.get(user=user)
+                        token.delete()
+                        token = Token.objects.create(user=user)
+
+                    except:
+                        Token.objects.create(user=user)
+                        token = Token.objects.get(user=user)
+                    try:
+                        Servidor = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
+                        Servidor.starttls()
+                        Servidor.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+                        print("conexion establecida")
+                        mensaje = MIMEMultipart()
+                        mensaje['From'] = settings.EMAIL_HOST_USER
+                        mensaje['To'] = user.email
+                        mensaje['Subject'] = "Cambio de contraseña"
+                        cliente = f"{str(user.nombres).capitalize()} {str(user.apellidos).capitalize()}"
+                        content = render_to_string("Correo/CambioContraseñaCorreo.html",
+                                                   {"cliente": cliente, "token":token.key})
+                        mensaje.attach(MIMEText(content, 'html'))
+
+                        Servidor.sendmail(settings.EMAIL_HOST_USER,
+                                          user.email,
+                                          mensaje.as_string())
+
+                        print("Se envio el correo")
+
+                    except Exception as e:
+                        print(e)
+            else:
+                messages = "El email es requerido"
+
+    return render(request, 'UserInformation/PasswordRecoveryEmail.html', {'message':messages})

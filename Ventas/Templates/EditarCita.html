@@ -14,8 +14,15 @@
 </head>{% endblock head %}
 
 {% block Contenido %}
+<div class="text-center quitar"  id="spinnerLoad">
+    <div class="spinner-grow " style="width: 3rem; height: 3rem;" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <h4 class="quitar" id="titleSpinner">Cancelando cita... <br> <sub> Notificando al cliente...</sub></h4>
+ 
+  </div>
 
-<div class="container" style="background-color: rgba(253, 253, 253, 0.795); margin-top: 30px;">
+<div class="container" style="background-color: rgba(253, 253, 253, 0.795); margin-top: 30px;" id="containerInicio">
     <div class="row">
         <div class="col-md-10"><h1>Editar Cita de {{object.cliente_id.nombres | title}}</h1></div>
     </div>

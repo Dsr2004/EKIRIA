@@ -1,0 +1,230 @@
+{% extends "Menu_Usuario.html" %} 
+{%load static%}
+{% block head %}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar cita de {{object.cliente_id.nombres | title}}</title>
+    <link rel="stylesheet" href="/static/Ventas/css/Ventas.css">
+    <link rel="icon" href="/static/Proyecto_Ekiria/Img/Logo Ekiria.png">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <link rel="stylesheet" href="/static/Plugins/datetimepicker/jquery.datetimepicker.css">
+</head>{% endblock head %}
+
+{% block Contenido %}
+
+<div class="container" style="background-color: rgba(253, 253, 253, 0.795); margin-top: 30px;">
+    <div class="row">
+        <div class="col-md-10"><h1>Editar Cita de {{object.cliente_id.nombres | title}}</h1></div>
+    </div>
+        <h3><sub>Detalles del pedido</sub></h3>
+               <div class="container">
+                    {% if servicios %}
+                        <table class="table" style="background-color: rgba(253, 253, 253, 0.795);">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Foto</th>
+                                    <th scope="col">Servicio</th>
+                                    <th scope="col">Precio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for servicio in servicios %}
+                            <tr>
+                                <th scope="row">{{ forloop.counter}}</th>
+                                <td><img src="/media/{{servicio.servicio_id.img_servicio}}" class="" width="150" height="100"></td>
+                                <td>{{servicio.servicio_id.nombre}}</td>
+                                <td>{{servicio.servicio_id.precio}}</td>
+                
+                            </tr>
+                        {% endfor %}
+                           </tbody>
+                        </table>
+                             
+                        {% endif %}
+                        <!-- servicios personalizados -->
+                        {% if serviciosPer %}
+                        <h5><center>Servicios personalizados</center></h5>
+                        <table class="table" style="background-color: rgba(253, 253, 253, 0.795);">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Foto</th>
+                                    <th scope="col">Servicio</th>
+                                    <th scope="col">Descripción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for servicio in serviciosPer %}
+                            <tr>
+                                <th scope="row">{{ forloop.counter}}</th>
+                                <td>
+                                    <a onclick="abrir_modal_img_servicioPer('ToOpenImg{{servicio.servicio_personalizado_id.id_servicio_personalizado}}')"><img src="/media/{{servicio.servicio_personalizado_id.img_servicio}}" width="150" height="100" class="imgServicioPerCita"></a>
+                                        
+                                </td>
+                                <td>{{servicio.servicio_personalizado_id.tipo_servicio_id}}</td>
+                                <td><p style="width:auto; max-width: 400px; height: 100px; overflow-y: auto">{{servicio.servicio_personalizado_id.descripcion}}</p></td>
+                
+                            </tr>
+                            <div class="modal fade" id="ToOpenImg{{servicio.servicio_personalizado_id.id_servicio_personalizado}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog  modal-lg">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      </div>
+                                    <div class="modal-body">
+                                        <div >
+                                            <center><img src="/media/{{servicio.servicio_personalizado_id.img_servicio}}" class="img-fluid" ></center>
+                                        </div>
+                                    </div>
+                                   
+                                  </div>
+                                </div>
+                              </div>
+                        {% endfor %}
+                           </tbody>
+                        </table>       
+                        {% endif %}
+                       
+                    
+                <div class="card-footer text-muted row">
+                    <h3 class="col-md-6"><strong>Total: </strong>${{object.pedido_id.get_total_carrito}}</h3>
+                    <h3 class="col-md-6"><strong>Items: </strong>{{object.pedido_id.get_items_carrito}}</h3>
+                  </div>
+               </div>
+                
+                <br><br>
+                {{form.errors}}
+                <form action="{% url 'Ventas:editarCita' object.id_cita  %}" method="POST" id="EditarCitaForm">
+                    {% csrf_token %}
+                    <div class="col Datos1DetalleCita ">
+                        <label class="label-control">Seleccione un empleado:</label>
+                         {{form.empleado_id}}
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col Datos1DetalleCita" id="diaInicioBoxCita"> 
+                            <div class="input-group">
+                                {{form.diaCita}}
+                                <div class="input-group-text">
+                                  <i style="font-size: 15px;" class=" fa-regular fa-calendar"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col Datos1DetalleCita">
+                            <div class="row">
+                                <div class="col"  id="horaInicioBoxCita">
+                                    <div class="input-group">
+                                        {{form.horaInicioCita}}
+                                       <div class="input-group-text">
+                                         <i style="font-size: 15px;" class=" fa-regular fa-clock"></i>
+                                       </div>
+                                       </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="id_cita" value="{{object.id_cita}}">
+                <div class="col Datos1DetalleCita">
+                        <Label><strong>Comentarios: </strong></Label>
+                            {{form.descripcion}}
+                    </div>
+                    <br>
+                    <div id="spinner" class="no-Display">
+                        <div class="text-center">
+                            <div class="spinner-border" role="status"></div>
+                        </div>
+                    </div>
+                      <br><br>
+                    <div class="row">
+                        <div class="col">
+                             <a class="btn btn-block btn-secondary" href="{% url 'Ventas:listarCitas' %}" >Salir</a>   <!--onclick="ConfirmarNoGuardarCita()"-->
+                        </div>
+                        <div class="col">
+                            <button class="btn btn-block btn-success" type="button" onclick="ActualizarCita('{{object.id_cita}}')">Modificar</button>
+                        </div>
+                        <div class="col">
+                            <a class="btn btn-block btn-danger" onclick="CancelarCita2('{{object.id_cita}}')">Cancelar Cita</a>
+                        </div>
+                    </div>
+                    <br><br><br>
+                </form>
+
+               
+     
+</div>
+
+
+{% endblock Contenido %}
+{% block scripts %}
+<script src="/static/Ventas/js/Ventas.js"></script>
+<script src="/static/Plugins/datetimepicker/build/jquery.datetimepicker.full.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+    function spinerfuncion(){
+        const spinner = $("#spinner")
+
+        spinner.removeClass("no-Display")
+            setTimeout(()=>{
+                spinner.addClass("no-Display")
+            },400)
+    }
+
+    $.datetimepicker.setLocale('es');
+    //funcion que busca horas disponibles
+    function ejecutarReloj(horas){
+    $('#horaInicio').datetimepicker({
+    formatTime:"g:i a",
+    format:'g:i A',
+    datepicker:false,
+    validateOnBlur: false,
+    allowTimes:horas
+  })
+  }
+  
+    //buscar dia cita
+    $("#DiaCita").datetimepicker({
+    timepicker:false,
+      format:'d/m/Y',
+      minDate: 0,
+      onChangeDateTime:function(dp,$input){
+        let empleado=$("#empleado").val()
+        $.ajax({
+          type: "POST",
+          url: "/Ventas/BuscarEmpleadoParaCita/",
+          data: {"csrfmiddlewaretoken":csrftoken,"accion":"BuscarDiaDeEmpleado","empleado":empleado,"dia":$input.val()},
+          success: function(response){
+    
+            var horas = response["horasDisponibles"]
+            spinerfuncion()
+            ejecutarReloj(horas)
+          },
+          error: function(error){
+            console.log(error.responseJSON)
+          }
+        })
+      },
+      disabledDates:['2022/03/17'],
+    })
+    //buscar empleado
+    $("#empleado").on("change", function(){
+      let empleado=this.value
+      $.ajax({
+          type: "POST",
+          url: "/Ventas/BuscarEmpleadoParaCita/",
+          data: {"csrfmiddlewaretoken":csrftoken,"empleado":empleado,"accion":"BuscarEmpleado"},
+          success: function (response){
+            spinerfuncion()
+            
+          }
+          
+        });
+      })
+  
+  </script>
+{% endblock scripts %}
+
+
