@@ -21,6 +21,10 @@ from re import template
 import re
 from tkinter.messagebox import NO
 from urllib import response
+import Crypto
+import binascii
+from Crypto.PublicKey import RSA
+from Crypto.Cipher import PKCS1_OAEP
 #-----------------------------------------Django---------------------------------------------------
 from django.http import HttpResponseRedirect, request, HttpResponse, JsonResponse
 from django.views.generic import TemplateView, CreateView, ListView, UpdateView, DetailView, View
@@ -55,7 +59,8 @@ from Configuracion.models import cambiosFooter, cambios
 from Usuarios.authentication_mixins import Authentication
 from datetime import datetime
 from Usuarios.forms import Cambiar, Regitro, Editar, CustomAuthForm
-
+from Usuarios.Mixins.Mixin import Asimetric_Cipher
+from Proyecto_Ekiria.settings import Private_Key
 #--------------------------------------Templates Loaders------------------------------------
 
 @login_required()
@@ -310,6 +315,7 @@ def CambiarEstadoUsuario(request):
         return JsonResponse({"x":"no"})
 
 
+
 class PassR(TemplateView):
     template_name="UserInformation/PasswordRecovery.html"
     def get(self, request, *args,**kwargs):
@@ -317,7 +323,9 @@ class PassR(TemplateView):
             return redirect('Inicio')
         user = ""
         if request.GET['Slug']:
-            key = request.GET['Slug']
+            encrypted_key = request.GET['Slug']
+            cipher = PKCS1_OAEP.new(Private_Key)
+            key = cipher.decrypt(encrypted_key)
             token = Token.objects.get(key = key)
             user = token.user
         else: 
@@ -354,6 +362,8 @@ class PassR(TemplateView):
             }
         return render(request, self.template_name, context)
     
+
+
 def PassRec(request):
     messages = []
     success = []
@@ -383,8 +393,24 @@ def PassRec(request):
                         mensaje['To'] = user.email
                         mensaje['Subject'] = "Cambio de contraseña"
                         cliente = f"{str(user.nombres).capitalize()} {str(user.apellidos).capitalize()}"
+                        Random_number = Crypto.Random.new().read
+                        private_key = RSA.generate(1024, Random_number)
+                        public_key = private_key.publickey()
+                        private_key = private_key.exportKey(format="DER")
+                        public_key = public_key.exportKey(format="DER")
+                        private_key = binascii.hexlify(private_key).decode('utf8')
+                        public_key = binascii.hexlify(public_key).decode('utf8')
+                        # Proceso Inverso
+                        private_key = RSA.importKey(binascii.unhexlify(private_key))
+                        public_key = RSA.importKey(binascii.unhexlify(public_key))
+                        Private_Key = private_key
+                        print(Private_Key)
+                        key = token.key
+                        key = key.encode()
+                        cipher = PKCS1_OAEP.new(public_key)
+                        encripted_key = cipher.encrypt(key)
                         content = render_to_string("Correo/CambioContraseñaCorreo.html",
-                                                   {"cliente": cliente, "token":token.key})
+                                                   {"cliente": cliente, "token":str(encripted_key)})
                         mensaje.attach(MIMEText(content, 'html'))
 
                         Servidor.sendmail(settings.EMAIL_HOST_USER,

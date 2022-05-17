@@ -123,8 +123,8 @@ DATABASES = {
 #     }
 # }
 
-TOKEN_EXPIRED_AFTER_SECONDS = 15000
-
+TOKEN_EXPIRED_AFTER_SECONDS = 900
+Private_Key = ""
 
 
 # Password validation
@@ -203,9 +203,9 @@ EMAIL_HOST = 'smtp.gmail.com'
 
 EMAIL_PORT = 587
 
-EMAIL_HOST_USER = 'davidparaekiria@gmail.com'
+EMAIL_HOST_USER = 'jgallego690@misena.edu.co'
 
-EMAIL_HOST_PASSWORD = 'rkirzqseahrqwmsu'
+EMAIL_HOST_PASSWORD = 'hkkqkctqzuutuwrb'
 
 MAIL_USE_TLS   = True
 
