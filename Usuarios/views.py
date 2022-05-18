@@ -47,6 +47,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework import viewsets
+from Usuarios.authentication import ExpiringTokenAuthentication
 #-----------------------------------------Serializers---------------------------------------------------
 from Proyecto_Ekiria import settings
 from Usuarios.Serializers.general_serializers import UsuarioTokenSerializer
@@ -60,7 +61,8 @@ from Usuarios.authentication_mixins import Authentication
 from datetime import datetime
 from Usuarios.forms import Cambiar, Regitro, Editar, CustomAuthForm
 from Usuarios.Mixins.Mixin import Asimetric_Cipher
-from Proyecto_Ekiria.settings import Private_Key
+from Proyecto_Ekiria.settings import Public_Key
+import cryptocode
 #--------------------------------------Templates Loaders------------------------------------
 
 @login_required()
@@ -322,23 +324,33 @@ class PassR(TemplateView):
         if request.user.pk is not None:
             return redirect('Inicio')
         user = ""
+        context={}
+        user_token_expired = None
         if request.GET['Slug']:
-            encrypted_key = request.GET['Slug']
-            cipher = PKCS1_OAEP.new(Private_Key)
-            key = cipher.decrypt(encrypted_key)
-            token = Token.objects.get(key = key)
-            user = token.user
+            slug = request.GET['Slug'].replace(" ", "+")
+            key = cryptocode.decrypt(slug, Public_Key)
+            token_expired = ExpiringTokenAuthentication()
+            user,token,message, self.user_token_expired = token_expired.authenticate_credentials(key)
+            if user != None and token != None:
+                if self.user_token_expired == True:
+                    context={'message':'El tiempo de uso de esté link se ha vencido'}
+                else:
+                    token = Token.objects.get(key = token)
+                    token.delete()
+                    context={'User':user}
+            else:
+                context={
+                    'message':'Esté link no se puede usar'
+                }
         else: 
             return redirect('IniciarSesion')
         
-        context={
-            'User':user
-        }
+        
 
         return render(request, self.template_name, context)
-    
+    @csrf_exempt
     def post(self,request,*args,**kwargs):
-        if request.POST['user']:
+        if request.POST['user'] != '':
             user = Usuario.objects.get(pk=request.POST['user'])
             pass1 = request.POST['password1']
             pass2 = request.POST['password2']
@@ -359,6 +371,10 @@ class PassR(TemplateView):
                 messages = "Los campos son obligatorios"
             context ={
                 'message':messages
+            }
+        else:
+            context={
+                'message':'Por favor solicita nuevamente la restauración de contraseña'
             }
         return render(request, self.template_name, context)
     
@@ -393,24 +409,10 @@ def PassRec(request):
                         mensaje['To'] = user.email
                         mensaje['Subject'] = "Cambio de contraseña"
                         cliente = f"{str(user.nombres).capitalize()} {str(user.apellidos).capitalize()}"
-                        Random_number = Crypto.Random.new().read
-                        private_key = RSA.generate(1024, Random_number)
-                        public_key = private_key.publickey()
-                        private_key = private_key.exportKey(format="DER")
-                        public_key = public_key.exportKey(format="DER")
-                        private_key = binascii.hexlify(private_key).decode('utf8')
-                        public_key = binascii.hexlify(public_key).decode('utf8')
-                        # Proceso Inverso
-                        private_key = RSA.importKey(binascii.unhexlify(private_key))
-                        public_key = RSA.importKey(binascii.unhexlify(public_key))
-                        Private_Key = private_key
-                        print(Private_Key)
                         key = token.key
-                        key = key.encode()
-                        cipher = PKCS1_OAEP.new(public_key)
-                        encripted_key = cipher.encrypt(key)
+                        value = cryptocode.encrypt(str(key),Public_Key)
                         content = render_to_string("Correo/CambioContraseñaCorreo.html",
-                                                   {"cliente": cliente, "token":str(encripted_key)})
+                                                   {"cliente": cliente, "token":value})
                         mensaje.attach(MIMEText(content, 'html'))
 
                         Servidor.sendmail(settings.EMAIL_HOST_USER,
@@ -420,6 +422,7 @@ def PassRec(request):
                         print("Se envio el correo")
                         success = "Se ha enviado el correo correctamente al email "+user.email
                     except Exception as e:
+                        messages = e
                         print(e)
             else:
                 messages = "El email es requerido"

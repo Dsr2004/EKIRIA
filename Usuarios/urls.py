@@ -5,7 +5,6 @@ from django.contrib.auth.decorators import login_required
 
 
 urlpatterns = [
-    path('RecuperarContraseña/', PassR, name="RecuperarContraseña"),
     path('CambiarContraseña/', Change, name="Cambiar"),
     path('estado/', CambiarEstadoUsuario, name="editarEstadoUsuario"),
     path('Perfil', Perfil, name="Perfil"),
