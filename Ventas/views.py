@@ -154,7 +154,7 @@ def CambiarEstadoServicioEnCatalogo(request):
             update.estado=True
             update.save()
         else:
-            return redirect("Ventas:listarServicios")
+            return redirect("Ventas:listarServiceditarcitaios")
         return HttpResponse(update)
     else:
         return redirect("Ventas:listarServicios")  
