@@ -40,7 +40,7 @@ def send_email():
 
 def restar():
     #lista donde estan todas las horas disponibles
-    horas = hours = [(dt.time(i).strftime("%H:%M")) for i in range(24)]
+    
 
     #horas que hay que quitar de la lista principal
     horasNoDisponibles = {'cita1': {'horaInicio': '04:00', 'horaFin': '06:00'}, 'cita2': {'horaInicio': '07:00', 'horaFin': '09:00'}}
