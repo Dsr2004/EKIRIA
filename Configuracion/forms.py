@@ -9,7 +9,7 @@ class RolForm(forms.ModelForm):
         model = Group
         fields = ('name',)
         widgets={
-            'name':forms.TextInput(attrs={"class":"form-control"}),
+            'name':forms.TextInput(attrs={"class":"form-control" }),
         }
 
     def __init__(self, *args, **kwargs):
@@ -17,6 +17,11 @@ class RolForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.attrs = {"novalidate": "novalidate"}
 
+    def clean_name(self):  
+        name = self.cleaned_data.get('name')
+        if len(name)<4:
+            raise forms.ValidationError('Pues no sé')
+            
 class CambiosForm(forms.ModelForm):
 
     class Meta:
