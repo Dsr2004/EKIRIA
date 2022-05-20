@@ -154,7 +154,7 @@ def CambiarEstadoServicioEnCatalogo(request):
             update.estado=True
             update.save()
         else:
-            return redirect("Ventas:listarServicios")
+            return redirect("Ventas:listarServiceditarcitaios")
         return HttpResponse(update)
     else:
         return redirect("Ventas:listarServicios")  
@@ -324,12 +324,17 @@ class BuscarDisponibilidadEmpleado(View):
                 horaInicio=i.horaInicio
                 horaInicio = horaInicio.strftime("%H:%M")
                 horaFin=i.horaFin
+                print("inicio ", horaFin)
                 horaFin = horaFin.strftime("%H:%M")
+                horaFin = datetime.strptime(horaFin, "%H:%M") - datetime.strptime("01:00", "%H:%M")
+                horaFin = datetime.strptime(str(horaFin), "%H:%M:%S")
+                horaFin = horaFin.strftime("%H:%M")
+                print("fin ", horaFin)
                 cont=str(cont)
                 horasNoDisponibles[str("cita"+cont)]={"horaInicio":horaInicio,"horaFin":horaFin}
                 cont=int(cont)
                 cont+=1
-                   
+            print(horasNoDisponibles)
            
             horas = [
                 "00:00","01:00","02:00","03:00","04:00","05:00","06:00","07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00",
@@ -340,7 +345,10 @@ class BuscarDisponibilidadEmpleado(View):
                 res=horas
             else:
                 for i in horasNoDisponibles:
-                    res = [x for x in horas if (x < horasNoDisponibles[i]["horaInicio"] or x > horasNoDisponibles[i]["horaFin"])]
+                    res = [x 
+                    for x in horas
+                        if (x < horasNoDisponibles[i]["horaInicio"] or x > horasNoDisponibles[i]["horaFin"])
+                        ]
 
             return JsonResponse({"horasDisponibles":res})
 
