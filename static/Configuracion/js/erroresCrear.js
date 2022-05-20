@@ -18,6 +18,7 @@ function CrearRol(){
             for (let item in error.responseJSON["errores"]){
                 let input =$("#CrearRoles").find('input[name='+item+']')
                 input.addClass("is-invalid")
+                alert(input)
                 $('#'+item).text(error.responseJSON["errores"][item])
                 
         }

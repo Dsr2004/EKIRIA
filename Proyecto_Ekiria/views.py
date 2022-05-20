@@ -30,7 +30,9 @@ class Inicio(View):
             UserSesion = if_User(request)
             return render(request, 'index.html', {'User':UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
         except:
-            return render(request, 'index.html')
+            cambiosQueryset = cambios.objects.all()
+            cambiosfQueryset = cambiosFooter.objects.all()
+            return render(request, 'index.html',{'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
             
 class menu(View):
     def get(self, request, *args, **kwargs):
