@@ -8,7 +8,6 @@ import json
 
 # Create your views here.
 from django.http import HttpResponse
-from django.shortcuts import render
 from django.shortcuts import redirect, render
 from django.db.models import Q
 
@@ -195,6 +194,7 @@ def eliminarRol(request):
         rol.delete()
         return redirect('Roles')
     else:
+        # messages. (request, messages.INFO, 'x sapapastroso inmundo')
         return redirect('Roles')
     
 
@@ -226,6 +226,7 @@ class CreateRolView(CreateView):
                     return JsonResponse({"mensaje": f"{self.model.__name__} Se ha creado correctamente", "errores":"No hay errores"})
                 else:
                     errores=formulario.errors
+                    print(formulario.is_valid())
                     mensaje=f"{self.model.__name__} No se ha creado correctamente!"
                     respuesta=JsonResponse({"mensaje":mensaje, "errores":errores})
                     respuesta.status_code=400
@@ -318,17 +319,23 @@ class EditarRolView(UpdateView):
     template_name = 'EditarRol.html'
     def post(self,request, *args, **kwargs):
             if request.method == "POST":
-                formulario=self.form_class(request.POST, instance=self.get_object())
-                if formulario.is_valid():
-                    formulario.save()
-                    return JsonResponse({"mensaje": f"{self.model.__name__} Se ha creado correctamente", "errores":"No hay errores"})
+                id_group = self.kwargs['pk']
+                if id_group > 6:
+                    formulario=self.form_class(request.POST, instance=self.get_object())
+                    if formulario.is_valid():
+                        formulario.save()
+                        return JsonResponse({"mensaje": f"{self.model.__name__} Se ha creado correctamente", "errores":"No hay errores"})
+                    else:
+                        errores=formulario.errors
+                        mensaje=f"{self.model.__name__} No se ha creado correctamente!"
+                        respuesta=JsonResponse({"mensaje":mensaje, "errores":errores})
+                        respuesta.status_code=400
+                        return respuesta
                 else:
-                    errores=formulario.errors
-                    mensaje=f"{self.model.__name__} No se ha creado correctamente!"
-                    respuesta=JsonResponse({"mensaje":mensaje, "errores":errores})
-                    respuesta.status_code=400
+                    from django.contrib import messages
+                    messages.add_message(request, messages.INFO, 'No se puede cambiar el nombre de este rol ya que es un rol por defecto')
+                    respuesta = JsonResponse({'errores':'No se puede cambiar el nombre de este rol ya que es un rol por defecto'})
                     return respuesta
-                    
             else:
                 return HttpResponse("holi")
 
@@ -340,7 +347,6 @@ class EditarRolView(UpdateView):
         #         return response
         # else:
         #     return redirect("Ventas:adminVentas")
-
     def get_context_data(self, *args, **kwargs):
         context = super(EditarRolView, self).get_context_data(**kwargs)
         if if_admin(self.request):
