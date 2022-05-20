@@ -21,6 +21,7 @@ class RolForm(forms.ModelForm):
         name = self.cleaned_data.get('name')
         if len(name)<4:
             raise forms.ValidationError('Pues no sé')
+        return name
             
 class CambiosForm(forms.ModelForm):
 

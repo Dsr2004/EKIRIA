@@ -193,8 +193,12 @@ def eliminarRol(request):
         id = request.POST['id']
         rol = Group.objects.get(pk = id)
         rol.delete()
+        from django.contrib import messages
+        messages.add_message(request, messages.SUCCESS , 'Eliminado correctamente.')
         return redirect('Roles')
     else:
+        from django.contrib import messages
+        messages.add_message(request, messages.INFO, 'No se puede borrar el rol, ¡ha ocurrido un error interno!')
         return redirect('Roles')
     
 
