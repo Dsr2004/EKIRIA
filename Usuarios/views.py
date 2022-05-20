@@ -369,7 +369,6 @@ def PassRec(request):
                         token = Token.objects.get(user=user)
                         token.delete()
                         token = Token.objects.create(user=user)
-
                     except:
                         Token.objects.create(user=user)
                         token = Token.objects.get(user=user)
