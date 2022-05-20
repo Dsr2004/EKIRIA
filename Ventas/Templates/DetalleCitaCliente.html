@@ -157,7 +157,7 @@
                               <button class="btn btn-block btn-success" type="button" disabled>Modificar</button>
                             </span>
                            {% else %}
-                           <a class="btn btn-block btn-success"  onclick="IraModificarCita('{% url 'Ventas:editarCita' object.id_cita %}')">Modificar</a>
+                           <a class="btn btn-block btn-success"  onclick="IraModificarCita('{% url 'Ventas:editarCitaCliente' object.id_cita %}')">Modificar</a>
                           {% endif %}
                         {% endif %}
                         

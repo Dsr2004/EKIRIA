@@ -343,10 +343,13 @@ class PassR(TemplateView):
                             return redirect('IniciarSesion')
                         else:
                             messages = "La contraseña debe tener al menos una letra Mayúscula"
+                            
                     else:
                         messages ="La contraseña debe tener al menos un número"
+                        
                 else:
                     messages = "Las contraseñas no coinciden"
+                    
             else:
                 messages = "Los campos son obligatorios"
             context ={
