@@ -17,6 +17,7 @@ from django.http import HttpResponse,JsonResponse
 from django.views.generic import View, CreateView, UpdateView, ListView, DetailView
 from django.urls import reverse_lazy
 from django.contrib.auth.models import Permission,Group
+from django.contrib import messages
 from Usuarios.models import Usuario
 from Usuarios.views import *
 from django.contrib.auth.decorators import login_required, permission_required
@@ -187,6 +188,15 @@ def ListarRol(request):
     contexto['footer']=cambiosfQueryset
     return render(request, "Roles.html", contexto)
 
+def eliminarRol(request):
+    if request.method == "POST":
+        id = request.POST['id']
+        rol = Group.objects.get(pk = id)
+        rol.delete()
+        return redirect('Roles')
+    else:
+        return redirect('Roles')
+    
 
 def EstadoRol(request):
     id_estado=request.POST.get("estado")
@@ -207,8 +217,9 @@ class CreateRolView(CreateView):
     form_class = RolForm
     template_name = 'CrearRol.html'
 
-    def post(self,request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
             if request.method == "POST":
+                print(request.POST)
                 formulario=self.form_class(request.POST)
                 if formulario.is_valid():
                     formulario.save()

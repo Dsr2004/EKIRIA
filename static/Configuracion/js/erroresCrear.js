@@ -4,9 +4,10 @@ function abrir_modal_crear(url){
     });
 }
 function CrearRol(){
+    let name = document.getElementById('id_name').value
     $.ajax({
 
-        data:$('#CrearRoles').serialize(),
+        data:{"csrfmiddlewaretoken":csrftoken, "name":name},
         url:$('#CrearRoles').attr('action'),
         type:$('#CrearRoles').attr('method'),
         success: function (response) {
@@ -18,7 +19,6 @@ function CrearRol(){
             for (let item in error.responseJSON["errores"]){
                 let input =$("#CrearRoles").find('input[name='+item+']')
                 input.addClass("is-invalid")
-                alert(input)
                 $('#'+item).text(error.responseJSON["errores"][item])
                 
         }

@@ -7,13 +7,21 @@ from django.contrib.auth.models import Group
 class RolForm(forms.ModelForm):
     class Meta:
         model = Group
-        fields = '__all__'
+        fields = ('name',)
+        widgets={
+            'name':forms.TextInput(attrs={"class":"form-control" }),
+        }
 
-    # def __init__(self, *args, **kwargs):
-    #     super(RolForm, self).__init__(*args, **kwargs)
-    #     self.helper = FormHelper()
-    #     self.helper.attrs = {"novalidate": "novalidate"}
+    def __init__(self, *args, **kwargs):
+        super(RolForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.attrs = {"novalidate": "novalidate"}
 
+    def clean_name(self):  
+        name = self.cleaned_data.get('name')
+        if len(name)<4:
+            raise forms.ValidationError('Pues no sé')
+            
 class CambiosForm(forms.ModelForm):
 
     class Meta:
