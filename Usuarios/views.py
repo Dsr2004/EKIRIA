@@ -21,6 +21,10 @@ from re import template
 import re
 from tkinter.messagebox import NO
 from urllib import response
+import Crypto
+import binascii
+from Crypto.PublicKey import RSA
+from Crypto.Cipher import PKCS1_OAEP
 #-----------------------------------------Django---------------------------------------------------
 from django.http import HttpResponseRedirect, request, HttpResponse, JsonResponse
 from django.views.generic import TemplateView, CreateView, ListView, UpdateView, DetailView, View
@@ -43,6 +47,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework import viewsets
+from Usuarios.authentication import ExpiringTokenAuthentication
 #-----------------------------------------Serializers---------------------------------------------------
 from Proyecto_Ekiria import settings
 from Usuarios.Serializers.general_serializers import UsuarioTokenSerializer
@@ -55,7 +60,9 @@ from Configuracion.models import cambiosFooter, cambios
 from Usuarios.authentication_mixins import Authentication
 from datetime import datetime
 from Usuarios.forms import Cambiar, Regitro, Editar, CustomAuthForm
-
+from Usuarios.Mixins.Mixin import Asimetric_Cipher
+from Proyecto_Ekiria.settings import Public_Key
+import cryptocode
 #--------------------------------------Templates Loaders------------------------------------
 
 @login_required()
@@ -310,27 +317,40 @@ def CambiarEstadoUsuario(request):
         return JsonResponse({"x":"no"})
 
 
+
 class PassR(TemplateView):
     template_name="UserInformation/PasswordRecovery.html"
     def get(self, request, *args,**kwargs):
         if request.user.pk is not None:
             return redirect('Inicio')
         user = ""
+        context={}
+        user_token_expired = None
         if request.GET['Slug']:
-            key = request.GET['Slug']
-            token = Token.objects.get(key = key)
-            user = token.user
+            slug = request.GET['Slug'].replace(" ", "+")
+            key = cryptocode.decrypt(slug, Public_Key)
+            token_expired = ExpiringTokenAuthentication()
+            user,token,message, self.user_token_expired = token_expired.authenticate_credentials(key)
+            if user != None and token != None:
+                if self.user_token_expired == True:
+                    context={'message':'El tiempo de uso de esté link se ha vencido'}
+                else:
+                    token = Token.objects.get(key = token)
+                    token.delete()
+                    context={'User':user}
+            else:
+                context={
+                    'message':'Esté link no se puede usar'
+                }
         else: 
             return redirect('IniciarSesion')
         
-        context={
-            'User':user
-        }
+        
 
         return render(request, self.template_name, context)
-    
+    @csrf_exempt
     def post(self,request,*args,**kwargs):
-        if request.POST['user']:
+        if request.POST['user'] != '':
             user = Usuario.objects.get(pk=request.POST['user'])
             pass1 = request.POST['password1']
             pass2 = request.POST['password2']
@@ -343,20 +363,23 @@ class PassR(TemplateView):
                             return redirect('IniciarSesion')
                         else:
                             messages = "La contraseña debe tener al menos una letra Mayúscula"
-                            
                     else:
                         messages ="La contraseña debe tener al menos un número"
-                        
                 else:
                     messages = "Las contraseñas no coinciden"
-                    
             else:
                 messages = "Los campos son obligatorios"
             context ={
                 'message':messages
             }
+        else:
+            context={
+                'message':'Por favor solicita nuevamente la restauración de contraseña'
+            }
         return render(request, self.template_name, context)
     
+
+
 def PassRec(request):
     messages = []
     success = []
@@ -372,6 +395,7 @@ def PassRec(request):
                         token = Token.objects.get(user=user)
                         token.delete()
                         token = Token.objects.create(user=user)
+
                     except:
                         Token.objects.create(user=user)
                         token = Token.objects.get(user=user)
@@ -385,8 +409,10 @@ def PassRec(request):
                         mensaje['To'] = user.email
                         mensaje['Subject'] = "Cambio de contraseña"
                         cliente = f"{str(user.nombres).capitalize()} {str(user.apellidos).capitalize()}"
+                        key = token.key
+                        value = cryptocode.encrypt(str(key),Public_Key)
                         content = render_to_string("Correo/CambioContraseñaCorreo.html",
-                                                   {"cliente": cliente, "token":token.key})
+                                                   {"cliente": cliente, "token":value})
                         mensaje.attach(MIMEText(content, 'html'))
 
                         Servidor.sendmail(settings.EMAIL_HOST_USER,
@@ -396,6 +422,7 @@ def PassRec(request):
                         print("Se envio el correo")
                         success = "Se ha enviado el correo correctamente al email "+user.email
                     except Exception as e:
+                        messages = e
                         print(e)
             else:
                 messages = "El email es requerido"
