@@ -10,14 +10,16 @@
             {% csrf_token %}
             {{form.tipo_servicio_id|as_crispy_field}}
             <br>
-            <div class="row">
+            {{form.img_servicio|as_crispy_field}}
+            <br>
+            <!-- <div class="row">
                 <div class="col-8" style="position: relative; right: 40px;">
-                    {{form.img_servicio|as_crispy_field}}
+                    
                 </div>
                 <div class="col-4">
                     <center><img id="imgActual"  style="position: relative; top: -20px; margin-right: 5px;" width="150" height="150"></center>
                 </div>
-            </div>
+            </div> -->
 
 
         <div class="form-floating container descripcion" >   
@@ -31,7 +33,7 @@
       </div>
     </div>
   </div>
-  <script>
+  <!-- <script>
      function readURL(input) {
   if (input.files && input.files[0]) { //Revisamos que el input tenga contenido
     var reader = new FileReader(); //Leemos el contenido
@@ -48,4 +50,4 @@ $("#id_img_servicio").change(function() { //Cuando el input cambie (se cargue un
   readURL(this);
 });
 
-</script>
+</script> -->

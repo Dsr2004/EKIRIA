@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from multiprocessing import context
 import re
 
@@ -154,7 +154,7 @@ def CambiarEstadoServicioEnCatalogo(request):
             update.estado=True
             update.save()
         else:
-            return redirect("Ventas:listarServicios")
+            return redirect("Ventas:listarServiceditarcitaios")
         return HttpResponse(update)
     else:
         return redirect("Ventas:listarServicios")  
@@ -264,17 +264,43 @@ class AgandarCita(CreateView):
             return render(request, "TerminarPedido.html",contexto)
     
     def post(self, request, *args, **kwargs):
-        horaInicio = request.POST["horaInicioCita"]
+        x = request.POST["horaInicioCita"]
         diaCita = request.POST["diaCita"]
         empleado = request.POST["empleado_id"]
         descripcion = request.POST["descripcion"]
         errores = {}
         if not horaInicio:
             errores["horaInicioCita"] = "Debe completar la hora de la cita."
-            if not diaCita:
-                errores["diaCita"] = "Debe completar el dia  de la cita."
-                if not empleado:
-                    errores["empleado_id"] = "Debe seleccionar un empleado que atienda su cita."
+        if not diaCita:
+            errores["diaCita"] = "Debe completar el dia  de la cita."
+        if not empleado:
+            errores["empleado_id"] = "Debe seleccionar un empleado que atienda su cita."
+    
+        empleado = Usuario.objects.get(id_usuario=empleado)
+        diaCita=datetime.strptime(diaCita, "%d/%m/%Y")
+        diaCita=diaCita.strftime("%Y-%m-%d")
+        diasConsulta = models.Calendario.objects.filter(empleado_id=empleado).filter(dia=diaCita)
+
+        horasNoDisponibles={}
+        cont=1
+
+        for i in diasConsulta:
+            horaIniciox = i.horaInicio.strftime("%H:%M")
+            horaFinx = i.horaFinx.strftime("%H:%M")
+            cont=str(cont)
+            horasNoDisponibles[str("cita"+cont)]={"horaInicio":horaIniciox,"horaFin":horaFinx}
+            cont=int(cont)+1
+
+        horas = [(time(i).strftime("%H:%M")) for i in range(24)]
+
+    
+       
+
+        res = [x for x in horas if x  in [x for x in horas for i in horasNoDisponibles if (horasNoDisponibles[i]["horaInicio"] <= x <= horasNoDisponibles[i]["horaFin"])]]
+
+        # for i in horas:
+        #     if i 
+        print(res)
 
         if errores:
             response = JsonResponse({"errores":errores})
@@ -284,7 +310,7 @@ class AgandarCita(CreateView):
             horaInicio=datetime.strptime(horaInicio, "%H:%M %p").strftime("%H:%M:%S")
             cliente=Usuario.objects.get(username=self.request.session['username'])
             pedido,creado = Pedido.objects.get_or_create(cliente_id=cliente, completado=False)
-            datosParaGuardar = {"pedido_id":pedido,"horaInicioCita":horaInicio,"cliente_id":cliente, "empleado_id":empleado,
+            datosParaGuardar = {"pedido_id":pedido,"horaInicioCita":horaInicio,"cliente_id":cliente, "empleado_id":empleado.pk,
             "descripcion":descripcion,"diaCita":diaCita}
             form = self.form_class(datosParaGuardar)
             if form.is_valid:
@@ -324,24 +350,24 @@ class BuscarDisponibilidadEmpleado(View):
                 horaInicio=i.horaInicio
                 horaInicio = horaInicio.strftime("%H:%M")
                 horaFin=i.horaFin
+                print("inicio ", horaFin)
                 horaFin = horaFin.strftime("%H:%M")
+                horaFin = datetime.strptime(horaFin, "%H:%M") - datetime.strptime("01:00", "%H:%M")
+                horaFin = datetime.strptime(str(horaFin), "%H:%M:%S")
+                horaFin = horaFin.strftime("%H:%M")
+                print("fin ", horaFin)
                 cont=str(cont)
                 horasNoDisponibles[str("cita"+cont)]={"horaInicio":horaInicio,"horaFin":horaFin}
                 cont=int(cont)
                 cont+=1
-                   
            
-            horas = [
-                "00:00","01:00","02:00","03:00","04:00","05:00","06:00","07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00",
-                "15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00",
-            ]
+            horas = hours = [(time(i).strftime("%H:%M")) for i in range(24)]
 
             if len(horasNoDisponibles)==0:
                 res=horas
             else:
-                for i in horasNoDisponibles:
-                    res = [x for x in horas if (x < horasNoDisponibles[i]["horaInicio"] or x > horasNoDisponibles[i]["horaFin"])]
-
+                res = [x for x in horas if x not in [x for x in horas for i in horasNoDisponibles if (horasNoDisponibles[i]["horaInicio"] <= x <= horasNoDisponibles[i]["horaFin"])]]
+            
             return JsonResponse({"horasDisponibles":res})
 
 
@@ -833,6 +859,9 @@ class EditarCita(ActualiarCitaMixin, UpdateView):
                     context["serviciosPer"]=serviciosPerx
       
         return context
+
+    def post(self, request, *args, **kwargs):
+        pass
 
 
 
