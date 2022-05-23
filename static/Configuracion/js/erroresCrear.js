@@ -11,7 +11,16 @@ function CrearRol(){
         url:$('#CrearRoles').attr('action'),
         type:$('#CrearRoles').attr('method'),
         success: function (response) {
-            location.reload()
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: 'Creado Correctamente',
+                showConfirmButton: false,
+                timer: 1500
+              })
+              window.setTimeout(function(){ 
+                location.reload();
+            } ,1000);
         },
         error: function(error){
             $('#CrearRoles').find('.text-danger').text('')
