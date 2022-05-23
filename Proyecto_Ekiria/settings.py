@@ -210,7 +210,7 @@ EMAIL_PORT = 587
 
 EMAIL_HOST_USER = 'jgallego690@misena.edu.co'
 
-EMAIL_HOST_PASSWORD = 'bfttxpaspwewrnme'
+EMAIL_HOST_PASSWORD = 'mpcbctonvhiqjfkd'
 
 MAIL_USE_TLS   = True
 
