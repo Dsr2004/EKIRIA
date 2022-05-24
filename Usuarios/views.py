@@ -61,7 +61,7 @@ from Usuarios.authentication_mixins import Authentication
 from datetime import datetime
 from Usuarios.forms import Cambiar, Regitro, Editar, CustomAuthForm
 from Usuarios.Mixins.Mixin import Asimetric_Cipher
-from Proyecto_Ekiria.settings import Public_Key
+from Proyecto_Ekiria.settings.base import Public_Key
 import cryptocode
 #--------------------------------------Templates Loaders------------------------------------
 

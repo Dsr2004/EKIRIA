@@ -172,42 +172,46 @@
 .principalPermisos{
     box-shadow: 0 7px 25px rgba(0, 0, 0, 0.50);
     align-items: center;
-    margin: 50px 25%;
-    width: 50%;
+    margin: 75px 5%;
+    width: 90%;
     height: 500px;
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
     justify-content: initial;
     overflow: auto;
-}
+padding: 0 0em 0 5%;padding-left: 8.5% !important;}
 .principalPermisos .con1{
     width: 200px;
-    height: 70%;
-    margin: 0 20px;
-}
+    /* height: 70%; */
+    margin: 20px 20px;
+/* border-radius: 10px; */}
 .color{
     height: 100px;
     overflow: auto;
     border-width: 1%;
-    border-style: solid;
-    border-color: black;
+    /* border-style: solid; */
+    /* border-color: black; */
     background-color: #530677;
-}
+border-radius: 10px 10px 0px 0px;padding: 0 5px;}
 .dentropermi{
     background-color: white;
-    height: 70%;
-    padding: 1% 5%;
-}
+    /* height: 60%; */
+    padding: 0% 5%;
+border-radius: 0 0 5px 5px;}
 .letraDes{
     color: white;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     margin-bottom: 0px !important;
-}
+/* border-radius: 10px; *//* border-radius: 5px; */}
 #asignar{
-    margin: 3%;
-    margin-left: 68%;
-}
+    /* width: 100%; */
+    margin-top: 25px!important;
+    position: relative;
+    margin-bottom: 10px;
+    right: 5% !important;
+    /* margin-left: 68%; */
+/* right: 0px !important; *//* float: right; */}
 .PermiAdmin{
     width: 44%;
     height:auto;
