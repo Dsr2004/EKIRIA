@@ -399,7 +399,7 @@ class AgandarCita(CreateView):
 
         for i in diasConsulta:
             horaIniciox = i.horaInicio.strftime("%H:%M")
-            horaFinx = i.horaFinx.strftime("%H:%M")
+            horaFinx = i.horaFin.strftime("%H:%M")
             cont=str(cont)
             horasNoDisponibles[str("cita"+cont)]={"horaInicio":horaIniciox,"horaFin":horaFinx}
             cont=int(cont)+1
@@ -461,12 +461,10 @@ class BuscarDisponibilidadEmpleado(View):
                 horaInicio=i.horaInicio
                 horaInicio = horaInicio.strftime("%H:%M")
                 horaFin=i.horaFin
-                print("inicio ", horaFin)
                 horaFin = horaFin.strftime("%H:%M")
                 horaFin = datetime.strptime(horaFin, "%H:%M") - datetime.strptime("01:00", "%H:%M")
                 horaFin = datetime.strptime(str(horaFin), "%H:%M:%S")
                 horaFin = horaFin.strftime("%H:%M")
-                print("fin ", horaFin)
                 cont=str(cont)
                 horasNoDisponibles[str("cita"+cont)]={"horaInicio":horaInicio,"horaFin":horaFin}
                 cont=int(cont)

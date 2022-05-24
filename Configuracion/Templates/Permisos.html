@@ -29,6 +29,7 @@
             </div>
         </div>
     </div>
+    <button class="btn btn-primary position-absolute end-0" type="button"data-bs-toggle="modal" data-bs-target="#PermisosRol" id="asignar">Asignar a Roles</button> 
     <div class="jldghajkldgjkfdhgk">
     <div class="principalPermisos">
         {% for permiso in buscar %}
@@ -48,7 +49,6 @@
         {% endfor %}
     </div>
 </div>
-    <button class="btn btn-primary" type="button"data-bs-toggle="modal" data-bs-target="#PermisosRol" id="asignar">Asignar a Roles</button> 
     {% endblock Contenido %}
     {%block scripts%}
     <div class="modal fade" id="PermisosRol" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >
