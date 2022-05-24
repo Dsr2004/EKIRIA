@@ -11,9 +11,9 @@
 //   }
 // });
 
-function ds(id){
+function ds(id, url){
     let cosa = id
-    let token = $('#estadoRol').find('input[name=csrfmiddlewaretoken]').val()
+    let token = $('#eliminar').find('input[name=csrfmiddlewaretoken]').val()
     const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
           confirmButton: 'btn btn-success sweetAlertB',
@@ -33,17 +33,17 @@ function ds(id){
         if (result.isConfirmed) {
             $(document).ready(function(){
                 $.ajax({
-                    data:{'csrfmiddlewaretoken':token, 'estado':cosa},
-                    url:$('#estadoRol').attr('action'),
-                    type:$('#estadoRol').attr('method'),
+                    data:{'csrfmiddlewaretoken':token, 'id':cosa},
+                    url:$('#eliminar').attr('action'),
+                    type:$('#eliminar').attr('method'),
                     success: function (data) {
                         swalWithBootstrapButtons.fire(
                             'Modificado Correctamente',
                             'Cambiaste el estado',
                             'success'
                         ).then(function(){
-                            location.reload()
-                        });
+                          location.reload()
+                      });
                     },error:function (data) {
                         alert("Error: "+error.responseJSON)
                     }

@@ -118,7 +118,6 @@ class Admin(PermissionMixin,DetailView):
     template_name = 'Administrador.html'
     def get(self, request,*args, **kwargs):
         grupo = kwargs['pk']
-        print(grupo)
         context = {}
         queryset = self.request.GET.get("buscar")
         UserSesion=""
@@ -143,7 +142,6 @@ class Admin(PermissionMixin,DetailView):
             for permiso2 in permisosexclu:
                 if "delete" in permiso2.codename:
                         lista1.append(permiso2)
-                        print(permiso2)
             # permisosexclu = lista1
 
         if if_admin(request):
@@ -222,7 +220,6 @@ class CreateRolView(CreateView):
 
     def post(self, request, *args, **kwargs):
             if request.method == "POST":
-                print(request.POST)
                 formulario=self.form_class(request.POST)
                 if formulario.is_valid():
                     formulario.save()
@@ -265,7 +262,6 @@ class CrearCambios(View):
         else:
             errores=formulario.errors
             mensaje=f"{self.model.__name__} No se ha creado correctamente!"
-            print(mensaje)
             respuesta=JsonResponse({"mensaje":mensaje, "errores":errores})
             respuesta.status_code=400
             return respuesta
@@ -298,7 +294,6 @@ class CrearCambiosFooter(View):
         else:
             errores=formulario.errors
             mensaje=f"{self.model.__name__} No se ha creado correctamente!"
-            print(mensaje)
             respuesta=JsonResponse({"mensaje":mensaje, "errores":errores})
             respuesta.status_code=400
             return respuesta
@@ -337,7 +332,7 @@ class EditarRolView(UpdateView):
                 else:
                     from django.contrib import messages
                     messages.add_message(request, messages.INFO, 'No se puede cambiar el nombre de este rol ya que es un rol por defecto')
-                    respuesta = JsonResponse({'errores':'No se puede cambiar el nombre de este rol ya que es un rol por defecto'})
+                    respuesta = JsonResponse({"errores":"No se puede cambiar el nombre de este rol ya que es un rol por defecto"})
                     return respuesta
             else:
                 return HttpResponse("holi")

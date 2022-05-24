@@ -65,10 +65,10 @@
                     
                     {% if Rol.id > 6%}
                     <td>
-                      <form action="{%url 'eliminarRol'%}" method="post">
+                      <form action="{%url 'eliminarRol'%}" id="eliminar" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="id" value="{{Rol.id}}">
-                        <button type="submit" class="btn btn-outline-danger">Eliminar</button>
+                        <button type="button" class="btn btn-outline-danger"  onclick="ds('{{Rol.id}}')">Eliminar</button>
                       </form>
                     </td>
                     {% else %}

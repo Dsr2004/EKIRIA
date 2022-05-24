@@ -4,13 +4,23 @@ function abrir_modal_editar(url){
     });
 }
 function EditarRol(){
+    
     $.ajax({
         data:$('#EditarRoles').serialize(),
         url:$('#EditarRoles').attr('action'),
         type:$('#EditarRoles').attr('method'),
         dataType: 'json',
         success: function (response) {
-            location.reload()
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: 'Editado Correctamente',
+                showConfirmButton: false,
+                timer: 1500
+              })
+              window.setTimeout(function(){ 
+                location.reload();
+            } ,1000);
         },
         error: function(error){
             $('#EditarRoles').find('.text-danger').text('')
