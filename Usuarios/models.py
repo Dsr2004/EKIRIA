@@ -14,6 +14,14 @@ class VistasDiarias(models.Model):
     def __str__(self):
         return '{}'.format(self.Contador)
 
+class CodigoPostal(models.Model):
+    id = models.CharField(primary_key=True, max_length=10)
+    cod_postal = models.CharField(max_length=15)
+    class Meta:
+        db_table = "Codigo_Postal"
+    def __str__(self):
+        return '{}'.format(self.cod_postal)
+
 class TipoDocumento(models.Model):
     id_tipo_documento = models.AutoField(primary_key=True)
     nom_tipo_documento = models.CharField(max_length=5)
@@ -36,7 +44,7 @@ class Municipio(models.Model):
         return self.nom_municipio
         
 class UsuarioManager(BaseUserManager):
-    def create_user(self,email,username,nombres,apellidos,celular,fec_nac,num_documento,direccion, cod_postal,password=None):
+    def create_user(self,email,username,nombres,apellidos,celular,fec_nac,num_documento,direccion,password=None):
         if  not email:
             raise ValueError('El usuario debe tener un correo electronico!')
         usuario = self.model(
@@ -48,7 +56,6 @@ class UsuarioManager(BaseUserManager):
             fec_nac = fec_nac, 
             num_documento = num_documento,
             direccion = direccion,
-            cod_postal = cod_postal,
             )
         usuario.set_password(password)
         usuario.save()
@@ -58,7 +65,7 @@ class UsuarioManager(BaseUserManager):
 
 
 
-    def create_superuser(self,email,username,nombres,apellidos,celular,fec_nac,num_documento, direccion, cod_postal, password):
+    def create_superuser(self,email,username,nombres,apellidos,celular,fec_nac,num_documento, direccion, password):
         usuario = self.create_user(
             email,
             username=username, 
@@ -68,7 +75,6 @@ class UsuarioManager(BaseUserManager):
             fec_nac = fec_nac, 
             num_documento = num_documento,
             direccion = direccion,
-            cod_postal = cod_postal,
             password=password,
         )
         usuario.administrador = True
@@ -96,14 +102,14 @@ class Usuario(AbstractBaseUser):
         )
     municipio = models.ForeignKey(Municipio, null=True, blank=True, on_delete=models.CASCADE)
     direccion = models.CharField(blank=True, null=True, max_length=250)
-    cod_postal = models.CharField(max_length=20, null=True)
+    cod_postal = models.ForeignKey(CodigoPostal, null=True, blank=True, on_delete=models.SET_NULL)
     rol = models.ForeignKey(Group, default=2, null=True, blank=True, on_delete=models.CASCADE)
     estado = models.BooleanField(default = True) 
     administrador = models.BooleanField(default=False)
     objects = UsuarioManager()
     
     USERNAME_FIELD='username'
-    REQUIRED_FIELDS=['email', 'nombres', 'apellidos', 'celular', 'fec_nac', 'num_documento', 'direccion', 'cod_postal']
+    REQUIRED_FIELDS=['email', 'nombres', 'apellidos', 'celular', 'fec_nac', 'num_documento', 'direccion']
     
     class Meta:
         db_table = 'usuarios'

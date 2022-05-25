@@ -121,7 +121,9 @@ form input {
 
 form .fec,
 form .mun,
-form .tipo {
+form .tipo,
+form .cod
+ {
     display: grid;
     grid-template-columns: 1fr 1fr;
 }

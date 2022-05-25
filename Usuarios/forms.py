@@ -107,6 +107,7 @@ class Regitro(forms.ModelForm):
                     'autocomplete':'off',
                     'placeholder':'Telefono',
                     'name':'telefono',
+                    'type':'number',
                 }
             ),
             'celular': forms.TextInput(
@@ -115,6 +116,7 @@ class Regitro(forms.ModelForm):
                     'id':'celular',
                     'required':'requerid',
                     'autocomplete':'off',
+                    'type':'number',
                     'placeholder':'Celular',
                     'name':'celular',
                 }
@@ -169,13 +171,12 @@ class Regitro(forms.ModelForm):
                     'name':'direccion',
                 }
             ),
-            'cod_postal': forms.TextInput(
+            'cod_postal': forms.Select(
                 attrs={
                     'class':'form-control',
                     'id':'cod_postal',
                     'required':'requerid',
                     'autocomplete':'off',
-                    'placeholder':'Codigó postal',
                     'name':'cod_postal',
                 }
             ),
@@ -185,8 +186,24 @@ class Regitro(forms.ModelForm):
         fec_actual = datetime.datetime.now()
         edad = relativedelta(fec_actual, datetime.datetime(fec_nac.year, fec_nac.month, fec_nac.day))
         if int(edad.years) < 15:
-            raise forms.ValidationError('Lo sentimos no cumples con la edad minima para poderte registrar')
+            raise forms.ValidationError('Lo sentimos no cumples con la edad mínima para poderte registrar')
         return fec_nac
+
+    def clean_celular(self):
+        cel = self.cleaned_data.get('celular')
+        if cel.isdigit() is False:
+            raise  forms.ValidationError('Por favor ingresa solo números')
+        if len(cel)!=10:
+            raise forms.ValidationError('Por favor ingresa un número de celular correcto')
+        return cel
+
+    def clean_num_documento(self):
+        num = self.cleaned_data.get('num_documento')
+        if num.isdigit() is False:
+            raise  forms.ValidationError('Por favor ingresa solo números')
+        if len(num)!=10:
+            raise forms.ValidationError('Por favor ingresa un número de celular correcto')
+        return num
 
     def clean_password2(self):
         """Validación de contraseña

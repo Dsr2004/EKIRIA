@@ -46,7 +46,7 @@ from Usuarios.authentication_mixins import Authentication
 from datetime import datetime
 from Usuarios.forms import Cambiar, Regitro, Editar, CustomAuthForm
 from Usuarios.Mixins.Mixin import Asimetric_Cipher
-from Proyecto_Ekiria.settings import Public_Key
+from Proyecto_Ekiria.settings.local import Public_Key
 import cryptocode
 #--------------------------------------Templates Loaders------------------------------------
 
@@ -106,70 +106,62 @@ class Register(CreateView):
     success_url = reverse_lazy("IniciarSesion")
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
-        try:
-            if form.is_valid():
-                registro = self.model(
-                    img_usuario = form.cleaned_data.get('img_usuario'),
-                    username = form.cleaned_data.get('username'),
-                    nombres = form.cleaned_data.get('nombres'),
-                    apellidos = form.cleaned_data.get('apellidos'),
-                    telefono = form.cleaned_data.get('telefono'),
-                    celular = form.cleaned_data.get('celular'),
-                    email = form.cleaned_data.get('email'),
-                    fec_nac = form.cleaned_data.get('fec_nac'),
-                    tipo_documento = form.cleaned_data.get('tipo_documento'),
-                    num_documento = form.cleaned_data.get('num_documento'),
-                    municipio = form.cleaned_data.get('municipio'),
-                    direccion = form.cleaned_data.get('direccion'),
-                    cod_postal = form.cleaned_data.get('cod_postal'),
-                    estado = 0
-                )
-                registro.save()
-                user = Usuario.objects.get(username = request.POST['username'])
-                try:
-                    token = Token.objects.get(user=user)
-                    token.delete()
-                    token = Token.objects.create(user=user)
-                except:
-                    Token.objects.create(user=user)
-                    token = Token.objects.get(user=user)
-                Servidor = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
-                Servidor.starttls()
-                Servidor.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
-                print("conexion establecida")
-                mensaje = MIMEMultipart()
-                mensaje['From'] = settings.EMAIL_HOST_USER
-                mensaje['To'] = user.email
-                mensaje['Subject'] = "Cambio de contraseña"
-                cliente = f"{str(user.nombres).capitalize()} {str(user.apellidos).capitalize()}"
-                key = token.key
-                token.delete()
-                value = cryptocode.encrypt(str(key),Public_Key)
-                content = render_to_string("Correo/ConfirmarCuenta.html",
-                                            {"cliente": cliente, "token":value})
-                mensaje.attach(MIMEText(content, 'html'))
-
-                Servidor.sendmail(settings.EMAIL_HOST_USER,
-                                    user.email,
-                                    mensaje.as_string())
-
-                print("Se envio el correo")
-                success = "Se ha enviado el correo correctamente al email "+user.email
-                return redirect('IniciarSesion')
-        except Exception as e:
-            messages = e
-            user = Usuario.objects.get(username = request.POST['username'])
-            token = Token.objects.get(user=user)
-            token.delete()
-            context = {
-                'form':self.form_class,
-                'Error':e,
-            }
-            return render(request, self.template_name, context)
+        print(form)
         context = {
             'form':self.form_class,
-            'errors':form.errors
         }
+        if form.is_valid():
+            registro = self.model(
+                img_usuario = form.cleaned_data.get('img_usuario'),
+                username = form.cleaned_data.get('username'),
+                nombres = form.cleaned_data.get('nombres'),
+                apellidos = form.cleaned_data.get('apellidos'),
+                telefono = form.cleaned_data.get('telefono'),
+                celular = form.cleaned_data.get('celular'),
+                email = form.cleaned_data.get('email'),
+                fec_nac = form.cleaned_data.get('fec_nac'),
+                tipo_documento = form.cleaned_data.get('tipo_documento'),
+                num_documento = form.cleaned_data.get('num_documento'),
+                municipio = form.cleaned_data.get('municipio'),
+                direccion = form.cleaned_data.get('direccion'),
+                cod_postal = form.cleaned_data.get('cod_postal'),
+                estado = 0
+            )
+            registro.save()
+            user = Usuario.objects.get(username = request.POST['username'])
+            try:
+                token = Token.objects.get(user=user)
+                token.delete()
+                token = Token.objects.create(user=user)
+            except:
+                Token.objects.create(user=user)
+                token = Token.objects.get(user=user)
+            Servidor = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
+            Servidor.starttls()
+            Servidor.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+            print("conexion establecida")
+            mensaje = MIMEMultipart()
+            mensaje['From'] = settings.EMAIL_HOST_USER
+            mensaje['To'] = user.email
+            mensaje['Subject'] = "Cambio de contraseña"
+            cliente = f"{str(user.nombres).capitalize()} {str(user.apellidos).capitalize()}"
+            key = token.key
+            token.delete()
+            value = cryptocode.encrypt(str(key),Public_Key)
+            content = render_to_string("Correo/ConfirmarCuenta.html",
+                                        {"cliente": cliente, "token":value})
+            mensaje.attach(MIMEText(content, 'html'))
+
+            Servidor.sendmail(settings.EMAIL_HOST_USER,
+                              user.email,
+                              mensaje.as_string())
+
+            print("Se envio el correo")
+            success = "Se ha enviado el correo correctamente al email "+user.email
+            return redirect('IniciarSesion')
+        else:
+            context['errors'] =  form.errors
+            context['Error']= 'Los datos ingresados son incorrectos'
         return render(request, self.template_name, context)
 
   
@@ -187,9 +179,6 @@ class ConfirmarCuenta(TemplateView):
             token_expired = ExpiringTokenAuthentication()
             user,token,message, self.user_token_expired = token_expired.authenticate_credentials(key)
             if user != None and token != None:
-                if self.user_token_expired == True:
-                    context={'message':'El tiempo de uso de esté link se ha vencido'}
-                else:
                     token = Token.objects.get(key = token)
                     token.delete()
                     context={'User':user}
