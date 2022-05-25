@@ -13,7 +13,7 @@
     <script>
         $(document).ready(function(){
             $.ajax({
-            data: {"csrfmiddlewaretoken":csrftoken, "user":'{{User}}'},
+            data: {"csrfmiddlewaretoken":csrftoken, "user":'{{User.pk}}'},
             url: '{%url "ConfirmarCuenta" %}',
             type: "POST",
             error: function(error){

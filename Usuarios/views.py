@@ -120,60 +120,65 @@ class Register(CreateView):
     template_name = 'registration/Registration.html'
     success_url = reverse_lazy("IniciarSesion")
     def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST)
-        print(form)
+        form = self.form_class(request.POST or None)
+        print(form.is_valid())
+        print(form.cleaned_data)
         context = {
             'form':self.form_class,
         }
-        if form.is_valid():
-            registro = self.model(
-                img_usuario = form.cleaned_data.get('img_usuario'),
-                username = form.cleaned_data.get('username'),
-                nombres = form.cleaned_data.get('nombres'),
-                apellidos = form.cleaned_data.get('apellidos'),
-                telefono = form.cleaned_data.get('telefono'),
-                celular = form.cleaned_data.get('celular'),
-                email = form.cleaned_data.get('email'),
-                fec_nac = form.cleaned_data.get('fec_nac'),
-                tipo_documento = form.cleaned_data.get('tipo_documento'),
-                num_documento = form.cleaned_data.get('num_documento'),
-                municipio = form.cleaned_data.get('municipio'),
-                direccion = form.cleaned_data.get('direccion'),
-                cod_postal = form.cleaned_data.get('cod_postal'),
-                estado = 0
-            )
-            registro.save()
-            user = Usuario.objects.get(username = request.POST['username'])
+        if form.is_valid() is False:
             try:
-                token = Token.objects.get(user=user)
-                token.delete()
-                token = Token.objects.create(user=user)
+                registro = self.model(
+                    img_usuario = form.cleaned_data.get('img_usuario'),
+                    username = form.cleaned_data.get('username'),
+                    nombres = form.cleaned_data.get('nombres'),
+                    apellidos = form.cleaned_data.get('apellidos'),
+                    telefono = form.cleaned_data.get('telefono'),
+                    celular = form.cleaned_data.get('celular'),
+                    email = form.cleaned_data.get('email'),
+                    fec_nac = form.cleaned_data.get('fec_nac'),
+                    tipo_documento = form.cleaned_data.get('tipo_documento'),
+                    num_documento = form.cleaned_data.get('num_documento'),
+                    municipio = form.cleaned_data.get('municipio'),
+                    direccion = form.cleaned_data.get('direccion'),
+                    cod_postal = form.cleaned_data.get('cod_postal'),
+                    estado = 0
+                )
+                registro.save()
+                user = Usuario.objects.get(username = request.POST['username'])
+                try:
+                    token = Token.objects.get(user=user)
+                    token.delete()
+                    token = Token.objects.create(user=user)
+                except:
+                    Token.objects.create(user=user)
+                    token = Token.objects.get(user=user)
+                Servidor = smtplib.SMTP(settings.local.EMAIL_HOST, settings.local.EMAIL_PORT)
+                Servidor.starttls()
+                Servidor.login(settings.local.EMAIL_HOST_USER, settings.local.EMAIL_HOST_PASSWORD)
+                print("conexion establecida")
+                mensaje = MIMEMultipart()
+                mensaje['From'] = settings.local.EMAIL_HOST_USER
+                mensaje['To'] = user.email
+                mensaje['Subject'] = "Cambio de contraseña"
+                cliente = f"{str(user.nombres).capitalize()} {str(user.apellidos).capitalize()}"
+                key = token.key
+                value = cryptocode.encrypt(str(key),Public_Key)
+                content = render_to_string("Correo/ConfirmarCuenta.html",
+                                            {"cliente": cliente, "token":value})
+                mensaje.attach(MIMEText(content, 'html'))
+
+                Servidor.sendmail(settings.local.EMAIL_HOST_USER,
+                                  user.email,
+                                  mensaje.as_string())
+
+                print("Se envio el correo")
+                success = "Se ha enviado el correo correctamente al email "+user.email
+                return redirect('IniciarSesion')
             except:
-                Token.objects.create(user=user)
-                token = Token.objects.get(user=user)
-            Servidor = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
-            Servidor.starttls()
-            Servidor.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
-            print("conexion establecida")
-            mensaje = MIMEMultipart()
-            mensaje['From'] = settings.EMAIL_HOST_USER
-            mensaje['To'] = user.email
-            mensaje['Subject'] = "Cambio de contraseña"
-            cliente = f"{str(user.nombres).capitalize()} {str(user.apellidos).capitalize()}"
-            key = token.key
-            token.delete()
-            value = cryptocode.encrypt(str(key),Public_Key)
-            content = render_to_string("Correo/ConfirmarCuenta.html",
-                                        {"cliente": cliente, "token":value})
-            mensaje.attach(MIMEText(content, 'html'))
-
-            Servidor.sendmail(settings.EMAIL_HOST_USER,
-                              user.email,
-                              mensaje.as_string())
-
-            print("Se envio el correo")
-            success = "Se ha enviado el correo correctamente al email "+user.email
-            return redirect('IniciarSesion')
+                context['errors'] = form.errors
+                context['Error'] = 'No se pudo enviar el correo'
+                return render(request, self.template_name, context)
         else:
             context['errors'] =  form.errors
             context['Error']= 'Los datos ingresados son incorrectos'
@@ -195,20 +200,21 @@ class ConfirmarCuenta(TemplateView):
             user,token,message, self.user_token_expired = token_expired.authenticate_credentials(key)
             if user != None and token != None:
                     token = Token.objects.get(key = token)
-                    token.delete()
                     context={'User':user}
             else:
                 context={
                     'message':'Esté link no se puede usar'
                 }
+            return render(request, self.template_name, context)
         else: 
             return redirect('IniciarSesion')
 
     def post(self,request,*args,**kwargs):
         if request.POST['user'] != '':
             user = Usuario.objects.get(pk=request.POST['user'])
+            print(user.estado)
             try:
-                user.estado=1
+                user.estado=True
                 user.save()
                 return redirect('IniciarSesion')
             except:
