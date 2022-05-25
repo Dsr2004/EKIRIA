@@ -284,8 +284,8 @@ class CambiarEstadoDeCita(TemplateView):
                 mensaje.attach(MIMEText(content, 'html'))
 
                 Servidor.sendmail(settings.EMAIL_HOST_USER,
-                                    update.cliente_id.email,
-                                    mensaje.as_string())
+                                  update.cliente_id.email,
+                                  mensaje.as_string())
 
                 print("Se envio el correo")
             except Exception as e:
@@ -318,8 +318,8 @@ class CancelarCita(View):
                 mensaje.attach(MIMEText(content, 'html'))
 
                 Servidor.sendmail(settings.EMAIL_HOST_USER,
-                                    cita.cliente_id.email,
-                                    mensaje.as_string())
+                                  cita.cliente_id.email,
+                                  mensaje.as_string())
 
                 print("Se envio el correo")
             except Exception as e:

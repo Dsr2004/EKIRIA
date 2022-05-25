@@ -38,8 +38,8 @@ def AgendarCitaCorreo(datos):
         mensaje.attach(MIMEText(content, 'html'))
 
         Servidor.sendmail(settings.EMAIL_HOST_USER,
-                            datos.cliente,
-                            mensaje.as_string())
+                          datos.cliente,
+                          mensaje.as_string())
 
         print("Se envio el correo")
     except Exception as e:

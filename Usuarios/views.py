@@ -61,7 +61,7 @@ from Usuarios.authentication_mixins import Authentication
 from datetime import datetime
 from Usuarios.forms import Cambiar, Regitro, Editar, CustomAuthForm
 from Usuarios.Mixins.Mixin import Asimetric_Cipher
-from Proyecto_Ekiria.settings import Public_Key
+from Proyecto_Ekiria.settings.local import Public_Key
 import cryptocode
 #--------------------------------------Templates Loaders------------------------------------
 
@@ -165,8 +165,8 @@ class Register(CreateView):
                 mensaje.attach(MIMEText(content, 'html'))
 
                 Servidor.sendmail(settings.EMAIL_HOST_USER,
-                                    user.email,
-                                    mensaje.as_string())
+                                  user.email,
+                                  mensaje.as_string())
 
                 print("Se envio el correo")
                 success = "Se ha enviado el correo correctamente al email "+user.email
