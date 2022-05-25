@@ -121,6 +121,7 @@ class Register(CreateView):
     success_url = reverse_lazy("IniciarSesion")
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
+        print('hola')
         try:
             if form.is_valid():
                 registro = self.model(
@@ -202,9 +203,6 @@ class ConfirmarCuenta(TemplateView):
             token_expired = ExpiringTokenAuthentication()
             user,token,message, self.user_token_expired = token_expired.authenticate_credentials(key)
             if user != None and token != None:
-                if self.user_token_expired == True:
-                    context={'message':'El tiempo de uso de esté link se ha vencido'}
-                else:
                     token = Token.objects.get(key = token)
                     token.delete()
                     context={'User':user}

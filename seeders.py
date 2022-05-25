@@ -10,7 +10,7 @@ https://docs.djangoproject.com/en/3.2/howto/deployment/wsgi/
 import os
 from pprint import pprint
 import time
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Proyecto_Ekiria.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Proyecto_Ekiria.settings.local")
 import django
 from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()
@@ -68,7 +68,27 @@ def Municipios():
                 Municipio.objects.create(pk=municipio['id'],nom_municipio=municipio['nom_municipio'])
             except:
                 Municipio.objects.create(pk=municipio['id'],nom_municipio=municipio['nom_municipio'])
-                
+
+def codigoPostal():
+    Codigos=[
+        {'id':'1', 'cod_postal':'050001'},
+        {'id': '2', 'cod_postal': '050002'},
+        {'id': '3', 'cod_postal': '050003'},
+        ]
+    for codigo in Codigos:
+        try:
+            Objecto = CodigoPostal.objects.get(pk=codigo['id'])
+            Objecto.pk = codigo['id']
+            Objecto.cod_postal = codigo['cod_postal']
+            Objecto.save()
+        except:
+            try:
+                Objecto = CodigoPostal.objects.get(cod_postal=codigo['cod_postal'])
+                Objecto.delete()
+                CodigoPostal.objects.create(pk=codigo['id'], cod_postal=codigo['cod_postal'])
+            except:
+                CodigoPostal.objects.create(pk=codigo['id'], cod_postal=codigo['cod_postal'])
+
 
                 
 def Tipo_Documento():
@@ -359,5 +379,6 @@ def Seeders():
     Rol_Permisos()
     Cambios()
     Footer()
+    codigoPostal()
     
 Seeders()

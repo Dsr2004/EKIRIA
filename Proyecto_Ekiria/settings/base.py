@@ -33,23 +33,29 @@ SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 
 # Application definition
 
-INSTALLED_APPS = [
+BASE_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'tempus_dominus',
-    'crispy_forms',
-    'jsonify',
+]
+LOCAL_APPS =[
     'Ventas',
     'Configuracion',
     'Usuarios',
     'Modulo_compras',
+]
+THIRD_APPS =[
+    'tempus_dominus',
+    'crispy_forms',
+    'jsonify',
     'rest_framework',
     'rest_framework.authtoken',
 ]
+
+INSTALLED_APPS = BASE_APPS + LOCAL_APPS + THIRD_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

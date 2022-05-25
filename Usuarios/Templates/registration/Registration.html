@@ -22,8 +22,6 @@
             <h1>Registro</h1>
             
             {% if Error %}
-                
-                
             <div class="alert alert-danger">{{Error}}</div>
             {% endif %}
             {% csrf_token %}
@@ -48,8 +46,8 @@
                 <p id="celular-p" class="text-danger"></p></div>
                 <div class="mun"><b>Municipio:</b>{{form.municipio}}
                 <p id="municipio-p" class="text-danger"></p></div>
-                <div class="cod">{{form.cod_postal}} 
-                        <p id="cod_postal-p" class="text-danger"></p></div>
+                <div class="cod"><b>Codigo Postal:</b>{{form.cod_postal}}
+                <p id="cod_postal-p" class="text-danger"></p></div>
                 <div class="tipo"><b>Tipo de documento:</b>{{form.tipo_documento}}
                 <p id="tipo_documento-p" class="text-danger"></p></div>
                 <div class="num"> {{form.num_documento}}
