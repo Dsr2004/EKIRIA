@@ -162,11 +162,7 @@ class Admin(PermissionMixin,DetailView):
         return render(request, self.template_name, context)
 
 
-def Empleado(request):
-    return render(request, "Empleado.html")
 
-def Cliente(request):
-    return render(request, "Cliente.html")
 
 @login_required()
 def ListarRol(request):
@@ -223,11 +219,12 @@ class CreateRolView(CreateView):
                 formulario=self.form_class(request.POST)
                 if formulario.is_valid():
                     formulario.save()
-                    return JsonResponse({"mensaje": f"{self.model.__name__} Se ha creado correctamente", "errores":"No hay errores"})
+                    return JsonResponse({"mensaje": "{self.model.__name__} Se ha creado correctamente", "errores":"No hay errores"})
                 else:
                     errores=formulario.errors
                     print(formulario.is_valid())
                     mensaje=f"{self.model.__name__} No se ha creado correctamente!"
+                    print(mensaje)
                     respuesta=JsonResponse({"mensaje":mensaje, "errores":errores})
                     respuesta.status_code=400
                     return respuesta
