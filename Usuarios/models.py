@@ -109,7 +109,7 @@ class Usuario(AbstractBaseUser):
     objects = UsuarioManager()
     
     USERNAME_FIELD='username'
-    REQUIRED_FIELDS=['email', 'nombres', 'apellidos', 'celular', 'fec_nac', 'num_documento', 'direccion', 'cod_postal']
+    REQUIRED_FIELDS=['email', 'nombres', 'apellidos', 'celular', 'fec_nac', 'num_documento', 'direccion']
     
     class Meta:
         db_table = 'usuarios'
