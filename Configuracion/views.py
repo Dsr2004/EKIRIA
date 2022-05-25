@@ -164,11 +164,7 @@ class Admin(PermissionMixin,DetailView):
         return render(request, self.template_name, context)
 
 
-def Empleado(request):
-    return render(request, "Empleado.html")
 
-def Cliente(request):
-    return render(request, "Cliente.html")
 
 @login_required()
 def ListarRol(request):
@@ -216,6 +212,7 @@ class CreateRolView(CreateView):
                 else:
                     errores=formulario.errors
                     mensaje=f"{self.model.__name__} No se ha creado correctamente!"
+                    print(mensaje)
                     respuesta=JsonResponse({"mensaje":mensaje, "errores":errores})
                     respuesta.status_code=400
                     return respuesta
