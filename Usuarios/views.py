@@ -9,22 +9,7 @@ from importlib import import_module
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from django.template.loader import render_to_string
-from ast import Return
-from asyncio import transports
-from email import header, message
-from html.entities import html5
-from msilib.schema import SelfReg
-from multiprocessing import context
-from pyexpat import model
-from pyexpat.errors import messages
-from re import template
-import re
-from tkinter.messagebox import NO
-from urllib import response
-import Crypto
-import binascii
-from Crypto.PublicKey import RSA
-from Crypto.Cipher import PKCS1_OAEP
+
 #-----------------------------------------Django---------------------------------------------------
 from django.http import HttpResponseRedirect, request, HttpResponse, JsonResponse
 from django.views.generic import TemplateView, CreateView, ListView, UpdateView, DetailView, View
