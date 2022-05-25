@@ -33,28 +33,26 @@
         </div>
     </div>
     <div class="row">
-        <div class="PermiAdmin col-md-4">
+        <div class="PermiAdmin col-lg-6">
         <div class="PermiAdmin2" >
-                <h3>Permisos del el {{rol.name}}</h3>
-            <div class="custom-control custom-switch">
-
-        
+                <h3>Permisos del {{rol.name}}</h3>
+            <div class="nada">
                     {% for i in permisos %}
-                    <div class="form-check form-switch">
-                            <label class="form-check-label" for="flexSwitchCheckDefault">Permiso - {{forloop.counter}}: {{i.name}}</label><br>
+                    <div class="contenedorName">
+                            <li class="form-check-label" for="flexSwitchCheckDefault">Permiso - {{forloop.counter}}: {{i.name}}</li><br>
                           </div>
                           {% endfor %}
                 </div>
             </div>
         </div>
-        <div class="PermiAdmin col-md-4">
+        <div class="PermiAdmin col-lg-6">
             <div class="PermiAdmin2" >
                     <h3>Permisos para Agregar al {{rol.name}}</h3>
-                <div class="custom-control custom-switch">
+                <div class="nada">
                     
                         {% for i in permisosexclu %}
-                        <div class="form-check form-switch">
-                                <label class="form-check-label" for="flexSwitchCheckDefault">Permiso - {{forloop.counter}}: {{i.name}}</label><br>
+                        <div class="contenedorName">
+                                <li class="form-check-label" for="flexSwitchCheckDefault">Permiso - {{forloop.counter}}: {{i.name}}</li><br>
                               </div>
                               {% endfor %}
 

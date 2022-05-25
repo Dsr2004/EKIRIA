@@ -85,7 +85,16 @@ form {
 .form div {
     width: 100%;
 }
-
+.form div p{
+    padding: 0px!important;
+    text-align: start;
+    font-family: 'Poppins', sans-serif;
+    font-weight: bolder;
+    font-size: 14px;
+    color: #ff3b4f;
+    outline: none !important;
+    margin-bottom: 0px;
+}
 form select {
     border: 1px solid #dadce0;
     border-radius: 4px;
@@ -171,8 +180,16 @@ form h1 {
 
 .contenido form label i {
     position: absolute;
-    top: 0px;
+    top: 9px !important;
     right: 10px;
+    font-size: 1.2em;
+    color: #979797;
+    cursor: pointer;
+}
+.contenido form .rightMove label i {
+    position: absolute;
+    top: 9px !important;
+    right: 50px;
     font-size: 1.2em;
     color: #979797;
     cursor: pointer;

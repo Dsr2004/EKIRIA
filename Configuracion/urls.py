@@ -13,4 +13,5 @@ urlpatterns=[
     path("EditarRol/<int:pk>",views.EditarRolView.as_view(), name="updateRol"),
     path("CrearRol/", views.CreateRolView.as_view(), name="CreateRol"),
     path("EstadoRol/",views.EstadoRol, name="estado"),
+    path('EliminarRol/', views.eliminarRol, name="eliminarRol"),
 ]

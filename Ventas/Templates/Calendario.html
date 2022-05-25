@@ -1,4 +1,4 @@
-{% extends "Menu_Usuario.html" %} 
+{% extends "Menu_Usuario.html" %}
 {% load static %}
 {% block head %}
 <head>
@@ -17,12 +17,11 @@
 {% endblock head %}
 
 {% block Contenido %}
-<div class="container">
   <h1>Calendario</h1>
-<div class="row">
-     <div class="col-md-7">
+<div class="row" style="margin:10px">
+     <div class="col-md-7 ">
        <!--aqui va el calendario-->
-       <div id="calendar" style="padding: 10px;"></div>
+       <div id="calendar" style="padding: 40px;" class=""></div>
       </div> 
     <div class="col-md-5 ContainerHistorialCitas">
         <legend>Historial</legend>
@@ -63,7 +62,7 @@
           </table>
     </div>
 </div>
-</div>
+
 
 <!-- scripts -->
 <!-- <script src="/static/Ventas/js/bootstrap.min.js"></script>

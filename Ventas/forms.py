@@ -16,10 +16,11 @@ class ServicioForm(forms.ModelForm):
             'nombre':forms.TextInput(attrs={'class':'form-control'}),
             'tipo_servicio_id':forms.Select(attrs={"class":"form-select"}),
             'descripcion':forms.Textarea(attrs={'class':'form-control'}),
-            'img_servicio':forms.FileInput(attrs={"class":"fileSerPersonalizado", "style":"margin-left:40px; top:-15px"}),
+            'img_servicio':forms.FileInput(attrs={"class":"form-control",}),
             'precio':forms.NumberInput(attrs={'class':'form-control'}),
             'slug':forms.TextInput(attrs={'class':'form-control', }),
             'estado':forms.CheckboxInput(attrs={'class':'form-check-input estadoServicioRegistro',  "style":"margin-left: -5px; height: 30px; width: 60px; margin-top: -5px"})
+            
         }
     def __init__(self, *args, **kwargs):
             super(ServicioForm, self).__init__(*args, **kwargs) 

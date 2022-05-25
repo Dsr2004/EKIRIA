@@ -9,12 +9,24 @@
       <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
       <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
       <link rel="stylesheet" href="/static/Configuracion/css/estilo.css">
-      <script src="//code.jquery.com/jquery-3.6.0.min.js"></script>
       <title>Roles</title>
     </head>
     {% endblock head %}
     
     {%block Contenido%}
+    
+    {% if messages %}
+      {%for i in messages%}
+      <div class="container alert alert-warning  alert-dismissible fade show" role="alert">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
+            <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+          </svg>
+       {{i}}
+       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+   </div> 
+      {%endfor%}
+    {% endif %}
+      
     <h1 class="titulo">Listado De Roles</h1>
     <div class="tabla">
       <table class="table table-striped">
@@ -24,6 +36,8 @@
                 <th scope="col">Nombre</th>
                 <th scope="col">Editar</th>
                 <th scope="col">Permiso</th>
+                <th scope="col">Eliminar</th>
+
                 <!-- <th scope="col">Estado</th> -->
               </tr>
             </thead>
@@ -33,15 +47,34 @@
                 <tr>
                   <th scope="row">{{Rol.id}}</th>
                   <td>{{Rol.name}}</td>
+                  
+                  {% if Rol.id > 0%}
                   <td><button type="button" class="btn btn-outline-success" onclick="abrir_modal_editar ('{% url 'updateRol' Rol.id %}')">Editar</button></td>
+                  
+                  {% else %}
+                  <td>Este rol no se puede Editar</td>
+                  {% endif %}
                   <td><a type="button" class="btn btn-outline-primary"  href="{% url 'Admin' Rol.id %}">Agregar <br>Permisos</a></td>
                   <!-- <td><form method="POST" action="{%url 'estado' %}" id="estadoRol" > -->
                         <!-- <div class="form-check form-switch"> 
                           {%csrf_token%}
                             <input class="form-check-input" type="checkbox" name="estado" onclick="ds('{{Rol.id}}')"></div>
                             <label class="switch"></label> -->
+                      <!-- </form>
+                    </td>  -->
+                    
+                    {% if Rol.id > 6%}
+                    <td>
+                      <form action="{%url 'eliminarRol'%}" id="eliminar" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="id" value="{{Rol.id}}">
+                        <button type="button" class="btn btn-outline-danger"  onclick="ds('{{Rol.id}}')">Eliminar</button>
                       </form>
-                    </td> 
+                    </td>
+                    {% else %}
+                    <td>Este rol no se puede eliminar</td>
+                    {% endif %}
+                      
                 </tr>
                
               {%endfor%}
@@ -86,14 +119,13 @@
       
         <form method='post' id=CrearRoles action="{%url 'CreateRol'%}" enctype="multipart/form-data">
         {% csrf_token %}
-        {% comment %} {{createform.errors}} {% endcomment %}
         {{createform.errors}}
-        <div id="errores"></div>
+        <div id="errores" ></div>
         <label for="nombreRol" >Nombre</label><br>
         {{crear.name}}
         <br>
          <div class="modal-footer" id="botones">
-        <button type="submit" class="btn btn-warning" onclick="CrearUsuario();">Confirmar</button>
+        <button type="submit" class="btn btn-warning" onclick="CrearUsuarios();">Confirmar</button>
         <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal" id="cancelar">Cancelar</button>
         </div>
         </form>
@@ -133,8 +165,6 @@
 {% endblock modal %}
 
 {%block scripts%} 
-
-<script src="/static/Configuracion/js/main.js"></script>
 <script src="{%static 'Configuracion/js/erroresCrear.js'%}"></script>
 <script src="/static/Configuracion/js/habilitar.js"></script>
 <script src="/static/bootstrap/js/bootstrap.js"></script>

@@ -83,7 +83,7 @@ class Usuario(AbstractBaseUser):
     nombres = models.CharField('Nombres', max_length=60, blank=False, null = False)
     apellidos = models.CharField('Apellidos', max_length=60, blank=False, null= False)
     telefono = models.CharField('Número Télefonico',max_length=10, blank=True, null=True)
-    celular = models.CharField('Número De Celular',max_length=10, blank=False, null=False)
+    celular = models.CharField('Número De Celular',max_length=10, blank=False, null=False, unique=True)
     email = models.EmailField('Correo Electrónico', unique=True)
     fec_nac = models.DateField('Fecha De Nacimiento')
     tipo_documento = models.ForeignKey(TipoDocumento, null=True, blank=True, on_delete=models.CASCADE)

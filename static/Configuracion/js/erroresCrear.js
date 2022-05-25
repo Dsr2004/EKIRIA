@@ -4,13 +4,23 @@ function abrir_modal_crear(url){
     });
 }
 function CrearRol(){
+    let name = document.getElementById('id_name').value
     $.ajax({
 
-        data:$('#CrearRoles').serialize(),
+        data:{"csrfmiddlewaretoken":csrftoken, "name":name},
         url:$('#CrearRoles').attr('action'),
         type:$('#CrearRoles').attr('method'),
         success: function (response) {
-            location.reload()
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: 'Creado Correctamente',
+                showConfirmButton: false,
+                timer: 1500
+              })
+              window.setTimeout(function(){ 
+                location.reload();
+            } ,1000);
         },
         error: function(error){
             $('#CrearRoles').find('.text-danger').text('')

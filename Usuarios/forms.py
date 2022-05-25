@@ -3,6 +3,8 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.forms.widgets import PasswordInput, TextInput
 from Usuarios.models import Usuario
+import datetime 
+from dateutil.relativedelta import relativedelta
 
 
 class CustomAuthForm(AuthenticationForm):
@@ -12,6 +14,7 @@ class CustomAuthForm(AuthenticationForm):
 class Regitro(forms.ModelForm):
     password1 = forms.CharField(label = "Contraseña", widget=forms.PasswordInput(
         attrs={
+            'class':'form-control',
             'id':"password",
             'requerid':'requerid',
             'placeholder':'Contraseña',
@@ -20,6 +23,7 @@ class Regitro(forms.ModelForm):
     ))
     password2 = forms.CharField(label="Confirmar contraseña",widget=forms.PasswordInput(
         attrs={
+            'class':'form-control',
             'id':"password1",
             'requerid':'requerid',
             'placeholder':'Confirmar contraseña',
@@ -49,7 +53,8 @@ class Regitro(forms.ModelForm):
             'estado': forms.HiddenInput(),
             'email': forms.EmailInput(
                 attrs={
-                    'id':'Idate',
+                    'class':'form-control',
+                    'id':'email',
                     'required':'requerid',
                     'autocomplete':'off',
                     'placeholder':'Email',
@@ -58,6 +63,7 @@ class Regitro(forms.ModelForm):
             ),
             'img_usuario': forms.FileInput(
                 attrs={
+                    'class':'form-control',
                     'id':'imagen',
                     'style':'display:none;',
                     'type':'file',
@@ -66,6 +72,8 @@ class Regitro(forms.ModelForm):
             ),
             'username': forms.TextInput(
                 attrs={
+                    'class':'form-control',
+                    'id':'username',
                     'required':'requerid',
                     'autocomplete':'off',
                     'placeholder':'Apodo',
@@ -74,6 +82,8 @@ class Regitro(forms.ModelForm):
             ),
             'nombres': forms.TextInput(
                 attrs={
+                    'class':'form-control',
+                    'id':'nombres',
                     'required':'requerid',
                     'autocomplete':'off',
                     'placeholder':'Nombres',
@@ -82,6 +92,8 @@ class Regitro(forms.ModelForm):
             ),
             'apellidos': forms.TextInput(
                 attrs={
+                    'class':'form-control',
+                    'id':'apellidos',
                     'required':'requerid',
                     'autocomplete':'off',
                     'placeholder':'Apellidos',
@@ -90,6 +102,8 @@ class Regitro(forms.ModelForm):
             ),
             'telefono': forms.TextInput(
                 attrs={
+                    'class':'form-control',
+                    'id':'telefono',
                     'autocomplete':'off',
                     'placeholder':'Telefono',
                     'name':'telefono',
@@ -97,6 +111,8 @@ class Regitro(forms.ModelForm):
             ),
             'celular': forms.TextInput(
                 attrs={
+                    'class':'form-control',
+                    'id':'celular',
                     'required':'requerid',
                     'autocomplete':'off',
                     'placeholder':'Celular',
@@ -105,6 +121,8 @@ class Regitro(forms.ModelForm):
             ),
             'fec_nac': forms.DateInput(
                 attrs={
+                    'class':'form-control',
+                    'id':'fec_nac',
                     'type':'date',
                     'required':'requerid',
                     'autocomplete':'off',
@@ -115,6 +133,8 @@ class Regitro(forms.ModelForm):
             ),
             'tipo_documento': forms.Select(
                 attrs={
+                    'class':'form-control',
+                    'id':'tipo_documento',
                     'required':'requerid',
                     'autocomplete':'off',
                     'name':'tipo_documento',
@@ -122,6 +142,8 @@ class Regitro(forms.ModelForm):
             ),
             'num_documento': forms.TextInput(
                 attrs={
+                    'class':'form-control',
+                    'id':'num_documento',
                     'required':'requerid',
                     'autocomplete':'off',
                     'type':'number',
@@ -131,6 +153,8 @@ class Regitro(forms.ModelForm):
             ),
             'municipio': forms.Select(
                 attrs={
+                    'class':'form-control',
+                    'id':'municipio',
                     'required':'requerid',
                     'autocomplete':'off',
                     'name':'municipio',
@@ -138,6 +162,8 @@ class Regitro(forms.ModelForm):
             ),
             'direccion': forms.TextInput(
                 attrs={
+                    'class':'form-control',
+                    'id':'direccion',
                     'autocomplete':'off',
                     'placeholder':'Dirección',
                     'name':'direccion',
@@ -145,6 +171,8 @@ class Regitro(forms.ModelForm):
             ),
             'cod_postal': forms.TextInput(
                 attrs={
+                    'class':'form-control',
+                    'id':'cod_postal',
                     'required':'requerid',
                     'autocomplete':'off',
                     'placeholder':'Codigó postal',
@@ -152,7 +180,14 @@ class Regitro(forms.ModelForm):
                 }
             ),
         }
-        
+    def clean_fec_nac(self):
+        fec_nac = self.cleaned_data.get('fec_nac')
+        fec_actual = datetime.datetime.now()
+        edad = relativedelta(fec_actual, datetime.datetime(fec_nac.year, fec_nac.month, fec_nac.day))
+        if int(edad.years) < 15:
+            raise forms.ValidationError('Lo sentimos no cumples con la edad minima para poderte registrar')
+        return fec_nac
+
     def clean_password2(self):
         """Validación de contraseña
         
@@ -167,9 +202,9 @@ class Regitro(forms.ModelForm):
         if len(password1) <= 8:
             raise forms.ValidationError('La contraseña debe contener más de 8 digitos')
         if any(chr.isdigit() for chr in password1) is False:
-            raise forms.ValidationsError('la contraseña debe contener al menos un número')
-        if any(chr.isupper() for chr in password1):
-            raise forms.ValidationsError('la contraseña debe contener al menos una Mayúscula')
+            raise forms.ValidationError('la contraseña debe contener al menos un número')
+        if any(chr.isupper() for chr in password1) is False:
+            raise forms.ValidationError('la contraseña debe contener al menos una Mayúscula')
         return password2
     
     def save(self,commit = True):

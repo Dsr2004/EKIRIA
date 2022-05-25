@@ -6,12 +6,12 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <form method="POST" id=EditarRoles action="{%url 'updateRol' object.id%}" >
+              <form method="POST" id=EditarRoles action="{%url 'updateRol' object.id%}" onKeyPress="if(event.keyCode == 13) event.returnValue = false;" >
                     {% csrf_token %}
                     {{form.name|as_crispy_field}}
                     <p id="name" class="bg-light text-danger"></p>
             <div class="modal-footer" id="botones">
-              <button type="submit" class="btn btn-warning" onclick="EditarRol()">Editar</button>
+              <button type="button" class="btn btn-warning" onclick="EditarRol()">Modificar</button>
               <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal" id="cancelar">Cancelar</button>
             </div>
               </form>
