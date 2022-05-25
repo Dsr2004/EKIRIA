@@ -288,6 +288,19 @@ def pre_save_cita_receiver(sender, instance, *args, **kwargs):
         inicio = instance.horaInicioCita
         fin = datetime(1970, 1, 1, inicio.hour, inicio.minute, inicio.second) + timedelta(minutes=instance.pedido_id.get_cantidad)           
         instance.horaFinCita = time(fin.hour, fin.minute, fin.second)
+        # validacion de que no se agende una cita si esta hay citas en esas horas
+        empleado = instance.empleado_id
+        dia = instance.diaCita
+        diasConsulta = Calendario.objects.filter(empleado_id=empleado).filter(dia=dia)
+        horas = [(time(i).strftime("%H:%M")) for i in range(24)]
+        inicio=f"{inicio.hour}:{inicio.minute}"
+        fin = f"{fin.hour}:{fin.minute}"
+
+        res = [x for x in horas if not (x < inicio or x > fin)]
+
+        print(res)
+
+
 
 def post_save_cita(sender, instance, created, *args, **kwargs):
     if created:

@@ -394,6 +394,8 @@ class AgandarCita(CreateView):
         diaCita=diaCita.strftime("%Y-%m-%d")
         diasConsulta = Calendario.objects.filter(empleado_id=empleado).filter(dia=diaCita)
 
+
+
         horasNoDisponibles={}
         cont=1
 
