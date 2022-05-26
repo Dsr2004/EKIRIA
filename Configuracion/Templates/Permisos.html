@@ -32,6 +32,7 @@
     <button class="btn btn-primary position-absolute end-0" type="button"data-bs-toggle="modal" data-bs-target="#PermisosRol" id="asignar">Asignar a Roles</button> 
     <div class="jldghajkldgjkfdhgk">
     <div class="principalPermisos">
+        {%if buscar%}
         {% for permiso in buscar %}
         <!-- jhorman me dijo que pusiera buscar en ves de Permisos y
         esto enlista solo lo que yo busque mas no los permisos que tengo no tenga nada -->
@@ -47,6 +48,10 @@
             </div>
         </div>
         {% endfor %}
+        {%else%}
+        <h1>No se encontraron coincidencias</h1>
+        {%endif%}
+        
     </div>
 </div>
     {% endblock Contenido %}
