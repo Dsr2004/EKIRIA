@@ -132,7 +132,8 @@ class Admin(PermissionMixin,DetailView):
             permisos = self.model.objects.filter(
                 Q(name__icontains = queryset)
             )
-           
+        
+
         for i in permisos:
             id = i.codename
             lista.append(id)
@@ -141,8 +142,9 @@ class Admin(PermissionMixin,DetailView):
             lista1 = []
             for permiso2 in permisosexclu:
                 if "delete" in permiso2.codename:
-                        lista1.append(permiso2)
-            # permisosexclu = lista1
+                        lista1.append(permisosexclu)
+            
+        
 
         if if_admin(request):
             UserSesion=if_admin(request)
@@ -157,7 +159,7 @@ class Admin(PermissionMixin,DetailView):
         context['footer']=cambiosfQueryset
         context["rol"] = rol
         context["permisos"] = permisos
-        context['permisosexclu']=permisosexclu
+        # context['permisosexclu']=permisosexclu
 
         return render(request, self.template_name, context)
 
@@ -375,12 +377,16 @@ class listarPermisos(ListView):
             # return {'buscar':contexto}
             # print({'buscar':contexto} )
             # funciona
+
         context = super(listarPermisos, self).get_context_data(**kwargs)
         # este metodo era para intentar mostrar la consulta pero no dio
-        if if_admin(self.request):
-            UserSesion=if_admin(self.request)
-        else: 
-            return redirect('SinPermisos')
+        
+        UserSesion=""
+        print(self.request.session['pk'])
+        # if if_admin(self.request):
+        #     UserSesion=if_admin(self.request)
+        # else: 
+        #     return redirect('SinPermisos')
         cambiosQueryset = cambios.objects.all()
         cambiosfQueryset = cambiosFooter.objects.all()
         context["User"]=UserSesion
