@@ -50,7 +50,11 @@ class Regitro(forms.ModelForm):
             'estado'
         ]
         widgets = {
-            'estado': forms.HiddenInput(),
+            'estado': forms.HiddenInput(
+                attrs={
+                    'value':'0',
+                }
+            ),
             'email': forms.EmailInput(
                 attrs={
                     'class':'form-control',
@@ -177,10 +181,10 @@ class Regitro(forms.ModelForm):
                     'id':'cod_postal',
                     'required':'requerid',
                     'autocomplete':'off',
-                    'name':'cod_postal',
                 }
             ),
         }
+
     def clean_fec_nac(self):
         fec_nac = self.cleaned_data.get('fec_nac')
         fec_actual = datetime.datetime.now()

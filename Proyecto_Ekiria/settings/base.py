@@ -184,4 +184,4 @@ EMAIL_PORT = 587
 
 EMAIL_HOST_USER = 'jgallego690@misena.edu.co'
 
-EMAIL_HOST_PASSWORD = 'mpcbctonvhiqjfkd'
+EMAIL_HOST_PASSWORD = 'xsyilkhycpnagssa'
