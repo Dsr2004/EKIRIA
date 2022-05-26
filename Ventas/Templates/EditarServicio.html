@@ -40,8 +40,8 @@
             </div>
         </div>
     </div>
-    <div >
-        <i class="fas fa-file-image" style="width: 50px; font-size: 30px; margin-top: 20px;"></i>
+    <div>
+         <Label><strong>Imagen del servicio:   </strong></Label>
         {{form.img_servicio|as_crispy_field}}
     </div>
     <div class="col">
@@ -49,11 +49,11 @@
             {{form.slug|as_crispy_field}}
     </div>
     <div class="col">
-        <Label><strong>Duracion (en minutos):   </strong></Label>
+        <Label><strong>Duración (en minutos):   </strong></Label>
             {{form.duracion|as_crispy_field}}
     </div>
     <div style="margin-top: 30px;">
-        <Label><strong>Descripcion: </strong></Label>
+        <Label><strong>Descripción: </strong></Label>
         <div class="form  descripcion">
             {{form.descripcion|as_crispy_field}}
         </div>

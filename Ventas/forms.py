@@ -105,7 +105,7 @@ class CitaForm(forms.ModelForm):
         fields =["empleado_id","diaCita","horaInicioCita","descripcion", "cliente_id", "pedido_id"]
         widgets={
             "diaCita":forms.DateInput(attrs={"class":"form-control","id":"DiaCita","type":"text","autocomplete":"off"}),
-            "horaInicioCita":forms.TimeInput(attrs={"class":"form-control","id":"horaInicio","type":"text","autocomplete":"off"}),
+            "horaInicioCita":forms.TextInput(attrs={"class":"form-control","id":"horaInicio","type":"text","autocomplete":"off"}),
             "empleado_id":forms.Select(attrs={"class":"form-select","id":"empleado","type":"text"}),
             "descripcion":forms.Textarea(attrs={"class":"form-control","cols":"60","rows":"10"}),
            

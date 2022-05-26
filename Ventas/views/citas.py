@@ -378,6 +378,19 @@ class AgandarCita(CreateView):
     
     def post(self, request, *args, **kwargs):
         horaInicio = request.POST["horaInicioCita"]
+
+        if horaInicio[-2:] == "PM":
+            horaTipo = horaInicio[0:4].replace(":",",")
+            print('desde :', horaTipo)
+        elif horaInicio[-2:] == "AM":
+            horaTipo = horaInicio[0:4].replace(":", ",")
+            print('desde :', horaTipo)
+
+
+
+
+
+
         diaCita = request.POST["diaCita"]
         empleado = request.POST["empleado_id"]
         descripcion = request.POST["descripcion"]
@@ -447,7 +460,6 @@ class BuscarDisponibilidadEmpleado(View):
         if accion == "BuscarEmpleado":
             empleado=request.POST["empleado"]
             agenda=Calendario.objects.filter(empleado_id=empleado)
-            x= request.session["duracion"]
             return JsonResponse({"empleado":empleado})
 
         elif accion == "BuscarDiaDeEmpleado":
@@ -478,5 +490,7 @@ class BuscarDisponibilidadEmpleado(View):
                 res=horas
             else:
                 res = [x for x in horas if x not in [x for x in horas for i in horasNoDisponibles if (horasNoDisponibles[i]["horaInicio"] <= x <= horasNoDisponibles[i]["horaFin"])]]
-            
+
+            print(res)
+
             return JsonResponse({"horasDisponibles":res})

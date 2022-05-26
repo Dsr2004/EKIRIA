@@ -293,13 +293,13 @@ def pre_save_cita_receiver(sender, instance, *args, **kwargs):
         dia = instance.diaCita
         diasConsulta = Calendario.objects.filter(empleado_id=empleado).filter(dia=dia)
         horas = [(time(i).strftime("%H:%M")) for i in range(24)]
-        inicio=f"{inicio.hour}:{inicio.minute}"
+        # inicio=f"{inicio.hour}:{inicio.minute} "
         fin = f"{fin.hour}:{fin.minute}"
 
-        res = [x for x in horas if not (x < inicio or x > fin)]
+        # res = [x for x in horas if  (x < inicio or x > fin)]
 
-        print(res)
-
+        print("hois")
+        print(inicio, fin)
 
 
 def post_save_cita(sender, instance, created, *args, **kwargs):

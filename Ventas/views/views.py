@@ -73,7 +73,6 @@ def Carrito(request):
                     serviciosPerx.append(i)
     
         request.session["carrito"]=pedido.get_items_carrito
-        request.session["duracion"]=duracion
         
     else:
         items=[]
