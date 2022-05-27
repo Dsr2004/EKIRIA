@@ -26,7 +26,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import get_object_or_404
 from .models import  cambios, cambiosFooter
-from Proyecto_Ekiria.Mixin.Mixin import PermissionMixin
+from Proyecto_Ekiria.Mixin.Mixin import PermissionMixin, PermissionDecorator
 from .forms import RolForm, CambiosForm, FooterForm
 
 
@@ -114,6 +114,7 @@ def Permisos(request):
     
 
 class Admin(PermissionMixin,DetailView):
+    permission_required = ['change_logentry']
     model = Permission
     template_name = 'Administrador.html'
     def get(self, request,*args, **kwargs):
