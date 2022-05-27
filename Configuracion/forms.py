@@ -20,7 +20,7 @@ class RolForm(forms.ModelForm):
     def clean_name(self):  
         name = self.cleaned_data.get('name')
         if len(name)<4:
-            raise forms.ValidationError('Pues no sé')
+            raise forms.ValidationError('Este campo requiere más de 4 digitos')
         return name
             
 class CambiosForm(forms.ModelForm):
