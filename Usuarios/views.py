@@ -48,6 +48,7 @@ from Usuarios.forms import Cambiar, Regitro, Editar, CustomAuthForm
 from Usuarios.Mixins.Mixin import Asimetric_Cipher
 from Proyecto_Ekiria.settings.local import Public_Key
 import cryptocode
+from Proyecto_Ekiria.Mixin.Mixin import PermissionDecorator, PermissionMixin
 #--------------------------------------Templates Loaders------------------------------------
 
 @login_required()
@@ -212,6 +213,7 @@ class ConfirmarCuenta(TemplateView):
             return response
 
 @login_required()
+@PermissionDecorator(['change_logentry'])
 def Perfil(request):
     UserSesion = if_User(request)
     cambiosQueryset = cambios.objects.all()
