@@ -48,7 +48,7 @@
                   <th scope="row">{{Rol.id}}</th>
                   <td>{{Rol.name}}</td>
                   
-                  {% if Rol.id > 0%}
+                  {% if Rol.id > 6%}
                   <td><button type="button" class="btn btn-outline-success" onclick="abrir_modal_editar ('{% url 'updateRol' Rol.id %}')">Editar</button></td>
                   
                   {% else %}

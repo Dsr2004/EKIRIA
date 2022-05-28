@@ -73,7 +73,7 @@ def prueba():
 
     print(res)
 
-prueba()
+# prueba()
 
 # 12
 
@@ -88,3 +88,5 @@ prueba()
 
 # como convertir el numero a hora en python
 # hours = [(dt.time(hour=i)) for i in range(24)]
+
+
