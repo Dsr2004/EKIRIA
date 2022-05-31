@@ -490,3 +490,6 @@ class BuscarDisponibilidadEmpleado(View):
                 res = [x for x in horas if x not in [x for x in horas for i in horasNoDisponibles if (horasNoDisponibles[i]["horaInicio"] <= x <= horasNoDisponibles[i]["horaFin"])]]
                 
             return JsonResponse({"horasDisponibles":res})
+
+
+
