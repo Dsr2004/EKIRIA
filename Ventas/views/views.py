@@ -2,11 +2,13 @@ from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import View, TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from Configuracion.models import cambios, cambiosFooter
 from Usuarios.models import Usuario
 from Usuarios.views import if_User
 from ..models import Cita, Catalogo, Servicio_Personalizado, Pedido, Servicio
 from ..forms import Servicio_PersonalizadoForm
+from Proyecto_Ekiria.Mixin.Mixin import PermissionDecorator, PermissionMixin
 
 def is_list_empty(list):
     if len(list) == 0:
@@ -20,7 +22,8 @@ Seccion de las Vistas donde se administra el catalogo
 <----------------------------------------------------------------->
 """
 
-class Catalogo(ListView): 
+class Catalogo(ListView, PermissionMixin): 
+    permission_required = ['view_catalogo']
     queryset = Catalogo.objects.filter(estado=True)
     context_object_name = "servicios"
     template_name = "Catalogo.html"
@@ -42,6 +45,7 @@ class Catalogo(ListView):
         except:
             return context
     
+@PermissionDecorator(['view_pedido', 'view pedidoItem'])    
 def Carrito(request):
     try:
         cliente=Usuario.objects.get(username=request.session['username'])
@@ -108,7 +112,8 @@ def Carrito(request):
         contexto={"User":UserSesion,'cambios':cambiosQueryset, 'footer':cambiosfQueryset}
         return render(request, "Carrito.html",contexto)
 
-class Calendario(TemplateView):
+class Calendario(TemplateView,PermissionMixin):
+    permission_required = ['view_calendario']
     template_name = "Calendario.html"
     # permission_required = 'auth.can_add_group'
     # print(error)

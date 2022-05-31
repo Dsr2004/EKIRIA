@@ -2,7 +2,7 @@ from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.views.generic import View, TemplateView
-
+from Proyecto_Ekiria.Mixin.Mixin import PermissionDecorator, PermissionMixin
 
 from Configuracion.models import cambiosFooter, cambios
 from Usuarios.models import Usuario
@@ -16,6 +16,7 @@ Seccion de las Vistas donde se administra el Admin de las ventas
 """
 
 class AdminVentas(TemplateView):
+    permission_required = ['view_catalogo']
     template_name = "Ventas.html"
 
     def get(self,request, *args, **kwargs):
@@ -56,6 +57,7 @@ class AdminVentas(TemplateView):
         return render(request, self.template_name, context)
     
 class AgregarServicioalCatalogo(View):
+    permission_required = ['change_catalogo', 'add_servicio']
     model = Catalogo
     form_class =   CatalogoForm
     template_name = "Catalogo/AgregarServicio.html"
@@ -118,6 +120,7 @@ class AgregarServicioalCatalogo(View):
 
             return render(request, "Ventas.html", contexto)
 
+@PermissionDecorator(['change_catalogo', 'delete_catalogo', 'delete_servicio','change_servicio'])    
 def CambiarEstadoServicioEnCatalogo(request):
     if request.method == "POST":
         id = request.POST["estado"]
