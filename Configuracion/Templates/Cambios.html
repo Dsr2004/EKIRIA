@@ -35,7 +35,52 @@
 
                             <input type="hidden" name="id_cambio" value="{{cambios.id_cambios}}">
                         </div>
-                        <script>
+                        
+                        <div class="detallesCambioPa" id="detallesCambioPa">
+                            <ul>
+                                <h4> Más Cambios
+                                </h4>
+                                <li onclick="MasCambios()"><i class="fa fa-angle-up icon_show"></i><i class="fa fa-angle-down icon_hide"></i></li>
+                            </ul>
+                            <br>
+                            <div class="contenidoCambios">
+                                <ul class="cambiosFlexWrap">
+                                    <li>
+                                        <div class="seleccionar">
+                                            <label for="">Color de Fondo</label>
+                                            <input value="{{cambios.Color_Fondo}}" type="color" value="cambios.Color_Fondo" name="Color_Fondo" id="ColorFondo" placeholder="en ingles " onchange="ColorFondo1();">
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="seleccionar">
+                                            <label for="">Color de Letra</label>
+                                            <input value="{{cambios.Color_Letra}}" type="color" value="cambios.Color_Letra" name="Color_Letra" id="ColorLetra" placeholder="en ingles " onchange="ColorLetra1();">
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="seleccionar">
+                                            <label for="">Tamaño de Letra del titulo</label>
+                                            <input value="{{cambios.tamano_Titulo}}" type="number" name="tamano_Titulo" id="TamanoLetra" onkeydown="CambiarTamano1(event);" min="1" max="60">
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="seleccionar">
+                                            <label for="">Tamaño de Letra del parrafo</label>
+                                            <input value="{{cambios.tamano_Texto}}" type="number" name="tamano_Texto" id="TamanoLetra2" onkeydown="CambiarTamano2(event);" min="1" max="40">
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <label for="TipoLetra">tipo de letra</label>
+                                        <select id="TipoLetra" name="Tipo_Letra" onchange="CambioLetra1();">
+                                            <option {% if cambios.Tipo_Letra == 'tahoma' %} selected {%endif %} value="tahoma">Tahoma</option>
+                                            <option {% if cambios.Tipo_Letra == 'arial' %} selected {%endif %} value="arial">Arial</option>
+                                            <option {% if cambios.Tipo_Letra == 'cursive' %} selected {%  endif %} value="cursive">cursive</option>
+                                            <option {% if cambios.Tipo_Letra == 'Times New Roman' %} selected {%  endif %} value="Times New Roman">Times New Roman</option>
+                                        </select>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div><script>
                             $(document).ready(function() {
                                 let colorFondo = $("#ColorFondo").val()
                                 let texto = document.getElementById("texto");
@@ -79,51 +124,8 @@
                                     tamanos2 = tamanos2.style.fontSize = TamanoLetra2 + ("px")
                                 }
                             });
-                        </script>
-                        <div class="detallesCambioPa" id="detallesCambioPa">
-                            <ul>
-                                <h4> Más Cambios
-                                </h4>
-                                <li onclick="MasCambios()"><i class="fa fa-angle-up icon_show"></i><i class="fa fa-angle-down icon_hide"></i></li>
-                            </ul>
-                            <br>
-                            <div class="contenidoCambios">
-                                <ul class="cambiosFlexWrap">
-                                    <li>
-                                        <div class="seleccionar">
-                                            <label for="">Color de Fondo</label>
-                                            <input value="{{cambios.Color_Fondo}}" type="color" name="Color_Fondo" id="ColorFondo" placeholder="en ingles " onchange="ColorFondo1();">
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="seleccionar">
-                                            <label for="">Color de Letra</label>
-                                            <input value="{{cambios.Color_Letra}}" type="color" name="Color_Letra" id="ColorLetra" placeholder="en ingles " onchange="ColorLetra1();">
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="seleccionar">
-                                            <label for="">Tamaño de Letra del titulo</label>
-                                            <input value="{{cambios.tamano_Titulo}}" type="number" name="tamano_Titulo" id="TamanoLetra" onkeydown="CambiarTamano1(event);" min="1" max="60">
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="seleccionar">
-                                            <label for="">Tamaño de Letra del parrafo</label>
-                                            <input value="{{cambios.tamano_Texto}}" type="number" name="tamano_Texto" id="TamanoLetra2" onkeydown="CambiarTamano2(event);" min="1" max="40">
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <label for="TipoLetra">tipo de letra</label>
-                                        <select id="TipoLetra" name="Tipo_Letra" onchange="CambioLetra1();">
-                                            <option {% if cambios.Tipo_Letra == 'tahoma' %} selected {%endif %} value="tahoma">Tahoma</option>
-                                            <option {% if cambios.Tipo_Letra == 'arial' %} selected {%endif %} value="arial">Arial</option>
-                                            <option {% if cambios.Tipo_Letra == 'cursive' %} selected {%  endif %} value="cursive">cursive</option>
-                                        </select>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div> {%endfor%}
+                        </script> {%endfor%}
+                        
                         <script>
                             function MasCambios() {
                                 let contenedor = document.getElementById("detallesCambioPa")
@@ -138,7 +140,7 @@
 
                         {%endif%}
                     </div>
-                    <button type="button" style="border:1px solid!important;" class="btn btn-success botonEditarCambios" onclick="ActualizarCambiosPagina()">Editar</button>
+                    <button type="button" style="border:1px solid!important; float: right;" class="btn btn-success botonEditarCambios" onclick="ActualizarCambiosPagina()">Editar</button>
                 </form>
             </div>
         </div>
@@ -179,6 +181,7 @@
                         <option {% if Footers.Footer_Tipo_Letra == 'tahoma' %} selected {%endif %} value="tahoma">Tahoma</option>
                         <option {% if Footers.Footer_Tipo_Letra == 'arial' %} selected {%endif %} value="arial">Arial</option>
                         <option {% if Footers.Footer_Tipo_Letra == 'cursive' %} selected {%  endif %} value="cursive">cursive</option>
+                        <option {% if Footers.Footer_Tipo_Letra == 'Times New Roman' %} selected {%  endif %} value="Times New Roman">Times New Roman</option>
                     </select>
                 </li>
             </ul>
