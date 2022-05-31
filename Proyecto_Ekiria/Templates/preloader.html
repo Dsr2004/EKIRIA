@@ -55,10 +55,15 @@
         .btn {
             display: none;
         }
+        
+        .footerE {
+            display: none;
+        }
     </style>
     </script>
     <script src="sweetalert2.all.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="/static/Proyecto_Ekiria/assets/js/modernizr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <!-- menu -->
@@ -101,11 +106,11 @@
         $(document).ready(function() {
             // Cambios
             let colorFondo = "{{cambio.Color_Fondo}}"
-            let texto = document.getElementById("texto");
+            let texto = document.getElementById("body-content-menu");
             texto.style.backgroundColor = colorFondo;
 
             let TipoLetra = "{{cambio.Tipo_Letra}}"
-            let body = document.querySelectorAll(".tipo");
+            let body = document.querySelectorAll(".content");
             body.forEach(texto => {
                 if (texto.style.fontFamily = TipoLetra) {
                     texto.style.fontFamily = TipoLetra
@@ -118,9 +123,13 @@
                 if (textos.style.color = ColorLetra) {
                     textos.style.color = ColorLetra
                     textos = textos.style.color = ColorLetra
+
                 }
             });
+            let textarea = document.getElementById('TextoEditar')
+            textarea.style.color = ColorLetra
             let TamanoLetra = "{{cambio.tamano_Titulo}}"
+            textarea.style.fon
             let tamano = document.querySelectorAll("#text");
             tamano.forEach(tamanos => {
                 if (tamanos.style.fontSize = TamanoLetra) {
@@ -185,7 +194,6 @@
 
         });
     </script>
-
     {% endfor %}
 </body>
 

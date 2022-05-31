@@ -40,7 +40,6 @@ class AgregarServicio(CreateView):#crear
     def form_valid(self, form, **kwargs):
         objeto=form.save()
         if objeto.estado == True:
-            pk=int(objeto.id_servicio)
             ServicioToCatalogo = Catalogo.objects.create(servicio_id=objeto)
             ServicioToCatalogo.save()
         objeto.save()

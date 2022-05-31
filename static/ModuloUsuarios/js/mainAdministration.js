@@ -19,12 +19,14 @@ const getValueInput = () => {
 function CambiarEstadoUsuario(id) {
     let ids = id
     let token = $("#EstadoUsuarioForm").find('input[name=csrfmiddlewaretoken]').val()
-    console.log(token)
     swal({
-        title: "Estas seguro?",
+        title: "¿Estás seguro?",
         text: "Se modificara el estado del Usuario",
         icon: "warning",
-        buttons: true,
+        buttons: {
+            confirm: { text: 'Confirmar', className: 'btn-success' },
+            cancel: 'Cancelar'
+        },
         dangerMode: true,
     }).then((changeStatus) => {
         if (changeStatus) {
@@ -33,8 +35,12 @@ function CambiarEstadoUsuario(id) {
                     data: { "csrfmiddlewaretoken": token, "estado": ids },
                     url: $("#EstadoUsuarioForm").attr('action'),
                     type: $("#EstadoUsuarioForm").attr('method'),
-                    success: function(data) {
-                        window.location.href = "/InformacionUsuario/Administracion/"
+                    success: function(datas) {
+                        swal("¡OK! Se ha modificado el Usuario", {
+                            icon: "success",
+                        }).then(function() {
+                            location.reload()
+                        });
                     },
                     error: function(error) {
                         console.log("no")
@@ -43,13 +49,12 @@ function CambiarEstadoUsuario(id) {
                 });
             })
         } else {
-            swal("OK! Ningun dato del servicio ha sido modificado").then(function() {
+            swal("¡OK! Ningún dato del usuario ha sido modificado").then(function() {
                 location.reload()
             });
 
         }
     });
-
 }
 
 function redirect(url) {

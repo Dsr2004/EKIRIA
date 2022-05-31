@@ -20,52 +20,17 @@
         {%if Cambios%} {%for cambios in Cambios%}
         <div class="ContenedorMision">
             <div class="ContMision">
-                <div class="recuadro" id="texto">
-
-                    <h4 id="text" class="tipo">MISIÓN</h4>
-                    <p id="text2" class="tipo">{{cambios.Texto_Mision}}</p>
-                    <h4 id="text" class="tipo">VISIÓN</h4>
-                    <p id="text2" class="tipo">{{cambios.Texto_Vision}}</p>
-
-                </div>
                 <form id="cambiosPaginaForm" action="{% url 'Crear'%}" method="post">
                     {% csrf_token %}
-                    <div class="seleccionar">
-                        <label for="">Color de Fondo</label>
-                        <input value="{{cambios.Color_Fondo}}" type="text" name="Color_Fondo" id="ColorFondo" placeholder="en ingles " onkeydown="ColorFondo1(event);">
-                    </div>
-                    <br>
-                    <div class="seleccionar">
-                        <label for="">Color de Letra</label>
-                        <input value="{{cambios.Color_Letra}}" type="text" name="Color_Letra" id="ColorLetra" placeholder="en ingles " onkeydown="ColorLetra1(event);">
-                    </div>
-                    <br>
-                    <div class="seleccionar">
-                        <label for="">Tamaño de Letra del titulo</label>
-                        <input value="{{cambios.tamano_Titulo}}" type="text" name="tamano_Titulo" id="TamanoLetra" onkeydown="CambiarTamano1(event);">
-                    </div>
-                    <br>
-                    <div class="seleccionar">
-                        <label for="">Tamaño de Letra del parrafo</label>
-                        <input value="{{cambios.tamano_Texto}}" type="text" name="tamano_Texto" id="TamanoLetra2" onkeydown="CambiarTamano2(event);">
-                    </div>
-                    <br>
-                    <label for="TipoLetra">tipo de letra</label>
-                    <select id="TipoLetra" name="Tipo_Letra" onchange="CambioLetra1();">
-                <option {% if cambios.Tipo_Letra == 'tahoma' %} selected {%endif %} value="tahoma">Tahoma</option>
-                <option {% if cambios.Tipo_Letra == 'arial' %} selected {%endif %} value="arial">Arial</option>
-                <option {% if cambios.Tipo_Letra == 'cursive' %} selected {%  endif %} value="cursive">cursive</option>
-              </select>
+
                     <br>
                     <div class="editarcambios">
                         <div>
-                            <label class="separacambios">Edita la Mision</label>
-                            <br><br>
+                            <h4 id="text" class="tipo">MISIÓN</h4>
                             <textarea name="Texto_Mision" id="TextoEditar" cols="50" rows="10">{{cambios.Texto_Mision}}</textarea>
                         </div>
                         <div>
-                            <label class="separacambios">Edita la Vision</label>
-                            <br><br>
+                            <h4 id="text" class="tipo">VISIÓN</h4>
                             <textarea name="Texto_Vision" id="TextoEditar" cols="50" rows="10">{{cambios.Texto_Vision}}</textarea>
 
                             <input type="hidden" name="id_cambio" value="{{cambios.id_cambios}}">
@@ -115,13 +80,65 @@
                                 }
                             });
                         </script>
-                        {%endfor%} {%else%}
+                        <div class="detallesCambioPa" id="detallesCambioPa">
+                            <ul>
+                                <h4> Más Cambios
+                                </h4>
+                                <li onclick="MasCambios()"><i class="fa fa-angle-up icon_show"></i><i class="fa fa-angle-down icon_hide"></i></li>
+                            </ul>
+                            <br>
+                            <div class="contenidoCambios">
+                                <ul class="cambiosFlexWrap">
+                                    <li>
+                                        <div class="seleccionar">
+                                            <label for="">Color de Fondo</label>
+                                            <input value="{{cambios.Color_Fondo}}" type="color" value="cambios.Color_Fondo" name="Color_Fondo" id="ColorFondo" placeholder="en ingles " onchange="ColorFondo1();">
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="seleccionar">
+                                            <label for="">Color de Letra</label>
+                                            <input value="{{cambios.Color_Letra}}" type="color" value="cambios.Color_Letra" name="Color_Letra" id="ColorLetra" placeholder="en ingles " onchange="ColorLetra1();">
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="seleccionar">
+                                            <label for="">Tamaño de Letra del titulo</label>
+                                            <input value="{{cambios.tamano_Titulo}}" type="number" name="tamano_Titulo" id="TamanoLetra" onkeydown="CambiarTamano1(event);" min="1" max="60">
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="seleccionar">
+                                            <label for="">Tamaño de Letra del parrafo</label>
+                                            <input value="{{cambios.tamano_Texto}}" type="number" name="tamano_Texto" id="TamanoLetra2" onkeydown="CambiarTamano2(event);" min="1" max="40">
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <label for="TipoLetra">tipo de letra</label>
+                                        <select id="TipoLetra" name="Tipo_Letra" onchange="CambioLetra1();">
+                                            <option {% if cambios.Tipo_Letra == 'tahoma' %} selected {%endif %} value="tahoma">Tahoma</option>
+                                            <option {% if cambios.Tipo_Letra == 'arial' %} selected {%endif %} value="arial">Arial</option>
+                                            <option {% if cambios.Tipo_Letra == 'cursive' %} selected {%  endif %} value="cursive">cursive</option>
+                                        </select>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div> {%endfor%}
+                        <script>
+                            function MasCambios() {
+                                let contenedor = document.getElementById("detallesCambioPa")
+                                let br = document.getElementById("br")
+                                contenedor.classList.toggle('activar')
+                                br.classList.toggle('block')
+                            }
+                        </script>
+                        {%else%}
 
                         <h1>No hay registros</h1>
 
                         {%endif%}
                     </div>
-                    <button type="button" class="btn btn-warning botonEditarCambios" onclick="ActualizarCambiosPagina()">Editar</button>
+                    <button type="button" style="border:1px solid!important; float: right;" class="btn btn-success botonEditarCambios" onclick="ActualizarCambiosPagina()">Editar</button>
                 </form>
             </div>
         </div>
@@ -129,65 +146,52 @@
 
     <!-- foteeer -->
     <div class="contactenos">
-        {%if footer%} {%for Footers in footer%}
-        <div class="recuadro" id="texto2">
-            <h1 id="text3" class="tipo2">Contactenos</h1>
-            <a href="https://wa.me/{{Footers.Telefono}}" target="_blank"><img class="imgwhats" src="{%static 'Configuracion/img/whatsapp.png'%}"></a>
-            <hr>
-            <h3 id="text4" class="tipo2">Direccion: {{Footers.Direccion}}</h3>
-            <hr>
-            <h3 id="text4" class="tipo2">&copy;Todos los derechos reservados Ekiria {{Footers.Derechos}} - Sena</h3>
-            <hr>
-        </div>
+        {%if Foter%} {%for Footers in Foter%}
         <form id="CambiosFooterForm" action="{% url 'CrearFooter'%}" method="post">
-            {% csrf_token %}
+            <ul>
+                <li>
+                    <div class="seleccionar">
+                        <label for="" style="margin-top: -100px!important;">Color de Fondo: </label>
+                        <input type="color" value="{{Footers.Footer_Color_Fondo}}" name="Footer_Color_Fondo" id="ColorFondo2" placeholder="en ingles " onchange="ColorFondoFooter2();">
+                    </div>
+                </li>
+                <li>
+                    <div class="seleccionar">
+                        <label for="">Color de Letra: </label>
+                        <input type="color" value="{{Footers.Footer_Color_Letra}}" name="Footer_Color_Letra" id="ColorLetra2" placeholder="en ingles " onchange="ColorLetraFooter2();">
+                    </div>
+                </li>
+                <li style="display: none;">
+                    <div class="seleccionar">
+                        <label for="">Tamaño de Letra del titulo: </label>
+                        <input type="number" style="width: 40px;" value="{{Footers.Footer_tamano_Titulo}}" name="Footer_tamano_Titulo" id="TamanoLetra3" onkeydown="CambiarTamanoFooter2(event);" min="1" max="60">
+                    </div>
+                </li>
+                <li>
+                    <div class="seleccionar">
+                        <label for="">Tamaño de Letra del parrafo: </label>
+                        <input type="number" style="width: 40px;" value="{{Footers.Footer_tamano_Texto}}" name="Footer_tamano_Texto" id="TamanoLetra4" onkeydown="CambiarTamano2Footer(event);" min="1" max="40">
+                    </div>
+                </li>
+                <li>
+                    <label for="TipoLetra2">tipo de letra: </label>
+                    <select id="TipoLetra2" name="Footer_Tipo_Letra" onchange="CambioLetraFooter2();">
+                        <option {% if Footers.Footer_Tipo_Letra == 'tahoma' %} selected {%endif %} value="tahoma">Tahoma</option>
+                        <option {% if Footers.Footer_Tipo_Letra == 'arial' %} selected {%endif %} value="arial">Arial</option>
+                        <option {% if Footers.Footer_Tipo_Letra == 'cursive' %} selected {%  endif %} value="cursive">cursive</option>
+                    </select>
+                </li>
+            </ul>
+            <div class="recuadro" id="texto2" style="padding: 15px;">
+
+                <h3 id="text4" class="tipo2" style="padding-left: 10px;">&copy;Todos los derechos reservados Ekiria <input type="text" id="EditarDerechos" class="tipo2" style=" width: 50px; " value="{{Footers.Derechos}}" name="Derechos"> - Sena</h3>
+                <h3 id="text4" class="tipo2">Direccion: <input style="width: 80%;" id="EditarDireccion" type="text" class="tipo2" value="{{Footers.Direccion}}" name="Direccion"></h3>
+                <hr class="tipo2">
+                <h3><a class="tipo2" style="color:{{Footers.Footer_Color_Letra}}" target="_blank"><i class="fa-brands fa-whatsapp"></i> WhatsApp: <input class="tipo2" id="EditarTelefono" style="width: 200px;" value="{{Footers.Telefono}}" name="Telefono" type="number"></a></h3>
+            </div>
+            <button type="button" style="margin-top: 5px; float: right; border: 1px solid;" class="btn btn-success botonEditarCambios" onclick="ActualizarCambiosFooter()">Editar</button> {% csrf_token %}
             <div class="seleccionar2">
-                <div class="seleccionar">
-                    <label for="">Color de Fondo</label>
-                    <input type="text" value="{{Footers.Footer_Color_Fondo}}" name="Footer_Color_Fondo" id="ColorFondo2" placeholder="en ingles " onkeydown="ColorFondoFooter2(event);">
-                </div>
-                <br>
-                <div class="seleccionar">
-                    <label for="">Color de Letra</label>
-                    <input type="text" value="{{Footers.Footer_Color_Letra}}" name="Footer_Color_Letra" id="ColorLetra2" placeholder="en ingles " onkeydown="ColorLetraFooter2(event);">
-                </div>
-                <br>
-                <div class="seleccionar">
-                    <label for="">Tamaño de Letra del titulo</label>
-                    <input type="text" value="{{Footers.Footer_tamano_Titulo}}" name="Footer_tamano_Titulo" id="TamanoLetra3" onkeydown="CambiarTamanoFooter2(event);">
-                </div>
-                <br>
-                <div class="seleccionar">
-                    <label for="">Tamaño de Letra del parrafo</label>
-                    <input type="text" value="{{Footers.Footer_tamano_Texto}}" name="Footer_tamano_Texto" id="TamanoLetra4" onkeydown="CambiarTamano2Footer(event);">
-                </div>
-                <br>
-                <label for="TipoLetra2">tipo de letra</label>
-                <select id="TipoLetra2" name="Footer_Tipo_Letra" onchange="CambioLetraFooter2();">
-                  <option {% if Footers.Footer_Tipo_Letra == 'tahoma' %} selected {%endif %} value="tahoma">Tahoma</option>
-                  <option {% if Footers.Footer_Tipo_Letra == 'arial' %} selected {%endif %} value="arial">Arial</option>
-                  <option {% if Footers.Footer_Tipo_Letra == 'cursive' %} selected {%  endif %} value="cursive">cursive</option>
-                </select>
-                <br>
-                <br>
                 <div class="editarcambios">
-                    <div>
-                        <hr>
-                        <label class="separacambios">Edita el Derechos</label>
-                        <br><br>
-                        <textarea id="EditarDerechos" value="{{Footers.Derechos}}" name="Derechos" cols="10" rows="2">{{Footers.Derechos}}</textarea>
-                    </div>
-                    <hr>
-                    <div>
-                        <label class="separacambios">Edita la Direccion</label>
-                        <br><br>
-                        <textarea id="EditarDireccion" value="{{Footers.Direccion}}" name="Direccion" cols="30" rows="10">{{Footers.Direccion}}</textarea>
-                    </div>
-                    <div>
-                        <label class="separacambios">Edita el Telefono</label>
-                        <br><br>
-                        <textarea id="EditarTelefono" value="{{Footers.Telefono}}" name="Telefono" cols="30" rows="10">{{Footers.Telefono}}</textarea>
-                    </div>
                     <input type="hidden" name="id_footer" value="{{Footers.id_footer}}">
                     <script>
                         $(document).ready(function() {
@@ -234,21 +238,54 @@
                             }
                         });
                     </script>
-                    {%endfor%} {%else%}
 
-                    <h1>No hay registros</h1>
-
-                    {%endif%}
 
                 </div>
-                <button type="button" class="btn btn-warning botonEditarCambios" onclick="ActualizarCambiosFooter()">Editar</button>
+
             </div>
-        </form>
+        </form>{%endfor%} {%else%}
+
+        <h1>No hay registros</h1>
+
+        {%endif%}
     </div>
 </div>
 
-{% endblock Contenido %} {%block scripts%}
+{% endblock Contenido %} {% block footer %}
+<div class="footerE">
+    {%if footer%} {%for cambiosFooter in footer%}
+    <div class="footerContent" id="texto21" style="background-color: {{cambiosFooter.Footer_Color_Fondo}}; color:{{cambiosFooter.Footer_Color_Letra}}; font-size:{{cambiosFooter.Footer_tamano_Texto}}px;">
+        <div class="Principal">
+            <ul>
+                <li>
+                    <h3 id="text4" style="font-family: '{{cambiosFooter.Footer_Tipo_Letra}}' ;">&copy; Todos los derechos reservados Ekiria {{cambiosFooter.Derechos}} - Sena</h3>
+                </li>
+                <li onclick="Footer1()"><i class="fa fa-angle-up icon_show"></i><i class="fa fa-angle-down icon_hide"></i></li>
+            </ul>
+        </div>
+        <div class="Segundario">
+            <h3 id="text4" style="font-family: '{{cambiosFooter.Footer_Tipo_Letra}}' ;">Direccion: {{cambiosFooter.Direccion}}</h3>
+            <hr>
+            <h3><a style="color:{{cambiosFooter.Footer_Color_Letra}}" href="https://wa.me/{{cambiosFooter.Telefono}}" target="_blank"><i class="fa-brands fa-whatsapp"></i> WhatsApp: {{cambiosFooter.Telefono}}</a></h3>
 
+        </div>
+    </div>
+    {%endfor%} {%else%}
+
+    <h1>No hay registros</h1>
+
+    {%endif%}
+</div>
+{% endblock footer %}{%block scripts%}
+
+<script>
+    function Footer1() {
+        let contenedor = document.getElementById("texto21")
+        let br = document.getElementById("br")
+        contenedor.classList.toggle('activar')
+        br.classList.toggle('block')
+    }
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 <script src="/static/Configuracion/js/main.js"></script>
 <script src="/static/bootstrap/js/bootstrap.js"></script>

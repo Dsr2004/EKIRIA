@@ -39,12 +39,12 @@ from Usuarios.Serializers.general_serializers import UsuarioTokenSerializer
 from Usuarios.Serializers.general_serializers import UsuarioTokenSerializer
 #-----------------------------------------Models---------------------------------------------------
 from Usuarios.models import Usuario, VistasDiarias
-from Ventas.models import Servicio, Pedido
+from Ventas.models import Servicio
 from Configuracion.models import cambiosFooter, cambios
 #-----------------------------------------More---------------------------------------------------
 from Usuarios.authentication_mixins import Authentication
 from datetime import datetime
-from Usuarios.forms import Cambiar, Regitro, Editar, CustomAuthForm
+from Usuarios.forms import Cambiar, Regitro, Editar, CustomAuthForm, EditUser
 from Usuarios.Mixins.Mixin import Asimetric_Cipher
 from Proyecto_Ekiria.settings.local import Public_Key
 import cryptocode
@@ -204,6 +204,7 @@ class ConfirmarCuenta(TemplateView):
                 user.save()
                 return redirect('IniciarSesion')
             except:
+                
                 response = JsonReponse({'error':'No se pudo confirmar tu correo intentalo de nuevo'})
                 response.status_code = 400
                 return response
@@ -328,7 +329,47 @@ class CreateUser(CreateView):
     form_class = Regitro
     template_name = 'UsersConfiguration/CreateUsers.html'
     success_url = reverse_lazy("Administracion")
-
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST or None)
+        print(form.is_valid())
+        print(form.cleaned_data)
+        context = {
+            'form':self.form_class,
+        }
+        cambiosQueryset = cambios.objects.all()
+        cambiosfQueryset = cambiosFooter.objects.all()
+        if form.is_valid() is False:
+            try:
+                registro = self.model(
+                    img_usuario = form.cleaned_data.get('img_usuario'),
+                    username = form.cleaned_data.get('username'),
+                    nombres = form.cleaned_data.get('nombres'),
+                    apellidos = form.cleaned_data.get('apellidos'),
+                    telefono = form.cleaned_data.get('telefono'),
+                    celular = form.cleaned_data.get('celular'),
+                    email = form.cleaned_data.get('email'),
+                    fec_nac = form.cleaned_data.get('fec_nac'),
+                    tipo_documento = form.cleaned_data.get('tipo_documento'),
+                    num_documento = form.cleaned_data.get('num_documento'),
+                    municipio = form.cleaned_data.get('municipio'),
+                    direccion = form.cleaned_data.get('direccion'),
+                    cod_postal = form.cleaned_data.get('cod_postal'),
+                    estado = 1
+                )
+                registro.save()
+            except:
+                context['errors'] = form.errors
+                context['Error'] = 'No se pudo enviar el correo'
+                context['cambios']=cambiosQueryset
+                context['footer']=cambiosfQueryset
+                return render(request, self.template_name, context)
+        else:
+            context['errors'] =  form.errors
+            context['Error']= 'Los datos ingresados son incorrectos'
+            context['cambios']=cambiosQueryset
+            context['footer']=cambiosfQueryset
+        return render(request, self.template_name, context)
+                
     def get_context_data(self, *args, **kwargs):
         context = super(CreateUser, self).get_context_data(**kwargs)
         try:
@@ -346,16 +387,75 @@ class UpdateUser(UpdateView):
     model = Usuario    
     template_name = 'UsersConfiguration/CreateUsers.html'
     form_class = Regitro
-    success_url=reverse_lazy("Administracion")   
-    def get_context_data(self, *args, **kwargs):
-        context = super(UpdateUser, self).get_context_data(**kwargs)
+    success_url=reverse_lazy("Administracion")  
+    def get(self, request, *args,**kwargs):
+        get_object = Usuario.objects.get(id_usuario=kwargs['pk'])
         cambiosQueryset = cambios.objects.all()
         cambiosfQueryset = cambiosFooter.objects.all()
-        UserSesion = if_admin(self.request)
-        context["User"]=UserSesion
+        form = self.form_class(instance=get_object)
+        context= {
+            'form':form
+        }
+        UserSesion=""
+        if request.session:
+            if request.session['pk']:
+                if request.session['Admin']:
+                    imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+                    imagen = imagen.img_usuario
+                    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin'], 'titulo':'Editar '+get_object.nombres}
+                
         context['cambios']=cambiosQueryset
         context['footer']=cambiosfQueryset
-        return context
+        context['User']=UserSesion
+        context['fecha']=str(get_object.fec_nac)
+        return render(request, self.template_name, context)
+    def post(self, request, *args, **kwargs):
+        get_object = Usuario.objects.get(id_usuario=kwargs['pk'])
+        form = self.form_class(request.POST or None, request.FILES or None, instance=get_object)
+        context = {
+            'form':self.form_class,
+        }
+        cambiosQueryset = cambios.objects.all()
+        cambiosfQueryset = cambiosFooter.objects.all()
+        if form.is_valid():
+            try:
+                form.save()
+                return redirect('Administracion')
+            except:
+                context['errors'] = form.errors
+                context['Error'] = 'No se pudo enviar el correo'
+                context['cambios']=cambiosQueryset
+                context['footer']=cambiosfQueryset
+                return render(request, self.template_name, context)
+        else:
+            context['errors'] =  form.errors
+            context['Error']= 'Los datos ingresados son incorrectos'
+        context['cambios']=cambiosQueryset
+        context['footer']=cambiosfQueryset
+        UserSesion=""
+        if request.session:
+            if request.session['pk']:
+                if request.session['Admin']:
+                    imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+                    imagen = imagen.img_usuario
+                    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin'], 'titulo':'Editar '+get_object.nombres}
+        context['User']=UserSesion
+        return render(request, self.template_name, context)
+                
+    def get_context_data(self, *args, **kwargs):
+        print(kwargs) 
+        context = super(CreateUser, self).get_context_data(**kwargs)
+        try:
+            UserSesion = if_admin(self.request)
+            cambiosQueryset = cambios.objects.all()
+            cambiosfQueryset = cambiosFooter.objects.all()
+            context["User"]=UserSesion
+            context['cambios']=cambiosQueryset
+            context['footer']=cambiosfQueryset
+            return context
+        except:
+            return context
+    
 
 # class Notification(View):
 #     template_name = 'UserInformation/Notification.html'
@@ -462,23 +562,24 @@ def PassRec(request):
         if request.POST['email']:
             email = request.POST['email']
             if email is not None:
-                user = Usuario.objects.get(email = email)
-                if user.is_active:
-                    try:
-                        token = Token.objects.get(user=user)
-                        token.delete()
-                        token = Token.objects.create(user=user)
+                try:
+                    user = Usuario.objects.get(email = email)
+                    if user.is_active:
+                        try:
+                            token = Token.objects.get(user=user)
+                            token.delete()
+                            token = Token.objects.create(user=user)
 
-                    except:
-                        Token.objects.create(user=user)
-                        token = Token.objects.get(user=user)
+                        except:
+                            Token.objects.create(user=user)
+                            token = Token.objects.get(user=user)
                     try:
-                        Servidor = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
+                        Servidor = smtplib.SMTP(settings.local.EMAIL_HOST, settings.local.EMAIL_PORT)
                         Servidor.starttls()
-                        Servidor.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+                        Servidor.login(settings.local.EMAIL_HOST_USER, settings.local.EMAIL_HOST_PASSWORD)
                         print("conexion establecida")
                         mensaje = MIMEMultipart()
-                        mensaje['From'] = settings.EMAIL_HOST_USER
+                        mensaje['From'] = settings.local.EMAIL_HOST_USER
                         mensaje['To'] = user.email
                         mensaje['Subject'] = "Cambio de contraseña"
                         cliente = f"{str(user.nombres).capitalize()} {str(user.apellidos).capitalize()}"
@@ -488,7 +589,7 @@ def PassRec(request):
                                                    {"cliente": cliente, "token":value})
                         mensaje.attach(MIMEText(content, 'html'))
 
-                        Servidor.sendmail(settings.EMAIL_HOST_USER,
+                        Servidor.sendmail(settings.local.EMAIL_HOST_USER,
                                           user.email,
                                           mensaje.as_string())
 
@@ -497,6 +598,8 @@ def PassRec(request):
                     except Exception as e:
                         messages = e
                         print(e)
+                except:
+                    messages = "Este email no está rgistrado a ningún usuario"
             else:
                 messages = "El email es requerido"
 

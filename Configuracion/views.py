@@ -91,15 +91,16 @@ def Cambios(request):
     formulario = CambiosForm
     ListarCambios = cambios.objects.all()
     formulario2 = FooterForm
-    Listarfooter =cambiosFooter.objects.all()
     cambiosQueryset = cambios.objects.all()
+    cambiosfQueryset = cambiosFooter.objects.all()
     if if_admin(request):
         UserSesion=if_admin(request)
     else: 
         return redirect('SinPermisos')
-    contexto = {'Cambios' :ListarCambios, 'footer' :Listarfooter}
+    contexto = {'Cambios' :ListarCambios, 'Foter':cambiosfQueryset}
     contexto["User"]=UserSesion
     contexto['cambios']=cambiosQueryset
+    contexto['footer']=cambiosfQueryset
     
     return render (request, "Cambios.html",contexto)
 

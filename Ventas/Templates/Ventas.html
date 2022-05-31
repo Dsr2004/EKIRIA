@@ -17,9 +17,8 @@
 </head>{% endblock head %}
 
 {% block Contenido %}
-<h1>Administracion Ventas</h1>
 <div class="container">
-   
+   <h1>Administración Ventas</h1>
    {% if errores %}
    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
       <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
@@ -42,7 +41,7 @@
       
    <div class="row">
       <div class="col-10">
-        <h2>Catalogo</h2>
+        <h2>Catálogo</h2>
       </div>
       <div class="col-2">
         <button class="btn" onclick="abrir_modal_AgregarServicioCatalogo('{% url 'Ventas:agregarServicioCatalogo' %}')"><span class="float" style="font-size: 48px; margin-right: -80%;"><i class="fa-solid fa-circle-plus"></i></span></button>
@@ -110,8 +109,7 @@
                               </div>
                               
                            </button>
-                     <div class="line-vertical">
-                     </div>
+      
                         <div class="iconA">
                            <button class="btn" style="transform: scale(1.5);" onclick="abrir_modal_eliminar('{% url 'Ventas:eliminarTipoServicio' tipo_servicio.id_tipo_servicio %}')">
                               <i class="fa-solid fa-trash"></i> </button>
