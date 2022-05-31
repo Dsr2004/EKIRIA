@@ -8,8 +8,8 @@ from dateutil.relativedelta import relativedelta
 
 
 class CustomAuthForm(AuthenticationForm):
-    username = forms.CharField(widget=TextInput(attrs={'class':'validate','placeholder': 'Username'}))
-    password = forms.CharField(widget=PasswordInput(attrs={'placeholder':'Password','id':'password'}))
+    username = forms.CharField(widget=TextInput(attrs={'class':'validate','placeholder': 'Apodo'}))
+    password = forms.CharField(widget=PasswordInput(attrs={'placeholder':'Password','id':'Contraseña'}))
     
 class Regitro(forms.ModelForm):
     password1 = forms.CharField(label = "Contraseña", widget=forms.PasswordInput(
@@ -17,7 +17,7 @@ class Regitro(forms.ModelForm):
             'class':'form-control',
             'id':"password",
             'requerid':'requerid',
-            'placeholder':'Contraseña',
+            'placeholder':'Contraseña (*)',
             'name':'password',
         }
     ))
@@ -26,7 +26,7 @@ class Regitro(forms.ModelForm):
             'class':'form-control',
             'id':"password1",
             'requerid':'requerid',
-            'placeholder':'Confirmar contraseña',
+            'placeholder':'Confirmar contraseña (*)',
         }
     ))
     
@@ -61,7 +61,7 @@ class Regitro(forms.ModelForm):
                     'id':'email',
                     'required':'requerid',
                     'autocomplete':'off',
-                    'placeholder':'Email',
+                    'placeholder':'Email (*)',
                     'name':'email',
                 }
             ),
@@ -80,7 +80,7 @@ class Regitro(forms.ModelForm):
                     'id':'username',
                     'required':'requerid',
                     'autocomplete':'off',
-                    'placeholder':'Apodo',
+                    'placeholder':'Apodo (*)',
                     'name':'username',
                 }
             ),
@@ -90,7 +90,7 @@ class Regitro(forms.ModelForm):
                     'id':'nombres',
                     'required':'requerid',
                     'autocomplete':'off',
-                    'placeholder':'Nombres',
+                    'placeholder':'Nombres (*)',
                     'name':'nombres',
                 }
             ),
@@ -100,7 +100,7 @@ class Regitro(forms.ModelForm):
                     'id':'apellidos',
                     'required':'requerid',
                     'autocomplete':'off',
-                    'placeholder':'Apellidos',
+                    'placeholder':'Apellidos (*)',
                     'name':'apellidos',
                 }
             ),
@@ -121,7 +121,7 @@ class Regitro(forms.ModelForm):
                     'required':'requerid',
                     'autocomplete':'off',
                     'type':'number',
-                    'placeholder':'Celular',
+                    'placeholder':'Celular (*)',
                     'name':'celular',
                 }
             ),
@@ -133,7 +133,7 @@ class Regitro(forms.ModelForm):
                     'required':'requerid',
                     'autocomplete':'off',
                     'style':'color:grey;',
-                    'placeholder':'Fecha de nacimiento',
+                    'placeholder':'Fecha de nacimiento (*)',
                     'name':'fec_nac',
                 }
             ),
@@ -153,7 +153,7 @@ class Regitro(forms.ModelForm):
                     'required':'requerid',
                     'autocomplete':'off',
                     'type':'number',
-                    'placeholder':'Número de documento',
+                    'placeholder':'Número de documento (*)',
                     'name':'num_documento',
                 }
             ),
@@ -252,6 +252,7 @@ class Editar(forms.ModelForm):
         widgets = {
             'email': forms.EmailInput(
                 attrs={
+                    'class':'form-control',
                     'id':'Idate',
                     'required':'requerid',
                     'autocomplete':'off',
@@ -266,11 +267,13 @@ class Editar(forms.ModelForm):
             ),
             'telefono': forms.TextInput(
                 attrs={
+                    'class':'form-control',
                     'autocomplete':'off',
                 }
             ),
             'celular': forms.TextInput(
                 attrs={
+                    'class':'form-control',
                     'required':'requerid',
                     'autocomplete':'off',
                 }
@@ -278,17 +281,21 @@ class Editar(forms.ModelForm):
             
             'municipio': forms.Select(
                 attrs={
+                    'class':'form-control',
                     'required':'requerid',
                     'autocomplete':'off',
                 }
             ),
             'direccion': forms.TextInput(
                 attrs={
+                    'class':'form-control',
                     'autocomplete':'off',
                 }
             ),
-            'cod_postal': forms.TextInput(
+            'cod_postal': forms.Select(
                 attrs={
+                    'class':'form-control',
+                    'id':'cod_postal',
                     'required':'requerid',
                     'autocomplete':'off',
                 }
@@ -336,3 +343,189 @@ class Cambiar(forms.ModelForm):
             user.save()
         return user
         
+class EditUser(forms.ModelForm):
+    class Meta:
+        model = Usuario
+        
+        fields=[
+            'img_usuario',
+            'username',
+            'nombres',
+            'apellidos',
+            'telefono',
+            'celular',
+            'email',
+            'fec_nac',
+            'tipo_documento',
+            'num_documento',
+            'municipio',
+            'direccion',
+            'cod_postal',
+            'estado'
+        ]
+        widgets = {
+            'estado': forms.HiddenInput(
+                attrs={
+                    'value':'0',
+                }
+            ),
+            'email': forms.EmailInput(
+                attrs={
+                    'class':'form-control',
+                    'id':'email',
+                    'required':'requerid',
+                    'autocomplete':'off',
+                    'placeholder':'Email (*)',
+                    'name':'email',
+                }
+            ),
+            'img_usuario': forms.FileInput(
+                attrs={
+                    'class':'form-control',
+                    'id':'imagen',
+                    'style':'display:none;',
+                    'type':'file',
+                    'name':'img_usuario',
+                }
+            ),
+            'username': forms.TextInput(
+                attrs={
+                    'class':'form-control',
+                    'id':'username',
+                    'required':'requerid',
+                    'autocomplete':'off',
+                    'placeholder':'Apodo (*)',
+                    'name':'username',
+                }
+            ),
+            'nombres': forms.TextInput(
+                attrs={
+                    'class':'form-control',
+                    'id':'nombres',
+                    'required':'requerid',
+                    'autocomplete':'off',
+                    'placeholder':'Nombres (*)',
+                    'name':'nombres',
+                }
+            ),
+            'apellidos': forms.TextInput(
+                attrs={
+                    'class':'form-control',
+                    'id':'apellidos',
+                    'required':'requerid',
+                    'autocomplete':'off',
+                    'placeholder':'Apellidos (*)',
+                    'name':'apellidos',
+                }
+            ),
+            'telefono': forms.TextInput(
+                attrs={
+                    'class':'form-control',
+                    'id':'telefono',
+                    'autocomplete':'off',
+                    'placeholder':'Telefono',
+                    'name':'telefono',
+                    'type':'number',
+                }
+            ),
+            'celular': forms.TextInput(
+                attrs={
+                    'class':'form-control',
+                    'id':'celular',
+                    'required':'requerid',
+                    'autocomplete':'off',
+                    'type':'number',
+                    'placeholder':'Celular (*)',
+                    'name':'celular',
+                }
+            ),
+            'fec_nac': forms.DateInput(
+                attrs={
+                    'class':'form-control',
+                    'id':'fec_nac',
+                    'type':'date',
+                    'required':'requerid',
+                    'autocomplete':'off',
+                    'style':'color:grey;',
+                    'placeholder':'Fecha de nacimiento (*)',
+                    'name':'fec_nac',
+                }
+            ),
+            'tipo_documento': forms.Select(
+                attrs={
+                    'class':'form-control',
+                    'id':'tipo_documento',
+                    'required':'requerid',
+                    'autocomplete':'off',
+                    'name':'tipo_documento',
+                }
+            ),
+            'num_documento': forms.TextInput(
+                attrs={
+                    'class':'form-control',
+                    'id':'num_documento',
+                    'required':'requerid',
+                    'autocomplete':'off',
+                    'type':'number',
+                    'placeholder':'Número de documento (*)',
+                    'name':'num_documento',
+                }
+            ),
+            'municipio': forms.Select(
+                attrs={
+                    'class':'form-control',
+                    'id':'municipio',
+                    'required':'requerid',
+                    'autocomplete':'off',
+                    'name':'municipio',
+                }
+            ),
+            'direccion': forms.TextInput(
+                attrs={
+                    'class':'form-control',
+                    'id':'direccion',
+                    'autocomplete':'off',
+                    'placeholder':'Dirección',
+                    'name':'direccion',
+                }
+            ),
+            'cod_postal': forms.Select(
+                attrs={
+                    'class':'form-control',
+                    'id':'cod_postal',
+                    'required':'requerid',
+                    'autocomplete':'off',
+                }
+            ),
+        }
+
+    def clean_fec_nac(self):
+        fec_nac = self.cleaned_data.get('fec_nac')
+        fec_actual = datetime.datetime.now()
+        edad = relativedelta(fec_actual, datetime.datetime(fec_nac.year, fec_nac.month, fec_nac.day))
+        if int(edad.years) < 15:
+            raise forms.ValidationError('Lo sentimos no cumples con la edad mínima para poderte registrar')
+        return fec_nac
+
+    def clean_celular(self):
+        cel = self.cleaned_data.get('celular')
+        if cel.isdigit() is False:
+            raise  forms.ValidationError('Por favor ingresa solo números')
+        if len(cel)!=10:
+            raise forms.ValidationError('Por favor ingresa un número de celular correcto')
+        return cel
+
+    def clean_num_documento(self):
+        num = self.cleaned_data.get('num_documento')
+        if num.isdigit() is False:
+            raise  forms.ValidationError('Por favor ingresa solo números')
+        if len(num)!=10:
+            raise forms.ValidationError('Por favor ingresa un número de celular correcto')
+        return num
+    
+    def save(self,commit = True):
+        user = super().save(commit = False)
+        user.set_password(self.cleaned_data['password1'])
+        if commit:
+            user.save()
+        return user
