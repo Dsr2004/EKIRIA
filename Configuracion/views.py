@@ -7,7 +7,7 @@ from webbrowser import get
 import json
 
 # Create your views here.
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.db.models import Q
 
@@ -362,11 +362,14 @@ class listarPermisos(ListView,PermissionMixin):
         # este metodo era para intentar mostrar la consulta pero no dio
         
         UserSesion=""
-        print(self.request.session['pk'])
-        # if if_admin(self.request):
-        #     UserSesion=if_admin(self.request)
-        # else: 
-        #     return redirect('SinPermisos')
+        try:
+            if request.session['pk']:
+                if request.session['Admin']:
+                    imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+                    imagen = imagen.img_usuario
+                    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+        except:
+            pass
         cambiosQueryset = cambios.objects.all()
         cambiosfQueryset = cambiosFooter.objects.all()
         context["User"]=UserSesion
