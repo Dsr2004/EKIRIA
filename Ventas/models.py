@@ -287,19 +287,37 @@ def pre_save_cita_receiver(sender, instance, *args, **kwargs):
     if not instance.horaFinCita:
         inicio = instance.horaInicioCita
         fin = datetime(1970, 1, 1, inicio.hour, inicio.minute, inicio.second) + timedelta(minutes=instance.pedido_id.get_cantidad)           
-        instance.horaFinCita = time(fin.hour, fin.minute, fin.second)
-        # validacion de que no se agende una cita si esta hay citas en esas horas
+        fin = time(fin.hour, fin.minute, fin.second)
+        instance.horaFinCita = fin
+        
         empleado = instance.empleado_id
-        dia = instance.diaCita
-        diasConsulta = Calendario.objects.filter(empleado_id=empleado).filter(dia=dia)
+        diaCita=instance.diaCita.strftime("%Y-%m-%d")
+        diasConsulta = Calendario.objects.filter(empleado_id=empleado).filter(dia=diaCita)
         horas = [(time(i).strftime("%H:%M")) for i in range(24)]
-        # inicio=f"{inicio.hour}:{inicio.minute} "
-        fin = f"{fin.hour}:{fin.minute}"
-
-        # res = [x for x in horas if  (x < inicio or x > fin)]
-
-        print("hois")
-        print(inicio, fin)
+        
+        horasNoDisponibles={}
+        cont=1
+        for i in diasConsulta:
+            horaInicioC=i.horaInicio.strftime("%H:%M")
+            horaFinC=i.horaFin
+            horaFinC = datetime.strptime(str(horaFinC), "%H:%M:%S")
+            horaFinC = horaFinC.strftime("%H:%M")
+            cont=str(cont)
+            horasNoDisponibles[str("cita"+cont)]={"horaInicio":horaInicioC,"horaFin":horaFinC}
+            cont=int(cont)
+            cont+=1
+            
+        inicio = inicio.strftime("%H:%M")
+        fin = fin.strftime("%H:%M")
+        
+            
+        if not len(horasNoDisponibles)==0:
+            horasQuitadas = [x for x in horas for i in horasNoDisponibles if (horasNoDisponibles[i]["horaInicio"] <= x <= horasNoDisponibles[i]["horaFin"])]
+            horasdeCita =  [x for x in horas  if (inicio <= x <= fin)]
+            
+            for i in horasdeCita:
+                if i in horasQuitadas:
+                    raise Exception("Ya existe una cita en esa hora, por favor seleccione otra hora")
 
 
 def post_save_cita(sender, instance, created, *args, **kwargs):

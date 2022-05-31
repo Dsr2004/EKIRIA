@@ -39,7 +39,7 @@ from Usuarios.Serializers.general_serializers import UsuarioTokenSerializer
 from Usuarios.Serializers.general_serializers import UsuarioTokenSerializer
 #-----------------------------------------Models---------------------------------------------------
 from Usuarios.models import Usuario, VistasDiarias
-from Ventas.models import Servicio, Pedido
+from Ventas.models import Servicio
 from Configuracion.models import cambiosFooter, cambios
 #-----------------------------------------More---------------------------------------------------
 from Usuarios.authentication_mixins import Authentication

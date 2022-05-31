@@ -19,10 +19,13 @@ function ActualizarPedidoDeUsuario(servicioId, accion){
     var url = "/Ventas/AddtoCarrito/"
     if (accion == "removePer"){
         swal({
-            title: "Estas seguro?",
+            title: "¿Estás seguro?",
             text: "Se borrara este servicio",
             icon: "warning",
-            buttons: true,
+            buttons: {
+          confirm : {text:'Confirmar',className:'btn-success'},
+          cancel : 'Cancelar'
+      },
             dangerMode: true,
           }).then((changeStatus) => {
             if (changeStatus) {
@@ -41,7 +44,7 @@ function ActualizarPedidoDeUsuario(servicioId, accion){
                  
               })
             } else {
-              swal("OK! No se borró el servicio que personalizo").then(function(){
+              swal("¡OK! No se borró el servicio que personalizo").then(function(){
                 location.reload()
               });
               
