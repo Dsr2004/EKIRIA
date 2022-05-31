@@ -1,5 +1,5 @@
 {% extends "Menu_Usuario.html" %} 
-
+{% load static %}
 {% block head %}
 <head>
     <meta charset="UTF-8">
@@ -12,7 +12,7 @@
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 
     <!-- DATATABLES -->
-   <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
+   <link rel="stylesheet" type="text/css" href="{% static 'Plugins/DataTables/datatables.css' %}">
 </head>{% endblock head %}
 
 {% block Contenido %}
@@ -68,6 +68,7 @@
       {% endif %}
       </tbody>
   </table>
+
      
 </div>
 
@@ -76,7 +77,7 @@
 <script src="/static/Ventas/js/Ventas.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <!-- DATATABLE -->
-<script src="//cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="{% static 'Plugins/DataTables/datatables.js' %}"></script>
 
 <script>
    $(document).ready(function () {
