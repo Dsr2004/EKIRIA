@@ -33,23 +33,7 @@ class ServicioForm(forms.ModelForm):
             self.fields['descripcion'].label = False
             self.fields['estado'].label = False
             self.fields['duracion'].label = False
-            self.fields['slug'].required = False
-
-class EditarTipoServicioForm(forms.ModelForm):
-    class Meta:
-        model=Servicio
-        fields=("estado",)
-
-        widgets={
-            'estado':forms.CheckboxInput(attrs={'class':'form-check-input estadoServicioRegistro',  'style':"top: 5px; font-size: -15px; left: 0px;transform: scale(0.5);", 'onclick':'editarTipoSerivico()', 'name':'estado'})
-        }
-    def __init__(self, *args, **kwargs):
-            super(EditarTipoServicioForm, self).__init__(*args, **kwargs)
-            self.fields['nombre'].label = False
-            self.fields['estado'].label = False
-            self.helper=FormHelper()
-            self.helper.form_show_errors=False
-            self.helper.error_text_inline = False
+            self.fields['slug'].required = False 
 
         
 class Tipo_servicioForm(forms.ModelForm):
@@ -64,9 +48,7 @@ class Tipo_servicioForm(forms.ModelForm):
             super(Tipo_servicioForm, self).__init__(*args, **kwargs) 
             self.fields['nombre'].label = False
             self.fields['estado'].label = False
-            self.helper=FormHelper()
-            self.helper.form_show_errors=False
-            self.helper.error_text_inline = False
+            
 
 class CatalogoForm(forms.ModelForm):
     class Meta:
@@ -89,14 +71,16 @@ class Servicio_PersonalizadoForm(forms.ModelForm):
             'duracion':forms.NumberInput(attrs={'class':'form-control'}),
             'tipo_servicio_id':forms.Select(attrs={"class":"form-select"}),
             'descripcion':forms.Textarea(attrs={'class':'form-control'}),
-            'img_servicio':forms.FileInput(attrs={"class":"fileSerPersonalizado", "style":"margin-left:40px; top:-15px"})
+            'img_servicio':forms.FileInput(attrs={"class":"form-control"})
         }
     def __init__(self, *args, **kwargs):
         super(Servicio_PersonalizadoForm, self).__init__(*args, **kwargs) 
         self.fields['tipo_servicio_id'].queryset = Tipo_servicio.objects.filter(nombre__in=["Manicure","Pedicure","manicure","pedicure","MANICURE","PEDICURE"]).filter(estado=True)
         self.fields['img_servicio'].label = False
         self.fields['duracion'].label = False
+        self.fields['descripcion'].label = False
         self.fields['duracion'].required = False
+        self.fields['tipo_servicio_id'].label = False
 
 
 class CitaForm(forms.ModelForm):
@@ -122,97 +106,4 @@ class CitaForm(forms.ModelForm):
 
 
 
-class pruebaxForm(forms.Form):
-    date_field = forms.DateField(widget=DatePicker())
-    date_field_required_with_min_max_date = forms.DateField(
-        required=True,
-        widget=DatePicker(
-            options={
-                'minDate': '2009-01-20',
-                'maxDate': '2017-01-20',
-            },
-        ),
-        initial='2013-01-01',
-    )
-    """
-    In this example, the date portion of `defaultDate` is irrelevant;
-    only the time portion is used. The reason for this is that it has
-    to be passed in a valid MomentJS format. This will default the time
-    to be 14:56:00 (or 2:56pm).
-    """
-    time_field = forms.TimeField(
-        widget=TimePicker(
-            options={
-                'enabledHours': [9, 10, 11, 12, 13, 14, 15, 16],
-                'defaultDate': '1970-01-01T14:56:00'
-            },
-            attrs={
-                'input_toggle': True,
-                'input_group': False,
-            },
-        ),
-    )
-    datetime_field = forms.DateTimeField(
-        widget=DateTimePicker(
-            options={
-                'useCurrent': True,
-                'collapse': False,
-            },
-            attrs={
-                'append': 'fa fa-calendar',
-                'icon_toggle': True,
-            }
-        ),
-    )
 
-
-    # date_field = forms.DateField(widget=DatePicker())
-    # date_field_required_with_min_max_date = forms.DateField(
-    #     required=True,
-    #     widget=DatePicker(
-    #         options={
-    #             'minDate': '2009-01-20',
-    #             'maxDate': '2017-01-20',
-    #         },
-    #          attrs={
-    #             'append': 'fa fa-calendar',
-    #             'icon_toggle': True,
-    #         }
-    #     ),
-    #     initial='2013-01-01',
-    # )
-    # """
-    # In this example, the date portion of `defaultDate` is irrelevant;
-    # only the time portion is used. The reason for this is that it has
-    # to be passed in a valid MomentJS format. This will default the time
-    # to be 14:56:00 (or 2:56pm).
-    # """
-    # time_field = forms.TimeField(
-    #    widget=TimePicker(
-    #         options={
-    #             'useCurrent': True,
-    #             'collapse': False,
-    #         },
-    #         attrs={
-    #             'append': 'fa fa-clock-o',
-    #             'icon_toggle': True,
-    #             'class':"kisiandMelocoton"
-    #         }
-    #     ),
-    # )
-    # datetime_field = forms.DateTimeField(
-    #     widget=DateTimePicker(
-    #         options={
-    #             'enabledHours': [9, 10, 11, 12, 13, 14, 15, 16],
-    #             'defaultDate': '1970-01-01T14:56:00',
-    #             'useCurrent': True,
-    #             'collapse': False,
-    #         },
-    #         attrs={
-    #             'append': 'fa fa-calendar',
-    #             'icon_toggle': True,
-    #         }
-    #     ),
-    # )
-
-    

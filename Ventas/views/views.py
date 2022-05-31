@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import View, TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
-
+from django.contrib import messages
 from Configuracion.models import cambios, cambiosFooter
 from Usuarios.models import Usuario
 from Usuarios.views import if_User
@@ -43,55 +43,70 @@ class Catalogo(ListView):
             return context
     
 def Carrito(request):
-    cliente=Usuario.objects.get(username=request.session['username'])
-    if cliente:
-        pedido,creado = Pedido.objects.get_or_create(cliente_id=cliente, completado=False)
-        items= pedido.pedidoitem_set.all()
-        serviciosx=[]
-        serviciosPerx=[]
-        duracion=0
-        cont=0
-        for i in items:
-            if not i.servicio_personalizado_id == None:
-                cont+=1
-        
-        if cont <= 0:
-            pedido.esPersonalizado = False
-            pedido.save()
-        cont=0
-        
-        for i in items:
-            if not i.servicio_id ==  None:
-                duracion=duracion+i.servicio_id.duracion
-            if not i.servicio_personalizado_id == None:
-                duracion=duracion+i.servicio_personalizado_id.duracion
-        if items:
+    try:
+        cliente=Usuario.objects.get(username=request.session['username'])
+        if cliente:
+            pedido,creado = Pedido.objects.get_or_create(cliente_id=cliente, completado=False)
+            items= pedido.pedidoitem_set.all()
+            serviciosx=[]
+            serviciosPerx=[]
+            duracion=0
+            cont=0
+            for i in items:
+                if not i.servicio_personalizado_id == None:
+                    cont+=1
+            
+            if cont <= 0:
+                pedido.esPersonalizado = False
+                pedido.save()
+            cont=0
+            
             for i in items:
                 if not i.servicio_id ==  None:
-                    serviciosx.append(i)
+                    duracion=duracion+i.servicio_id.duracion
                 if not i.servicio_personalizado_id == None:
-                    serviciosPerx.append(i)
-    
-        request.session["carrito"]=pedido.get_items_carrito
+                    duracion=duracion+i.servicio_personalizado_id.duracion
+            if items:
+                for i in items:
+                    if not i.servicio_id ==  None:
+                        serviciosx.append(i)
+                    if not i.servicio_personalizado_id == None:
+                        serviciosPerx.append(i)
         
-    else:
-        items=[]
-        pedido={"get_total_carrito":0,"get_items_carrito":0}
-        request.session["carrito"]=0
+            request.session["carrito"]=pedido.get_items_carrito
+            
+        else:
+            items=[]
+            pedido={"get_total_carrito":0,"get_items_carrito":0}
+            request.session["carrito"]=0
 
-    try:
-        if request.session:
+        try:
+            if request.session:
+                    imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+                    imagen = imagen.img_usuario
+                    cambiosQueryset = cambios.objects.all()
+                    cambiosfQueryset = cambiosFooter.objects.all()
+                    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+        except:
+                return redirect("IniciarSesion")
+
+        contexto={"pedido":pedido,"User":UserSesion,"serviciosx":serviciosx,"serviciosPerx":serviciosPerx, "User":UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset}
+
+        return render(request, "Carrito.html",contexto)
+    except Exception as e:
+        messages.add_message(request, messages.INFO, f'Ha ocurrido un error. No hay servicios registrados {str(e)}.')
+        try:
+            if request.session:
                 imagen = Usuario.objects.get(id_usuario=request.session['pk'])
                 imagen = imagen.img_usuario
                 cambiosQueryset = cambios.objects.all()
                 cambiosfQueryset = cambiosFooter.objects.all()
                 UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
-    except:
+        except:
             return redirect("IniciarSesion")
 
-    contexto={"pedido":pedido,"User":UserSesion,"serviciosx":serviciosx,"serviciosPerx":serviciosPerx, "User":UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset}
-
-    return render(request, "Carrito.html",contexto)
+        contexto={"User":UserSesion,'cambios':cambiosQueryset, 'footer':cambiosfQueryset}
+        return render(request, "Carrito.html",contexto)
 
 class Calendario(TemplateView):
     template_name = "Calendario.html"

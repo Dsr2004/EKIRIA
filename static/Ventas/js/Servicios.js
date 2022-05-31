@@ -3,21 +3,24 @@
 function ConfirmacionEditarServicio(){
     event.preventDefault();
     swal({
-        title: "Estas seguro?",
+        title: "¿Estás seguro?",
         text: "Se modificaran los datos del servicio",
         icon: "warning",
-        buttons: true,
+        buttons: {
+          confirm : {text:'Confirmar',className:'btn-success'},
+          cancel : 'Cancelar'
+      },
         dangerMode: true,
     }).then((willDelete) => {
         if (willDelete) {
-        swal("OK! Se ha modificado el servicio", {
+        swal("¡OK! Se ha modificado el servicio", {
             icon: "success",
         }).then(function() {
         window.location.href = "/Ventas/ListadoServicios/";
         document.forms['EditarServicioForm'].submit();
         });
         } else {
-        swal("OK! Ningun dato del servicio ha sido modificado");
+        swal("¡OK! Ningún dato del servicio ha sido modificado");
         }
     });
     return false;
@@ -28,10 +31,13 @@ function CambiarEstadoServicio(id){
     let ids=id
     let token = $("#EstadoServicioForm").find('input[name=csrfmiddlewaretoken]').val()
     swal({
-      title: "Estas seguro?",
+      title: "¿Estás seguro?",
       text: "Se modificara el estado del Servicio",
       icon: "warning",
-      buttons: true,
+      buttons: {
+          confirm : {text:'Confirmar',className:'btn-success'},
+          cancel : 'Cancelar'
+      },
       dangerMode: true,
     }).then((changeStatus) => {
       if (changeStatus) {
@@ -41,7 +47,7 @@ function CambiarEstadoServicio(id){
           url: $("#EstadoServicioForm").attr('action'),
           type: $("#EstadoServicioForm").attr('method'),
           success: function(datas){
-            swal("OK! Se ha modificado el Servicio", {
+            swal("¡OK! Se ha modificado el Servicio", {
                 icon: "success",
               }).then(function(){
                 location.reload()
@@ -54,7 +60,7 @@ function CambiarEstadoServicio(id){
         }); 
         })
       } else {
-        swal("OK! Ningun dato del servicio ha sido modificado").then(function(){
+        swal("¡OK! Ningún dato del servicio ha sido modificado").then(function(){
           location.reload()
         });
         

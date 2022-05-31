@@ -22,27 +22,24 @@
         {% csrf_token %}
     <div class="row">
         <div class="col">
+            <Label><strong>Tipo de Servicio: <sup class="requerido">(*)</sup></strong></Label>
             {{form.tipo_servicio_id|as_crispy_field}}
            
         </div>
         <div class="col">
-            <i class="fas fa-file-image" style="width: 50px; font-size: 60px;"></i>
-            <br><br>
-                {{form.img_servicio|as_crispy_field}}
-           
+            <Label><strong>Imagen: <sup class="requerido">(*)</sup></strong></Label>
+            {{form.img_servicio|as_crispy_field}}
         </div>
     </div>
     <label class=" tituloServicioPersonalizadoComentario">Descríbanos lo que quiere</label>
-    <div class="form-floating container descripcion" style="width:90vw;">   
+    <div class="form-floating container descripcion" style="width:90vw;">
        {{form.descripcion|as_crispy_field}}
       </div>
       <input class="btn btn-block btn-success  AgregarServPersonCarrito" name="accion" type="submit" value="Agregar al Carrito">  
     </form>
 </div>
 
-{% if form.errors %}
-    {{form.errors}}
-{% endif %}
+
     
 <br><br>
 {% endblock Contenido %}

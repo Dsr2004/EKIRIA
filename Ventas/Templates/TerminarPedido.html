@@ -40,14 +40,14 @@ No se pudo agendar la cita porque los datos ingresados son incorrectos
         <div class="box-element" id="form-pedido">
           <form id="TerminarPedidoForm" method="post">
             {% csrf_token %}
-            <label class="label-control">Seleccione un empleado:</label>
+            <label class="label-control">Seleccione un empleado: <sup class="requerido">(*)</sup></label>
            {{form.empleado_id}}
            <p id="empleado_id" class="bg-light text-danger" style="color: #dc3545;"></p>
             <br>
             <div class="row">
               <div class="col-6" id="DiaCitaBox">
 
-                <label  class="label-control">Seleccione una Dia:</label>
+                <label  class="label-control">Seleccione una Dia: <sup class="requerido">(*)</sup></label>
                 <div class="input-group">
                   {{form.diaCita}}
                   <div class="input-group-text">
@@ -57,7 +57,7 @@ No se pudo agendar la cita porque los datos ingresados son incorrectos
               <p id="diaCita" class="bg-light text-danger" style="color: #dc3545;"></p>
               </div>  
               <div class="col-6" id="horaInicioBox">
-                <label class="label-control">Seleccione una Hora:</label>
+                <label class="label-control">Seleccione una Hora: <sup class="requerido">(*)</sup></label>
                 <br>
                 <div class="input-group">
                  {{form.horaInicioCita}}

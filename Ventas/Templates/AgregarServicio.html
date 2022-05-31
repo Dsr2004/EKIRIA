@@ -23,17 +23,17 @@
         {% csrf_token %}
     <div class="row" style="margin-top: 20px;">
         <div class="col">
-            <Label><strong>Nombre: <sup>(*)</sup></strong></Label>
+            <Label><strong>Nombre: <sup class="requerido">(*)</sup></strong></Label>
                 {{form.nombre|as_crispy_field}}
         </div>
         <div class="col" >
-            <Label><strong>Tipo de Servicio:  <sup>(*)</sup></strong></Label>
+            <Label><strong>Tipo de Servicio:  <sup class="requerido">(*)</sup></strong></Label>
             {{form.tipo_servicio_id|as_crispy_field}}
         </div>
     </div>
     <div class="row" style="margin-top: 20px;">
         <div class="col">
-            <Label><strong>Precio: <sup>(*)</sup></strong></Label>
+            <Label><strong>Precio: <sup class="requerido">(*)</sup></strong></Label>
             {{form.precio|as_crispy_field}}
         </div>
         <div class="col" style="display: flex;">
@@ -43,16 +43,16 @@
             </div>
         </div>
     </div>
-    <Label style="margin-top:10px"><strong>Imagen del servicio: <sup>(*)</sup></strong></Label>
+    <Label style="margin-top:10px"><strong>Imagen del servicio: <sup class="requerido">(*)</sup></strong></Label>
     <div >
         {{form.img_servicio|as_crispy_field}}
     </div>
     <div class="col">
-        <Label><strong>Duración (en minutos): <sup>(*)</sup> </strong></Label>
+        <Label><strong>Duración (en minutos): <sup class="requerido">(*)</sup> </strong></Label>
             {{form.duracion|as_crispy_field}}
     </div>
     <div style="margin-top: 30px;">
-        <Label><strong>Descripción: <sup>(*)</sup></strong></Label>
+        <Label><strong>Descripción: <sup class="requerido">(*)</sup></strong></Label>
         <div class="form  descripcion">
             {{form.descripcion|as_crispy_field}}
         </div>
