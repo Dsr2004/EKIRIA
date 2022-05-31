@@ -33,7 +33,8 @@ class ServicioForm(forms.ModelForm):
             self.fields['descripcion'].label = False
             self.fields['estado'].label = False
             self.fields['duracion'].label = False
-            self.fields['slug'].required = False 
+            self.fields['slug'].required = False
+            self.fields['tipo_servicio_id'].required = True
 
         
 class Tipo_servicioForm(forms.ModelForm):

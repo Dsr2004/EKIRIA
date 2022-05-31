@@ -1,37 +1,28 @@
-{%extends 'Menu_Usuario.html'%}
-{%load crispy_forms_tags%}
-{%load static%}
-  {% block head %}
-    <head>
-      <meta charset="UTF-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
-      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
-      <link rel="stylesheet" href="/static/Configuracion/css/estilo.css">
-      <title>Roles</title>
-    </head>
-    {% endblock head %}
-    
-    {%block Contenido%}
-    
-    {% if messages %}
-      {%for i in messages%}
-      <div class="container alert alert-warning  alert-dismissible fade show" role="alert">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
+{%extends 'Menu_Usuario.html'%} {%load crispy_forms_tags%} {%load static%} {% block head %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+    <link rel="stylesheet" href="/static/Configuracion/css/estilo.css">
+    <title>Roles</title>
+</head>
+{% endblock head %} {%block Contenido%} {% if messages %} {%for i in messages%}
+<div class="container alert alert-warning  alert-dismissible fade show" role="alert">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
             <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-          </svg>
-       {{i}}
-       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-   </div> 
-      {%endfor%}
-    {% endif %}
-      
-    <h1 class="titulo">Listado De Roles</h1>
-    <div class="tabla">
-      <table class="table table-striped">
-            <thead>
-              <tr>
+          </svg> {{i}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{%endfor%} {% endif %}
+
+<h1 class="titulo">Listado De Roles</h1>
+<div class="tabla">
+    <table class="table table-striped">
+        <thead>
+            <tr>
                 <th scope="col">Id</th>
                 <th scope="col">Nombre</th>
                 <th scope="col">Editar</th>
@@ -39,6 +30,7 @@
                 <th scope="col">Eliminar</th>
 
                 <!-- <th scope="col">Estado</th> -->
+<<<<<<< HEAD
               </tr>
             </thead>
             <tbody>
@@ -57,82 +49,100 @@
                   <td><a type="button" class="btn btn-outline-primary"  href="{% url 'Admin' Rol.id %}">Agregar <br>Permisos</a></td>
                   <!-- <td><form method="POST" action="{%url 'estado' %}" id="estadoRol" > -->
                         <!-- <div class="form-check form-switch"> 
+=======
+            </tr>
+        </thead>
+        <tbody>
+            {%if roles%} {%for Rol in roles%}
+            <tr>
+                <th scope="row">{{Rol.id}}</th>
+                <td>{{Rol.name}}</td>
+
+                {% if Rol.id > 6%}
+                <td><button type="button" class="btn btn-outline-success" onclick="abrir_modal_editar ('{% url 'updateRol' Rol.id %}')">Editar</button></td>
+
+                {% else %}
+                <td>Este rol no se puede Editar</td>
+                {% endif %} {% if Rol.id > 6%}
+                <td><a type="button" class="btn btn-outline-primary" href="{% url 'Admin' Rol.id %}">Agregar <br>Permisos</a></td>
+
+                {% else %}
+                <td>Este rol no permite cambios de permisos</td>
+                {% endif %}
+                <!-- <td><form method="POST" action="{%url 'estado' %}" id="estadoRol" > -->
+                <!-- <div class="form-check form-switch"> 
+>>>>>>> 73670f39644732fc0c44980e3390a507138ba4a3
                           {%csrf_token%}
                             <input class="form-check-input" type="checkbox" name="estado" onclick="ds('{{Rol.id}}')"></div>
                             <label class="switch"></label> -->
-                      <!-- </form>
+                <!-- </form>
                     </td>  -->
-                    
-                    {% if Rol.id > 6%}
-                    <td>
-                      <form action="{%url 'eliminarRol'%}" id="eliminar" method="post">
+
+                {% if Rol.id > 6%}
+                <td>
+                    <form action="{%url 'eliminarRol'%}" id="eliminar" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="id" value="{{Rol.id}}">
-                        <button type="button" class="btn btn-outline-danger"  onclick="ds('{{Rol.id}}')">Eliminar</button>
-                      </form>
-                    </td>
-                    {% else %}
-                    <td>Este rol no se puede eliminar</td>
-                    {% endif %}
-                      
-                </tr>
-               
-              {%endfor%}
-              {%else%}
-              <h1>No hay registros</h1>
+                        <button type="button" class="btn btn-outline-danger" onclick="ds('{{Rol.id}}')">Eliminar</button>
+                    </form>
+                </td>
+                {% else %}
+                <td>Este rol no se puede eliminar</td>
+                {% endif %}
 
-              {%endif%}
-            </tbody>
-      </table>
-      <div class="contNuevoRol">
+            </tr>
+
+            {%endfor%} {%else%}
+            <h1>No hay registros</h1>
+
+            {%endif%}
+        </tbody>
+    </table>
+    <div class="contNuevoRol">
 
         <button class="nuevoRol" type="button" onclick="abrir_modal_crear('{% url 'CreateRol' %}')">
           Crear Nuevo Rol
         </button>
         <img class="imgAgregar " src="/static/Configuracion/img/Agregar.png" type="button" onclick="abrir_modal_crear('{% url 'CreateRol' %}')">
-      </div>
     </div>
+</div>
 
-    <div class="modal fade " id="CreateRol" role="dialog">
+<div class="modal fade " id="CreateRol" role="dialog">
 
-    </div>
-    <!-- Modal Editar Rol -->
-    
-     <div class="modal fade " id="EditarRol" role="dialog" >
-      
-    </div>
-      
-{% endblock Contenido %}
+</div>
+<!-- Modal Editar Rol -->
 
-{% block modal %} 
+<div class="modal fade " id="EditarRol" role="dialog">
+
+</div>
+
+{% endblock Contenido %} {% block modal %}
 
 <!-- Modal Crear Rol -->
 <div class="modal fade" id="CreateRol" role="dialog">
-  <div class="modal fade" id="CrearRol" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Crear Rol</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal fade" id="CrearRol" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Crear Rol</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <form method='post' id=CrearRoles action="{%url 'CreateRol'%}" enctype="multipart/form-data">
+                        {% csrf_token %} {{createform.errors}}
+                        <div id="errores"></div>
+                        <label for="nombreRol">Nombre</label><br> {{crear.name}}
+                        <br>
+                        <div class="modal-footer" id="botones">
+                            <button type="submit" class="btn btn-warning" onclick="CrearUsuarios();">Confirmar</button>
+                            <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal" id="cancelar">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-      <div class="modal-body">
-      
-        <form method='post' id=CrearRoles action="{%url 'CreateRol'%}" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{createform.errors}}
-        <div id="errores" ></div>
-        <label for="nombreRol" >Nombre</label><br>
-        {{crear.name}}
-        <br>
-         <div class="modal-footer" id="botones">
-        <button type="submit" class="btn btn-warning" onclick="CrearUsuarios();">Confirmar</button>
-        <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal" id="cancelar">Cancelar</button>
-        </div>
-        </form>
-      </div>
     </div>
-  </div>
-</div> 
 </div>
 
 
@@ -162,9 +172,7 @@
   </div>
 </div> -->
 
-{% endblock modal %}
-
-{%block scripts%} 
+{% endblock modal %} {%block scripts%}
 <script src="{%static 'Configuracion/js/erroresCrear.js'%}"></script>
 <script src="/static/Configuracion/js/habilitar.js"></script>
 <script src="/static/bootstrap/js/bootstrap.js"></script>

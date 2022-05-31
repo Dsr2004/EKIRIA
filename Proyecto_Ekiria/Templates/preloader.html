@@ -104,11 +104,11 @@
         $(document).ready(function() {
             // Cambios
             let colorFondo = "{{cambio.Color_Fondo}}"
-            let texto = document.getElementById("texto");
+            let texto = document.getElementById("body-content-menu");
             texto.style.backgroundColor = colorFondo;
 
             let TipoLetra = "{{cambio.Tipo_Letra}}"
-            let body = document.querySelectorAll(".tipo");
+            let body = document.querySelectorAll(".content");
             body.forEach(texto => {
                 if (texto.style.fontFamily = TipoLetra) {
                     texto.style.fontFamily = TipoLetra
@@ -121,9 +121,13 @@
                 if (textos.style.color = ColorLetra) {
                     textos.style.color = ColorLetra
                     textos = textos.style.color = ColorLetra
+
                 }
             });
+            let textarea = document.getElementById('TextoEditar')
+            textarea.style.color = ColorLetra
             let TamanoLetra = "{{cambio.tamano_Titulo}}"
+            textarea.style.fon
             let tamano = document.querySelectorAll("#text");
             tamano.forEach(tamanos => {
                 if (tamanos.style.fontSize = TamanoLetra) {
