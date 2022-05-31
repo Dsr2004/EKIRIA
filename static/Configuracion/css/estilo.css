@@ -470,6 +470,9 @@ textarea {
     border-color: none!important;
     border-image: none;
 }
+.editarcambios h4{
+    font-weight: 600;
+}
 
 .contactenos input[type='text'],
 .contenedorcambios input[type='number'] {

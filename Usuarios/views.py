@@ -573,31 +573,31 @@ def PassRec(request):
                         except:
                             Token.objects.create(user=user)
                             token = Token.objects.get(user=user)
-                        try:
-                            Servidor = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
-                            Servidor.starttls()
-                            Servidor.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
-                            print("conexion establecida")
-                            mensaje = MIMEMultipart()
-                            mensaje['From'] = settings.EMAIL_HOST_USER
-                            mensaje['To'] = user.email
-                            mensaje['Subject'] = "Cambio de contraseña"
-                            cliente = f"{str(user.nombres).capitalize()} {str(user.apellidos).capitalize()}"
-                            key = token.key
-                            value = cryptocode.encrypt(str(key),Public_Key)
-                            content = render_to_string("Correo/CambioContraseñaCorreo.html",
-                                                    {"cliente": cliente, "token":value})
-                            mensaje.attach(MIMEText(content, 'html'))
+                    try:
+                        Servidor = smtplib.SMTP(settings.local.EMAIL_HOST, settings.local.EMAIL_PORT)
+                        Servidor.starttls()
+                        Servidor.login(settings.local.EMAIL_HOST_USER, settings.local.EMAIL_HOST_PASSWORD)
+                        print("conexion establecida")
+                        mensaje = MIMEMultipart()
+                        mensaje['From'] = settings.local.EMAIL_HOST_USER
+                        mensaje['To'] = user.email
+                        mensaje['Subject'] = "Cambio de contraseña"
+                        cliente = f"{str(user.nombres).capitalize()} {str(user.apellidos).capitalize()}"
+                        key = token.key
+                        value = cryptocode.encrypt(str(key),Public_Key)
+                        content = render_to_string("Correo/CambioContraseñaCorreo.html",
+                                                   {"cliente": cliente, "token":value})
+                        mensaje.attach(MIMEText(content, 'html'))
 
-                            Servidor.sendmail(settings.EMAIL_HOST_USER,
-                                            user.email,
-                                            mensaje.as_string())
+                        Servidor.sendmail(settings.local.EMAIL_HOST_USER,
+                                          user.email,
+                                          mensaje.as_string())
 
-                            print("Se envio el correo")
-                            success = "Se ha enviado el correo correctamente al email "+user.email
-                        except Exception as e:
-                            messages = e
-                            print(e)
+                        print("Se envio el correo")
+                        success = "Se ha enviado el correo correctamente al email "+user.email
+                    except Exception as e:
+                        messages = e
+                        print(e)
                 except:
                     messages = "Este email no está rgistrado a ningún usuario"
             else:
