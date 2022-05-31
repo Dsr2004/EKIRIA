@@ -7,7 +7,7 @@ from django.views.generic import View, TemplateView
 from Configuracion.models import cambiosFooter, cambios
 from Usuarios.models import Usuario
 from ..models import Catalogo, Tipo_servicio, Servicio
-from ..forms import CatalogoForm, EditarTipoServicioForm
+from ..forms import CatalogoForm, Tipo_servicioForm
 
 """
 <----------------------------------------------------------------->
@@ -19,7 +19,7 @@ class AdminVentas(TemplateView):
     template_name = "Ventas.html"
 
     def get(self,request, *args, **kwargs):
-        formTipo_Servicio = EditarTipoServicioForm
+        formTipo_Servicio = Tipo_servicioForm
         servicios=Catalogo.objects.all()
 
         paginado=Paginator(servicios, 5)
@@ -94,7 +94,7 @@ class AgregarServicioalCatalogo(View):
             ServicioToCatalogo.save()
             return redirect("Ventas:adminVentas")
         except Exception as e: 
-            formTipo_Servicio = EditarTipoServicioForm
+            formTipo_Servicio = Tipo_servicioForm
             servicios=Catalogo.objects.all()
 
             paginado=Paginator(servicios, 5)

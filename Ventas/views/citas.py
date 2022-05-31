@@ -10,7 +10,7 @@ from django.urls import reverse_lazy
 from django.views.generic import View, TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from Configuracion.models import cambios, cambiosFooter
-from Proyecto_Ekiria import settings
+from django.conf import settings
 from Usuarios.models import Usuario
 from .views import is_list_empty
 from ..mixins import ActualiarCitaMixin, ActualiarCitaClienteMixin
@@ -21,6 +21,22 @@ from ..forms import CitaForm
 Seccion de las Vistas donde se administran las citas
 <----------------------------------------------------------------->
 """
+
+#las variables en MAYUSCULAS SOSTENIDAS son las constantes no deben ser cambiadas
+BUEN_FORMATO_FECHA = "%d/%m/%Y"
+FORMATO_DJANGO = "%Y-%m-%d"
+
+#funcion que convierte el formato de 12 horas a 24 horas
+def conversor12a24(str1):
+
+    if str1[-2:] == "AM" and str1[:2] == "12": 
+        return "00" + str1[2:-2] 
+    elif str1[-2:] == "AM": 
+        return str1[:-2] 
+    elif str1[-2:] == "PM" and str1[:2] == "12": 
+        return str1[:-2]    
+    else: 
+        return str(int(str1[:1]) + 12) + str1[1:5] 
 
 class AgregarCita(TemplateView):
     template_name = "AgregarCita.html"
@@ -33,7 +49,6 @@ class AgregarCita(TemplateView):
                 imagen = imagen.img_usuario
                 cambiosQueryset = cambios.objects.all()
                 cambiosfQueryset = cambiosFooter.objects.all()
-                print("_______________________1")
                 if self.request.session['Admin'] == True:
                     UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
                     context["User"] = UserSesion
@@ -43,16 +58,13 @@ class AgregarCita(TemplateView):
                 else:
                     return redirect("SinPermisos")
         except Exception as e:
-            print("agendar cita")
-            print(e)
+            print("desde Agregar cita: ", e)
         return context
 
 class ListarCita(ListView):
     queryset = Cita.objects.all()
     context_object_name = "citas"
     template_name = "ListarCitas.html"
-
-    
 
     def get_context_data(self, *args, **kwargs):
         context = super(ListarCita, self).get_context_data(**kwargs)
@@ -289,7 +301,7 @@ class CambiarEstadoDeCita(TemplateView):
 
                 print("Se envio el correo")
             except Exception as e:
-                print(e)
+                print("DESDE CAMBIAR ESTADO DE CITA:", e)
         else:
             return redirect("Ventas:listarCitas")
         return HttpResponse(update)
@@ -323,7 +335,7 @@ class CancelarCita(View):
 
                 print("Se envio el correo")
             except Exception as e:
-                print(e)
+                print("DESDE CANCELAR CITA: ", e)
         return HttpResponse("Se ha cancelado la cita")
 
 class AgandarCita(CreateView):
@@ -378,81 +390,57 @@ class AgandarCita(CreateView):
     
     def post(self, request, *args, **kwargs):
         horaInicio = request.POST["horaInicioCita"]
-
-        if horaInicio[-2:] == "PM":
-            horaTipo = horaInicio[0:4].replace(":",",")
-            print('desde :', horaTipo)
-        elif horaInicio[-2:] == "AM":
-            horaTipo = horaInicio[0:4].replace(":", ",")
-            print('desde :', horaTipo)
-
-
-
-
-
-
         diaCita = request.POST["diaCita"]
         empleado = request.POST["empleado_id"]
         descripcion = request.POST["descripcion"]
+        hoy = datetime.now()
+        hoy = hoy.strftime(BUEN_FORMATO_FECHA)
+        hoy = datetime.strptime(hoy, BUEN_FORMATO_FECHA)
+        
+       
+        
         errores = {}
         if not horaInicio:
             errores["horaInicioCita"] = "Debe completar la hora de la cita."
         if not diaCita:
-            errores["diaCita"] = "Debe completar el dia  de la cita."
+            errores["diaCita"] = "Debe completar el día  de la cita."
+        if diaCita:
+            diaCita=datetime.strptime(diaCita, BUEN_FORMATO_FECHA)
+            if  diaCita < hoy:
+                errores["diaCita"] = "El día de la cita no puede ser menor al día actual."
         if not empleado:
             errores["empleado_id"] = "Debe seleccionar un empleado que atienda su cita."
-    
-        empleado = Usuario.objects.get(id_usuario=empleado)
-        diaCita=datetime.strptime(diaCita, "%d/%m/%Y")
-        diaCita=diaCita.strftime("%Y-%m-%d")
-        diasConsulta = Calendario.objects.filter(empleado_id=empleado).filter(dia=diaCita)
-
-
-
-        horasNoDisponibles={}
-        cont=1
-
-        for i in diasConsulta:
-            horaIniciox = i.horaInicio.strftime("%H:%M")
-            horaFinx = i.horaFin.strftime("%H:%M")
-            cont=str(cont)
-            horasNoDisponibles[str("cita"+cont)]={"horaInicio":horaIniciox,"horaFin":horaFinx}
-            cont=int(cont)+1
-
-        horas = [(time(i).strftime("%H:%M")) for i in range(24)]
-
-       
-
-        res = [x for x in horas if x  in [x for x in horas for i in horasNoDisponibles if (horasNoDisponibles[i]["horaInicio"] <= x <= horasNoDisponibles[i]["horaFin"])]]
-
-        # for i in horas:
-        #     if i 
-        print(res)
-
+  
         if errores:
             response = JsonResponse({"errores":errores})
             response.status_code = 400
             return response
         else:
-            horaInicio=datetime.strptime(horaInicio, "%H:%M %p").strftime("%H:%M:%S")
+            empleado = Usuario.objects.get(id_usuario=empleado)
+            horaInicio = conversor12a24(horaInicio)
             cliente=Usuario.objects.get(username=self.request.session['username'])
             pedido,creado = Pedido.objects.get_or_create(cliente_id=cliente, completado=False)
+
             datosParaGuardar = {"pedido_id":pedido,"horaInicioCita":horaInicio,"cliente_id":cliente, "empleado_id":empleado.pk,
             "descripcion":descripcion,"diaCita":diaCita}
             form = self.form_class(datosParaGuardar)
-            if form.is_valid:
-                object=form.save()
-                calendarioSave = Calendario(dia=object.diaCita, horaInicio=object.horaInicioCita, horaFin=object.horaFinCita, cita_id=object, cliente_id=object.cliente_id, empleado_id=object.empleado_id)
-                calendarioSave.save()
-                form.save()
-                pedido.completado = True
-                pedido.save()
-                datos = {}
+            try:
+                if form.is_valid():
+                    object=form.save()
+                    calendarioSave = Calendario(dia=object.diaCita, horaInicio=object.horaInicioCita, horaFin=object.horaFinCita, cita_id=object, cliente_id=object.cliente_id, empleado_id=object.empleado_id)
+                    calendarioSave.save()
+                    form.save()
+                    pedido.completado = True
+                    pedido.save()
+                    datos = {}
 
-                return redirect("Ventas:calendario")
+                    return redirect("Ventas:calendario")
 
-            else:
-                return render(request, self.template_name, {"form":self.form_class})
+            except Exception as e:
+                errores["horaInicioCita"]=str(e)
+                response = JsonResponse({"errores":errores})
+                response.status_code = 400
+                return response
 
 class BuscarDisponibilidadEmpleado(View):
     def post(self,request,*args,**kwargs):
@@ -465,8 +453,8 @@ class BuscarDisponibilidadEmpleado(View):
         elif accion == "BuscarDiaDeEmpleado":
             empleado=request.POST["empleado"]
             dia=request.POST["dia"]
-            dia=datetime.strptime(dia, "%d/%m/%Y")
-            dia=dia.strftime("%Y-%m-%d")
+            dia=datetime.strptime(dia, BUEN_FORMATO_FECHA)
+            dia=dia.strftime(FORMATO_DJANGO )
             diasConsulta = Calendario.objects.filter(empleado_id=empleado).filter(dia=dia)
             
             horasNoDisponibles={}
@@ -475,22 +463,30 @@ class BuscarDisponibilidadEmpleado(View):
                 horaInicio=i.horaInicio
                 horaInicio = horaInicio.strftime("%H:%M")
                 horaFin=i.horaFin
-                horaFin = horaFin.strftime("%H:%M")
-                horaFin = datetime.strptime(horaFin, "%H:%M") - datetime.strptime("01:00", "%H:%M")
+                minuto = horaFin.minute
+                if minuto == 0:
+                    horaFin = horaFin.strftime("%H:%M")
+                    horaFin = datetime.strptime(horaFin, "%H:%M") - datetime.strptime("01:00", "%H:%M")
+                elif minuto >=20:
+                    minuto = 60-minuto
+                    horaFin = datetime(1970, 1, 1, horaFin.hour, horaFin.minute, horaFin.second) + timedelta(minutes=minuto)           
+                    horaFin = time(horaFin.hour, horaFin.minute, horaFin.second)
+                elif minuto>0 and minuto<20:
+                    horaFin = datetime(1970, 1, 1, horaFin.hour, horaFin.minute, horaFin.second) - timedelta(minutes=minuto)           
+                    horaFin = time(horaFin.hour, horaFin.minute, horaFin.second)
+                    
                 horaFin = datetime.strptime(str(horaFin), "%H:%M:%S")
                 horaFin = horaFin.strftime("%H:%M")
                 cont=str(cont)
                 horasNoDisponibles[str("cita"+cont)]={"horaInicio":horaInicio,"horaFin":horaFin}
                 cont=int(cont)
                 cont+=1
-           
-            horas = hours = [(time(i).strftime("%H:%M")) for i in range(24)]
+
+            horas = [(time(i).strftime("%H:%M")) for i in range(24)]
 
             if len(horasNoDisponibles)==0:
                 res=horas
             else:
                 res = [x for x in horas if x not in [x for x in horas for i in horasNoDisponibles if (horasNoDisponibles[i]["horaInicio"] <= x <= horasNoDisponibles[i]["horaFin"])]]
-
-            print(res)
-
+                
             return JsonResponse({"horasDisponibles":res})

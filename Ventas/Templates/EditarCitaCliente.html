@@ -14,8 +14,14 @@
 </head>{% endblock head %}
 
 {% block Contenido %}
-
-<div class="container" style="background-color: rgba(253, 253, 253, 0.795); margin-top: 30px;">
+<div class="text-center quitar"  id="spinnerLoad">
+    <div class="spinner-grow " style="width: 3rem; height: 3rem;" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <h4 class="quitar" id="titleSpinner">Cancelando su cita... <br></h4>
+ 
+</div>
+<div class="container" style="background-color: rgba(253, 253, 253, 0.795); margin-top: 30px;" id="containerInicio">
     <div class="row">
         <div class="col-md-10"><h1>Editar Cita de {{object.cliente_id.nombres | title}}</h1></div>
     </div>
@@ -101,12 +107,13 @@
                 <form action="{% url 'Ventas:editarCita' object.id_cita  %}" method="POST" id="EditarCitaForm">
                     {% csrf_token %}
                     <div class="col Datos1DetalleCita ">
-                        <label class="label-control">Seleccione un empleado:</label>
+                        <label class="label-control">Seleccione un empleado: <sup class="requerido">(*)</sup></label>
                          {{form.empleado_id}}
                     </div>
                     <br>
                     <div class="row">
-                        <div class="col Datos1DetalleCita" id="diaInicioBoxCita"> 
+                        <div class="col Datos1DetalleCita" id="diaInicioBoxCita">
+                            <label class="label-control">Seleccione el día de la cita: <sup class="requerido">(*)</sup></label>
                             <div class="input-group">
                                 {{form.diaCita}}
                                 <div class="input-group-text">
@@ -117,6 +124,7 @@
                         <div class="col Datos1DetalleCita">
                             <div class="row">
                                 <div class="col"  id="horaInicioBoxCita">
+                                    <label class="label-control">Seleccione la hora de la cita: <sup class="requerido">(*)</sup></label>
                                     <div class="input-group">
                                         {{form.horaInicioCita}}
                                        <div class="input-group-text">
@@ -127,6 +135,7 @@
                             </div>
                         </div>
                     </div>
+                    <br>
                     <input type="hidden" name="id_cita" value="{{object.id_cita}}">
                 <div class="col Datos1DetalleCita">
                         <Label><strong>Comentarios: </strong></Label>
@@ -147,7 +156,7 @@
                             <button class="btn btn-block btn-success" type="button" onclick="ActualizarCita('{{object.id_cita}}')">Modificar</button>
                         </div>
                         <div class="col">
-                            <a class="btn btn-block btn-danger" onclick="CancelarCita2('{{object.id_cita}}')">Cancelar Cita</a>
+                            <a class="btn btn-block btn-danger" onclick="CancelarCita3('{{object.id_cita}}')">Cancelar Cita</a>
                         </div>
                     </div>
                     <br><br><br>

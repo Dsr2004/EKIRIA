@@ -1,6 +1,7 @@
 {% extends "Menu_Usuario.html" %}
 {% load static %}
 {% block head %}
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,16 +10,15 @@
     <link rel="stylesheet" href="{% static 'Ventas/css/Ventas.css' %}">
    <link rel="icon" href="{% static 'Proyecto_Ekiria/Img/Logo Ekiria.png' %}">
    <link rel="stylesheet" href="{% static 'Plugins/fullcalendar/lib/main.css' %}">
-   
-
  
 
 </head>
 {% endblock head %}
 
 {% block Contenido %}
-  <h1>Calendario</h1>
-<div class="row" style="margin:10px">
+  <h1 class="container" style="margin:5px">Calendario</h1>
+  
+<div class="row" style="margin:5px">
      <div class="col-md-7 ">
        <!--aqui va el calendario-->
        <div id="calendar" style="padding: 40px;" class=""></div>
@@ -78,6 +78,8 @@
 <script src="{% static 'Plugins/fullcalendar/lib/main.js' %}"></script>
 <script src="{% static 'Plugins/fullcalendar/lib/locales-all.js' %}"></script>
 <script>
+
+
   
   document.addEventListener('DOMContentLoaded', function(){
     var calendarUI  = document.getElementById("calendar")

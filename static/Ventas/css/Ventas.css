@@ -413,3 +413,9 @@
 .quitar{
     display: none;
 }
+
+.requerido{
+    color: red !important;
+}
+
+

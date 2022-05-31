@@ -13,4 +13,3 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS("Se han creado los Seeders de forma satisfactoria"))
         except ImportError as e:
            raise e
-        Find(id)

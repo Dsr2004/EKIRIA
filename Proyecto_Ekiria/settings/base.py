@@ -8,10 +8,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
 from pathlib import Path
-import Crypto
 import binascii
-from Crypto.PublicKey import RSA
-from Crypto.Cipher import PKCS1_OAEP
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 import Proyecto_Ekiria.settings
@@ -56,7 +54,7 @@ THIRD_APPS =[
     'rest_framework.authtoken',
 ]
 
-INSTALLED_APPS = BASE_APPS + LOCAL_APPS + THIRD_APPS
+INSTALLED_APPS =  BASE_APPS + LOCAL_APPS + THIRD_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -183,6 +181,6 @@ EMAIL_HOST = 'smtp.gmail.com'
 
 EMAIL_PORT = 587
 
-EMAIL_HOST_USER = 'jgallego690@misena.edu.co'
+EMAIL_HOST_USER = 'davidparaekiria@gmail.com'
 
-EMAIL_HOST_PASSWORD = 'xsyilkhycpnagssa'
+EMAIL_HOST_PASSWORD = 'ejqqaudxmordrcnd'

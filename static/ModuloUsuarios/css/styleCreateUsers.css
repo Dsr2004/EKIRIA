@@ -108,6 +108,17 @@ form {
     width: 100%;
 }
 
+.form div p {
+    padding: 0px!important;
+    text-align: start;
+    font-family: 'Poppins', sans-serif;
+    font-weight: bolder;
+    font-size: 14px;
+    color: #ff3b4f;
+    outline: none !important;
+    margin-bottom: 0px;
+}
+
 form select {
     border: 1px solid #dadce0;
     border-radius: 4px;
@@ -129,18 +140,19 @@ form input {
     outline: transparent;
     padding: 11px 16px;
     transition: border .3s, box-shadow .3s;
-    width: calc(100% - 3px);
+    width: calc(100% - 36px);
 }
 
 form .fec,
 form .mun,
-form .tipo {
+form .tipo,
+form .cod {
     display: grid;
     grid-template-columns: 1fr 1fr;
 }
 
 form .fec input {
-    width: calc(100% - 3px);
+    width: calc(100% - 36px);
 }
 
 form .mun select,
@@ -160,7 +172,7 @@ form .fec b {
 }
 
 form h1 {
-    color: var(--Purple);
+    color: var(--morado);
     text-align: center;
 }
 
@@ -190,6 +202,21 @@ form h1 {
     grid-gap: 10px;
 }
 
+.Error {
+    width: 100%;
+    height: auto;
+    padding: 5px 10px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 14px;
+    background-color: #f1000034;
+    border: 0.1px solid #f1000079;
+    color: #b40707;
+}
+
+sup {
+    color: rgb(196, 0, 0);
+}
+
 
 /* Icono mostrar input password */
 
@@ -198,10 +225,23 @@ form h1 {
     width: 100%;
 }
 
+sup {
+    color: rgb(196, 0, 0);
+}
+
 .contenido form label i {
     position: absolute;
-    top: 16px;
+    top: 9px !important;
     right: 10px;
+    font-size: 1.2em;
+    color: #979797;
+    cursor: pointer;
+}
+
+.contenido form .rightMove label i {
+    position: absolute;
+    top: 9px !important;
+    right: 50px;
     font-size: 1.2em;
     color: #979797;
     cursor: pointer;
@@ -213,15 +253,4 @@ form h1 {
 
 .contenido form label i.hide {
     display: none;
-}
-
-.Error {
-    width: 100%;
-    height: auto;
-    padding: 5px 10px;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    font-size: 14px;
-    background-color: #f1000034;
-    border: 0.1px solid #f1000079;
-    color: #b40707;
 }
