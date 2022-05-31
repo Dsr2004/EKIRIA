@@ -12,9 +12,11 @@ from Configuracion.models import cambios, cambiosFooter
 from Usuarios.models import Usuario
 from Ventas.forms import ServicioForm
 from Ventas.models import Servicio, Catalogo
+from Proyecto_Ekiria.Mixin.Mixin import PermissionDecorator, PermissionMixin
 
 
-class AgregarServicio(CreateView):#crear
+class AgregarServicio(CreateView,PermissionMixin):#crear
+    permission_required = ['add_servicio']
     model = Servicio
     form_class = ServicioForm
     template_name = "AgregarServicio.html"
@@ -45,7 +47,8 @@ class AgregarServicio(CreateView):#crear
         objeto.save()
         return redirect("Ventas:listarServicios")
 
-class EditarServicio(UpdateView):#actualizar
+class EditarServicio(UpdateView,PermissionMixin):#actualizar
+    permission_required = ['change_servicio']
     model = Servicio
     form_class = ServicioForm
     template_name = "EditarServicio.html" 
@@ -83,7 +86,8 @@ class EditarServicio(UpdateView):#actualizar
         objeto.save()
         return redirect("Ventas:listarServicios")
 
-class ListarServicio(ListView):#listar
+class ListarServicio(ListView,PermissionMixin):#listar
+    permission_required = ['view_servicio']
     queryset = Servicio.objects.all()
     context_object_name = "servicios"
     template_name = "ListarServicios.html"
@@ -110,11 +114,13 @@ class ListarServicio(ListView):#listar
         except:
             return redirect("IniciarSesion")
 
-class ServicioDetalle(DetailView):#detalle
+class ServicioDetalle(DetailView,PermissionMixin):#detalle
+    permission_required = ['view_servicio']
     queryset = Servicio.objects.all()
     context_object_name = "DetailSs"
     template_name = "Catalogo/Detalle_Servicio.html"
 
+@PermissionDecorator(['delete_servicio'])
 def CambiarEstadoServicio(request):
     if request.method == "POST":
         id = request.POST["estado"]

@@ -1,14 +1,15 @@
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView
-
+from Proyecto_Ekiria.Mixin.Mixin import PermissionDecorator, PermissionMixin
 from Configuracion.models import cambios, cambiosFooter
 from Usuarios.models import Usuario
 from Ventas.forms import Servicio_PersonalizadoForm
 from Ventas.models import Servicio_Personalizado, Pedido, PedidoItem
 
 
-class ServiciosPersonalizados(CreateView):
+class ServiciosPersonalizados(CreateView,PermissionMixin):
+    # permission_required = ['add_servicio_personalizado']
     model = Servicio_Personalizado
     form_class = Servicio_PersonalizadoForm
     template_name = "AddservicioPer.html"
@@ -44,7 +45,8 @@ class ServiciosPersonalizados(CreateView):
 
         return redirect("Ventas:carrito")
         
-class EditarServiciosPersonalizados(UpdateView):
+class EditarServiciosPersonalizados(UpdateView, PermissionMixin):
+    permission_required = ['change_servicio_personalizado']
     model = Servicio_Personalizado
     form_class = Servicio_PersonalizadoForm
     template_name = "Carrito/ActualizarServicioPer.html"

@@ -214,7 +214,6 @@ class ConfirmarCuenta(TemplateView):
             return response
 
 @login_required()
-@PermissionDecorator(['change_logentry'])
 def Perfil(request):
     UserSesion = if_User(request)
     cambiosQueryset = cambios.objects.all()
@@ -244,6 +243,7 @@ def if_admin(request):
                 return False
 
 @login_required()
+@PermissionDecorator(['change_usuario'])
 def EditarPerfil(request):  
     template_name = "UserInformation/EditarPerfil.html"
     UserSesion = if_User(request)
@@ -263,6 +263,7 @@ def EditarPerfil(request):
     return render(request, template_name, {"form":form, "User":UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
     
 @login_required()
+@PermissionDecorator(['add_usuario','change_usuario', 'delete_usuario', 'view_usuario'])
 def Change(request):
     UserSesion=""
     if request.session['pk']:
@@ -311,6 +312,7 @@ def Change(request):
     return render(request, 'UserInformation/ChangePassword.html', {"form":form, "User":UserSesion,'message':Error, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
 
 @login_required()
+@PermissionDecorator(['add_usuario','change_usuario', 'delete_usuario', 'view_usuario'])
 def Admin(request):
     UserSesion = if_admin(request)
     cambiosQueryset = cambios.objects.all()
@@ -324,7 +326,8 @@ def Admin(request):
     return render(request, template_name, {"Usuario":queryset,"contexto":Servicios, "User":UserSesion, "Vistas":Vistas, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
   
   
-class CreateUser(CreateView):
+class CreateUser(CreateView, PermissionMixin):
+    permission_required = ['add_usuario']
     model = Usuario
     form_class = Regitro
     template_name = 'UsersConfiguration/CreateUsers.html'
@@ -383,7 +386,8 @@ class CreateUser(CreateView):
         except:
             return context
 
-class UpdateUser(UpdateView):
+class UpdateUser(UpdateView,PermissionMixin):
+    permission_required = ['change_usuario']
     model = Usuario    
     template_name = 'UsersConfiguration/CreateUsers.html'
     form_class = Regitro
@@ -470,6 +474,7 @@ def Notification(request):
     cambiosfQueryset = cambiosFooter.objects.all()
     return render(request, "UserInformation/Notification.html", {"User":UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
     
+@PermissionDecorator(['delete_usuario'])
 def CambiarEstadoUsuario(request):
     print(request.POST)
     if request.method=="POST":
