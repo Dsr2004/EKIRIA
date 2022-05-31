@@ -446,7 +446,8 @@ textarea {
     text-decoration: none;
 }
 
-input[type='number'] {
+.contactenos input[type='number'],
+.contenedorcambios input[type='text'] {
     writing-mode: horizontal-tb !important;
     text-rendering: auto;
     color: none!important;
@@ -470,7 +471,8 @@ input[type='number'] {
     border-image: none;
 }
 
-input[type='text'] {
+.contactenos input[type='text'],
+.contenedorcambios input[type='number'] {
     writing-mode: horizontal-tb !important;
     text-rendering: auto;
     color: none!important;
