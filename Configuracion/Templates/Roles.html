@@ -30,7 +30,6 @@
                 <th scope="col">Eliminar</th>
 
                 <!-- <th scope="col">Estado</th> -->
-<<<<<<< HEAD
               </tr>
             </thead>
             <tbody>
@@ -49,29 +48,6 @@
                   <td><a type="button" class="btn btn-outline-primary"  href="{% url 'Admin' Rol.id %}">Agregar <br>Permisos</a></td>
                   <!-- <td><form method="POST" action="{%url 'estado' %}" id="estadoRol" > -->
                         <!-- <div class="form-check form-switch"> 
-=======
-            </tr>
-        </thead>
-        <tbody>
-            {%if roles%} {%for Rol in roles%}
-            <tr>
-                <th scope="row">{{Rol.id}}</th>
-                <td>{{Rol.name}}</td>
-
-                {% if Rol.id > 6%}
-                <td><button type="button" class="btn btn-outline-success" onclick="abrir_modal_editar ('{% url 'updateRol' Rol.id %}')">Editar</button></td>
-
-                {% else %}
-                <td>Este rol no se puede Editar</td>
-                {% endif %} {% if Rol.id > 6%}
-                <td><a type="button" class="btn btn-outline-primary" href="{% url 'Admin' Rol.id %}">Agregar <br>Permisos</a></td>
-
-                {% else %}
-                <td>Este rol no permite cambios de permisos</td>
-                {% endif %}
-                <!-- <td><form method="POST" action="{%url 'estado' %}" id="estadoRol" > -->
-                <!-- <div class="form-check form-switch"> 
->>>>>>> 73670f39644732fc0c44980e3390a507138ba4a3
                           {%csrf_token%}
                             <input class="form-check-input" type="checkbox" name="estado" onclick="ds('{{Rol.id}}')"></div>
                             <label class="switch"></label> -->

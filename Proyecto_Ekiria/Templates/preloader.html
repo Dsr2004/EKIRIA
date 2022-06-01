@@ -109,21 +109,14 @@
             let texto = document.getElementById("body-content-menu");
             texto.style.backgroundColor = colorFondo;
 
-            let TipoLetra = "{{cambio.Tipo_Letra}}"
             let body = document.querySelectorAll(".content");
-            body.forEach(texto => {
-                if (texto.style.fontFamily = TipoLetra) {
-                    texto.style.fontFamily = TipoLetra
-                    texto = texto.style.fontFamily = TipoLetra;
-                }
-            });
-
+            
+            let TipoLetra = "{{cambio.Tipo_Letra}}"
             let ColorLetra = "{{cambio.Color_Letra}}";
             body.forEach(textos => {
                 if (textos.style.color = ColorLetra) {
                     textos.style.color = ColorLetra
-                    textos = textos.style.color = ColorLetra
-
+                    textos.style.fontFamily = TipoLetra
                 }
             });
             let textarea = document.getElementById('TextoEditar')

@@ -8,6 +8,7 @@ from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.generic import View, TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
+from Proyecto_Ekiria.Mixin.Mixin import PermissionDecorator, PermissionMixin
 
 from Configuracion.models import cambios, cambiosFooter
 from django.conf import settings
@@ -38,7 +39,8 @@ def conversor12a24(str1):
     else: 
         return str(int(str1[:1]) + 12) + str1[1:5] 
 
-class AgregarCita(TemplateView):
+class AgregarCita(TemplateView,PermissionMixin):
+    permission_required = ['add_cita']
     template_name = "AgregarCita.html"
     def get_context_data(self, *args, **kwargs):
         context = super(AgregarCita, self).get_context_data(**kwargs)
@@ -61,7 +63,8 @@ class AgregarCita(TemplateView):
             print("desde Agregar cita: ", e)
         return context
 
-class ListarCita(ListView):
+class ListarCita(ListView,PermissionMixin):
+    permission_required = ['view_cita']
     queryset = Cita.objects.all()
     context_object_name = "citas"
     template_name = "ListarCitas.html"
@@ -85,7 +88,8 @@ class ListarCita(ListView):
         except:
             return context
     
-class EditarCitaDetalle(DetailView):
+class EditarCitaDetalle(DetailView,PermissionMixin):
+    permission_required = ['change_cita']
     model = Cita
     template_name = "DetalleEditarCita.html"
     form_class = CitaForm
@@ -138,7 +142,8 @@ class EditarCitaDetalle(DetailView):
 
         return context
 
-class EditarCita(ActualiarCitaMixin, UpdateView): 
+class EditarCita(ActualiarCitaMixin, UpdateView,PermissionMixin): 
+    permission_required = ['change_cita','view_cita','add_cita']
     model = Cita
     template_name = "EditarCita.html"
     form_class = CitaForm
@@ -180,7 +185,8 @@ class EditarCita(ActualiarCitaMixin, UpdateView):
     def post(self, request, *args, **kwargs):
         pass
 
-class EditarCitaCliente(ActualiarCitaClienteMixin, UpdateView): 
+class EditarCitaCliente(ActualiarCitaClienteMixin, UpdateView, PermissionMixin): 
+    permission_required = ['change_cita','view_cita','add_cita']
     model = Cita
     template_name = "EditarCitaCliente.html"
     form_class = CitaForm
@@ -219,7 +225,8 @@ class EditarCitaCliente(ActualiarCitaClienteMixin, UpdateView):
       
         return context
     
-class DetalleCitaCliente(DetailView):
+class DetalleCitaCliente(DetailView,PermissionMixin):
+    permission_required = ['change_cita','view_cita','add_cita']
     model = Cita
     template_name = "DetalleCitaCliente.html"
 
@@ -267,9 +274,10 @@ class DetalleCitaCliente(DetailView):
 
         return context
 
-class CambiarEstadoDeCita(TemplateView):
-   template_name = "DetalleCita.html"
-   def post(self, request, *args, **kwargs):
+class CambiarEstadoDeCita(TemplateView,PermissionMixin):
+    permission_required = ['delete_cita']
+    template_name = "DetalleCita.html"
+    def post(self, request, *args, **kwargs):
         id = request.POST["estado"]
         update=Cita.objects.get(id_cita=id) 
         estatus=update.estado
@@ -306,7 +314,8 @@ class CambiarEstadoDeCita(TemplateView):
             return redirect("Ventas:listarCitas")
         return HttpResponse(update)
 
-class CancelarCita(View):
+class CancelarCita(View,PermissionMixin):
+    permission_required = ['delete_cita']
     model = Cita
     def post(self, request, *args, **kwargs):
         if request.is_ajax():
@@ -338,7 +347,8 @@ class CancelarCita(View):
                 print("DESDE CANCELAR CITA: ", e)
         return HttpResponse("Se ha cancelado la cita")
 
-class AgandarCita(CreateView):
+class AgandarCita(CreateView,PermissionMixin):
+    permission_required = ['add_cita']
     model = Cita
     form_class = CitaForm
     template_name = "TerminarPedido.html"
@@ -443,6 +453,7 @@ class AgandarCita(CreateView):
                 return response
 
 class BuscarDisponibilidadEmpleado(View):
+    permission_required = ['view_calendario']
     def post(self,request,*args,**kwargs):
         accion=request.POST["accion"]
         if accion == "BuscarEmpleado":

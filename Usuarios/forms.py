@@ -348,7 +348,6 @@ class EditUser(forms.ModelForm):
         model = Usuario
         
         fields=[
-            'img_usuario',
             'username',
             'nombres',
             'apellidos',
@@ -360,15 +359,9 @@ class EditUser(forms.ModelForm):
             'num_documento',
             'municipio',
             'direccion',
-            'cod_postal',
-            'estado'
+            'cod_postal'
         ]
         widgets = {
-            'estado': forms.HiddenInput(
-                attrs={
-                    'value':'0',
-                }
-            ),
             'email': forms.EmailInput(
                 attrs={
                     'class':'form-control',
@@ -377,15 +370,6 @@ class EditUser(forms.ModelForm):
                     'autocomplete':'off',
                     'placeholder':'Email (*)',
                     'name':'email',
-                }
-            ),
-            'img_usuario': forms.FileInput(
-                attrs={
-                    'class':'form-control',
-                    'id':'imagen',
-                    'style':'display:none;',
-                    'type':'file',
-                    'name':'img_usuario',
                 }
             ),
             'username': forms.TextInput(
@@ -522,10 +506,3 @@ class EditUser(forms.ModelForm):
         if len(num)!=10:
             raise forms.ValidationError('Por favor ingresa un número de celular correcto')
         return num
-    
-    def save(self,commit = True):
-        user = super().save(commit = False)
-        user.set_password(self.cleaned_data['password1'])
-        if commit:
-            user.save()
-        return user
