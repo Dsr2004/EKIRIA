@@ -36,6 +36,7 @@ class ServicioForm(forms.ModelForm):
             self.fields['slug'].required = False
             self.fields['tipo_servicio_id'].required = True
 
+
         
 class Tipo_servicioForm(forms.ModelForm):
     class Meta:

@@ -23,11 +23,7 @@ class AdminVentas(TemplateView):
         formTipo_Servicio = Tipo_servicioForm
         servicios=Catalogo.objects.all()
 
-        paginado=Paginator(servicios, 5)
-        pagina = request.GET.get("page") or 1
-        posts = paginado.get_page(pagina)
-        pagina_actual=int(pagina)
-        paginas=range(1,posts.paginator.num_pages+1)
+       
         #autenticacion usuario
         try:
             if request.session:
@@ -46,9 +42,7 @@ class AdminVentas(TemplateView):
         context={
             'Tipo_Servicios':Tipo_servicio.objects.all(),
             'form_Tipo_Servicio':formTipo_Servicio,
-            'servicios':posts,
-            'paginas':paginas,
-            'pagina_actual':pagina_actual,
+            'servicios':servicios,
             "User":UserSesion,
             'cambios':cambiosQueryset,
             'footer':cambiosfQueryset

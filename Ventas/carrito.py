@@ -7,7 +7,7 @@ from .models import *
 
 
 @login_required()
-@PermissionDecorator([' delete_pedidoItem', 'change_pedidoItem'])
+# @PermissionDecorator([' delete_pedidoItem', 'change_pedidoItem'])
 def actualizarItem(request):
 
     data = request.POST

@@ -25,7 +25,7 @@
       </div> 
     <div class="col-md-5 ContainerHistorialCitas">
         <legend>Historial</legend>
-        <table class="table  historialCitas" >
+        <table class="table  historialCitas" id="HistorialTable">
             <thead>
               <tr>
                 <th scope="col">Fecha</th>
@@ -48,7 +48,7 @@
                       <td><div class="containerEstadoCita Realizado"><p class="EstadoCitaTextoCalendario">Realizado</p></div></td>
                       {% else %}
                       <td><div class="containerEstadoCita EnEspera"><p class="
-                        EstadoCitaTextoCalendario">Pedndiente</p></div></td>
+                        EstadoCitaTextoCalendario">Pendiente</p></div></td>
                       {% endif %}
                     {% endif %}
                    
@@ -64,19 +64,24 @@
 </div>
 
 
-<!-- scripts -->
-<!-- <script src="/static/Ventas/js/bootstrap.min.js"></script>
-<script src="/static/Ventas/plugins/jquery-ui/jquery-ui.min.js"></script>
-<script src="/static/Ventas/plugins/moment/moment.js"></script>
-<script src="/static/Ventas/plugins/fullcalendar/js/fullcalendar.min.js"></script>
-<script src="/static/Ventas/js/jquery.fullcalendar.js"></script> -->
-
 
 {% endblock Contenido %}
 
 {%block scripts%}
 <script src="{% static 'Plugins/fullcalendar/lib/main.js' %}"></script>
 <script src="{% static 'Plugins/fullcalendar/lib/locales-all.js' %}"></script>
+  
+<script>
+   $(document).ready(function () {
+      $('#HistorialTable').DataTable({
+            "language": {
+               "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+           },
+           responsive:true
+      });
+    });
+</script>
+
 <script>
 
 
