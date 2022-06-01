@@ -10,9 +10,12 @@
     <link rel="icon" href="/static/Proyecto_Ekiria/Img/Logo Ekiria.png">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+     <!--  Datatables  -->
+     <link rel="stylesheet" type="text/css" href="{%static 'Plugins/DataTables/jquery.dataTables.min.css' %}" />
 
-    <!-- DATATABLES -->
-   <link rel="stylesheet" type="text/css" href="{% static 'Plugins/DataTables/datatables.css' %}">
+     <!--  extension responsive  -->
+     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.3.0/css/responsive.dataTables.min.css">
+ 
 </head>{% endblock head %}
 
 {% block Contenido %}
@@ -26,7 +29,7 @@
 
  </div>
 <div class="container" id="containerInicio">
-   <table id="listarCitasTable"  style="width:100%">
+   <table id="listarCitasTable"  style="width:100%" class="table" >
       <thead>
          <tr>
             <th>Cliente</th>
@@ -68,7 +71,6 @@
       {% endif %}
       </tbody>
   </table>
-
      
 </div>
 
@@ -76,8 +78,10 @@
 {% block scripts %}
 <script src="/static/Ventas/js/Ventas.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-<!-- DATATABLE -->
-<script src="{% static 'Plugins/DataTables/datatables.js' %}"></script>
+  <!--   Datatables-->
+  <script type="text/javascript" src="{%static 'Plugins/DataTables/jquery.dataTables.min.js' %}"></script>
+  <!-- extension responsive -->
+  <script src="https://cdn.datatables.net/responsive/2.3.0/js/dataTables.responsive.min.js"></script>
 
 <script>
    $(document).ready(function () {
@@ -85,9 +89,9 @@
             "language": {
                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
            },
-         responsive:true
+           responsive:true
       });
-  });
+    });
 </script>
 
 {% endblock scripts %}

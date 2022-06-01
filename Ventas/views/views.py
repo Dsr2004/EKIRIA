@@ -45,7 +45,7 @@ class Catalogo(ListView, PermissionMixin):
         except:
             return context
     
-@PermissionDecorator(['view_pedido', 'view pedidoItem'])    
+# @PermissionDecorator(['view_pedido', 'view pedidoItem'])    
 def Carrito(request):
     try:
         cliente=Usuario.objects.get(username=request.session['username'])
