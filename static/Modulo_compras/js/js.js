@@ -66,12 +66,8 @@ function modificarprov(url) {
 };
 
 function agregartp(url) {
-    $("#agregar_tp").load(url, function() {
+    $("#agregartp").load(url, function() {
         $(this).modal('show')
-    })
-
-    $("#agregar_prod").load(url, function() {
-        $(this).modal('hidden')
     })
 };
 
