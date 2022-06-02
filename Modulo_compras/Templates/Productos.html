@@ -15,6 +15,8 @@
     <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
     <link rel="stylesheet" href="sweetalert2.min.css">
     <script src="/static/bootstrap/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="/static/Proyecto_Ekiria/css/styleTablesInformations.css">
+    <link rel="stylesheet" href="/static/ModuloUsuarios/css/styleAdministration.css">
 
 
 </head>
@@ -23,6 +25,10 @@
 
 
 <div class="container">
+
+
+
+
     <div class="Table Content-table">
         <div class="Information">
             <div class="cardHeader">
@@ -30,20 +36,19 @@
             </div>
             <div class="Table Add">
                 <button type="button" class="Add img" onclick="agregarprod('{%url 'crearprod' %}')">
-                    <i class="fas fa-user-plus"></i>
-                </button>
+                  <i class="fas fa-user-plus"></i>
+              </button>
             </div>
-            <table>
+            <table id="TableProveedores" class="display nowrap" cellspacing="0" width="100">
                 <thead>
                     <tr>
-                        <th scope="col">nombre</th>
-                        <th scope="col">precio</th>
-                        <th scope="col">proveedor</th>
-                        <th scope="col">tipo de producto</th>
-                        <th scope="col">Cantidad</th>
-                        <th scope="col">estado</th>
-                        <th scope="col">editar</th>
-
+                        <td scope="col">Nombre</td>
+                        <td scope="col">Precio</td>
+                        <td scope="col">Proveedor</td>
+                        <td scope="col">Tipo</td>
+                        <td scope="col">Cantidad</td>
+                        <td scope="col">Borrar</td>
+                        <td scope="col">Editar</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -76,6 +81,17 @@
 
 
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td scope="col">Nombre</td>
+                        <td scope="col">Precio</td>
+                        <td scope="col">Proveedor</td>
+                        <td scope="col">Tipo</td>
+                        <td scope="col">Cantidad</td>
+                        <td scope="col">Borrar</td>
+                        <td scope="col">Editar</td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>
@@ -96,8 +112,9 @@
 
 <script src="/static/Proyecto_Ekiria/js/jsMenuL.js"></script>
 <script src="/static/Modulo_compras/js/js.js"></script>
-<script src="sweetalert2.all.min.js"></script>
+<script src="/static/Proyecto_Ekiria/js/jsTablesInformations.js"></script>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="sweetalert2.min.js"></script>
 {%endblock scripts%}
 
 </html>

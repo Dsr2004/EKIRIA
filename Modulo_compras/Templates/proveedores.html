@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="/static/Proyecto_Ekiria/css/styleTablesInformations.css">
     <link rel="stylesheet" href="/static/ModuloUsuarios/css/styleAdministration.css">
 
+    <link rel="stylesheet" href="sweetalert2.min.css">
+
 
 </head>
 {% endblock head %} {% block Contenido %}
@@ -37,7 +39,6 @@
                         <td scope="col">Nombre</td>
                         <td scope="col">Télefono</td>
                         <td scope="col">Celular</td>
-                        <td scope="col">Descripción</td>
                         <td scope="col">Estado</td>
                         <td scope="col">Borrar</td>
                         <td scope="col">Editar</td>
@@ -50,7 +51,6 @@
                         <td>{{prov.nombre}}</td>
                         <td>{{prov.telefono}}</td>
                         <td>{{prov.celular}}</td>
-                        <td>{{prov.descripcion}}</td>
                         <td>
                             <div class="form-switch">
                                 <form action="{%url 'camestado' %}" method="POST" id="camestado">
@@ -68,7 +68,7 @@
                             <button type="button" style="background: none;color: inherit;border: none;padding: 0;font: inherit;cursor: pointer;outline: inherit;" onclick="modificarprov('{%url 'modificarprov' prov.id_proveedor %}')"><i class="mdi mdi-account-edit"></i>   
                             </button>
 
-                        </td> 
+                        </td>
                     </tr>
 
                     {%endfor%} {% else %}
@@ -84,7 +84,6 @@
                         <td scope="col">Nombre</td>
                         <td scope="col">Télefono</td>
                         <td scope="col">Celular</td>
-                        <td scope="col">Descripción</td>
                         <td scope="col">Estado</td>
                         <td scope="col">Borrar</td>
                         <td scope="col">Editar</td>
@@ -115,6 +114,8 @@
 <script src="/static/Proyecto_Ekiria/js/jsMenuL.js"></script>
 <script src="/static/Modulo_compras/js/js.js"></script>
 <script src="/static/Proyecto_Ekiria/js/jsTablesInformations.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="sweetalert2.min.js"></script>
 {%endblock scripts%}
 
 </html>

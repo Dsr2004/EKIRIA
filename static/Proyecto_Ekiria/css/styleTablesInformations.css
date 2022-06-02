@@ -77,11 +77,10 @@ table.dataTable {
 
 .Table.Content-table .Information table {
     width: 100%;
-    border: 1px solid;
 }
 
 .sorting_1::before {
-    margin-top: -5px !important;
+    margin-top: -10px !important;
 }
 
 .dataTables_filter label,
@@ -90,25 +89,40 @@ table.dataTable {
 }
 
 .dataTables_length label select {
-    position: relative;
-    border-radius: 20px;
-    padding-left: 20px;
-    font-size: 18px;
-    width: 100%;
-    outline: none;
-    border: none;
-    box-shadow: 0 7px 25px rgba(0, 0, 0, 0.1);
+    position: relative!important;
+    border-radius: 10px!important;
+    padding: 5px 10px!important;
+    font-size: 18px!important;
+    width: 100%!important;
+    outline: none!important;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2)!important;
 }
 
 .dataTables_filter label input {
-    position: relative;
-    border-radius: 40px;
-    padding: 5px 15px;
-    font-size: 18px;
-    width: 100%;
-    outline: none;
-    border: none;
-    box-shadow: 0 7px 25px rgba(0, 0, 0, 0.18);
+    position: relative !important;
+    border-radius: 10px !important;
+    padding: 5px 15px!important;
+    font-size: 18px !important;
+    width: 100% !important;
+    outline: none !important;
+    box-shadow: 0 7px 25px rgba(0, 0, 0, 0.18)!important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    position: relative !important;
+    border-radius: 10px !important;
+    font-size: 18px !important;
+    outline: none !important;
+    box-shadow: 0 7px 25px rgba(0, 0, 0, 0.18)!important;
+}
+
+,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    position: relative !important;
+    border-radius: 10px !important;
+    font-size: 18px !important;
+    outline: none !important;
+    box-shadow: 0 7px 25px rgba(0, 0, 0, 0.18)!important;
 }
 
 .Table.Content-table .Information table thead td,
@@ -126,23 +140,6 @@ table.dataTable {
     display: grid;
     grid-template-columns: repeat(15, 1fr);
 } */
-
-.Table.Content-table .Information table tbody tr:last-child {
-    border: 1px solid;
-}
-
-.Table.Content-table .Information table thead tr:last-child {
-    border: 1px solid;
-}
-
-.Table.Content-table .Information table tfoot tr:last-child {
-    border: 1px solid;
-}
-
-.Table.Content-table .Information table tr td {
-    padding: 0 10px;
-    text-align: center;
-}
 
 .Table.Content-table .Information table tr td.ver_mas {
     display: none;
@@ -180,6 +177,11 @@ table.dataTable {
 .form-switch {
     margin: 0!important;
     padding: 0!important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    color: #fff !important;
+    background: linear-gradient(to bottom, rgb(119, 119, 119) 0%, #800080 100%);
 }
 
 
