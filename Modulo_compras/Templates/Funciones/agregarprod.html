@@ -34,7 +34,8 @@
             </b>
         </div>
         <table class="table">
-            <tbody id="DropTipo" style="width: 100%; display:none;"></tbody>
+            <tbody id="DropTipo" style="width: 100%; display:none;">
+            </tbody>
         </table>
         <p id="tipo_producto-p" class="text-danger"></p>
 
@@ -55,7 +56,6 @@
             <tbody id="tbody">
                 {% for tipo in tipo %}
                 <tr class="table-light focus" draggable="true" id="caja">
-
                     <th style="display: none;">{{tipo.pk}}</th>
                     <th scope="row">{{tipo.nombre}}</th>
                     <th scope="row" class="estado">{{tipo.estado}}</th>

@@ -44,10 +44,8 @@ function agregarprod(url) {
     window.location.href = "../crearprod/";
 };
 
-function modificarprod(url) {
-    $("#modificar_prod").load(url, function() {
-        $(this).modal('show')
-    })
+function modificarProb(id) {
+    window.location.href = "../modificarprod/" + id;
 
 };
 

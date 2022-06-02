@@ -51,7 +51,6 @@ class Crearprod(CreateView):
         context={}
         producto_form = self.form_class(request.POST or None)
         if producto_form.is_valid():
-            print(request.POST['tipo_producto'])
             producto = self.model(
                 nombre = producto_form.cleaned_data.get('nombre'),
                 proveedor = producto_form.cleaned_data.get('proveedor'),
@@ -91,28 +90,37 @@ class Crearprod(CreateView):
 class Modificarprod(UpdateView):
     model= Producto
     form_class=ProductosForm
-    template_name='modalprod/modificarprod.html'
+    template_name='Funciones/agregarprod.html'
 
     def post(self,request, *args, **kwargs):  
             producto_form = ProductosForm(request.POST)
+            context={}
             if producto_form.is_valid():
                 producto_form.save()
                 return redirect('listarprod')
             else:
-                errors=producto_form.errors
-                mensaje=f"{self.model.__name__} no ha sido registrado"
-                response=JsonResponse({"errors":errors,"mensaje":mensaje})
-                response.status_code=400
-                return response
+                UserSesion=if_admin(self.request)
+                cambiosQueryset = cambios.objects.all()
+                cambiosfQueryset = cambiosFooter.objects.all()
+                tipo_producto = Tipo_producto.objects.all()
+                context["User"]=UserSesion
+                context['form']=producto_form
+                context['cambios']=cambiosQueryset
+                context['footer']=cambiosfQueryset
+                context['tipo']=tipo_producto
+                context['errors'] = producto_form.errors
+                return render(request, self.template_name, context)
     def get_context_data(self, *args, **kwargs):
         context = super(Modificarprod, self).get_context_data(**kwargs)
         try:
             UserSesion=if_admin(self.request)
             cambiosQueryset = cambios.objects.all()
             cambiosfQueryset = cambiosFooter.objects.all()
+            tipo_producto = Tipo_producto.objects.all()
             context["User"]=UserSesion
             context['cambios']=cambiosQueryset
             context['footer']=cambiosfQueryset
+            context['tipo']=tipo_producto
             return context
         except:
             return context
