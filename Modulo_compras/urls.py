@@ -4,7 +4,6 @@ from Modulo_compras.views import *
 from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
-    path ("listartp/", Listartp, name="listartp"),
     path ("creartp/",login_required(Creartp.as_view()), name="creartp"),
     path ("listarcompra/", Listcompra, name="listarcompra"),
     path ("crearcompra/", login_required(Crearcompra.as_view()), name="crearcompra"),

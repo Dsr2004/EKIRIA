@@ -82,7 +82,6 @@ main {
     padding: 12px 20px;
     transition: .5s ease all;
     font-size: 15px;
-    font-family: 'Noto Sans', sans-serif;
     text-transform: uppercase;
     letter-spacing: 2px;
 }
@@ -175,14 +174,12 @@ main {
 
 .cardName {
     font-size: 25px !important;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 
 /* anuncio de no registros */
 
 .anunre {
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-size: 40px;
     margin-left: 25%;
 }
@@ -198,4 +195,114 @@ main {
 
 .form-switch .form-check-input {
     left: 0 !important;
+}
+
+
+/*    Funciones compras     */
+
+.GridProductos {
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: 65% 35%;
+    grid-gap: 20px;
+}
+
+@media (max-width: 700px) {
+    .GridProductos {
+        margin-top: 40px;
+        display: grid;
+        grid-template-columns: 100%;
+        grid-gap: 20px;
+    }
+}
+
+.GridProductos .fomularioProducto,
+.GridProductos .tipo_productoroductos {
+    padding: 10px;
+    width: 100%;
+    border-radius: 20px;
+    border: 0.3px solid rgb(146, 146, 146);
+    height: 70vh;
+    box-shadow: 0px 7px 20px rgba(0, 0, 0, 0.28);
+    overflow: auto;
+}
+
+.GridProductos .fomularioProducto h1 {
+    font-size: 24px;
+}
+
+.GridProductos .fomularioProducto h1 sup {
+    color: #e93737;
+}
+
+.GridProductos .fomularioProducto #labelTp {
+    border-radius: 5px;
+    border: 0.5px solid rgba(0, 0, 0, 0.185);
+    text-align: center;
+    width: 100%;
+    height: 200px;
+}
+
+.GridProductos .fomularioProducto #labelTp b {
+    position: relative;
+    font-size: 38px;
+    margin-top: 100px;
+    color: rgba(0, 0, 0, 0.336);
+}
+
+.GridProductos .tipo_productoroductos table {
+    width: 100%!important;
+}
+
+.dataTables_info {
+    display: none;
+}
+
+.GridProductos .tipo_productoroductos i {
+    font-size: 24px;
+    position: relative;
+    right: -5px;
+    top: -10px;
+    float: right;
+}
+
+.GridProductos .tipo_productoroductos h1 {
+    text-align: center;
+    font-size: 24px;
+}
+
+.dataTables_length {
+    display: none;
+}
+
+.dataTables_filter label {
+    position: relative;
+    top: -10px;
+    margin-left: -100%!important;
+    width: 100%!important;
+}
+
+.dataTables_filter label input {
+    position: relative !important;
+    border-radius: 10px !important;
+    padding: 5px 15px!important;
+    font-size: 18px !important;
+    width: 80% !important;
+    outline: none !important;
+    box-shadow: 0 7px 25px rgba(0, 0, 0, 0.18)!important;
+}
+
+#DropTipo {
+    margin-top: 10px;
+}
+
+#DropTipo tr th {
+    width: 100%;
+    border-radius: 10px;
+    text-align: center;
+    background-color: rgba(0, 255, 55, 0.5);
+}
+
+#DropTipo .estado {
+    display: none;
 }

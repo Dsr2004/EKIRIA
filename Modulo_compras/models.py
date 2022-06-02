@@ -10,7 +10,6 @@ class Proveedor(models.Model):
     nombre=models.CharField(max_length=20,blank=False, null=False, unique=True)
     telefono=models.CharField(max_length=10,blank=True, null=True)
     celular=models.CharField(max_length=10,blank=False, null=False, unique=True)
-    descripcion=models.TextField(max_length=200,blank=True, null=True)
     estado=models.BooleanField('estado', default=True)
 
     class Meta:
@@ -41,9 +40,8 @@ class Tipo_producto(models.Model):
 class Producto(models.Model):
     id_producto=models.AutoField("id_producto",primary_key=True, unique=True)
     nombre=models.CharField('nombre del producto',max_length=20,blank=False, null=False, unique=True)
-    precio=models.IntegerField('precio',blank=False, null=False)
     proveedor=models.ForeignKey(Proveedor,on_delete=models.CASCADE)
-    tipo_producto=models.ForeignKey(Tipo_producto, verbose_name="Tipo de producto",on_delete=models.CASCADE,null=True, blank=True, db_column="tipo_producto_id")
+    tipo_producto=models.ForeignKey(Tipo_producto, verbose_name="Tipo de producto",on_delete=models.CASCADE,null=False, blank=True, db_column="tipo_producto_id")
     cantidad=models.IntegerField('cantidad',blank=False, null=False)
     estado=models.BooleanField('estado', default=True)
 

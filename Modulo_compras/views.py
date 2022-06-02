@@ -42,58 +42,48 @@ def Listarprov(request):
     prov_form=ProveedorForm
     return render(request,'proveedores.html',{'prov_form':prov_form , 'proveedores': Proveedores, 'User':UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
 
-@login_required()
-def Listartp(request):
-    UserSesion=if_admin(request)
-    cambiosQueryset = cambios.objects.all()
-    cambiosfQueryset = cambiosFooter.objects.all()
-    Tp=Tipo_producto.objects.all()
-    tp_form=Tipo_productoForm
-    return render(request,'tipoprod.html',{'tp_form':tp_form , 'Tp': Tp, 'User':UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
-
-
-# class Tipoprod(View):
-#     model= Tipo_producto
-#     form_class=Tipo_productoForm
-#     template_name='tipoprod.html'
-
-#     def post(self,request, *args, **kwargs):  
-#             prov_form = ProveedorForm(request.POST,instance=self.get_object())
-#             if prov_form.is_valid():
-#                 prov_form.save()
-#                 return redirect('listarprov')
-#             else:
-#                 errors=prov_form.errors
-#                 mensaje=f"{self.model.__name__} no ha sido registrado"
-#                 response=JsonResponse({"errors":errors,"mensaje":mensaje})
-#                 response.status_code=400
-#                 return response
-
 class Crearprod(CreateView):
     model= Producto
     form_class=ProductosForm
-    template_name='modalprod/agregarprod.html'
+    template_name='Funciones/agregarprod.html'
 
     def post(self,request, *args, **kwargs):  
-            producto_form = ProductosForm(request.POST)
-            if producto_form.is_valid():
-                producto_form.save()
-                return redirect('listarprod')
-            else:
-                errors=producto_form.errors
-                mensaje=f"{self.model.__name__} no ha sido registrado"
-                response=JsonResponse({"errors":errors,"mensaje":mensaje})
-                response.status_code=400
-                return response
+        context={}
+        producto_form = self.form_class(request.POST or None)
+        if producto_form.is_valid():
+            print(request.POST['tipo_producto'])
+            producto = self.model(
+                nombre = producto_form.cleaned_data.get('nombre'),
+                proveedor = producto_form.cleaned_data.get('proveedor'),
+                tipo_producto = producto_form.cleaned_data.get('tipo_producto'),
+                cantidad = 0,
+                estado = 1
+            )
+            producto.save()
+            return redirect('listarprod')
+        else:
+            UserSesion=if_admin(self.request)
+            cambiosQueryset = cambios.objects.all()
+            cambiosfQueryset = cambiosFooter.objects.all()
+            tipo_producto = Tipo_producto.objects.all()
+            context["User"]=UserSesion
+            context['form']=producto_form
+            context['cambios']=cambiosQueryset
+            context['footer']=cambiosfQueryset
+            context['tipo']=tipo_producto
+            context['errors'] = producto_form.errors
+            return render(request, self.template_name, context)
     def get_context_data(self, *args, **kwargs):
         context = super(Crearprod, self).get_context_data(**kwargs)
         try:
             UserSesion=if_admin(self.request)
             cambiosQueryset = cambios.objects.all()
             cambiosfQueryset = cambiosFooter.objects.all()
+            tipo_producto = Tipo_producto.objects.all()
             context["User"]=UserSesion
             context['cambios']=cambiosQueryset
             context['footer']=cambiosfQueryset
+            context['tipo']=tipo_producto
             return context
         except:
             return context

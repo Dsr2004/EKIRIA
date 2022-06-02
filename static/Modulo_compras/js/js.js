@@ -41,10 +41,7 @@ function eliminarprov(id_proveedor) {
 };
 
 function agregarprod(url) {
-    $("#agregar_prod").load(url, function() {
-        $(this).modal('show')
-    })
-
+    window.location.href = "../crearprod/";
 };
 
 function modificarprod(url) {
@@ -69,12 +66,8 @@ function modificarprov(url) {
 };
 
 function agregartp(url) {
-    $("#agregar_tp").load(url, function() {
-        $(this).modal('show')
-    })
-
     $("#agregar_prod").load(url, function() {
-        $(this).modal('hidden')
+        $(this).modal('show')
     })
 };
 
@@ -216,7 +209,7 @@ function cambioestado(id) {
     let token = $("#camestado").find('input[name=csrfmiddlewaretoken]').val()
     swal.fire({
         title: '¿Estás seguro de cambiar el estado de este proveedor?',
-        text: "You won't be able to revert this!",
+        text: "Al cambiar el estado no se podrá usar este proveedor mientras este inhabilitado",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Si, estoy seguro',

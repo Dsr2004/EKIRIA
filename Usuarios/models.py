@@ -113,6 +113,9 @@ class Usuario(AbstractBaseUser):
     
     class Meta:
         db_table = 'usuarios'
+        permissions = [('Empleado',"Es un empleado"),
+                       ('Cliente',"Es un cliente"),
+                       ('Administrador',"Es un administrador"),]
 
     def __str__(self):
         return '{}'.format(self.nombres+' '+self.apellidos)

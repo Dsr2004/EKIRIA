@@ -15,18 +15,19 @@ class Regitro(forms.ModelForm):
     password1 = forms.CharField(label = "Contraseña", widget=forms.PasswordInput(
         attrs={
             'class':'form-control',
-            'id':"password",
+            'id':"password1",
             'requerid':'requerid',
             'placeholder':'Contraseña (*)',
-            'name':'password',
+            'name':'password1',
         }
     ))
     password2 = forms.CharField(label="Confirmar contraseña",widget=forms.PasswordInput(
         attrs={
             'class':'form-control',
-            'id':"password1",
+            'id':"password2",
             'requerid':'requerid',
             'placeholder':'Confirmar contraseña (*)',
+            'name':'password2'
         }
     ))
     
@@ -217,7 +218,6 @@ class Regitro(forms.ModelForm):
         """
         password1 = self.cleaned_data.get('password1')
         password2 = self.cleaned_data.get('password2')
-        
         if password1 and password2 and password1 != password2:
             raise forms.ValidationError('La Contraseña no coincide')
         if len(password1) <= 8:
@@ -226,7 +226,8 @@ class Regitro(forms.ModelForm):
             raise forms.ValidationError('la contraseña debe contener al menos un número')
         if any(chr.isupper() for chr in password1) is False:
             raise forms.ValidationError('la contraseña debe contener al menos una Mayúscula')
-        return password2
+        else:
+            return password2
     
     def save(self,commit = True):
         user = super().save(commit = False)
@@ -348,7 +349,6 @@ class EditUser(forms.ModelForm):
         model = Usuario
         
         fields=[
-            'img_usuario',
             'username',
             'nombres',
             'apellidos',
@@ -360,15 +360,9 @@ class EditUser(forms.ModelForm):
             'num_documento',
             'municipio',
             'direccion',
-            'cod_postal',
-            'estado'
+            'cod_postal'
         ]
         widgets = {
-            'estado': forms.HiddenInput(
-                attrs={
-                    'value':'0',
-                }
-            ),
             'email': forms.EmailInput(
                 attrs={
                     'class':'form-control',
@@ -377,15 +371,6 @@ class EditUser(forms.ModelForm):
                     'autocomplete':'off',
                     'placeholder':'Email (*)',
                     'name':'email',
-                }
-            ),
-            'img_usuario': forms.FileInput(
-                attrs={
-                    'class':'form-control',
-                    'id':'imagen',
-                    'style':'display:none;',
-                    'type':'file',
-                    'name':'img_usuario',
                 }
             ),
             'username': forms.TextInput(
@@ -522,10 +507,3 @@ class EditUser(forms.ModelForm):
         if len(num)!=10:
             raise forms.ValidationError('Por favor ingresa un número de celular correcto')
         return num
-    
-    def save(self,commit = True):
-        user = super().save(commit = False)
-        user.set_password(self.cleaned_data['password1'])
-        if commit:
-            user.save()
-        return user
