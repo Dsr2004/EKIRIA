@@ -115,16 +115,10 @@ def Carrito(request):
 class Calendario(TemplateView,PermissionMixin):
     permission_required = ['view_calendario']
     template_name = "Calendario.html"
-    # permission_required = 'auth.can_add_group'
-    # print(error)
-    # @method_decorator(login_required)
     def get(self, request, *args, **kwargs):
         UserSesion=if_User(request)
         cambiosQueryset = cambios.objects.all()
         cambiosfQueryset = cambiosFooter.objects.all()
-        # user = Usuario.objects.get(pk = request.session['pk'])
-        # print(user.rol.permissions.set[''])
-        #contexto
         citas=Cita.objects.filter(cliente_id=request.session['pk']).order_by('fecha_creacion')
       
         context={

@@ -105,6 +105,8 @@ class CitaForm(forms.ModelForm):
         self.fields['diaCita'].required = True
         self.fields['horaInicioCita'].required = True
         self.fields['empleado_id'].required = True
+        
+
 
 
 

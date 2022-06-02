@@ -182,8 +182,7 @@ class EditarCita(ActualiarCitaMixin, UpdateView,PermissionMixin):
       
         return context
 
-    def post(self, request, *args, **kwargs):
-        pass
+    
 
 class EditarCitaCliente(ActualiarCitaClienteMixin, UpdateView, PermissionMixin): 
     permission_required = ['change_cita','view_cita','add_cita']
@@ -222,8 +221,118 @@ class EditarCitaCliente(ActualiarCitaClienteMixin, UpdateView, PermissionMixin):
                 if not i.servicio_personalizado_id == None:
                     serviciosPerx.append(i)
                     context["serviciosPer"]=serviciosPerx
-      
+        form = self.form_class(instance=citax)
+        form["horaInicioCita"].initial = citax.horaInicioCita.strftime("%H:%M %p")
+        context["form"]=form
         return context
+    
+    def post(self, request, *args, **kwargs):
+        empleadoOriginal = self.get_object().empleado_id.id_usuario
+        empleado = request.POST["empleado_id"]
+        dia = request.POST["diaCita"]
+        hora = request.POST["horaInicioCita"]
+        descripcion = request.POST["descripcion"]
+        hoy = datetime.now()
+        hoy = hoy.strftime(BUEN_FORMATO_FECHA)
+        hoy = datetime.strptime(hoy, BUEN_FORMATO_FECHA)
+    
+    
+        errores = {}
+        if not hora:
+            errores["horaInicioCita"] = "Debe completar la hora de la cita."
+        if not dia:
+            errores["diaCita"] = "Debe completar el día  de la cita."
+        if dia:
+            try:
+                dia=datetime.strptime(dia, BUEN_FORMATO_FECHA)
+                if  dia < hoy:
+                    errores["diaCita"] = "El día de la cita no puede ser menor al día actual."
+            except:
+                errores["diaCita"] = "El día de la cita no es válido."
+        if not empleado:
+            errores["empleado_id"] = "Debe seleccionar un empleado que atienda su cita."
+       
+        if errores:
+            response = JsonResponse({"errores":errores})
+            response.status_code = 400
+            return response
+        else:
+            try:
+                hora = datetime.strptime(hora, "%H:%M %p")
+                horaOriginal = hora
+                hora = hora.strftime("%H:%M %p")
+                hora = conversor12a24(hora)
+            except:
+                errores["horaInicioCita"]="La hora de la cita no es válida."
+                response = JsonResponse({"errores":errores})
+                response.status_code = 400
+                return response
+            
+            empleado = Usuario.objects.get(id_usuario=empleado)
+            try:
+                cita = self.model.objects.get(id_cita=self.get_object().id_cita)
+                cita.empleado_id = empleado
+                cita.diaCita = dia
+                cita.horaInicioCita = hora
+                cita.descripcion = descripcion
+                cita.save()
+                try:
+                    cliente = self.get_object().cliente_id
+                    
+                    
+                    if empleado.id_usuario == empleadoOriginal:
+                        Servidor = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
+                        Servidor.starttls()
+                        Servidor.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+                        print("conexion establecida")
+
+                        mensaje = MIMEMultipart()
+                        mensaje['From'] = settings.EMAIL_HOST_USER
+                        mensaje['To'] = empleado.email
+                        mensaje['Subject'] = "Se han modificado los datos de una cita"
+
+                        cliente = f"{str(cliente.nombres).capitalize()} {str(cliente.apellidos).capitalize()}"
+                        empleadoN = f"{str(empleado.nombres).capitalize()} {str(empleado.apellidos).capitalize()}"
+                        content = render_to_string("Correo/ClienteModificoCita.html", {"cliente":cliente,"empleado":empleadoN, "dia":dia, "hora":horaOriginal,"url":self.get_object().id_cita})
+                        mensaje.attach(MIMEText(content, 'html'))
+
+                        Servidor.sendmail(settings.EMAIL_HOST_USER,
+                                            empleado.email,
+                                            mensaje.as_string())
+                    if empleado.id_usuario != empleadoOriginal:
+                        Servidor = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
+                        Servidor.starttls()
+                        Servidor.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+                        print("conexion establecida")
+
+                        mensaje = MIMEMultipart()
+                        mensaje['From'] = settings.EMAIL_HOST_USER
+                        mensaje['To'] = empleado.email
+                        mensaje['Subject'] = "Se le ha asignado una nueva cita"
+
+                        cliente = f"{str(cliente.nombres).capitalize()} {str(cliente.apellidos).capitalize()}"
+                        empleadoN = f"{str(empleado.nombres).capitalize()} {str(empleado.apellidos).capitalize()}"
+                        content = render_to_string("Correo/NuevoEmpleadoCita.html", {"cliente":cliente,"empleado":empleadoN, "dia":dia, "hora":horaOriginal,"url":self.get_object().id_cita})
+                        mensaje.attach(MIMEText(content, 'html'))
+
+                        Servidor.sendmail(settings.EMAIL_HOST_USER,
+                                            empleado.email,
+                                            mensaje.as_string())
+
+                    print("Se envio el correo")
+                except Exception as e:
+                    print(e)
+                return redirect("Ventas:calendario")
+                
+            
+            except Exception as e:
+                    errores["horaInicioCita"]=str(e)
+                    response = JsonResponse({"errores":errores})
+                    response.status_code = 400
+                    return response
+    
+    
+    
     
 class DetalleCitaCliente(DetailView,PermissionMixin):
     permission_required = ['change_cita','view_cita','add_cita']
@@ -415,9 +524,12 @@ class AgandarCita(CreateView,PermissionMixin):
         if not diaCita:
             errores["diaCita"] = "Debe completar el día  de la cita."
         if diaCita:
-            diaCita=datetime.strptime(diaCita, BUEN_FORMATO_FECHA)
-            if  diaCita < hoy:
-                errores["diaCita"] = "El día de la cita no puede ser menor al día actual."
+            try:
+                diaCita=datetime.strptime(diaCita, BUEN_FORMATO_FECHA)
+                if  diaCita < hoy:
+                    errores["diaCita"] = "El día de la cita no puede ser menor al día actual."
+            except:
+                errores["diaCita"] = "El día de la cita no es válido."
         if not empleado:
             errores["empleado_id"] = "Debe seleccionar un empleado que atienda su cita."
   
@@ -427,7 +539,13 @@ class AgandarCita(CreateView,PermissionMixin):
             return response
         else:
             empleado = Usuario.objects.get(id_usuario=empleado)
-            horaInicio = conversor12a24(horaInicio)
+            try:
+                horaInicio = conversor12a24(horaInicio)
+            except:
+                errores["horaInicioCita"]="La hora de la cita no es válida."
+                response = JsonResponse({"errores":errores})
+                response.status_code = 400
+                return response
             cliente=Usuario.objects.get(username=self.request.session['username'])
             pedido,creado = Pedido.objects.get_or_create(cliente_id=cliente, completado=False)
 
@@ -442,8 +560,6 @@ class AgandarCita(CreateView,PermissionMixin):
                     form.save()
                     pedido.completado = True
                     pedido.save()
-                    datos = {}
-
                     return redirect("Ventas:calendario")
 
             except Exception as e:
@@ -470,28 +586,31 @@ class BuscarDisponibilidadEmpleado(View):
             
             horasNoDisponibles={}
             cont=1
-            for i in diasConsulta:
-                horaInicio=i.horaInicio
-                horaInicio = horaInicio.strftime("%H:%M")
-                horaFin=i.horaFin
-                minuto = horaFin.minute
-                if minuto == 0:
-                    horaFin = horaFin.strftime("%H:%M")
-                    horaFin = datetime.strptime(horaFin, "%H:%M") - datetime.strptime("01:00", "%H:%M")
-                elif minuto >=20:
-                    minuto = 60-minuto
-                    horaFin = datetime(1970, 1, 1, horaFin.hour, horaFin.minute, horaFin.second) + timedelta(minutes=minuto)           
-                    horaFin = time(horaFin.hour, horaFin.minute, horaFin.second)
-                elif minuto>0 and minuto<20:
-                    horaFin = datetime(1970, 1, 1, horaFin.hour, horaFin.minute, horaFin.second) - timedelta(minutes=minuto)           
-                    horaFin = time(horaFin.hour, horaFin.minute, horaFin.second)
-                    
-                horaFin = datetime.strptime(str(horaFin), "%H:%M:%S")
-                horaFin = horaFin.strftime("%H:%M")
-                cont=str(cont)
-                horasNoDisponibles[str("cita"+cont)]={"horaInicio":horaInicio,"horaFin":horaFin}
-                cont=int(cont)
-                cont+=1
+            if diasConsulta:
+                for i in diasConsulta:
+                    cita = i.cita_id
+                    if cita.cancelado == False:
+                        horaInicio=i.horaInicio
+                        horaInicio = horaInicio.strftime("%H:%M")
+                        horaFin=i.horaFin
+                        minuto = horaFin.minute
+                        if minuto == 0:
+                            horaFin = horaFin.strftime("%H:%M")
+                            horaFin = datetime.strptime(horaFin, "%H:%M") - datetime.strptime("01:00", "%H:%M")
+                        elif minuto >=20:
+                            minuto = 60-minuto
+                            horaFin = datetime(1970, 1, 1, horaFin.hour, horaFin.minute, horaFin.second) + timedelta(minutes=minuto)           
+                            horaFin = time(horaFin.hour, horaFin.minute, horaFin.second)
+                        elif minuto>0 and minuto<20:
+                            horaFin = datetime(1970, 1, 1, horaFin.hour, horaFin.minute, horaFin.second) - timedelta(minutes=minuto)           
+                            horaFin = time(horaFin.hour, horaFin.minute, horaFin.second)
+                            
+                        horaFin = datetime.strptime(str(horaFin), "%H:%M:%S")
+                        horaFin = horaFin.strftime("%H:%M")
+                        cont=str(cont)
+                        horasNoDisponibles[str("cita"+cont)]={"horaInicio":horaInicio,"horaFin":horaFin}
+                        cont=int(cont)
+                        cont+=1
 
             horas = [(time(i).strftime("%H:%M")) for i in range(24)]
 
@@ -503,4 +622,55 @@ class BuscarDisponibilidadEmpleado(View):
             return JsonResponse({"horasDisponibles":res})
 
 
+class BuscarDisponibilidadEmpleadoEditarCita(View):
+    permission_required = ['view_calendario']
+    def post(self,request,*args,**kwargs):
+        accion=request.POST["accion"]
+        if accion == "BuscarEmpleado":
+            empleado=request.POST["empleado"]
+            return JsonResponse({"empleado":empleado})
 
+        elif accion == "BuscarDiaDeEmpleado":
+            empleado=request.POST["empleado"]
+            dia=request.POST["dia"]
+            id_cita = request.POST["id_cita"]
+            dia=datetime.strptime(dia, BUEN_FORMATO_FECHA)
+            dia=dia.strftime(FORMATO_DJANGO )
+            diasConsulta = Calendario.objects.filter(empleado_id=empleado).filter(dia=dia)
+            
+            horasNoDisponibles={}
+            cont=1
+            if diasConsulta:
+                for i in diasConsulta:
+                    cita = i.cita_id
+                    if cita.cancelado == False and cita.pk != int(id_cita):
+                        horaInicio=i.horaInicio
+                        horaInicio = horaInicio.strftime("%H:%M")
+                        horaFin=i.horaFin
+                        minuto = horaFin.minute
+                        if minuto == 0:
+                            horaFin = horaFin.strftime("%H:%M")
+                            horaFin = datetime.strptime(horaFin, "%H:%M") - datetime.strptime("01:00", "%H:%M")
+                        elif minuto >=20:
+                            minuto = 60-minuto
+                            horaFin = datetime(1970, 1, 1, horaFin.hour, horaFin.minute, horaFin.second) + timedelta(minutes=minuto)           
+                            horaFin = time(horaFin.hour, horaFin.minute, horaFin.second)
+                        elif minuto>0 and minuto<20:
+                            horaFin = datetime(1970, 1, 1, horaFin.hour, horaFin.minute, horaFin.second) - timedelta(minutes=minuto)           
+                            horaFin = time(horaFin.hour, horaFin.minute, horaFin.second)
+                            
+                        horaFin = datetime.strptime(str(horaFin), "%H:%M:%S")
+                        horaFin = horaFin.strftime("%H:%M")
+                        cont=str(cont)
+                        horasNoDisponibles[str("cita"+cont)]={"horaInicio":horaInicio,"horaFin":horaFin}
+                        cont=int(cont)
+                        cont+=1
+
+            horas = [(time(i).strftime("%H:%M")) for i in range(24)]
+
+            if len(horasNoDisponibles)==0:
+                res=horas
+            else:
+                res = [x for x in horas if x not in [x for x in horas for i in horasNoDisponibles if (horasNoDisponibles[i]["horaInicio"] <= x <= horasNoDisponibles[i]["horaFin"])]]
+                
+            return JsonResponse({"horasDisponibles":res})
