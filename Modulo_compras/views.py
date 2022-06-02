@@ -56,7 +56,6 @@ class Crearprod(CreateView):
                 proveedor = producto_form.cleaned_data.get('proveedor'),
                 tipo_producto = producto_form.cleaned_data.get('tipo_producto'),
                 cantidad = 0,
-                estado = 1
             )
             producto.save()
             return redirect('listarprod')
@@ -93,7 +92,8 @@ class Modificarprod(UpdateView):
     template_name='Funciones/agregarprod.html'
 
     def post(self,request, *args, **kwargs):  
-            producto_form = ProductosForm(request.POST)
+            get_object = self.model.objects.get(pk=kwargs['pk'])
+            producto_form = self.form_class(request.POST or None, instance=get_object)
             context={}
             if producto_form.is_valid():
                 producto_form.save()
@@ -308,6 +308,21 @@ def cambiarestadoProducto(request):
                 return redirect('listarprov')
     return JsonResponse({"kiwi":"yes"})
   
-
+  
+def cambiarestadoTProducto(request):
+    if request.is_ajax:
+        if request.method=="POST":
+            id = request.POST["estado"]
+            update=Tipo_producto.objects.get(pk=id)
+            estatus=update.estado
+            if estatus==True:
+                update.estado=False
+                update.save()
+            elif estatus==False:
+                update.estado=True
+                update.save()
+            else:
+                return redirect('listarprov')
+    return JsonResponse({"kiwi":"yes"})
 
    

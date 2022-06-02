@@ -64,7 +64,7 @@
                             <form action="{%url 'camestadoProducto' %}" method="POST" id="camestado">
                                 {%csrf_token%}
                                 <div class="form-check form-switch" style="top: -10px;">
-                                    <input class="form-check-input" type="checkbox" role="switch" {%if prod.estado%} checked {%endif%} onclick="cambioestado('{{prod.id_producto}}')">
+                                    <input class="form-check-input" type="checkbox" role="switch" {%if prod.estado%} checked {%endif%} onclick="cambioestadoP('{{prod.id_producto}}')">
                                 </div>
                             </form>
                         </td>

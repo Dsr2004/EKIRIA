@@ -19,6 +19,7 @@
 </head>
 {% endblock head %} {% block Contenido %}
 <div class="container GridProductos">
+
     <form class="fomularioProducto" action="" method="post">
         {% csrf_token %}
         <h1 for="Nombre">Nombre: <sup>(*)</sup></h1> {{form.nombre}}
@@ -50,30 +51,41 @@
             <thead>
                 <tr class="table-dark">
                     <th scope="col">Tipo</th>
-                    <th scope="col">Estado</th>
                 </tr>
             </thead>
             <tbody id="tbody">
                 {% for tipo in tipo %}
-                <tr class="table-light focus" draggable="true" id="caja">
+                <tr class="table-light focus" draggable="true" id="caja{{tipo.pk}}">
+
                     <th style="display: none;">{{tipo.pk}}</th>
                     <th scope="row">{{tipo.nombre}}</th>
-                    <th scope="row" class="estado">{{tipo.estado}}</th>
                 </tr>
                 {% endfor %}
             </tbody>
             <tfoot>
                 <tr class="table-secondary">
                     <th scope="col">Tipo</th>
-                    <th scope="col">Estado</th>
                 </tr>
             </tfoot>
         </table>
     </div>
 </div>
 
+<button class="btn btn-link col-md-1" style="text-decoration: none;"><a style="text-decoration: none; font-size: 24px;"  href="{%url 'listarprod'%}">Volver</a></button>
 
-{% endblock Contenido %} {% block modal %}
+<!--  -->
+
+
+{% if form.tipo_producto.value != ""%} {% for tipo in tipo %} {% if tipo.pk == form.tipo_producto.value %}
+<table style="display: none;">
+    <tbody>
+        <tr class="table-light focus" draggable="true" id="tpvpk">
+            <th style="display: none;">{{tipo.pk}}</th>
+            <th scope="row">{{tipo.nombre}}</th>
+        </tr>
+    </tbody>
+</table>
+{% endif %} {% endfor %} {% endif %} {% endblock Contenido %} {% block modal %}
 
 <div class="modal fade" id="agregar_prod" role="dialog">
 
@@ -85,6 +97,14 @@
 {% endblock modal%} {%block scripts%}
 <script>
     $(document).ready(function() {
+        if (true) {
+            let dropTipo = document.getElementById('DropTipo')
+            let tpv = document.getElementById('tpvpk')
+            let clon = tpv.cloneNode(true);
+            dropTipo.appendChild(clon);
+            dropTipo.style.display = "block"
+            ValueInput()
+        }
         $('#Tabletipo_producto').DataTable({
             "language": {
                 "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
@@ -113,6 +133,7 @@
         Cont.addEventListener('drop', e => {
             let dropTipo = document.getElementById('DropTipo')
             console.log(Tipo.firstChild.innerHTML)
+            dropTipo.removeChild(dropTipo.firstChild)
             if (dropTipo.innerHTML == "") {
                 var clon = Tipo.cloneNode(true);
                 dropTipo.appendChild(clon);
@@ -120,6 +141,7 @@
                 ValueInput()
             } else {
                 var clon = Tipo.cloneNode(true);
+                console.log(dropTipo.firstChild.innerHTML)
                 dropTipo.replaceChild(clon, dropTipo.firstChild)
                 ValueInput()
             }
@@ -151,6 +173,7 @@
         p.innerHTML = text.substr(2)
     })
 </script>
+
 
 {% endfor %} {% endif %}
 <script src="/static/Proyecto_Ekiria/js/jsMenuL.js"></script>

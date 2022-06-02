@@ -306,3 +306,8 @@ main {
 #DropTipo .estado {
     display: none;
 }
+
+.form-check-input {
+    margin-top: 15px!important;
+    margin-left: 10px!important;
+}

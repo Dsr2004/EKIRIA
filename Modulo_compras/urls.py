@@ -17,5 +17,6 @@ urlpatterns = [
     path ("actprov/", Actprov, name="actprov"),
     path ("cambiarestado/", cambiarestado, name="camestado"),
     path ("cambiarestadoDeProducto/", cambiarestadoProducto, name="camestadoProducto"),
+    path ("cambiarestadoDeTProducto/", cambiarestadoTProducto, name="camestadoTProducto"),
 ]
  
