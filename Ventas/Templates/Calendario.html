@@ -76,13 +76,16 @@
     </div>
 </div>
 
+<div class="modal fade" id="ModalCitaCalendario"  role="dialog">
 
+</div>
 
 {% endblock Contenido %}
 
 {%block scripts%}
 <script src="{% static 'Plugins/fullcalendar/lib/main.js' %}"></script>
 <script src="{% static 'Plugins/fullcalendar/lib/locales-all.js' %}"></script>
+<script src="/static/Ventas/js/Ventas.js"></script>
   
 <script>
    $(document).ready(function () {
@@ -112,6 +115,7 @@
       events: [
         {% for cita in citas %}
         {
+          id: '{% url 'Ventas:detalleCalendario' cita.id_cita %}',
           title:"{{cita.titulo}}",
           start: "{{cita.inicio}}",
           end: "{{cita.fin}}",
@@ -120,7 +124,9 @@
 
       ],
       eventClick: function(arg) {
-        alert(arg.id_cita)
+        url = arg.event.id;
+        console.log(url);
+        abrir_modal_calendario(url)
       },
     });
     calendar.render();

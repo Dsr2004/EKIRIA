@@ -119,7 +119,7 @@ class Calendario(TemplateView,PermissionMixin):
         UserSesion=if_User(request)
         cambiosQueryset = cambios.objects.all()
         cambiosfQueryset = cambiosFooter.objects.all()
-        citas=Cita.objects.filter(cliente_id=request.session['pk']).order_by('fecha_creacion')
+        citas=Cita.objects.filter(cliente_id=request.session['pk'])
       
         context={
             "User":UserSesion,

@@ -1,3 +1,10 @@
+ //ELIMINAR TIPO DE SERVICIO 
+ function abrir_modal_calendario(url){ 
+  $("#ModalCitaCalendario").load(url, function (){ 
+    $(this).appendTo("body").modal('show');
+  });
+}
+
 function GuardarCita(){
     swal({
       title: "¿Estás seguro?",
