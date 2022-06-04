@@ -47,7 +47,7 @@ class ActualiarCitaClienteMixin(object):
         hoy = datetime.today()
         diaCita = citax.diaCita
         tresDias =  datetime(diaCita.year, diaCita.month, diaCita.day) - timedelta(days=3)
-        if not hoy < tresDias:
+        if not hoy <= tresDias:
             messages.add_message(request, messages.INFO, 'Usted no puede modificar esta cita porque no cuenta con los 3 días requeridos.')
             return redirect("Ventas:detalleCita", pk=self.kwargs["pk"])
 

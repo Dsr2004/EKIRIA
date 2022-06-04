@@ -271,7 +271,7 @@ main {
     font-size: 24px;
 }
 
-.dataTables_length {
+.tipo_productoroductos .dataTables_length {
     display: none;
 }
 
@@ -307,7 +307,83 @@ main {
     display: none;
 }
 
+#DropCompra.estado {
+    display: none;
+}
+
+#DropCompra .estado.ocultoSi {
+    display: block!important;
+}
+
+#DropCompra tr td {
+    text-align: center;
+}
+
+.estado.ocultoSi {
+    display: none!important;
+}
+
 .form-check-input {
     margin-top: 15px!important;
     margin-left: 10px!important;
+}
+
+#Tabletipo_producto .sorting_1,
+#Tabletipo_producto .sorting_asc {
+    display: none!important;
+}
+
+
+/* estilos Compras */
+
+.Table.Add .pdf.img {
+    color: inherit;
+    padding: 0px 13px;
+    font: inherit;
+    font-size: 25px;
+    border-radius: 50%;
+    cursor: pointer;
+    outline: inherit;
+    margin-top: 0px;
+    z-index: 1;
+    margin-right: 20px;
+}
+
+.Table.Add .pdf.img:hover {
+    border-radius: 10px;
+    transition: 0.1s;
+}
+
+.Table.Add .pdf.img:hover a {
+    display: flex;
+    flex-wrap: wrap;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.Table.Add .pdf.img:hover a b.etiquetaReporte {
+    margin-left: 10px;
+    display: block!important;
+    font-size: 16px;
+    transition: 0.3s;
+    margin-top: 7px;
+}
+
+.Table.Add .Add.img:hover {
+    border-radius: 10px;
+    transition: 0.1s;
+}
+
+.Table.Add .Add.img:hover a {
+    display: flex;
+    flex-wrap: wrap;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.Table.Add .Add.img:hover a b.etiquetaCrearCompra {
+    margin-left: 10px;
+    display: block!important;
+    font-size: 16px;
+    transition: 0.3s;
 }

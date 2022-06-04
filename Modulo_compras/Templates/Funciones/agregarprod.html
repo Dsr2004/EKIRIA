@@ -1,4 +1,4 @@
-{%extends 'Menu_Usuario.html'%} {% block head %}
+{%extends 'Menu_Usuario.html'%} {% block head %} {% load static %}
 
 <head>
     <meta charset="UTF-8">
@@ -14,14 +14,24 @@
     <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
     <link rel="stylesheet" href="sweetalert2.min.css">
     <script src="/static/bootstrap/js/bootstrap.js"></script>
+    <!--  Datatables  -->
+    <link rel="stylesheet" type="text/css" href="{%static 'Plugins/DataTables/jquery.dataTables.min.css' %}" />
+
+    <!--  extension responsive  -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.3.0/css/responsive.dataTables.min.css">
 
 
 </head>
 {% endblock head %} {% block Contenido %}
-<div class="container GridProductos">
+
+<button class="btn btn-link col-md-1" style="text-decoration: none;"><a style="text-decoration: none; font-size: 24px; "  href="{%url 'listarprod'%}">Volver</a></button>
+<div class="container GridProductos" style="margin-top: 0px!important;">
 
     <form class="fomularioProducto" action="" method="post">
-        {% csrf_token %}
+
+        {% if Error %}
+        <div class="alert alert-danger">{{Error}}</div>
+        {% endif %} {% csrf_token %}
         <h1 for="Nombre">Nombre: <sup>(*)</sup></h1> {{form.nombre}}
         <p id="nombre-p" class="text-danger"></p>
         <h1 for="proveedor">Proveedor: <sup>(*)</sup></h1> {{form.proveedor}}
@@ -49,29 +59,29 @@
         <hr>
         <table id="Tabletipo_producto" class="table display nowrap" cellspacing="0" width="100">
             <thead>
-                <tr class="table-dark">
+                <tr class="table-dark idNull">
+                    <th style="display: none !important;">Num</th>
                     <th scope="col">Tipo</th>
+                    <th scope="col">Editar</th>
                 </tr>
             </thead>
             <tbody id="tbody">
                 {% for tipo in tipo %}
-                <tr class="table-light focus" draggable="true" id="caja{{tipo.pk}}">
+                <tr class="table-light focus idNull" draggable="true" id="caja{{tipo.pk}}">
 
-                    <th style="display: none;">{{tipo.pk}}</th>
+                    <th class="estado">{{tipo.pk}}</th>
                     <th scope="row">{{tipo.nombre}}</th>
+                    <td>
+                        <button class="estado" type="button" style="background: none;color: inherit;border: none;padding: 0;font: inherit;cursor: pointer;outline: inherit;" onclick="modificartp('{%url 'modificartp' tipo.pk %}')"><i class="mdi mdi-account-edit"></i>   
+                        </button>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
-            <tfoot>
-                <tr class="table-secondary">
-                    <th scope="col">Tipo</th>
-                </tr>
-            </tfoot>
         </table>
     </div>
 </div>
 
-<button class="btn btn-link col-md-1" style="text-decoration: none;"><a style="text-decoration: none; font-size: 24px;"  href="{%url 'listarprod'%}">Volver</a></button>
 
 <!--  -->
 
@@ -82,19 +92,14 @@
         <tr class="table-light focus" draggable="true" id="tpvpk">
             <th style="display: none;">{{tipo.pk}}</th>
             <th scope="row">{{tipo.nombre}}</th>
+            <td>
+                <button class="estado" type="button" style="background: none;color: inherit;border: none;padding: 0;font: inherit;cursor: pointer;outline: inherit;" onclick="modificartp('{%url 'modificartp' tipo.pk %}')"><i class="mdi mdi-account-edit"></i>   
+                </button>
+            </td>
         </tr>
     </tbody>
 </table>
-{% endif %} {% endfor %} {% endif %} {% endblock Contenido %} {% block modal %}
-
-<div class="modal fade" id="agregar_prod" role="dialog">
-
-</div>
-<div class="modal fade" id="modificar_prod" role="dialog">
-
-</div>
-
-{% endblock modal%} {%block scripts%}
+{% endif %} {% endfor %}
 <script>
     $(document).ready(function() {
         if (true) {
@@ -105,6 +110,26 @@
             dropTipo.style.display = "block"
             ValueInput()
         }
+    })
+</script>
+
+{% endif %} {% endblock Contenido %} {% block modal %}
+
+<div class="modal fade" id="agregar_prod" role="dialog">
+
+</div>
+<div class="modal fade" id="modificar_prod" role="dialog">
+
+</div>
+
+{% endblock modal%} {%block scripts%}
+
+<!--   Datatables-->
+<script type="text/javascript" src="{%static 'Plugins/DataTables/jquery.dataTables.min.js' %}"></script>
+<!-- extension responsive -->
+<script src="https://cdn.datatables.net/responsive/2.3.0/js/dataTables.responsive.min.js"></script>
+<script>
+    $(document).ready(function() {
         $('#Tabletipo_producto').DataTable({
             "language": {
                 "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
@@ -130,22 +155,26 @@
         Cont.addEventListener('dragover', e => {
             e.preventDefault();
         })
+        var div = 0
         Cont.addEventListener('drop', e => {
-            let dropTipo = document.getElementById('DropTipo')
-            console.log(Tipo.firstChild.innerHTML)
-            dropTipo.removeChild(dropTipo.firstChild)
-            if (dropTipo.innerHTML == "") {
-                var clon = Tipo.cloneNode(true);
-                dropTipo.appendChild(clon);
-                dropTipo.style.display = "block"
-                ValueInput()
-            } else {
-                var clon = Tipo.cloneNode(true);
-                console.log(dropTipo.firstChild.innerHTML)
-                dropTipo.replaceChild(clon, dropTipo.firstChild)
-                ValueInput()
+            div = div + 1
+            while (div == 1) {
+                let dropTipo = document.getElementById('DropTipo')
+                console.log(Tipo.firstChild.innerHTML)
+                dropTipo.removeChild(dropTipo.firstChild)
+                if (dropTipo.innerHTML == "") {
+                    var clon = Tipo.cloneNode(true);
+                    dropTipo.appendChild(clon);
+                    dropTipo.style.display = "block"
+                    ValueInput()
+                } else {
+                    var clon = Tipo.cloneNode(true);
+                    console.log(dropTipo.firstChild.innerHTML)
+                    dropTipo.replaceChild(clon, dropTipo.firstChild)
+                    ValueInput()
+                }
+                div = div + 1
             }
-
         })
     }
 

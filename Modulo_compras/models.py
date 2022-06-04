@@ -38,7 +38,7 @@ class Tipo_producto(models.Model):
 
 class Producto(models.Model):
     id_producto=models.AutoField("id_producto",primary_key=True, unique=True)
-    nombre=models.CharField('nombre del producto',max_length=20,blank=False, null=False, unique=True)
+    nombre=models.CharField('nombre del producto',max_length=20,blank=False, null=False)
     proveedor=models.ForeignKey(Proveedor,on_delete=models.CASCADE)
     tipo_producto=models.ForeignKey(Tipo_producto, verbose_name="Tipo de producto",on_delete=models.CASCADE,null=False, blank=True, db_column="tipo_producto_id")
     cantidad=models.IntegerField('cantidad',blank=False, null=False)
@@ -62,9 +62,9 @@ class Producto(models.Model):
 class Compra(models.Model):
     id_compras=models.AutoField("id_compra",primary_key=True, unique=True)
     producto=models.ManyToManyField(Producto)
-    proveedor=models.ForeignKey(Proveedor, on_delete=models.CASCADE)
     total=models.FloatField(blank=False, null=False)
     estado=models.BooleanField('estado', default=True)
+    fecha_creacion=models.DateField("Fecha de Creacion", auto_now=False, auto_now_add=True)
 
     class Meta:
         verbose_name ='Compra'

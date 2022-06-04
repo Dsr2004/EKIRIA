@@ -14,9 +14,11 @@ urlpatterns = [
     path ("crearprov/", login_required(Crearprov.as_view()), name="crearprov"),
     path ("eliminarprov/<int:id_proveedor>", Eliminarprov, name="eliminarprov"),
     path ("modificarprov/<int:pk>", login_required(modificarprov.as_view()), name="modificarprov"),
+    path ("modificartp/<int:pk>", login_required(modificartp.as_view()), name="modificartp"),
     path ("actprov/", Actprov, name="actprov"),
     path ("cambiarestado/", cambiarestado, name="camestado"),
     path ("cambiarestadoDeProducto/", cambiarestadoProducto, name="camestadoProducto"),
     path ("cambiarestadoDeTProducto/", cambiarestadoTProducto, name="camestadoTProducto"),
+    path("VerDetalleCompra/<int:pk>", login_required(verDetalleCompra.as_view()), name="VerDetalle")
 ]
  

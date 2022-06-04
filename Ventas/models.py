@@ -7,7 +7,7 @@ from django.template.loader import render_to_string
 from datetime import datetime, timedelta, time
 
 from django.db import models
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import pre_save, post_save, m2m_changed
 from django.utils.text import slugify
 from django.shortcuts import reverse 
 
@@ -344,7 +344,10 @@ def post_save_cita(sender, instance, created, *args, **kwargs):
 
             print("Se envio el correo")
         except Exception as e:
-            print(e)    
+            print(e)  
+            
+
+      
 
 pre_save.connect(pre_save_servicio_receiver,sender=Servicio)
 pre_save.connect(pre_save_servicio_personalizado_receiver,sender=Servicio_Personalizado)

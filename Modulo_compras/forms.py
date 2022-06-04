@@ -13,7 +13,13 @@ class Tipo_productoForm(forms.ModelForm):
     class Meta:
         model = Tipo_producto
         fields = ['nombre']
-
+    def clean_nombre(self):
+        nombre = self.cleaned_data.get('nombre')
+        if len(nombre) <= 2:
+            raise forms.ValidationError('El nombre como minimo debe contener 3 letras')
+        else:
+            nombre = nombre.capitalize()
+            return nombre
         
 class ProductosForm(forms.ModelForm):
     class Meta:
@@ -67,7 +73,11 @@ class ProductosForm(forms.ModelForm):
 class ComprasForm(forms.ModelForm):
     class Meta:
         model = Compra
-        fields = ['producto']
+        fields = ['total']
         widgets={
-            "producto":forms.CheckboxSelectMultiple()
+            "total":forms.HiddenInput(
+                attrs={
+                    'id':'total'
+                }
+            )
         }

@@ -1,0 +1,311 @@
+{%extends 'Menu_Usuario.html'%} {% block head %} {% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos</title>
+    <link rel="stylesheet" href="/static/Modulo_compras/css/style.css">
+    <link rel="icon" href="/static/Proyecto_Ekiria/Img/Logo Ekiria.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vast+Shadow&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="sweetalert2.min.css">
+    <script src="/static/bootstrap/js/bootstrap.js"></script>
+    <!--  Datatables  -->
+    <link rel="stylesheet" type="text/css" href="{%static 'Plugins/DataTables/jquery.dataTables.min.css' %}" />
+
+    <!--  extension responsive  -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.3.0/css/responsive.dataTables.min.css">
+
+
+</head>
+{% endblock head %} {% block Contenido %}
+
+<button class="btn btn-link col-md-1" style="text-decoration: none;"><a style="text-decoration: none; font-size: 24px; "  href="{%url 'listarcompra'%}">Volver</a></button>
+<div class="container GridProductos" style="margin-top: 0px!important;">
+
+    <form class="fomularioProducto" id="labelTp" action="" method="post">
+        {{form}}
+        <table class="table">
+            <tbody id="DropCompra" style="width: 100%;">
+            </tbody>
+        </table>
+        <div class="alert alert-dark" style="display:none; text-align: end;" id="contenTotal">Total: <b id="TotalNeto"></b></div>
+    </form>
+    <div class="tipo_productoroductos">
+        <a href="{%url 'crearprod'%}"><i class="mdi mdi-plus-circle-outline" style="cursor:pointer;"></i></a>
+        <h1>Productos</h1>
+        <hr>
+        <table id="Tabletipo_producto" class="table display nowrap" cellspacing="0" width="100">
+            <thead>
+                <tr class="table-dark">
+                    <td class="estado ocultoSi" style="display: none !important;">Num</td>
+                    <td scope="col">Nombre</td>
+                    <td scope="col">Proveedor</td>
+                    <td class="estado ocultoSi" style="display: none !important;">Tipo de producto</td>
+                </tr>
+            </thead>
+            <tbody id="tbody">
+                {% for producto in productos %}
+                <tr class="table-light focus" draggable="true" id="caja{{producto.pk}}">
+
+                    <td class="estado" style="display: none !important;">{{producto.pk}}</td>
+                    <td scope="row">{{producto.nombre}}</td>
+                    <td scope="col"> {% for proveedor in proveedor %} {% if proveedor.pk == producto.proveedor_id %} {{proveedor.nombre}} {% endif %} {% endfor %}
+                    </td>
+                    <td class="estado ocultoSi" style="display: none !important;" scope="col">{{producto.tipo_producto_id}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- Etiquetas que se agregan a los productos -->
+<table>
+    <tbody style="display: none;">
+        <td id="cantidad0"><input class="form-control" id="inputcantidad0" type="number" placeholder="Cantidad"></td>
+        <td id="precio0"><input class="form-control" id="inputprecio0" type="number" placeholder="Precio de unidad"></td>
+        <td id="remove0" class="closeButton"><button type="button" class="btn btn-danger"><i class="mdi mdi-close"></i><b style="display: none;">0</b></button></td>
+    </tbody>
+</table>
+
+<!--  -->
+
+{% endblock Contenido %} {% block modal %} {% endblock modal%} {%block scripts%}
+
+<!--   Datatables-->
+<script type="text/javascript" src="{%static 'Plugins/DataTables/jquery.dataTables.min.js' %}"></script>
+<!-- extension responsive -->
+<script src="https://cdn.datatables.net/responsive/2.3.0/js/dataTables.responsive.min.js"></script>
+<script>
+    // Pone la tabla en español y responsiv
+    $(document).ready(function() {
+        $('#Tabletipo_producto').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+            },
+            responsive: true
+        });
+    });
+    // Defino el elemento que estoy sosteniendo con el click y lo mando a la funcion Poner
+    var id = 0
+    const focus = document.querySelectorAll(".focus")
+    focus.forEach(el => {
+        el.addEventListener("mousedown", e => {
+            let th = e.target
+            let tr = th.parentNode
+            let id = tr.getAttribute('id')
+            var Tipo = document.getElementById(id);
+            Poner(Tipo)
+            Tipo = ""
+        });
+    });
+
+    // defino cont como contador para inicializar la funcion Poner en 0 y así solo se ejecute una vez
+    var cont = 0
+
+    function Poner(Tipo) {
+        const Cont = document.querySelector('#labelTp')
+        const tbody = document.getElementById('tbody')
+        var tipo_producto = document.getElementById('tipo_producto')
+        Cont.addEventListener('dragover', e => {
+            e.preventDefault();
+        })
+        var div = 0
+        var tipo = ""
+        var cont2 = 1
+        if (cont == 0) {
+            tipo = Tipo
+        }
+        cont = cont + 1
+        Cont.addEventListener('drop', e => {
+            if (cont2 == 1) {
+                div = div + 1
+                while (div == 1) {
+                    // Obtengo el clon y el contenedor a almacenarlo
+                    let DropCompra = document.getElementById('DropCompra')
+                    var clon = tipo.cloneNode(true);
+                    if (DropCompra.hasChildNodes()) {
+                        var children = DropCompra.childNodes;
+                        var boolean = []
+                        children.forEach(child => {
+                                if (child.innerHTML == clon.innerHTML) {
+                                    boolean[0] = false
+                                }
+                            })
+                            // Condiciono que solo se puede realizar el appendChild si no existe un bloque igual al que se intenta almacenar
+                        if (boolean[0] != false) {
+                            DropCompra.appendChild(clon);
+                            DropCompra.style.display = "block"
+                                // introduzco los demás input 
+                            let cant = document.getElementById('cantidad' + id)
+                            let inputcant = document.getElementById('inputcantidad' + id)
+                            let cantclon = cant.cloneNode(true);
+                            let precio = document.getElementById('precio' + id)
+                            let inputprecio = document.getElementById('inputprecio' + id)
+                            let precioclon = precio.cloneNode(true);
+                            let close = document.getElementById('remove' + id)
+                            let removeclon = close.cloneNode(true)
+                            id = id + 1
+                            cant.id = "cantidad" + id
+                            precio.id = "precio" + id
+                            close.id = 'remove' + id
+                            let btn_close = close.lastChild
+                            btn_close.lastChild.innerHTML = id
+                            inputcant.id = "inputcantidad" + id
+                            inputprecio.id = 'inputprecio' + id
+                            DropCompra.lastChild.appendChild(cantclon)
+                            DropCompra.lastChild.appendChild(precioclon)
+                            DropCompra.lastChild.appendChild(removeclon)
+                            keyPress(id - 1)
+                        }
+                    }
+                    div = div + 1
+                    cont2 = cont2 + 1
+                    cont = 0
+                }
+            }
+        })
+    }
+    var reiniciar = false
+
+    function keyPress(id) {
+        let precioInput = document.getElementById('inputprecio' + id)
+        let cantInput = document.getElementById('inputcantidad' + id)
+        precioInput.addEventListener('keyup', e => {
+            ValorNeto(id, cantInput.value, precioInput.value)
+        })
+        cantInput.addEventListener('keyup', e => {
+            ValorNeto(id, cantInput.value, precioInput.value)
+        })
+        precioInput.addEventListener('blur', e => {
+            CalcTotal(id)
+        })
+        cantInput.addEventListener('blur', e => {
+            CalcTotal(id)
+        })
+        try {
+            const close = document.querySelectorAll(".closeButton")
+            if (close) {
+                close.forEach(btn => {
+                    var mire = 0
+                    btn.parentNode.addEventListener('click', e => {
+                        console.log(mire + "jos")
+                        let i = e.target
+                        let button = i.parentNode
+                        if (button.classList[0] == 'btn') {
+                            let td = button.parentNode
+                            let tr = td.parentNode
+                            let tbody = tr.parentNode
+                            let ids = tbody.getAttribute('id')
+                            let secionC = document.getElementById(ids)
+                            secionC.removeChild(tr)
+                            reiniciar = true
+                            let pk = document.getElementById(tr.id).id.substring(4)
+                            let contpejr = 0
+                            let idI = 0
+                            while (contpejr == 0) {
+                                if (idI != pk) {
+                                    console.log(idI)
+                                    try {
+                                        let precioInput = document.getElementById('inputprecio' + idI)
+                                        let cantInput = document.getElementById('inputcantidad' + idI)
+                                        ValorNeto(idI, cantInput.value, precioInput.value)
+                                        idI = idI + 1
+                                    } catch (error) {
+                                        contpejr = contpejr + 1
+                                    }
+                                } else {
+                                    ValorNeto(idI, 0, 0)
+                                }
+
+                            }
+                            recalc()
+                        }
+                        mire = mire + 1
+                    })
+                })
+            }
+        } catch (ex) {}
+    }
+
+
+    cantidad = []
+    Precio = []
+    PrecioNeto = []
+    CantidadNeta = []
+    ValorTotal = []
+    ValorTotal[0] = 0
+
+    function ValorNeto(id, cant, precio) {
+        cantidad[id] = cant
+        Precio[id] = precio
+    }
+
+    pcont = 0
+
+    function recalc() {
+        console.log('Recalcular')
+        for (let i = PrecioNeto.length; i >= 0; i--) {
+            PrecioNeto.pop();
+        }
+        for (let i = CantidadNeta.length; i >= 0; i--) {
+            CantidadNeta.pop();
+        }
+        for (let i = 0; i < Precio.length; i++) {
+            PrecioNeto[i] = Number(Precio[i])
+            CantidadNeta[i] = Number(cantidad[i])
+        }
+        console.log(PrecioNeto)
+        console.log(CantidadNeta)
+        for (let i = 0; i < PrecioNeto.length; i++) {
+            valorNp = Number(PrecioNeto[i]) * Number(CantidadNeta[i])
+            let contenedorTotal = document.getElementById('TotalNeto')
+            contenedorTotal.innerHTML = valorNp
+        }
+
+        PrecioNeto = []
+        CantidadNeta = []
+        cantidad = []
+        Precio = []
+    }
+
+    function CalcTotal(id) {
+        for (let i = PrecioNeto.length; i >= 0; i--) {
+            PrecioNeto.pop();
+        }
+        for (let i = CantidadNeta.length; i >= 0; i--) {
+            CantidadNeta.pop();
+        }
+        for (let i = 0; i <= id; i++) {
+            PrecioNeto[i] = Number(Precio[i])
+            CantidadNeta[i] = Number(cantidad[i])
+        }
+        console.log(PrecioNeto)
+        console.log(CantidadNeta)
+        for (let i = 0; i < PrecioNeto.length; i++) {
+            valorNp = Number(PrecioNeto[i]) * Number(CantidadNeta[i])
+            console.log(valorNp)
+            ValorTotal[0] = Number(ValorTotal[0]) + valorNp
+
+        }
+
+        // Definir contenedor de almacenaje Total
+        let contdivTotal = document.getElementById('contenTotal')
+        let contenedorTotal = document.getElementById('TotalNeto')
+
+        contdivTotal.style.display = "block"
+        if (valorNp != NaN) {
+            contenedorTotal.innerHTML = ValorTotal[0]
+        } else {
+            contenedorTotal.innerHTML = "Recalculando"
+        }
+        ValorTotal[0] = 0
+    }
+</script>
+<script src="/static/Modulo_compras/js/js.js"></script>> {%endblock scripts%}
+
+</html>

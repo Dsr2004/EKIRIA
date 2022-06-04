@@ -63,8 +63,15 @@ function modificarprov(url) {
 
 };
 
+function modificartp(url) {
+    $("#modificar_prod").load(url, function() {
+        $(this).modal('show')
+    })
+
+};
+
 function agregartp(url) {
-    $("#agregartp").load(url, function() {
+    $("#agregar_prod").load(url, function() {
         $(this).modal('show')
     })
 };

@@ -419,3 +419,10 @@
 }
 
 
+.errorSegunCrispy{
+    font-family: 'Poppins', sans-serif;  
+	font-weight: bolder; 
+	font-size: 0.875em;
+	color: #dc3545;
+
+}
