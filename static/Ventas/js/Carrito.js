@@ -53,6 +53,19 @@ function ActualizarPedidoDeUsuario(servicioId, accion){
     }else if(accion == "updatePer"){
         
     }
+    else{
+        $.ajax({
+            data: {"csrfmiddlewaretoken":csrftoken, "servicioId":servicioId, "accion":accion},
+            url: url,
+            type: "POST",
+            success: function(datas){
+                location.href="/Ventas/Carrito/"
+            },
+            error: function(error){
+              return error.json()
+            }
+          });
+    }
     
     
  }
@@ -105,6 +118,7 @@ function EnviarTerminarPedido(){
       
     }
   });
+
 
 }
 

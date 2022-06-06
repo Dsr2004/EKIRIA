@@ -37,6 +37,7 @@
       </tr>
       <tr>
           <th>Nombre</th>
+
           <th>Precio</th>
           <th>Tipo Servicio</th>
           <th>Descripción</th>
@@ -52,6 +53,7 @@
         <tr>
           <td><img src="/media/{{servicio.img_servicio}}" style="border-radius: 15px;" width="150" height="100"></td>
           <td>{{servicio.nombre}}</td>
+
           <td>${{servicio.precio}}</td>
           <td>{{servicio.tipo_servicio_id}}</td>
           <td><p style="width:80px; overflow: hidden; white-space:nowrap; text-overflow: ellipsis;">{{servicio.descripcion}}</p></td>
@@ -59,6 +61,7 @@
           <td><a href="{%url 'Ventas:editarServicio' servicio.id_servicio %}"><i class="fa-solid fa-pen-to-square" style="font-size: 25px; color: rgb(226, 195, 19);"></i></a></td>
           <td>
             <form action="{%url 'Ventas:cambiarEstadoServicio'%}" method="post" id="EstadoServicioForm">
+
             {%csrf_token%}
             <div class="form-check form-switch switch-Cambio-TipoServicio">
                <input class="form-check-input" type="checkbox" role="switch" id="lopsdyu" name="esatdo" onclick="CambiarEstadoServicio('{{servicio.id_servicio}}')"  {% if servicio.estado == True%}checked{%endif%}>
@@ -66,15 +69,13 @@
          </form></td>
       </tr>
         {% endfor %}
-        {% else %}
-        <h1>No hay Servicios</h1>
+      {% else %}
+      <h1>No hay servicios registrados</h1>
         {% endif %}
           
-          
-          
       </tbody>
-      
-  </table>
+    
+    </table>
 </div>
 
 {% block scripts %}

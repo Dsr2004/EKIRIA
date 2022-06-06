@@ -12,7 +12,7 @@
             <img src="/media/{{servicio.img_servicio}}" alt="{{servicio.nombre}}" class="" width="200" height="150">
             <div class="card-body">
               <h5 class="card-title">{{servicio.nombre}}</h5>
-              <p class="card-text" style="width:3 0%; height: 50px; overflow: hidden; white-space:nowrap; text-overflow: ellipsis;">{{servicio.descripcion}}</p>
+              <p class="card-text" style="width:30%; height: 50px; overflow: hidden; white-space:nowrap; text-overflow: ellipsis;">{{servicio.descripcion}}</p>
             </div>
             <div class="card-footer">
               <form  action="{% url 'Ventas:agregarServicioCatalogo' %}" method="post">

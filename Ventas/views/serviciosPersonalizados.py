@@ -1,4 +1,3 @@
-from typing_extensions import Self
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
@@ -64,3 +63,4 @@ class EditarServiciosPersonalizados(UpdateView, PermissionMixin):
             respuesta.status_code = 400
             return respuesta
       
+

@@ -287,6 +287,7 @@ def pre_save_servicio_personalizado_receiver(sender, instance, *args, **kwargs):
 def pre_save_cita_receiver(sender, instance, *args, **kwargs):
     if not instance.horaFinCita:
         inicio = instance.horaInicioCita
+
         fin = datetime(1970, 1, 1, inicio.hour, inicio.minute, inicio.second) + timedelta(minutes=instance.pedido_id.get_cantidad)           
         fin = time(fin.hour, fin.minute, fin.second)
         instance.horaFinCita = fin
@@ -311,14 +312,20 @@ def pre_save_cita_receiver(sender, instance, *args, **kwargs):
         inicio = inicio.strftime("%H:%M")
         fin = fin.strftime("%H:%M")
         
-        print(horasNoDisponibles)
+        # print(horasNoDisponibles)
+        # if not len(horasNoDisponibles)==0:
+        #     horasQuitadas = [x for x in horas for i in horasNoDisponibles if (horasNoDisponibles[i]["horaInicio"] <= x <= horasNoDisponibles[i]["horaFin"])]
+        #     print(horasQuitadas)
+        #     for i in horasQuitadas:
+        #         print(i)
+        #         if  (inicio <= i <= fin):
+        #             print(f"{i} esta dentro del rango de la cita  {inicio} --- {fin}")
+           
         if not len(horasNoDisponibles)==0:
             horasQuitadas = [x for x in horas for i in horasNoDisponibles if (horasNoDisponibles[i]["horaInicio"] <= x <= horasNoDisponibles[i]["horaFin"])]
-            print(horasQuitadas)
             for i in horasQuitadas:
                 print(i)
                 if  (inicio <= i <= fin):
-                    print(f"{i} esta dentro del rango de la cita  {inicio} --- {fin}")
                     raise Exception("Ya existe una cita en esa hora, por favor seleccione otra hora")
 
 
