@@ -82,7 +82,6 @@ main {
     padding: 12px 20px;
     transition: .5s ease all;
     font-size: 15px;
-    font-family: 'Noto Sans', sans-serif;
     text-transform: uppercase;
     letter-spacing: 2px;
 }
@@ -175,14 +174,12 @@ main {
 
 .cardName {
     font-size: 25px !important;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 
 /* anuncio de no registros */
 
 .anunre {
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-size: 40px;
     margin-left: 25%;
 }
@@ -198,4 +195,255 @@ main {
 
 .form-switch .form-check-input {
     left: 0 !important;
+}
+
+
+/*    Funciones compras     */
+
+.GridProductos {
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: 65% 35%;
+    grid-gap: 20px;
+}
+
+.pAlertContenedor {
+    width: 65%!important;
+    text-align: center;
+    display: none;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+@media (max-width: 700px) {
+    .GridProductos {
+        margin-top: 40px;
+        display: grid;
+        grid-template-columns: 100%;
+        grid-gap: 20px;
+    }
+    .pAlertContenedor {
+        width: 100%!important;
+        text-align: center;
+        display: none;
+        padding: 10px;
+        border-radius: 10px;
+    }
+}
+
+.GridProductos .fomularioProducto,
+.GridProductos .tipo_productoroductos {
+    padding: 10px;
+    width: 100%;
+    border-radius: 20px;
+    border: 0.3px solid rgb(146, 146, 146);
+    height: 70vh;
+    box-shadow: 0px 7px 20px rgba(0, 0, 0, 0.28);
+    overflow: auto;
+}
+
+.GridProductos .fomularioProducto h1 {
+    font-size: 24px;
+}
+
+.GridProductos .fomularioProducto h1 sup {
+    color: #e93737;
+}
+
+.GridProductos .fomularioProducto #labelTp {
+    border-radius: 5px;
+    border: 0.5px solid rgba(0, 0, 0, 0.185);
+    text-align: center;
+    width: 100%;
+    height: 200px;
+}
+
+.GridProductos .fomularioProducto #labelTp b {
+    position: relative;
+    font-size: 38px;
+    margin-top: 100px;
+    color: rgba(0, 0, 0, 0.336);
+}
+
+.GridProductos .tipo_productoroductos table {
+    width: 100%!important;
+}
+
+.dataTables_info {
+    display: none;
+}
+
+.GridProductos .tipo_productoroductos i {
+    font-size: 24px;
+    position: relative;
+    right: -5px;
+    top: -10px;
+    float: right;
+}
+
+.GridProductos .tipo_productoroductos h1 {
+    text-align: center;
+    font-size: 24px;
+}
+
+.tipo_productoroductos .dataTables_length {
+    display: none;
+}
+
+.dataTables_filter label {
+    position: relative;
+    top: -10px;
+    margin-left: -100%!important;
+    width: 100%!important;
+}
+
+.dataTables_filter label input {
+    position: relative !important;
+    border-radius: 10px !important;
+    padding: 5px 15px!important;
+    font-size: 18px !important;
+    width: 80% !important;
+    outline: none !important;
+    box-shadow: 0 7px 25px rgba(0, 0, 0, 0.18)!important;
+}
+
+#DropTipo {
+    margin-top: 10px;
+}
+
+#DropTipo tr th {
+    width: 100%;
+    border-radius: 10px;
+    text-align: center;
+    background-color: rgba(0, 255, 55, 0.5);
+}
+
+#DropTipo .estado {
+    display: none;
+}
+
+#DropCompra.estado {
+    display: none;
+}
+
+#DropCompra .estado.ocultoSi {
+    display: block!important;
+}
+
+#DropCompra tr td {
+    text-align: center;
+}
+
+.estado.ocultoSi {
+    display: none!important;
+}
+
+.form-check-input {
+    margin-top: 15px!important;
+    margin-left: 10px!important;
+}
+
+#Tabletipo_producto .sorting_1,
+#Tabletipo_producto .sorting_asc {
+    display: none!important;
+}
+
+
+/* estilos Compras */
+
+.Table.Add .pdf.img {
+    color: inherit;
+    padding: 0px 13px;
+    font: inherit;
+    font-size: 25px;
+    border-radius: 50%;
+    cursor: pointer;
+    outline: inherit;
+    margin-top: 0px;
+    z-index: 1;
+    margin-right: 20px;
+}
+
+.Table.Add .pdf.img:hover {
+    border-radius: 10px;
+    transition: 0.1s;
+}
+
+.Table.Add .pdf.img:hover a {
+    display: flex;
+    flex-wrap: wrap;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.Table.Add .pdf.img:hover a b.etiquetaReporte {
+    margin-left: 10px;
+    display: block!important;
+    font-size: 16px;
+    transition: 0.3s;
+    margin-top: 7px;
+}
+
+.Table.Add .Add.img:hover {
+    border-radius: 10px;
+    transition: 0.1s;
+}
+
+.Table.Add .Add.img:hover a {
+    display: flex;
+    flex-wrap: wrap;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.Table.Add .Add.img:hover a b.etiquetaCrearCompra {
+    margin-left: 10px;
+    display: block!important;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+#Alerta b {
+    position: relative;
+    font-size: 38px;
+    margin-top: 100px;
+    color: rgba(0, 0, 0, 0.336);
+}
+
+#Alerta {
+    border-radius: 5px;
+    border: 0.5px solid rgba(0, 0, 0, 0.185);
+    text-align: center;
+    width: 100%;
+    height: 50vh;
+}
+
+.TituloCompra {
+    position: sticky;
+    width: 100%;
+    top: 0;
+    height: 50px;
+    background-color: #fff;
+    text-align: center;
+    box-shadow: 0px 7px 20px rgba(0, 0, 0, 0.18);
+    font-size: 32px;
+    font-weight: 600;
+    padding-top: 9px;
+    z-index: 2;
+}
+
+.gridFootCompra {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 30px;
+    bottom: 0%;
+    position: sticky;
+    background-color: #fff;
+    height: 45px;
+}
+
+.BottonCompra {
+    height: 40px;
+    float: right;
+    width: 100%;
 }

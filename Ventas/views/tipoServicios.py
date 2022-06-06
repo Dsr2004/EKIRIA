@@ -7,12 +7,15 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DeleteView
+from Proyecto_Ekiria.Mixin.Mixin import PermissionDecorator, PermissionMixin
 
 from Ventas.forms import Tipo_servicioForm
 from Ventas.models import Tipo_servicio
 
 
+
 class AgregarTipo_Servicio(CreateView):#crear
+    permission_required = ['add_tipo_servicio']
     model = Tipo_servicio
     form_class = Tipo_servicioForm
     template_name = "Tipo_Servicio/Tipo_servicioAdd.html"
@@ -41,6 +44,7 @@ class AgregarTipo_Servicio(CreateView):#crear
             return redirect("Ventas:adminVentas")
             
 class EditarTipo_Servicio(UpdateView):#actualziar
+    permission_required = ['change_tipo_servicio']
     model = Tipo_servicio
     form_class = Tipo_servicioForm
     template_name = "Tipo_Servicio/Tipo_servicio.html"
@@ -64,6 +68,7 @@ class EditarTipo_Servicio(UpdateView):#actualziar
         else:
             return redirect("Ventas:adminVentas")
 
+@PermissionDecorator(['delete_tipo_servicio'])
 def CambiarEstadoTipoServicio(request):
     if request.method=="POST":
         id = request.POST["estado"]
@@ -81,7 +86,9 @@ def CambiarEstadoTipoServicio(request):
     else:
         return redirect("Ventas:adminVentas")
 
+
 class ElimininarTipoServicio(DeleteView):#eliminar
+    permission_required = ['delete_tipo_servicio']
     model = Tipo_servicio
     template_name = "Tipo_Servicio/EliminarTipoServicio.html"
     success_url = reverse_lazy("Ventas:adminVentas")

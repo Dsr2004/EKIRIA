@@ -5,7 +5,6 @@ import smtplib
 from Proyecto_Ekiria import settings
 from importlib import import_module
 # -----
-
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from django.template.loader import render_to_string
@@ -45,7 +44,7 @@ from Configuracion.models import cambiosFooter, cambios
 from Usuarios.authentication_mixins import Authentication
 from datetime import datetime
 from Usuarios.forms import Cambiar, Regitro, Editar, CustomAuthForm, EditUser
-from Usuarios.Mixins.Mixin import Asimetric_Cipher
+from Usuarios.Mixins.Mixin import Asimetric_Cipher,if_admin
 from Proyecto_Ekiria.settings.local import Public_Key
 import cryptocode
 from Proyecto_Ekiria.Mixin.Mixin import PermissionDecorator, PermissionMixin
@@ -107,8 +106,6 @@ class Register(CreateView):
     success_url = reverse_lazy("IniciarSesion")
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST or None)
-        print(form.is_valid())
-        print(form.cleaned_data)
         context = {
             'form':self.form_class,
         }
@@ -214,7 +211,6 @@ class ConfirmarCuenta(TemplateView):
             return response
 
 @login_required()
-@PermissionDecorator(['change_logentry'])
 def Perfil(request):
     UserSesion = if_User(request)
     cambiosQueryset = cambios.objects.all()
@@ -244,6 +240,7 @@ def if_admin(request):
                 return False
 
 @login_required()
+@PermissionDecorator(['change_usuario'])
 def EditarPerfil(request):  
     template_name = "UserInformation/EditarPerfil.html"
     UserSesion = if_User(request)
@@ -263,6 +260,7 @@ def EditarPerfil(request):
     return render(request, template_name, {"form":form, "User":UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
     
 @login_required()
+@PermissionDecorator(['add_usuario','change_usuario', 'delete_usuario', 'view_usuario'])
 def Change(request):
     UserSesion=""
     if request.session['pk']:
@@ -311,6 +309,7 @@ def Change(request):
     return render(request, 'UserInformation/ChangePassword.html', {"form":form, "User":UserSesion,'message':Error, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
 
 @login_required()
+@PermissionDecorator(['add_usuario','change_usuario', 'delete_usuario', 'view_usuario'])
 def Admin(request):
     UserSesion = if_admin(request)
     cambiosQueryset = cambios.objects.all()
@@ -324,15 +323,14 @@ def Admin(request):
     return render(request, template_name, {"Usuario":queryset,"contexto":Servicios, "User":UserSesion, "Vistas":Vistas, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
   
   
-class CreateUser(CreateView):
+class CreateUser(CreateView, PermissionMixin):
+    permission_required = ['add_usuario']
     model = Usuario
     form_class = Regitro
     template_name = 'UsersConfiguration/CreateUsers.html'
     success_url = reverse_lazy("Administracion")
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST or None)
-        print(form.is_valid())
-        print(form.cleaned_data)
         context = {
             'form':self.form_class,
         }
@@ -357,6 +355,7 @@ class CreateUser(CreateView):
                     estado = 1
                 )
                 registro.save()
+                return redirect('Administracion')
             except:
                 context['errors'] = form.errors
                 context['Error'] = 'No se pudo enviar el correo'
@@ -368,6 +367,11 @@ class CreateUser(CreateView):
             context['Error']= 'Los datos ingresados son incorrectos'
             context['cambios']=cambiosQueryset
             context['footer']=cambiosfQueryset
+        UserSesion=""
+        imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+        imagen = imagen.img_usuario
+        UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+        context['User']=UserSesion
         return render(request, self.template_name, context)
                 
     def get_context_data(self, *args, **kwargs):
@@ -383,10 +387,11 @@ class CreateUser(CreateView):
         except:
             return context
 
-class UpdateUser(UpdateView):
+class UpdateUser(UpdateView,PermissionMixin):
+    permission_required = ['change_usuario']
     model = Usuario    
     template_name = 'UsersConfiguration/CreateUsers.html'
-    form_class = Regitro
+    form_class = EditUser 
     success_url=reverse_lazy("Administracion")  
     def get(self, request, *args,**kwargs):
         get_object = Usuario.objects.get(id_usuario=kwargs['pk'])
@@ -397,13 +402,10 @@ class UpdateUser(UpdateView):
             'form':form
         }
         UserSesion=""
-        if request.session:
-            if request.session['pk']:
-                if request.session['Admin']:
-                    imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-                    imagen = imagen.img_usuario
-                    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin'], 'titulo':'Editar '+get_object.nombres}
-                
+        imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+        imagen = imagen.img_usuario
+        UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+        context['User']=UserSesion
         context['cambios']=cambiosQueryset
         context['footer']=cambiosfQueryset
         context['User']=UserSesion
@@ -411,19 +413,19 @@ class UpdateUser(UpdateView):
         return render(request, self.template_name, context)
     def post(self, request, *args, **kwargs):
         get_object = Usuario.objects.get(id_usuario=kwargs['pk'])
-        form = self.form_class(request.POST or None, request.FILES or None, instance=get_object)
+        form = self.form_class(request.POST or None, instance=get_object)
         context = {
             'form':self.form_class,
         }
+        print(form.is_valid())
         cambiosQueryset = cambios.objects.all()
         cambiosfQueryset = cambiosFooter.objects.all()
         if form.is_valid():
             try:
                 form.save()
                 return redirect('Administracion')
-            except:
+            except Exception as e:
                 context['errors'] = form.errors
-                context['Error'] = 'No se pudo enviar el correo'
                 context['cambios']=cambiosQueryset
                 context['footer']=cambiosfQueryset
                 return render(request, self.template_name, context)
@@ -433,12 +435,9 @@ class UpdateUser(UpdateView):
         context['cambios']=cambiosQueryset
         context['footer']=cambiosfQueryset
         UserSesion=""
-        if request.session:
-            if request.session['pk']:
-                if request.session['Admin']:
-                    imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-                    imagen = imagen.img_usuario
-                    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin'], 'titulo':'Editar '+get_object.nombres}
+        imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+        imagen = imagen.img_usuario
+        UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
         context['User']=UserSesion
         return render(request, self.template_name, context)
                 
@@ -470,6 +469,7 @@ def Notification(request):
     cambiosfQueryset = cambiosFooter.objects.all()
     return render(request, "UserInformation/Notification.html", {"User":UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
     
+@PermissionDecorator(['delete_usuario'])
 def CambiarEstadoUsuario(request):
     print(request.POST)
     if request.method=="POST":

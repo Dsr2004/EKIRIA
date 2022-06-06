@@ -70,6 +70,7 @@ def Municipios():
                 Municipio.objects.create(pk=municipio['id'],nom_municipio=municipio['nom_municipio'])
 
 def codigoPostal():
+    # Lista de datos a insertar
     Codigos=[
         {'id':'1', 'cod_postal':'050001'},
         {'id': '2', 'cod_postal': '050002'},
@@ -280,6 +281,14 @@ def PermisosCliente(rol):
                 content_type=content_type_Servicio_Personalizado,
             )
             rol.permissions.add(permission_delete_Servicio_Personalizado)
+                            # Usuario Es un cliente
+            permission_Es_un_cliente = Permission.objects.get(
+                codename='Cliente',
+                content_type=ContentType.objects.get_for_model(Usuario),
+                )
+            rol.permissions.add(permission_Es_un_cliente)
+
+    
 
 def Rol_Permisos():
     roles = Group.objects.all()
@@ -301,6 +310,10 @@ def Rol_Permisos():
             Permisos = Permission.objects.all()
             for permiso in Permisos:
                 rol.permissions.add(permiso)
+                rol.permissions.remove(Permission.objects.get(
+                codename='Administrador',
+                content_type=ContentType.objects.get_for_model(Usuario),
+                ))
                 rol.save()
 
 def Cambios():

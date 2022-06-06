@@ -21,3 +21,10 @@ def Asimetric_Cipher(parametro):
         return parametro(*args, **kwargs)
 
     return Encript
+
+
+def if_admin(funcion):
+    def par(*args, **kwars):
+        print('Es un admin')
+        return funcion(*args, **kwargs)
+    return par

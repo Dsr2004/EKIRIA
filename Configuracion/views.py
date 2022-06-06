@@ -32,40 +32,9 @@ from .forms import RolForm, CambiosForm, FooterForm
 
 
 @login_required()
-# @permission_required(['auth_permission.add_rol', 'auth_permission.change_rol', 'auth_permission.delete_rol', 'auth_permission.view_rol'])
+@PermissionDecorator(['add_group', 'add_cambios', 'add_permission'])
 def Configuracion(request):
-    
     user = request.user
-    # any permission check will cache the current set of permissions
-    # user.has_perm('group.change_group')
-
-    # content_type = ContentType.objects.get_for_model(Group)
-    # permission = Permission.objects.get(
-    #     codename='change_group',
-    #     content_type=content_type,
-    # )
-    # permissions = Permission.objects.filter()
-    # Checking the cached permission set
-    # user.has_perm('group.change_group')  # False
-
-    # Request new instance of User
-    # Be aware that user.refresh_from_db() won't clear the cache.
-    # user = get_object_or_404(Usuario, pk=id_user.id_usuario)
-
-    # Permission cache is repopulated from the database
-    # user.has_perm('group.change_group')  # True
-    # user.user_permission.set([])
-    # user.Usuario_permissions.all().values('codename')
-    # user.get_group_permissions()
-    # print(user.get_all_permissions())
-
-    # if Usuario.has_perm('group.change_group'):
-    #     Usuario.has_perm=True
-    #     print(Usuario.has_perm)
-    # else:
-    #     Usuario.has_perm=False
-    #     print(Usuario.has_perm)
-        
     cambiosQueryset = cambios.objects.all()
     cambiosfQueryset = cambiosFooter.objects.all()
     if if_admin(request):
@@ -78,15 +47,15 @@ def Configuracion(request):
 
 
 @login_required()
-# @permission_required(['auth_permission.add_rol', 'auth_permission.change_rol', 'auth_permission.delete_rol', 'auth_permission.view_rol'])
+@PermissionDecorator(['add_group', 'change_group', 'delete_group', 'view_group'])
 def Roles(request):
-# @permission_required(['auth_permission.add_cambios', 'auth_permission.change_cambios', 'auth_permission.delete_cambios', 'auth_permission.view_cambios','auth_permission.add_cambiosfooter', 'auth_permission.change_cambiosfooter', 'auth_permission.delete_cambiosfooter', 'auth_permission.view_cambiosfooter'])
     UserSesion=if_admin(request)
     cambiosQueryset = cambios.objects.all()
     cambiosfQueryset = cambiosFooter.objects.all()
     return render(request, "Roles.html", {'User':UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
     
 @login_required()
+@PermissionDecorator(['add_cambios', 'change_cambios', 'delete_cambios', 'view_cambios','add_cambiosfooter', 'change_cambiosfooter','delete_cambiosfooter','view_cambiosfooter'])
 def Cambios(request):
     formulario = CambiosForm
     ListarCambios = cambios.objects.all()
@@ -106,7 +75,7 @@ def Cambios(request):
 
 
 @login_required()
-@permission_required(['auth_permission.add_permission', 'auth_permission.change_permission', 'auth_permission.delete_permission', 'auth_permission.view_permission'])
+@PermissionDecorator(['add_permission', 'change_permission', 'delete_permission', 'view_permission'])
 def Permisos(request):
     cambiosQueryset = cambios.objects.all()
     cambiosfQueryset = cambiosFooter.objects.all()
@@ -115,7 +84,7 @@ def Permisos(request):
     
 
 class Admin(PermissionMixin,DetailView):
-    permission_required = ['change_logentry']
+    permission_required = ['add_permission','change_permission','delete_permission','view_permission',]
     model = Permission
     template_name = 'Administrador.html'
     def get(self, request,*args, **kwargs):
@@ -169,22 +138,23 @@ class Admin(PermissionMixin,DetailView):
 
 
 @login_required()
+@PermissionDecorator(['view_group'])
 def ListarRol(request):
     UserSesion=""
     formulario=RolForm
     ListRoles = Group.objects.all()
     cambiosQueryset = cambios.objects.all()
     cambiosfQueryset = cambiosFooter.objects.all()
-    if if_admin(request):
-        UserSesion=if_admin(request)
-    else: 
-        return redirect('SinPermisos')
+    imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+    imagen = imagen.img_usuario
+    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
     contexto= {'roles':ListRoles}
     contexto["User"]=UserSesion
     contexto['cambios']=cambiosQueryset
     contexto['footer']=cambiosfQueryset
     return render(request, "Roles.html", contexto)
 
+@PermissionDecorator(['delete_group'])
 def eliminarRol(request):
     if request.method == "POST":
         id = request.POST['id']
@@ -199,21 +169,23 @@ def eliminarRol(request):
         return redirect('Roles')
     
 
-def EstadoRol(request):
-    id_estado=request.POST.get("estado")
-    Object=Group.objects.get(id_rol=id_estado)
-    estado = Object.estado
-    if estado == True:
-        Object.estado = False
-        Object.save()
-        return HttpResponse('cosa')
-    elif estado == False:
-        Object.estado = True
-        Object.save()
-        return HttpResponse('cosa2')
+# def EstadoRol(request):
+#     id_estado=request.POST.get("estado")
+#     Object=Group.objects.get(id_rol=id_estado)
+#     estado = Object.estado
+#     if estado == True:
+#         Object.estado = False
+#         Object.save()
+#         return HttpResponse('cosa')
+#     elif estado == False:
+#         Object.estado = True
+#         Object.save()
+#         return HttpResponse('cosa2')
 
 
-class CreateRolView(CreateView):
+
+class CreateRolView(CreateView, PermissionMixin):
+    permission_required = ['add_group']
     model = Group
     form_class = RolForm
     template_name = 'CrearRol.html'
@@ -246,73 +218,9 @@ class CreateRolView(CreateView):
         context['cambios']=cambiosQueryset
         context['footer']=cambiosfQueryset
         return context
-    
-class CrearCambios(View):
-    model = cambios
-    form_class = CambiosForm
 
-    def get_object(self, queryset=None):
-        obj = self.model.objects.filter(id_cambios=self.request.POST["id_cambio"]).first()
-        return obj
-
-    def post(self,request, *args, **kwargs):
-        formulario=self.form_class(request.POST, instance=self.get_object())
-        if formulario.is_valid():
-            formulario.save()
-            return JsonResponse({"mensaje": f"{self.model.__name__} Se ha creado correctamente", "errores":"No hay errores"})
-        else:
-            errores=formulario.errors
-            mensaje=f"{self.model.__name__} No se ha creado correctamente!"
-            respuesta=JsonResponse({"mensaje":mensaje, "errores":errores})
-            respuesta.status_code=400
-            return respuesta
-    def get_context_data(self, *args, **kwargs):
-        context = super(CrearCambios, self).get_context_data(**kwargs)
-        if if_admin(self.request):
-            UserSesion=if_admin(self.request)
-        else: 
-            return redirect('SinPermisos')
-        cambiosQueryset = cambios.objects.all()
-        cambiosfQueryset = cambiosFooter.objects.all()
-        context["User"]=UserSesion
-        context['cambios']=cambiosQueryset
-        context['footer']=cambiosfQueryset
-        return context
-    
-class CrearCambiosFooter(View):
-    model = cambiosFooter
-    form_class = FooterForm
-
-    def get_object(self, queryset=None):
-        obj = self.model.objects.filter(id_footer=self.request.POST["id_footer"]).first()
-        return obj
-
-    def post(self,request, *args, **kwargs):
-        formulario=self.form_class(request.POST, instance=self.get_object())
-        if formulario.is_valid():
-            formulario.save()
-            return JsonResponse({"mensaje": f"{self.model.__name__} Se ha creado correctamente", "errores":"No hay errores"})
-        else:
-            errores=formulario.errors
-            mensaje=f"{self.model.__name__} No se ha creado correctamente!"
-            respuesta=JsonResponse({"mensaje":mensaje, "errores":errores})
-            respuesta.status_code=400
-            return respuesta
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(CrearCambiosFooter, self).get_context_data(**kwargs)
-        if if_admin(self.request):
-            UserSesion=if_admin(self.request)
-        else: 
-            return redirect('SinPermisos')
-        cambiosQueryset = cambios.objects.all()
-        cambiosfQueryset = cambiosFooter.objects.all()
-        context["User"]=UserSesion
-        context['cambios']=cambiosQueryset
-        context['footer']=cambiosfQueryset
-        return context
-
-class EditarRolView(UpdateView):
+class EditarRolView(UpdateView,PermissionMixin):
+    permission_required = ['change_group']
     model = Group
     form_class = RolForm
     template_name = 'EditarRol.html'
@@ -360,8 +268,77 @@ class EditarRolView(UpdateView):
         return context
     
 
-   
-class listarPermisos(ListView):
+class CrearCambios(View,PermissionMixin):
+    permission_required = ['add_cambios', ' add_cambios_footer']
+    model = cambios
+    form_class = CambiosForm
+
+    def get_object(self, queryset=None):
+        obj = self.model.objects.filter(id_cambios=self.request.POST["id_cambio"]).first()
+        return obj
+
+    def post(self,request, *args, **kwargs):
+        formulario=self.form_class(request.POST, instance=self.get_object())
+        if formulario.is_valid():
+            formulario.save()
+            return JsonResponse({"mensaje": f"{self.model.__name__} Se ha creado correctamente", "errores":"No hay errores"})
+        else:
+            errores=formulario.errors
+            mensaje=f"{self.model.__name__} No se ha creado correctamente!"
+            respuesta=JsonResponse({"mensaje":mensaje, "errores":errores})
+            respuesta.status_code=400
+            return respuesta
+    def get_context_data(self, *args, **kwargs):
+        context = super(CrearCambios, self).get_context_data(**kwargs)
+        if if_admin(self.request):
+            UserSesion=if_admin(self.request)
+        else: 
+            return redirect('SinPermisos')
+        cambiosQueryset = cambios.objects.all()
+        cambiosfQueryset = cambiosFooter.objects.all()
+        context["User"]=UserSesion
+        context['cambios']=cambiosQueryset
+        context['footer']=cambiosfQueryset
+        return context
+    
+class CrearCambiosFooter(View,PermissionMixin):
+    permission_required = ['add_cambios', ' add_cambios_footer']
+    model = cambiosFooter
+    form_class = FooterForm
+
+    def get_object(self, queryset=None):
+        obj = self.model.objects.filter(id_footer=self.request.POST["id_footer"]).first()
+        return obj
+
+    def post(self,request, *args, **kwargs):
+        formulario=self.form_class(request.POST, instance=self.get_object())
+        if formulario.is_valid():
+            formulario.save()
+            return JsonResponse({"mensaje": f"{self.model.__name__} Se ha creado correctamente", "errores":"No hay errores"})
+        else:
+            errores=formulario.errors
+            mensaje=f"{self.model.__name__} No se ha creado correctamente!"
+            respuesta=JsonResponse({"mensaje":mensaje, "errores":errores})
+            respuesta.status_code=400
+            return respuesta
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(CrearCambiosFooter, self).get_context_data(**kwargs)
+        if if_admin(self.request):
+            UserSesion=if_admin(self.request)
+        else: 
+            return redirect('SinPermisos')
+        cambiosQueryset = cambios.objects.all()
+        cambiosfQueryset = cambiosFooter.objects.all()
+        context["User"]=UserSesion
+        context['cambios']=cambiosQueryset
+        context['footer']=cambiosfQueryset
+        return context
+
+
+
+class listarPermisos(ListView,PermissionMixin):
+    permission_required = ['view_permission']
     model = Permission
     template_name = 'Permisos.html'
     context_object_name="Permisos"

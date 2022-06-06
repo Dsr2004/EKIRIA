@@ -11,18 +11,18 @@ function eliminarprov(id_proveedor) {
     })
 
     swalWithBootstrapButtons.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
+        title: 'Estás seguro?',
+        text: "Se eliminará este proveedor",
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: 'No, cancel!',
+        confirmButtonText: 'Si, eliminar!',
+        cancelButtonText: 'No, cancelar!',
         reverseButtons: true
     }).then((result) => {
         if (result.isConfirmed) {
             swalWithBootstrapButtons.fire(
-                'Deleted!',
-                'Your file has been deleted.',
+                'Eliminado!',
+                'El proveedor ha sido eliminado.',
                 'success',
                 window.location.href = ruta
 
@@ -32,8 +32,8 @@ function eliminarprov(id_proveedor) {
             result.dismiss === Swal.DismissReason.cancel
         ) {
             swalWithBootstrapButtons.fire(
-                'Cancelled',
-                'Your imaginary file is safe 🙂',
+                'Cancelado',
+                'No se ha realizado ningún cambio',
                 'error'
             )
         }
@@ -41,16 +41,11 @@ function eliminarprov(id_proveedor) {
 };
 
 function agregarprod(url) {
-    $("#agregar_prod").load(url, function() {
-        $(this).modal('show')
-    })
-
+    window.location.href = "../crearprod/";
 };
 
-function modificarprod(url) {
-    $("#modificar_prod").load(url, function() {
-        $(this).modal('show')
-    })
+function modificarProb(id) {
+    window.location.href = "../modificarprod/" + id;
 
 };
 
@@ -68,13 +63,16 @@ function modificarprov(url) {
 
 };
 
-function agregartp(url) {
-    $("#agregar_tp").load(url, function() {
+function modificartp(url) {
+    $("#modificar_prod").load(url, function() {
         $(this).modal('show')
     })
 
+};
+
+function agregartp(url) {
     $("#agregar_prod").load(url, function() {
-        $(this).modal('hidden')
+        $(this).modal('show')
     })
 };
 
@@ -213,7 +211,7 @@ function cambioestado(id) {
     let token = $("#camestado").find('input[name=csrfmiddlewaretoken]').val()
     swal.fire({
         title: '¿Estás seguro de cambiar el estado de este proveedor?',
-        text: "You won't be able to revert this!",
+        text: "Al cambiar el estado no se podrá usar este proveedor mientras este inhabilitado",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Si, estoy seguro',
@@ -243,6 +241,75 @@ function cambioestado(id) {
     });
 }
 
+function cambioestadoP(id) {
+    let ids = id
+    let token = $("#camestado").find('input[name=csrfmiddlewaretoken]').val()
+    swal.fire({
+        title: '¿Estás seguro de cambiar el estado de este producto?',
+        text: "Al cambiar el estado no se podrá usar este producto mientras este inhabilitado",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Si, estoy seguro',
+        cancelButtonText: 'No, cancelar!',
+        reverseButtons: true
+    }).then((willDelete) => {
+        if (willDelete.isConfirmed) {
+            $.ajax({
+                data: { "csrfmiddlewaretoken": token, "estado": ids },
+                url: $("#camestado").attr('action'),
+                type: $("#camestado").attr('method'),
+                success: function(data) {
+                    swal.fire("Se ha modificado el producto", {
+                        icon: 'success',
+                    }).then(function() {
+                        location.reload()
+                    });
+                },
+                error: function(errors) {
+                    alert("Error: kiwi perro " + errors.responseJSON)
+                }
+            });
+
+        } else {
+            location.reload()
+        }
+    });
+}
+
+function cambioestadoTP(id) {
+    let ids = id
+    let token = $("#camestado").find('input[name=csrfmiddlewaretoken]').val()
+    swal.fire({
+        title: '¿Estás seguro de cambiar el estado de este tipo de producto?',
+        text: "Al cambiar el estado no se podrá usar este tipo de producto mientras este inhabilitado",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Si, estoy seguro',
+        cancelButtonText: 'No, cancelar!',
+        reverseButtons: true
+    }).then((willDelete) => {
+        if (willDelete.isConfirmed) {
+            $.ajax({
+                data: { "csrfmiddlewaretoken": token, "estado": ids },
+                url: $("#camestado").attr('action'),
+                type: $("#camestado").attr('method'),
+                success: function(data) {
+                    swal.fire("Se ha modificado el tipo de producto", {
+                        icon: 'success',
+                    }).then(function() {
+                        location.reload()
+                    });
+                },
+                error: function(errors) {
+                    alert("Error: kiwi perro " + errors.responseJSON)
+                }
+            });
+
+        } else {
+            location.reload()
+        }
+    });
+}
 
 // function sumartotal(){
 //    cantidad = document.getElementById("cant").value

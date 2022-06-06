@@ -1,0 +1,214 @@
+{%extends 'Menu_Usuario.html'%} {% block head %} {% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos</title>
+    <link rel="stylesheet" href="/static/Modulo_compras/css/style.css">
+    <link rel="icon" href="/static/Proyecto_Ekiria/Img/Logo Ekiria.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vast+Shadow&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="sweetalert2.min.css">
+    <script src="/static/bootstrap/js/bootstrap.js"></script>
+    <!--  Datatables  -->
+    <link rel="stylesheet" type="text/css" href="{%static 'Plugins/DataTables/jquery.dataTables.min.css' %}" />
+
+    <!--  extension responsive  -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.3.0/css/responsive.dataTables.min.css">
+
+
+</head>
+{% endblock head %} {% block Contenido %}
+
+<button class="btn btn-link col-md-1" style="text-decoration: none;"><a style="text-decoration: none; font-size: 24px; "  href="{%url 'listarprod'%}">Volver</a></button>
+<div class="container GridProductos" style="margin-top: 0px!important;">
+
+    <form class="fomularioProducto" action="" method="post">
+
+        {% if Error %}
+        <div class="alert alert-danger">{{Error}}</div>
+        {% endif %} {% csrf_token %}
+        <h1 for="Nombre">Nombre: <sup>(*)</sup></h1> {{form.nombre}}
+        <p id="nombre-p" class="text-danger"></p>
+        <h1 for="proveedor">Proveedor: <sup>(*)</sup></h1> {{form.proveedor}}
+        <p id="proveedor-p" class="text-danger"></p>
+        <h1 for="tipo_producto">Tipo de producto: <sup>(*)</sup></h1> {{form.tipo_producto}}
+        <p id="tipo_producto-p" class="text-danger"></p>
+        <div for="tipo_producto" id="labelTp">
+            <b id="Arrastrar" class="container">
+                <br>
+                Arrastra aquí el tipo de producto
+            </b>
+        </div>
+        <table class="table">
+            <tbody id="DropTipo" style="width: 100%; display:none;">
+            </tbody>
+        </table>
+        <p id="tipo_producto-p" class="text-danger"></p>
+
+        {{form.cantidad}}
+        <button type="submit" class="btn btn-success " style="float: right;">Enviar</button>
+    </form>
+    <div class="tipo_productoroductos">
+        <i class="mdi mdi-plus-circle-outline" style="cursor:pointer;" onclick="agregartp('{%url 'creartp'%}')"></i>
+        <h1>Tipos de Producto</h1>
+        <hr>
+        <table id="Tabletipo_producto" class="table display nowrap" cellspacing="0" width="100">
+            <thead>
+                <tr class="table-dark idNull">
+                    <th style="display: none !important;">Num</th>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Editar</th>
+                </tr>
+            </thead>
+            <tbody id="tbody">
+                {% for tipo in tipo %}
+                <tr class="table-light focus idNull" draggable="true" id="caja{{tipo.pk}}">
+
+                    <th class="estado">{{tipo.pk}}</th>
+                    <th scope="row">{{tipo.nombre}}</th>
+                    <td>
+                        <button class="estado" type="button" style="background: none;color: inherit;border: none;padding: 0;font: inherit;cursor: pointer;outline: inherit;" onclick="modificartp('{%url 'modificartp' tipo.pk %}')"><i class="mdi mdi-account-edit"></i>   
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!--  -->
+
+
+{% if form.tipo_producto.value != ""%} {% for tipo in tipo %} {% if tipo.pk == form.tipo_producto.value %}
+<table style="display: none;">
+    <tbody>
+        <tr class="table-light focus" draggable="true" id="tpvpk">
+            <th style="display: none;">{{tipo.pk}}</th>
+            <th scope="row">{{tipo.nombre}}</th>
+            <td>
+                <button class="estado" type="button" style="background: none;color: inherit;border: none;padding: 0;font: inherit;cursor: pointer;outline: inherit;" onclick="modificartp('{%url 'modificartp' tipo.pk %}')"><i class="mdi mdi-account-edit"></i>   
+                </button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+{% endif %} {% endfor %}
+<script>
+    $(document).ready(function() {
+        if (true) {
+            let dropTipo = document.getElementById('DropTipo')
+            let tpv = document.getElementById('tpvpk')
+            let clon = tpv.cloneNode(true);
+            dropTipo.appendChild(clon);
+            dropTipo.style.display = "block"
+            ValueInput()
+        }
+    })
+</script>
+
+{% endif %} {% endblock Contenido %} {% block modal %}
+
+<div class="modal fade" id="agregar_prod" role="dialog">
+
+</div>
+<div class="modal fade" id="modificar_prod" role="dialog">
+
+</div>
+
+{% endblock modal%} {%block scripts%}
+
+<!--   Datatables-->
+<script type="text/javascript" src="{%static 'Plugins/DataTables/jquery.dataTables.min.js' %}"></script>
+<!-- extension responsive -->
+<script src="https://cdn.datatables.net/responsive/2.3.0/js/dataTables.responsive.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#Tabletipo_producto').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+            },
+            responsive: true
+        });
+    });
+    const focus = document.querySelectorAll(".focus")
+    focus.forEach(el => {
+        el.addEventListener("mousedown", e => {
+            let th = e.target
+            let tr = th.parentNode
+            let id = tr.getAttribute('id')
+            const Tipo = document.getElementById(id);
+            Poner(Tipo)
+        });
+    });
+
+    function Poner(Tipo) {
+        const Cont = document.querySelector('#labelTp')
+        const tbody = document.getElementById('tbody')
+        var tipo_producto = document.getElementById('tipo_producto')
+        Cont.addEventListener('dragover', e => {
+            e.preventDefault();
+        })
+        var div = 0
+        Cont.addEventListener('drop', e => {
+            div = div + 1
+            while (div == 1) {
+                let dropTipo = document.getElementById('DropTipo')
+                console.log(Tipo.firstChild.innerHTML)
+                dropTipo.removeChild(dropTipo.firstChild)
+                if (dropTipo.innerHTML == "") {
+                    var clon = Tipo.cloneNode(true);
+                    dropTipo.appendChild(clon);
+                    dropTipo.style.display = "block"
+                    ValueInput()
+                } else {
+                    var clon = Tipo.cloneNode(true);
+                    console.log(dropTipo.firstChild.innerHTML)
+                    dropTipo.replaceChild(clon, dropTipo.firstChild)
+                    ValueInput()
+                }
+                div = div + 1
+            }
+        })
+    }
+
+    function ValueInput() {
+        let dropTipo1 = document.getElementById('DropTipo')
+        let wq = dropTipo1.firstChild
+        let as = wq.cells[0]
+        let select = document.getElementById('tipo_producto')
+        select.value = as.innerHTML
+    }
+</script>
+{% if errors%}
+
+<script>
+    var fields = [];
+</script>
+{% for key, error in errors.items %}
+<script>
+    fields.push('{"{{key}}":"{{error.as_text}}"}')
+    fields.forEach(field => {
+        let input = document.getElementById('{{key}}')
+        input.classList.add('is-invalid')
+        let p = document.getElementById('{{key}}-p')
+        let text = '{{error.as_text}}'
+        p.innerHTML = text.substr(2)
+    })
+</script>
+
+
+{% endfor %} {% endif %}
+<script src="/static/Proyecto_Ekiria/js/jsMenuL.js"></script>
+<script src="/static/Modulo_compras/js/js.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="sweetalert2.min.js"></script>
+{%endblock scripts%}
+
+</html>

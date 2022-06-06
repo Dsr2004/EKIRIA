@@ -1,12 +1,13 @@
 import json
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-
+from Proyecto_Ekiria.Mixin.Mixin import PermissionDecorator, PermissionMixin
 from Usuarios.models import Usuario
 from .models import *
 
 
-@login_required
+@login_required()
+# @PermissionDecorator([' delete_pedidoItem', 'change_pedidoItem'])
 def actualizarItem(request):
 
     data = request.POST

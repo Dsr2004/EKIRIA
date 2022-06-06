@@ -36,6 +36,7 @@ class ServicioForm(forms.ModelForm):
             self.fields['slug'].required = False
             self.fields['tipo_servicio_id'].required = True
 
+
         
 class Tipo_servicioForm(forms.ModelForm):
     class Meta:
@@ -104,6 +105,8 @@ class CitaForm(forms.ModelForm):
         self.fields['diaCita'].required = True
         self.fields['horaInicioCita'].required = True
         self.fields['empleado_id'].required = True
+        
+
 
 
 

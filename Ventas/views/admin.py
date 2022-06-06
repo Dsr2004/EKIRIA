@@ -2,7 +2,7 @@ from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.views.generic import View, TemplateView
-
+from Proyecto_Ekiria.Mixin.Mixin import PermissionDecorator, PermissionMixin
 
 from Configuracion.models import cambiosFooter, cambios
 from Usuarios.models import Usuario
@@ -16,17 +16,14 @@ Seccion de las Vistas donde se administra el Admin de las ventas
 """
 
 class AdminVentas(TemplateView):
+    permission_required = ['view_catalogo']
     template_name = "Ventas.html"
 
     def get(self,request, *args, **kwargs):
         formTipo_Servicio = Tipo_servicioForm
         servicios=Catalogo.objects.all()
 
-        paginado=Paginator(servicios, 5)
-        pagina = request.GET.get("page") or 1
-        posts = paginado.get_page(pagina)
-        pagina_actual=int(pagina)
-        paginas=range(1,posts.paginator.num_pages+1)
+       
         #autenticacion usuario
         try:
             if request.session:
@@ -45,9 +42,7 @@ class AdminVentas(TemplateView):
         context={
             'Tipo_Servicios':Tipo_servicio.objects.all(),
             'form_Tipo_Servicio':formTipo_Servicio,
-            'servicios':posts,
-            'paginas':paginas,
-            'pagina_actual':pagina_actual,
+            'servicios':servicios,
             "User":UserSesion,
             'cambios':cambiosQueryset,
             'footer':cambiosfQueryset
@@ -56,6 +51,7 @@ class AdminVentas(TemplateView):
         return render(request, self.template_name, context)
     
 class AgregarServicioalCatalogo(View):
+    permission_required = ['change_catalogo', 'add_servicio']
     model = Catalogo
     form_class =   CatalogoForm
     template_name = "Catalogo/AgregarServicio.html"
@@ -118,6 +114,7 @@ class AgregarServicioalCatalogo(View):
 
             return render(request, "Ventas.html", contexto)
 
+@PermissionDecorator(['change_catalogo', 'delete_catalogo', 'delete_servicio','change_servicio'])    
 def CambiarEstadoServicioEnCatalogo(request):
     if request.method == "POST":
         id = request.POST["estado"]

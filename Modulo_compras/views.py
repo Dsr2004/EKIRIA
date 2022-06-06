@@ -3,9 +3,10 @@ from itertools import product
 import json
 from pickle import TRUE
 from wsgiref.util import request_uri
+from xmlrpc.client import boolean
 from django.shortcuts import render, redirect
 from Modulo_compras.forms import ProveedorForm, ComprasForm, ProductosForm, Tipo_productoForm
-from .models import Proveedor, Producto, Compra, Tipo_producto
+from .models import Proveedor, Producto, Compra, Tipo_producto, HistorialCompra
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse_lazy
@@ -30,8 +31,7 @@ def Listcompra(request):
     cambiosQueryset = cambios.objects.all()
     cambiosfQueryset = cambiosFooter.objects.all()
     Compras=Compra.objects.all()
-    compra_form=ComprasForm
-    return render(request,'compra.html',{'compra_form':compra_form , 'Compras': Compras, 'User':UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
+    return render(request,'compra.html',{ 'Compras': Compras, 'User':UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
 
 @login_required()
 def Listarprov(request):
@@ -42,58 +42,69 @@ def Listarprov(request):
     prov_form=ProveedorForm
     return render(request,'proveedores.html',{'prov_form':prov_form , 'proveedores': Proveedores, 'User':UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
 
-@login_required()
-def Listartp(request):
-    UserSesion=if_admin(request)
-    cambiosQueryset = cambios.objects.all()
-    cambiosfQueryset = cambiosFooter.objects.all()
-    Tp=Tipo_producto.objects.all()
-    tp_form=Tipo_productoForm
-    return render(request,'tipoprod.html',{'tp_form':tp_form , 'Tp': Tp, 'User':UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
-
-
-# class Tipoprod(View):
-#     model= Tipo_producto
-#     form_class=Tipo_productoForm
-#     template_name='tipoprod.html'
-
-#     def post(self,request, *args, **kwargs):  
-#             prov_form = ProveedorForm(request.POST,instance=self.get_object())
-#             if prov_form.is_valid():
-#                 prov_form.save()
-#                 return redirect('listarprov')
-#             else:
-#                 errors=prov_form.errors
-#                 mensaje=f"{self.model.__name__} no ha sido registrado"
-#                 response=JsonResponse({"errors":errors,"mensaje":mensaje})
-#                 response.status_code=400
-#                 return response
-
 class Crearprod(CreateView):
     model= Producto
     form_class=ProductosForm
-    template_name='modalprod/agregarprod.html'
+    template_name='Funciones/agregarprod.html'
 
     def post(self,request, *args, **kwargs):  
-            producto_form = ProductosForm(request.POST)
-            if producto_form.is_valid():
-                producto_form.save()
+        context={}
+        producto_form = self.form_class(request.POST or None)
+        if producto_form.is_valid():
+            nombre = producto_form.cleaned_data.get('nombre')
+            proveedor = producto_form.cleaned_data.get('proveedor')
+            productos = self.model.objects.all()
+            boolean = None
+            for producto in productos:
+                if producto.nombre == nombre:
+                    if producto.proveedor_id == proveedor.pk:
+                        print(producto.proveedor_id)
+                        boolean=False
+            if boolean != False:
+                producto = self.model(
+                    nombre = nombre,
+                    proveedor = proveedor,
+                    tipo_producto = producto_form.cleaned_data.get('tipo_producto'),
+                    cantidad = 0,
+                )
+                producto.save()
                 return redirect('listarprod')
             else:
-                errors=producto_form.errors
-                mensaje=f"{self.model.__name__} no ha sido registrado"
-                response=JsonResponse({"errors":errors,"mensaje":mensaje})
-                response.status_code=400
-                return response
+                UserSesion=if_admin(self.request)
+                cambiosQueryset = cambios.objects.all()
+                cambiosfQueryset = cambiosFooter.objects.all()
+                tipo_producto = Tipo_producto.objects.all()
+                context["User"]=UserSesion
+                context['form']=producto_form
+                context['cambios']=cambiosQueryset
+                context['footer']=cambiosfQueryset
+                context['tipo']=tipo_producto
+                context['errors'] = producto_form.errors
+                context['Error']="El nombre del producto ya esta relacionado a un proveedor"
+                return render(request, self.template_name, context)
+        else:
+            UserSesion=if_admin(self.request)
+            cambiosQueryset = cambios.objects.all()
+            cambiosfQueryset = cambiosFooter.objects.all()
+            tipo_producto = Tipo_producto.objects.all()
+            context["User"]=UserSesion
+            context['form']=producto_form
+            context['cambios']=cambiosQueryset
+            context['footer']=cambiosfQueryset
+            context['tipo']=tipo_producto
+            context['errors'] = producto_form.errors
+            return render(request, self.template_name, context)
     def get_context_data(self, *args, **kwargs):
         context = super(Crearprod, self).get_context_data(**kwargs)
         try:
             UserSesion=if_admin(self.request)
             cambiosQueryset = cambios.objects.all()
             cambiosfQueryset = cambiosFooter.objects.all()
+            tipo_producto = Tipo_producto.objects.all()
             context["User"]=UserSesion
             context['cambios']=cambiosQueryset
             context['footer']=cambiosfQueryset
+            context['tipo']=tipo_producto
             return context
         except:
             return context
@@ -101,28 +112,38 @@ class Crearprod(CreateView):
 class Modificarprod(UpdateView):
     model= Producto
     form_class=ProductosForm
-    template_name='modalprod/modificarprod.html'
+    template_name='Funciones/agregarprod.html'
 
     def post(self,request, *args, **kwargs):  
-            producto_form = ProductosForm(request.POST)
+            get_object = self.model.objects.get(pk=kwargs['pk'])
+            producto_form = self.form_class(request.POST or None, instance=get_object)
+            context={}
             if producto_form.is_valid():
                 producto_form.save()
                 return redirect('listarprod')
             else:
-                errors=producto_form.errors
-                mensaje=f"{self.model.__name__} no ha sido registrado"
-                response=JsonResponse({"errors":errors,"mensaje":mensaje})
-                response.status_code=400
-                return response
+                UserSesion=if_admin(self.request)
+                cambiosQueryset = cambios.objects.all()
+                cambiosfQueryset = cambiosFooter.objects.all()
+                tipo_producto = Tipo_producto.objects.all()
+                context["User"]=UserSesion
+                context['form']=producto_form
+                context['cambios']=cambiosQueryset
+                context['footer']=cambiosfQueryset
+                context['tipo']=tipo_producto
+                context['errors'] = producto_form.errors
+                return render(request, self.template_name, context)
     def get_context_data(self, *args, **kwargs):
         context = super(Modificarprod, self).get_context_data(**kwargs)
         try:
             UserSesion=if_admin(self.request)
             cambiosQueryset = cambios.objects.all()
             cambiosfQueryset = cambiosFooter.objects.all()
+            tipo_producto = Tipo_producto.objects.all()
             context["User"]=UserSesion
             context['cambios']=cambiosQueryset
             context['footer']=cambiosfQueryset
+            context['tipo']=tipo_producto
             return context
         except:
             return context
@@ -137,7 +158,7 @@ class Creartp(CreateView):
             tproducto_form = Tipo_productoForm(request.POST)
             if tproducto_form.is_valid():
                 tproducto_form.save()
-                return redirect('listarprod')
+                return redirect('crearprod')
             else:
                 errors=tproducto_form.errors
                 mensaje=f"{self.model.__name__} no ha sido registrado"
@@ -193,34 +214,16 @@ class Crearcompra(CreateView):
     model= Compra
     form_class=ComprasForm
     template_name='crearCompra.html'
-
-    def get(self,request,*args, **kwargs):
-        producto=Producto.objects.filter(estado=True)
-        form=self.form_class
-        UserSesion=""
-        if request.session:
-            if request.session['pk']:
-                if request.session['Admin']:
-                    imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-                    imagen = imagen.img_usuario
-                    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
-        cambiosQueryset = cambios.objects.all()
-        cambiosfQueryset = cambiosFooter.objects.all()
-        contexto={
-            "productos":producto,
-            "form":form
-        }
-        contexto['cambios']=cambiosQueryset
-        contexto['footer']=cambiosfQueryset
-        contexto['User']=UserSesion
-        return render(request, self.template_name,contexto)
-
     def get_context_data(self, *args, **kwargs):
         context = super(Crearcompra, self).get_context_data(**kwargs)
         try:
             UserSesion=if_admin(self.request)
             cambiosQueryset = cambios.objects.all()
             cambiosfQueryset = cambiosFooter.objects.all()
+            context['productos']=Producto.objects.all()
+            context['proveedor']=Proveedor.objects.all()
+            context['Tipo']=Tipo_producto.objects.all()
+            context['form']=self.form_class
             context["User"]=UserSesion
             context['cambios']=cambiosQueryset
             context['footer']=cambiosfQueryset
@@ -230,20 +233,44 @@ class Crearcompra(CreateView):
 
     def post(self,request, *args, **kwargs): 
             if request.is_ajax():
-                x=request.POST.get("datos")
-                print(x)
-                return JsonResponse({"s":"dfd"})
+                x=request.POST.getlist('Datos[]')
+                DatosCompra = json.loads(x[0])
+                Permite=True
+                for datos in DatosCompra:
+                    print(datos['Cantidad'])
+                    if datos['Cantidad'] == "" and datos['Precio']=="":
+                        Permite=False
+                if Permite==True:
+                    Compra=self.model.objects.create(total = 0)
+                    historial=[]
+                    Total = 0
+                    for datos in DatosCompra:
+                        ValorNeto = int(datos['Cantidad'])*float(datos['Precio'])
+                        Total = Total + ValorNeto
+                        producto = Producto.objects.get(pk=int(datos['Id']))
+                        producto.cantidad= producto.cantidad + int(datos['Cantidad'])
+                        historial.append({"Id":Compra.pk, "Precio":float(datos['Precio']), "Cantidad":int(datos['Cantidad'])})
+                        producto.save()
+                        Compra.producto.add(int(datos['Id']))
+                    if Total != 0 :
+                        Compra.total = Total
+                        Compra.save()
+                        return JsonResponse({"total":Total,"historial":historial})
+                    else:
+                        Compra.delete()
+                        data = json.dumps({'error': 'El total no puede tener un valor de 0'})
+                        return HttpResponse(data, content_type="application/json", status=400)
+                else:
+                    data = json.dumps({'error': 'No se puede crear una compra si los campos están vacios'})
+                    return HttpResponse(data, content_type="application/json", status=400)
 
-            comp_form = ComprasForm(request.POST)
-            if comp_form.is_valid():
-                comp_form.save()
-                return redirect('listarcompra')
-            else:
-                errors=comp_form.errors
-                mensaje=f"{self.model.__name__} no ha sido registrado"
-                response=JsonResponse({"errors":errors,"mensaje":mensaje})
-                response.status_code=400
-                return response 
+
+def crearHistorial(request):
+    if request.method=="POST":
+        x=request.POST.getlist('historial[]')
+        historial = json.loads(x[0])
+        print(historial)
+        return redirect('listarcompra')
 
 def Eliminarprov(request, id_proveedor):
     prov_form =Proveedor.objects.filter(pk=id_proveedor)
@@ -278,6 +305,39 @@ class modificarprov(UpdateView):
             context["User"]=UserSesion
             context['cambios']=cambiosQueryset
             context['footer']=cambiosfQueryset
+            return context
+        except:
+            return context
+        
+        
+class modificartp(UpdateView):
+    model= Tipo_producto
+    form_class=Tipo_productoForm
+    template_name='modalprod/editartp.html'
+
+    def post(self,request, *args, **kwargs):  
+            get_object = self.model.objects.get(pk=kwargs['pk'])
+            tp_form = self.form_class(request.POST or None, instance=get_object)
+            if tp_form.is_valid():
+                tp_form.save()
+                return redirect('crearprod')
+            else:
+                errors=tp_form.errors
+                mensaje=f"{self.model.__name__} no ha sido registrado"
+                response=JsonResponse({"errors":errors,"mensaje":mensaje})
+                response.status_code=400
+                return response
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(modificartp, self).get_context_data(**kwargs)
+        try:
+            UserSesion=if_admin(self.request)
+            cambiosQueryset = cambios.objects.all()
+            cambiosfQueryset = cambiosFooter.objects.all()
+            context["User"]=UserSesion
+            context['cambios']=cambiosQueryset
+            context['footer']=cambiosfQueryset
+            context['pk']=kwargs['pk']
             return context
         except:
             return context
@@ -322,6 +382,34 @@ def cambiarestadoProducto(request):
                 return redirect('listarprov')
     return JsonResponse({"kiwi":"yes"})
   
+  
+def cambiarestadoTProducto(request):
+    if request.is_ajax:
+        if request.method=="POST":
+            id = request.POST["estado"]
+            update=Tipo_producto.objects.get(pk=id)
+            estatus=update.estado
+            if estatus==True:
+                update.estado=False
+                update.save()
+            elif estatus==False:
+                update.estado=True
+                update.save()
+            else:
+                return redirect('listarprov')
+    return JsonResponse({"kiwi":"yes"})
 
+class verDetalleCompra(TemplateView):
+    template_name = "DetalleCompra.html"
+    model = Compra
+    def get_context_data(self, *args, **kwargs):
+        context = super(verDetalleCompra, self).get_context_data(**kwargs)
+        context['Compra']=self.model.objects.get(pk = kwargs['pk'])
+        UserSesion=if_admin(self.request)
+        cambiosQueryset = cambios.objects.all()
+        cambiosfQueryset = cambiosFooter.objects.all()
+        context["User"]=UserSesion
+        context['cambios']=cambiosQueryset
+        context['footer']=cambiosfQueryset
+        return context
 
-   
