@@ -24,7 +24,13 @@ class ProductosForm(forms.ModelForm):
 class ComprasForm(forms.ModelForm):
     class Meta:
         model = Compra
-        fields = ['producto']
+        fields = ['producto','cantidad','total']
         widgets={
-            "producto":forms.CheckboxSelectMultiple()
+            "producto":forms.Select(
+                
+            ),
+            "cantidad":forms.TextInput(
+               attrs={ "type":'number'}
+            ),
+            "total":forms.HiddenInput()
         }

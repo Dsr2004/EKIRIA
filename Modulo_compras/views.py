@@ -192,15 +192,27 @@ class Crearprov(CreateView):
 class Crearcompra(CreateView):
     model= Compra
     form_class=ComprasForm
-    template_name='modalcomp/agregarcompra.html'
+    template_name='crearCompra.html'
 
     def get(self,request,*args, **kwargs):
         producto=Producto.objects.filter(estado=True)
         form=self.form_class
+        UserSesion=""
+        if request.session:
+            if request.session['pk']:
+                if request.session['Admin']:
+                    imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+                    imagen = imagen.img_usuario
+                    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+        cambiosQueryset = cambios.objects.all()
+        cambiosfQueryset = cambiosFooter.objects.all()
         contexto={
             "productos":producto,
             "form":form
         }
+        contexto['cambios']=cambiosQueryset
+        contexto['footer']=cambiosfQueryset
+        contexto['User']=UserSesion
         return render(request, self.template_name,contexto)
 
     def get_context_data(self, *args, **kwargs):

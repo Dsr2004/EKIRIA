@@ -65,9 +65,11 @@ class Producto(models.Model):
 class Compra(models.Model):
     id_compras=models.AutoField("id_compra",primary_key=True, unique=True)
     producto=models.ManyToManyField(Producto)
-    proveedor=models.ForeignKey(Proveedor, on_delete=models.CASCADE)
+    cantidad=models.IntegerField('cantidad',blank=False, null=False )
     total=models.FloatField(blank=False, null=False)
     estado=models.BooleanField('estado', default=True)
+    fecha_creacion=models.DateField('fecha_creacion', auto_now=False, auto_now_add=True)
+    fecha_actualizacion= models.DateTimeField("Fecha de Actualizacion", auto_now=True, auto_now_add=False)
 
     class Meta:
         verbose_name ='Compra'

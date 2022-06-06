@@ -79,10 +79,7 @@ function agregartp(url) {
 };
 
 function agregarcompra(url) {
-    $("#agregar_comp").load(url, function() {
-        $(this).modal('show')
-    })
-
+    window.location.href = "../crearcompra/";
 };
 
 

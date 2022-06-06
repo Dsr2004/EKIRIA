@@ -13,10 +13,9 @@ from django.shortcuts import reverse
 
 from django.conf import settings
 
+from Usuarios.models import Usuario
 
-usuario=settings.AUTH_USER_MODEL
-
-
+usuario = Usuario
 # modelo para administrar los tipos de servicios
 class Tipo_servicio(models.Model):
     id_tipo_servicio=models.AutoField("Id del Tipo de Servicio", primary_key=True, unique=True)
