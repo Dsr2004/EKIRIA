@@ -1,0 +1,196 @@
+{% extends "Menu_Usuario.html" %} 
+{%load static%}
+{% block head %}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de cita de {{object.cliente_id.nombres | title}}</title>
+    <link rel="stylesheet" href="/static/Ventas/css/Ventas.css">
+    <link rel="icon" href="/static/Proyecto_Ekiria/Img/Logo Ekiria.png">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</head>{% endblock head %}
+
+{% block Contenido %}
+{% if messages %}
+    {% for me in messages %}
+    <div class="container alert alert-warning  alert-dismissible fade show" role="alert">
+         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
+           <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+         </svg>
+      {{me}}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div> 
+    {% endfor %}
+    <br>
+{% endif %}
+<div class="container" style="background-color: rgba(253, 253, 253, 0.795); margin-top: 30px;">
+    <div class="row">
+        <div class="col-md-10"><h1>Detalle de la Cita</h1></div>
+        <div class="col-md-2" style="margin-top: 20px;"><button type="button" class="btn btn-primary" onclick="print()">Imprimir</button></div>
+    </div>
+    <h3><sub>Detalles del cliente</sub></h3>
+        <div class="row "  >
+            <div class="col-md-1"></div>
+            <div class="col-md-2"><img src="/media/{{object.cliente_id.img_usuario}}" alt="" width="130" style="border-radius: 30px;"></div>
+            <div class="col-md-9">
+                <div class="row" style="margin-top:10px;" >
+                    <h5><strong>Nombre: </strong>{{object.cliente_id.nombres|capfirst}} {{object.cliente_id.apellidos|capfirst}}</h5>
+                    <h5><strong>Celular: </strong>{{object.cliente_id.celular}}</h5>
+                    <h5><strong>Email: </strong>{{object.cliente_id.email}}</h5>
+                    <h5><strong>Direccion: </strong>{{object.cliente_id.direccion}}</h5>
+                </div>
+            </div>
+        </div>
+        <br><br>
+        {{url}}
+        <h3><sub>Detalles del pedido</sub></h3>
+               <div class="container">
+                    {% if servicios %}
+                    <h5>Servicios</h5>
+                        <table class="table" style="background-color: rgba(253, 253, 253, 0.795);">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Foto</th>
+                                    <th scope="col">Servicio</th>
+                                    <th scope="col">Precio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for servicio in servicios %}
+                            <tr>
+                                <th scope="row">{{ forloop.counter}}</th>
+                                <td><img src="/media/{{servicio.servicio_id.img_servicio}}" class="" width="150" height="100"></td>
+                                <td>{{servicio.servicio_id.nombre}}</td>
+                                <td>{{servicio.servicio_id.precio}}</td>
+                
+                            </tr>
+                        {% endfor %}
+                           </tbody>
+                        </table>
+                                  
+                        {% endif %}
+                        <!-- servicios personalizados -->
+                        {% if serviciosPer %}
+                        <h5><center>Servicios personalizadoss</center></h5>  
+                        <table class="table" style="background-color: rgba(253, 253, 253, 0.795);">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Foto</th>
+                                    <th scope="col">Servicio</th>
+                                    <th scope="col">Descripción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for servicio in serviciosPer %}
+                            <tr>
+                                <th scope="row">{{ forloop.counter}}</th>
+                                <td>
+                                    <a onclick="abrir_modal_img_servicioPer('ToOpenImg{{servicio.servicio_personalizado_id.id_servicio_personalizado}}')"><img src="/media/{{servicio.servicio_personalizado_id.img_servicio}}" width="150" height="100" class="imgServicioPerCita"></a>
+                                        
+                                </td>
+                                <td>{{servicio.servicio_personalizado_id.tipo_servicio_id}}</td>
+                                <td><p style="width:auto; max-width: 400px; height: 100px; overflow-y: auto">{{servicio.servicio_personalizado_id.descripcion}}</p></td>
+                
+                            </tr>
+                            <div class="modal fade" id="ToOpenImg{{servicio.servicio_personalizado_id.id_servicio_personalizado}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog  modal-lg">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      </div>
+                                    <div class="modal-body">
+                                        <div >
+                                            <center><img src="/media/{{servicio.servicio_personalizado_id.img_servicio}}" class="img-fluid" ></center>
+                                        </div>
+                                    </div>
+                                   
+                                  </div>
+                                </div>
+                              </div>
+                        {% endfor %}
+                           </tbody>
+                        </table>
+                                  
+                        {% endif %}
+                       
+                    
+                <div class="card-footer text-muted row">
+                    <h3 class="col-md-6"><strong>Total: </strong>${{object.pedido_id.get_total_carrito}}</h3>
+                    <h3 class="col-md-6"><strong>Items: </strong>{{object.pedido_id.get_items_carrito}}</h3>
+                  </div>
+               </div>
+                
+                <br><br>
+                <div class="col Datos1DetalleCita">
+                    <Label><strong>Empleado que atendera la cita: </strong></Label>
+                    <h2>{{object.empleado_id.nombres | title}} {{object.empleado_id.apellidos | title}}</h2>
+                </div>
+                <br>
+                <div class="col Datos1DetalleCita">
+                    <Label><strong>Fecha de la cita: </strong></Label>
+                    <h2>{{object.diaCita}}</h2>
+                </div>
+                <br>
+                <div class="col Datos1DetalleCita">
+                    <div class="row">
+                        <div class="col">
+                            <Label><strong>Hora de inicio de la cita: </strong></Label>
+                            <h2>{{object.horaInicioCita|time:"h:iA"}}</h2>
+                        </div>
+                        <div class="col">
+                            <Label><strong>Hora estimada de fin de la cita: </strong></Label>
+                            <h2>{{object.horaFinCita|time:"h:iA"}}</h2>
+                        </div>
+                    </div>
+                </div>
+                <br>
+            <div class="col Datos1DetalleCita">
+                    <Label><strong>Comentarios: </strong></Label>
+                       <h5>{% if object.descripcion %} {{object.descripcion}} {% else %} No hay comentarios{% endif %}</h5>
+                </div>
+
+                <br><br>
+                <div class="row">
+                    <div class="col">
+                         <a class="btn btn-block btn-secondary" href="{% url 'Ventas:listarCitas' %}" >Salir</a>   <!--onclick="ConfirmarNoGuardarCita()"-->
+                    </div>
+                    <div class="col d-grid gap-2">
+                        {% if Cancelado == True %}
+                            <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"  title="Lo sentimos" data-bs-content="Esta cita fue cancelada por lo que no le puede aplicar cambios">
+                            <button class="btn btn-block btn-danger" type="button" disabled>Cita Cancelada</button>
+                          </span>
+                          {% else %}
+                          {% if SePuedeModificar == False %} 
+                          <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"  title="Lo sentimos" data-bs-content="Pero usted no puede modificar esta cita. No cumple con los 3 días de antelación que son requeridos para modificar la cita">
+                              <button class="btn btn-block btn-success" type="button" disabled>Modificar</button>
+                            </span>
+                           {% else %}
+                           <a class="btn btn-block btn-success"  onclick="IraModificarCita('{% url 'Ventas:editarCita' object.id_cita %}')">Modificar</a>
+                          {% endif %}
+                        {% endif %}
+                        
+                        
+                    </div>
+                </div>
+                <br><br><br>
+     
+</div>
+
+
+{% endblock Contenido %}
+{% block scripts %}
+<script src="/static/Ventas/js/Ventas.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+    return new bootstrap.Popover(popoverTriggerEl)
+})
+</script>
+{% endblock scripts %}
+
+

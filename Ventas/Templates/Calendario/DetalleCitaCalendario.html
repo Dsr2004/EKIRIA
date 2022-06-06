@@ -1,0 +1,50 @@
+<div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Deatalle de la cita de <strong>{{object.titulo | title}}</strong></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="col Datos1DetalleCita">
+            <Label><strong>Empleado que atendera la cita: </strong></Label>
+            <h5>{{object.empleado_id.nombres | title}} {{object.empleado_id.apellidos | title}}</h5>
+        </div>
+        <hr>
+        <div class="col Datos1DetalleCita">
+            <Label><strong>Fecha de la cita: </strong></Label>
+            <h5>{{object.diaCita}}</h5>
+        </div>
+        <hr>
+        <div class="col Datos1DetalleCita">
+            <div class="row">
+                <div class="col">
+                    <Label><strong>Hora de inicio de la cita: </strong></Label>
+                    <h5>{{object.horaInicioCita|time:"h:iA"}}</h5>
+                </div>
+                <div class="col">
+                    <Label><strong>Hora estimada de fin: </strong></Label>
+                    <h5>{{object.horaFinCita|time:"h:iA"}}</h5>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="col Datos1DetalleCita">
+            <Label><strong>Estado de la cita: </strong></Label>
+                {% if object.cancelado == True %} 
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-danger disabled" type="button">Cancelado</button>
+                    </div>
+                    {% else %}
+                      {% if object.EstadoCita %}
+                      <div class="d-grid gap-2">
+                        <button class="btn btn-success disabled" type="button">Realizado</button>
+                    </div>
+                      {% else %}
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary disabled" type="button">Pendiente</button>
+                      {% endif %}
+                    {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>

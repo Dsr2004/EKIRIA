@@ -1,0 +1,72 @@
+{%extends 'Menu_Usuario.html'%}
+{% block head %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+    <link rel="stylesheet" href="/static/Configuracion/css/estilo.css">
+    <title>Permisos Admin</title>
+</head>
+        {% endblock head %}
+        {%block Contenido%}
+
+        
+    <h1 class="titulo">Asignacion de Permisos</h1>
+    <div class="container">
+        <div class="row">
+            <div class=" col-md-12 search">
+                <form method="GET">
+                    <div id="custom-search-input">
+                        <div class="input-group col-md-12">
+                            <input type="text" class="form-control" name="buscar" placeholder="Buscar...">
+                            <span class="input-group-list">
+                                <i class="icon icon-search"></i>
+                                <button type="submit" class=" botonlist btn-primary" style="height: 38px;"  >Buscar</button>
+                                <a   class="btn replay" style="height: 38px;"href="{% url 'Admin'  grupo %}"><i class="fa-solid fa-arrow-rotate-left"></i></a>
+                            </span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="PermiAdmin col-lg-6">
+        <div class="PermiAdmin2" >
+                <h3>Permisos del {{rol.name}}</h3>
+            <div class="nada">
+                    {%if permisos%}
+                    {% for i in permisos %}
+                    <div class="contenedorName">
+                            <li class="form-check-label" for="flexSwitchCheckDefault">Permiso - {{forloop.counter}}: {{i.name}}</li><br>
+                          </div>
+                          {% endfor %}
+                        {%else%}
+                            <h1>No se encontraron coincidencias</h1>
+                        {%endif%}
+                </div>
+            </div>
+        </div>
+        <div class="PermiAdmin col-lg-6">
+            <div class="PermiAdmin2" >
+                    <h3>Permisos para Agregar al {{rol.name}}</h3>
+                <div class="nada">
+                        {%if permisosexclu%}
+                        {% for i in permisosexclu %}
+                        <div class="contenedorName">
+                                <li class="form-check-label" for="flexSwitchCheckDefault">Permiso - {{forloop.counter}}: {{i.name}}</li><br>
+                              </div>
+                            {% endfor %}
+                            {%else%}
+                                <h1>No se encontraron coincidencias</h1>
+                            {%endif%}
+
+                    </div>
+                </div>
+            </div>
+    </div>
+    
+                
+    {% endblock Contenido %}

@@ -1,0 +1,82 @@
+{%extends 'Menu_Usuario.html'%}
+
+    {% block head %}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/Configuracion/css/estilo.css">
+    <title>Permisos</title>
+</head>
+    {% endblock head %}
+    {% block Contenido %}
+    <h3 class="tituloCambios">Listado de Permisos</h3>
+    <div class="container">
+        <div class="row">
+            <div class=" col-md-12 search">
+                <form method="GET">
+                    <div id="custom-search-input">
+                        <div class="input-group col-md-12">
+                            <input type="text" class="form-control" name="buscar" placeholder="Buscar...">
+                            <span class="input-group-list">
+                                <i class="icon icon-search"></i>
+                                <button type="submit" class="botonlist btn-primary" style="height: 38px;"  >Buscar</button>
+                                <a   class="btn replay" style="height: 38px;"href="{% url 'Permisos' %}"><i class="fa-solid fa-arrow-rotate-left"></i></a>
+                            </span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <button class="btn btn-primary position-absolute end-0" type="button"data-bs-toggle="modal" data-bs-target="#PermisosRol" id="asignar">Asignar a Roles</button> 
+    <div class="jldghajkldgjkfdhgk">
+    <div class="principalPermisos">
+        {%if buscar%}
+        {% for permiso in buscar %}
+        <!-- jhorman me dijo que pusiera buscar en ves de Permisos y
+        esto enlista solo lo que yo busque mas no los permisos que tengo no tenga nada -->
+        <div class="con1">
+            <h3>- Permiso {{forloop.counter}}</h3>
+            <div>
+                <div class="color">
+                    <p class="letraDes">Descripcion</p>
+                    <div class="dentropermi">
+                        <p>{{permiso.name}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {%else%}
+        <h1>No se encontraron coincidencias</h1>
+        {%endif%}
+        
+    </div>
+</div>
+    {% endblock Contenido %}
+    {%block scripts%}
+    <div class="modal fade" id="PermisosRol" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Selecciona el Tipo de Rol</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% for grupo in grupos %}
+                    <a href="{% url 'Admin' grupo.id %}">{{grupo.name}}</a><br>
+                    {% endfor %}
+                        
+                    <br>
+                    
+                </div>
+                    <div class="modal-footer" id="botones">
+                        <button type="button" class="btn btn-warning">Confirmar</button>
+                        <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal" id="cancelar">Cancelar</button>
+                    </div>
+            </div>
+        </div>
+    </div>
+    
+    {%endblock scripts%}

@@ -1,0 +1,721 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.modal-backdrop {
+    z-index: 1 !important;
+    opacity: 0.5 !important;
+}
+
+.modal-content {
+    z-index: 15 !important;
+}
+
+body {
+    min-height: 100vh;
+}
+
+.sidebar {
+    height: 90vh !important;
+}
+
+
+/* ajuste del contenedor de datos con el menu lateral */
+
+.grid {
+    position: fixed;
+    background-color: transparent;
+    top: 0px;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    box-sizing: initial;
+    display: flex;
+}
+
+.nav .Perfil {
+    padding: 7px;
+    margin-left: -20px;
+    margin-bottom: 10px;
+    border-bottom: 2px outset #adadad;
+    background: linear-gradient(to bottom, #0c0c0c, #0f0f0f);
+}
+
+.Perfil a {
+    text-decoration: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.Perfil a img {
+    image-rendering: crisp-edges;
+}
+
+.Perfil a p {
+    padding-top: 5px;
+    font-size: 15px;
+    margin-top: 15px;
+    margin-left: 10px;
+    color: var(--white);
+    border-bottom: 1px solid var(--Purple);
+}
+
+.Perfil a p sup {
+    color: yellow;
+    font-size: 11px;
+}
+
+.salir {
+    background: none;
+    color: var(--white);
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+    font-size: 25px;
+    margin-left: -20px;
+}
+
+.cerrar {
+    display: flex;
+}
+
+.cerrar a {
+    color: var(--white);
+}
+
+.cerrar .icon {
+    margin-left: -20px;
+}
+
+.cerrar .text {
+    padding-left: 10px;
+    font-size: 20px;
+    margin-top: 5px;
+}
+
+#salir {
+    padding-left: 25%;
+    margin-top: 500px;
+    position: sticky;
+    bottom: 0;
+    width: 101%;
+    background-color: var(--Purple);
+    box-shadow: 0px -5px 5px 2px var(--Purple);
+    border-radius: 0;
+    z-index: 15;
+}
+
+.nav .foto_perfil {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid var(--white);
+    outline: 1px solid var(--white);
+    background-color: #fff;
+}
+
+
+/*    Scrollbar menu lateral de usuario     */
+
+.list_content::-webkit-scrollbar {
+    padding-left: 10px;
+    width: 5px;
+}
+
+.list_content::-webkit-scrollbar-thumb {
+    border: 3px outset #adadad;
+    border-radius: 1px;
+}
+
+.list_content::-webkit-scrollbar-thumb:hover {
+    border: 3px outset var(--ShinyPurple);
+    border-radius: 1px;
+}
+
+
+/*        Estilos del menu lateral    */
+
+.nav {
+    width: 25%;
+    margin-left: -25%;
+    position: relative;
+    top: 60px;
+    background-color: #000;
+}
+
+.nav.activar {
+    margin-left: 0%;
+    transition: .3s;
+}
+
+.nav .menul {
+    margin-left: -500px;
+}
+
+.nav.activar .menul {
+    margin-left: 20px;
+    width: 100%;
+}
+
+.list_content {
+    height: 60vh;
+    padding-right: 5px;
+    margin-left: -20px;
+    overflow: auto;
+}
+
+.list_item {
+    margin-left: -30px;
+    overflow: hidden;
+}
+
+.list_item--click {
+    cursor: pointer;
+}
+
+.list_arrow {
+    margin-left: auto;
+    transition: .3s;
+}
+
+.arrow .list_arrow {
+    transform: rotate(90deg);
+    transition: transform .3s;
+}
+
+.nav_link {
+    color: var(--white);
+    display: block;
+    text-decoration: none;
+}
+
+.nav_link--inside {
+    padding: 15px 0;
+    text-align: center;
+    margin-left: -20px;
+    border-radius: 6px 0 0 6px;
+    color: var(--white);
+}
+
+.nav_link--inside a {
+    color: var(--white);
+}
+
+.nav_link--inside:hover {
+    background: #c9c9c9;
+    color: var(--black);
+}
+
+.nav_link--inside:hover a {
+    color: var(--black);
+}
+
+.list {
+    display: grid;
+    grid-template-columns: 15% 78% 5%;
+    font-size: 20px;
+    list-style: none;
+    width: 100%;
+    color: var(--white);
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    z-index: 1;
+    padding: 0 10px;
+    margin: 5px 0;
+}
+
+.list_show {
+    list-style: none;
+    margin-left: 20px;
+    border-left: 2px solid var(--white);
+    list-style: none;
+    transform-origin: height .4s;
+    height: 0;
+}
+
+.list a {
+    display: block;
+    width: 100%;
+    text-decoration: none;
+    color: var(--white);
+    font-size: 20px;
+    z-index: 10;
+}
+
+.list.activar {
+    background-color: var(--Purple);
+    color: var(--black);
+}
+
+.list.activar a {
+    color: var(--black);
+}
+
+
+/* Fin Estilos del menu*/
+
+
+/* Contenedor de contenido*/
+
+.content::-webkit-scrollbar {
+    display: none;
+}
+
+@media (min-width: 950px) {
+    .content {
+        padding-top: 10px !important;
+        width: 100%;
+        top: 0px;
+        margin-right: 0px;
+        overflow: auto;
+        float: right;
+        transition: 0.2s;
+    }
+    .grid.activar .footerE {
+        width: 80%;
+        transition: .3s;
+    }
+}
+
+
+/*--------------------------------------------*/
+
+.menus {
+    position: sticky;
+    top: 0px;
+    margin: 0 auto;
+    width: 100%;
+    height: 60px;
+    border-bottom: 2px solid black;
+    background: var(--menu_color);
+    z-index: 9;
+    animation-duration: 2s;
+    transition: 2s;
+    background-color: black;
+}
+
+.lista img {
+    width: 20px;
+    height: 20px;
+}
+
+.content.activar .contentDiv {
+    float: left;
+    width: 100%;
+    text-align: left;
+}
+
+.content .contentDiv {
+    position: relative;
+    top: -1vh;
+    width: 100%;
+    height: 90vh;
+    padding: 0;
+}
+
+.menus ul {
+    position: static;
+    width: auto;
+    display: flex;
+    padding: 0 20px;
+    flex-wrap: wrap;
+    list-style: none;
+    float: right;
+    z-index: 10;
+    margin-top: 10px;
+    margin-right: 50px;
+}
+
+.menus ul .links {
+    display: grid;
+    grid-template-columns: 30% 60%;
+}
+
+.menus .notification-box {
+    margin-top: -47px;
+    margin-left: 25px;
+    margin-right: -40px;
+}
+
+.menus ul i {
+    margin-left: 40%;
+    font-size: 20px;
+    color: var(--white);
+}
+
+.mensu ul div {
+    margin-top: -35px;
+}
+
+.menus ul div .noti-dot {
+    margin-top: 0px;
+}
+
+.menus ul .links .atext {
+    margin-left: 10px !important;
+}
+
+.menus ul .links i {
+    margin-top: -4px!important;
+}
+
+.menus ul li {
+    margin-top: 10px;
+}
+
+.menus ul li a {
+    text-decoration: none;
+    color: var(--white);
+}
+
+.menus .barra {
+    height: 40px;
+    background-color: var(--white);
+}
+
+
+/*     Estilos del abridor del menu lateral      */
+
+.Init__Sec {
+    position: fixed;
+    top: 12px;
+    bottom: 0px;
+    width: 200px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    transition: 0.5s;
+}
+
+.toggle {
+    position: fixed;
+    top: 12px;
+    bottom: 0px;
+    left: 1%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.toggle i {
+    position: absolute;
+    color: var(--white);
+    font-size: 25px;
+    display: none;
+    animation: alternate;
+    animation-duration: 2s;
+    transition: 2s;
+}
+
+.toggle i.abrir {
+    display: block;
+    color: var(--white);
+}
+
+.toggle.activar i.abrir {
+    display: none;
+    color: var(--white);
+}
+
+.toggle.activar i.cerrar {
+    display: block;
+}
+
+
+/* Creacion del modo responsive */
+
+@media (max-width: 950px) {
+    .nav {
+        width: 35%;
+        margin-left: -35%;
+    }
+    .nav.activar {
+        margin-left: 0%;
+        transition: .3s;
+    }
+    .nav.activar .foto_perfil {
+        width: 50px;
+        height: 50px;
+    }
+    .content {
+        width: 100%;
+        overflow: auto
+    }
+    .grid.activar .footerE {
+        width: 75%;
+        transition: .3s;
+    }
+}
+
+
+/**/
+
+@media (max-width: 700px) {
+    .nav .Perfil {
+        width: 105%;
+        margin-top: 0px;
+        padding-top: 10px;
+        text-align: center;
+        align-items: center;
+    }
+    .Perfil a {
+        margin-left: auto;
+        margin-right: auto;
+        justify-content: center;
+    }
+    .foto_perfil {
+        border: 1.9px solid black;
+    }
+    .nav.activar {
+        width: 100%;
+    }
+    .content.activar {
+        width: 0%;
+        display: none;
+        transition: .3s;
+    }
+    .content {
+        width: 100%;
+        overflow: auto
+    }
+    .nav .menul li {
+        margin-left: 10px;
+        list-style: none;
+        color: var(--black);
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+        z-index: 1;
+        transition: 0;
+    }
+    .nav .menul .list a {
+        position: relative;
+        display: block;
+        width: 100%;
+        text-decoration: none;
+        color: var(--white);
+        overflow: hidden;
+        margin: 20px;
+        font-size: 24px;
+    }
+    .nav .menul .list.activar a {
+        color: var(--black);
+    }
+    .nav .menul li a {
+        z-index: 10;
+    }
+    .content ul {
+        width: 70%;
+    }
+    .nav .menul {
+        margin-left: -1000px;
+        width: 100%;
+        height: 100%;
+        padding-left: 0px;
+        float: left;
+        text-align: left;
+        transition: 0.1s;
+    }
+    .nav.activar .menul {
+        margin-left: 0;
+        transition: 0.1s;
+    }
+    .list_content {
+        width: 105%;
+        height: 60vh;
+        margin-left: -20px;
+        overflow: auto;
+    }
+    .list_item {
+        margin-left: -30px;
+        overflow: hidden;
+    }
+    .list_item--click {
+        cursor: pointer;
+    }
+    .list_arrow {
+        margin-left: auto;
+        transition: .3s;
+    }
+    .arrow .list_arrow {
+        transform: rotate(90deg);
+        transition: transform .3s;
+    }
+    .nav_link {
+        color: var(--white);
+        display: block;
+        margin-top: 0;
+        text-decoration: none;
+    }
+    .nav_link--inside {
+        padding: 10px 10px;
+        text-align: initial;
+        margin-left: -50;
+        border-radius: 0px;
+        color: var(--white);
+    }
+    .nav .menul .list_show a {
+        color: var(--white);
+    }
+    .nav_link--inside:hover {
+        background: #c9c9c9;
+    }
+    .nav_link--inside:hover a {
+        color: var(--black);
+    }
+    .nav_link--inside a {
+        font-size: 20px;
+    }
+    .list {
+        display: grid;
+        grid-template-columns: 5% 80% 1%;
+        font-size: 30px;
+        list-style: none;
+        width: 90%;
+        color: var(--white);
+        border-top-left-radius: 0px;
+        border-bottom-left-radius: 0px;
+        z-index: 1;
+    }
+    .list_show {
+        list-style: none;
+        margin-left: 20px;
+        border-left: 2px solid var(--white);
+        list-style: none;
+        transform-origin: height .4s;
+        height: 0;
+        color: var(--white);
+        transition: 1s;
+    }
+    .list i {
+        margin-top: 13px;
+    }
+    .list_show a {
+        color: var(--white);
+    }
+    .list a {
+        display: block;
+        width: 100%;
+        text-decoration: none;
+        color: var(--white);
+        overflow: hidden;
+        font-size: 0px;
+        z-index: 10;
+    }
+    .list.activar {
+        background-color: var(--Purple);
+        color: var(--black);
+    }
+    #salir {
+        position: sticky;
+        margin-left: -5px;
+        bottom: 0px;
+    }
+    .screen {
+        display: block!important;
+    }
+    .footerE .footerContent .Principal ul {
+        list-style: none;
+        margin-left: -10px;
+        display: grid !important;
+        grid-template-columns: 140% 0%;
+        font-size: 18px;
+        margin-bottom: 0px;
+    }
+}
+
+
+/* Footer*/
+
+.display1 {
+    display: none;
+}
+
+.screen {
+    display: none;
+}
+
+.display1.block {
+    display: block;
+}
+
+.footerE {
+    position: fixed;
+    bottom: 0;
+    margin: 0;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    z-index: 10;
+}
+
+.footerE .footerContent {
+    padding: 5px;
+    list-style: none;
+}
+
+.footerE .footerContent .Principal ul {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    padding-right: 15px;
+    font-size: 18px;
+    margin-bottom: 0px;
+}
+
+.footerE .footerContent .Principal ul li {
+    margin-top: 10px;
+}
+
+.footerE .footerContent .Principal ul li i {
+    font-size: 32px;
+    margin-top: -20px;
+    padding: 0 7.5px 5px 7px;
+}
+
+.footerE .footerContent.activar .Principal ul li i {
+    margin-top: -5px!important;
+}
+
+.footerE .footerContent .Principal ul li i:hover {
+    border: 1px solid #fff;
+    border-radius: 5px;
+}
+
+.footerE .footerContent .Principal ul li .icon_hide {
+    display: none;
+}
+
+.footerE .footerContent.activar .Principal ul li .icon_hide {
+    display: block;
+}
+
+.footerE .footerContent.activar .Principal ul li .icon_show {
+    display: none;
+}
+
+.footerE .footerContent.activar .Segundario {
+    display: block;
+    padding: 0 20px;
+    transition: 1s;
+}
+
+.footerE .footerContent .Segundario {
+    display: none;
+    transition: 1s;
+}
+
+.footerE .footerContent .imgwhatsapp {
+    height: 30px;
+}

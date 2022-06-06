@@ -1,0 +1,38 @@
+{% load static %}
+<style>
+    .img_detailService img{
+        border-radius: 15px !important;
+        max-height: 300px !important;
+    }
+    .text_detailService{
+        background-color: rgba(59, 21, 107, 0.089);
+        width: 390px;
+        height: auto;
+        padding: 5px 20px;
+        margin-left: 30px;
+        text-align: left !important;
+        word-wrap: break-word;
+        
+    }
+    
+</style>
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Detalle del servicio: </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">         
+        <div class="img_detailService">
+            <img src="/media/{{object.img_servicio}}" class="img-fluid rounded mx-auto  d-block img_Detail" alt="{{object.nombre}}">
+        </div>
+        <br>
+        <h3>{{object.nombre}} cuesta ${{object.precio}}</h3>
+        <br>
+        <div class="">
+          <h4>Descripción:</h4>
+            <p class="">{{object.descripcion}}</p>
+        </div>
+      </div>
+    </div>
+  </div>

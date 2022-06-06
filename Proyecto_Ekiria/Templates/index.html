@@ -1,0 +1,35 @@
+{% extends "Menu_Usuario.html" %} {% block head %} {% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/Proyecto_Ekiria/Img/Logo Ekiria.png">
+    <link rel="stylesheet" href="/static/Configuracion/css/estilo.css">
+    <title>Inicio</title>
+</head>{% endblock head %} {% block Contenido %}
+<div class="contenedorcambios">
+    {%if cambios%} {%for cambios in cambios%}
+    <div class="ContenedorMision">
+        <div class="ContMision">
+            <div class="recuadro" id="texto" style="word-wrap: break-word;">
+
+                <h4 id="text" class="tipo">MISIÓN</h4>
+                <p id="text2" class="tipo">{{cambios.Texto_Mision}}<br>
+                </p>
+                <h4 id="text" class="tipo">VISIÓN</h4>
+                <p id="text2" class="tipo">{{cambios.Texto_Vision}}</p>
+
+            </div>
+        </div>
+    </div>
+    {%endfor%} {%else%}
+
+    <h1>No hay registros</h1>
+
+    {%endif%}
+</div>
+
+<br><br><br><br><br><br><br> {% endblock Contenido %} {% block modal %} {% endblock modal %} {% block scripts %}
+<script src=""></script>
+{% endblock scripts %}

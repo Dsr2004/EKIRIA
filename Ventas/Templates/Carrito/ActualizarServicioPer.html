@@ -1,0 +1,31 @@
+{% load crispy_forms_tags %}
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modifique su servicio personalizado</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="{%url 'Ventas:actualizarServicioPer' object.id_servicio_personalizado  %}" enctype="multipart/form-data" method="post" id="ActualizarServicioPerForm">
+            {% csrf_token %}
+            <label class="label-control">Tipo de servicio: <sup class="requerido">(*)</sup></label>
+            {{form.tipo_servicio_id|as_crispy_field}}
+            <p id="tipo_servicio_id" class="bg-light text-danger errorSegunCrispy"></p>
+            <br>
+            <label class="label-control">Imagen del servicio: <sup class="requerido">(*)</sup></label>
+            {{form.img_servicio|as_crispy_field}}
+            <p id="img_servicio" class="bg-light text-danger errorSegunCrispy"></p>
+            <br>
+            <label class="label-control">Descripción:</label>  
+        <div class="form-floating container descripcion" > 
+           {{form.descripcion|as_crispy_field}}
+           <p id="descripcion" class="bg-light text-danger errorSegunCrispy"></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-success" onclick="ModificarServicioPer()">Modificar Servicio</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,120 @@
+{%extends 'Menu_Usuario.html'%} {% block head %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos</title>
+    <link rel="stylesheet" href="/static/Modulo_compras/css/style.css">
+    <link rel="icon" href="/static/Proyecto_Ekiria/Img/Logo Ekiria.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vast+Shadow&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/Proyecto_Ekiria/css/styleTablesInformations.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="sweetalert2.min.css">
+    <script src="/static/bootstrap/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="/static/Proyecto_Ekiria/css/styleTablesInformations.css">
+    <link rel="stylesheet" href="/static/ModuloUsuarios/css/styleAdministration.css">
+
+
+</head>
+{% endblock head %} {% block Contenido %}
+
+
+
+<div class="container">
+
+
+
+
+    <div class="Table Content-table">
+        <div class="Information">
+            <div class="cardHeader">
+                <h2>Productos</h2>
+            </div>
+            <div class="Table Add">
+                <button type="button" class="Add img" onclick="agregarprod('{%url 'crearprod' %}')">
+                  <i class="fas fa-user-plus"></i>
+              </button>
+            </div>
+            <table id="TableProveedores" class="display nowrap" cellspacing="0" width="100">
+                <thead>
+                    <tr>
+                        <td scope="col">Nombre</td>
+                        <td scope="col">Precio</td>
+                        <td scope="col">Proveedor</td>
+                        <td scope="col">Tipo</td>
+                        <td scope="col">Cantidad</td>
+                        <td scope="col">Borrar</td>
+                        <td scope="col">Editar</td>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {%if Productos%} {%for prod in Productos%}
+                    <tr>
+                        <td>{{prod.nombre}}</td>
+                        <td>{{prod.precio}}</td>
+                        <td>{{prod.proveedor}}</td>
+                        <td>{{prod.tipo_producto}}</td>
+                        <td>{{prod.cantidad}}</td>
+                        <td>
+                            <form action="{%url 'camestadoProducto' %}" method="POST" id="camestado">
+                                {%csrf_token%}
+                                <div class="form-check form-switch" style="top: -10px;">
+                                    <input class="form-check-input" type="checkbox" role="switch" {%if prod.estado%} checked {%endif%} onclick="cambioestado('{{prod.id_producto}}')">
+                                </div>
+                            </form>
+                        </td>
+                        <td>
+                            <button class="btn" onclick="agregarprod('{%url 'modificarprod' prod.id_producto %}')"><i style="font-size:20px; margin-top: 5px;" class="fas fa-pencil"></i></button>
+                        </td>
+                    </tr>
+
+                    {%endfor%} {% else %}
+
+                    <h1>No hay registros</h1>
+
+                    {% endif %}
+
+
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td scope="col">Nombre</td>
+                        <td scope="col">Precio</td>
+                        <td scope="col">Proveedor</td>
+                        <td scope="col">Tipo</td>
+                        <td scope="col">Cantidad</td>
+                        <td scope="col">Borrar</td>
+                        <td scope="col">Editar</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock Contenido %} {% block modal %}
+
+<div class="modal fade" id="agregar_prod" role="dialog">
+
+</div>
+<div class="modal fade" id="modificar_prod" role="dialog">
+
+</div>
+
+{% endblock modal%} {%block scripts%}
+
+<script src="/static/Proyecto_Ekiria/js/jsMenuL.js"></script>
+<script src="/static/Modulo_compras/js/js.js"></script>
+<script src="/static/Proyecto_Ekiria/js/jsTablesInformations.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="sweetalert2.min.js"></script>
+{%endblock scripts%}
+
+</html>

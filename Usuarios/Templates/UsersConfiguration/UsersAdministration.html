@@ -1,0 +1,208 @@
+{% extends "Menu_Usuario.html" %}
+<!---->{% block head %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administracion de usuarios</title>
+    <link rel="stylesheet" href="/static/Proyecto_Ekiria/css/styleTablesInformations.css">
+    <link rel="stylesheet" href="/static/ModuloUsuarios/css/styleAdministration.css">
+</head>{% endblock head %} {% block Contenido %}
+<!----------------------------------------Dashborad Usuarios---------------------------------------->
+<div class="Admin Events">
+    <div class="Information">
+        <div class="cardbox">
+            <div class="Card">
+                <div>
+                    <div class="numbers" id="NumUser"></div>
+                    <div class="cardName">Usuarios</div>
+
+                    <script>
+                        var CantUsuarios = 0
+                        var ContadorServicios = 0
+                    </script>
+                </div>
+                <div class="iconA">
+                    <i class="mdi mdi-account-multiple"></i>
+                </div>
+            </div>
+        </div>
+        {% for Usuarios in Usuario %}
+        <script>
+            CantUsuarios++
+        </script>
+        {% endfor %}
+        <script>
+            let Usuario = document.getElementById('NumUser');
+            Usuario.innerHTML = CantUsuarios
+        </script>
+        <div class="cardbox">
+            <a href="{%url 'Ventas:listarServicios'%}">
+                <div class="Card cursor">
+                    <div>
+                        <div class="numbers" id="NumSer">
+
+                        </div>
+                        <div class="cardName">Servicios</div>
+                    </div>
+                    <div class="iconA">
+                        <i class="mdi mdi-basket centrado"></i>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {%if contexto%} {% for Servicio in contexto %} {% if Servicio.estado == True%}
+        <script>
+            ContadorServicios++
+        </script>
+        {% endif %} {% endfor %}{%endif%}
+        <script>
+            let insertServices = document.getElementById("NumSer");
+            insertServices.innerHTML = ContadorServicios
+        </script>
+
+        <div class="cardbox">
+            <div class="Card">
+                <div>
+                    <div class="numbers" id="numVis"></div>
+                    <div class="cardName">Visitas Diarias</div>
+                </div>
+                <div class="iconA">
+                    <i class="far fa-eye"></i>
+                </div>
+            </div>
+        </div>
+        {% if Vistas %}
+        <script>
+            let VisitasDiarias = "{{Vistas}}"
+            let insertVisitas = document.getElementById("numVis");
+            insertVisitas.innerHTML = VisitasDiarias
+        </script>
+        {% endif %}
+        <script>
+        </script>
+        <div class="cardbox">
+            <div class="Card cursor">
+                <div>
+                    <div class="numbers">127</div>
+                    <div class="cardName">Comentarios</div>
+                </div>
+                <div class="iconA">
+                    <i class="mdi mdi-comment"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="Table Content-table">
+    <div class="Information">
+        <div class="cardHeader">
+            <h2> Usuarios Registrados </h2>
+        </div>
+        <div class="Table Add">
+            <button type="button" onclick="añadirUsuario()" class="Add img">
+                <i class="fas fa-user-plus"></i>
+            </button>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <table id="TableUsers" class="display nowrap" cellspacing="0" width="100">
+                        <thead>
+                            <tr>
+                                <td>Apodo</td>
+                                <td>Nombres</td>
+                                <td>Apellidos</td>
+                                <td>Télefono</td>
+                                <td>Celular</td>
+                                <td>E-mail</td>
+                                <td>Tipo De Documento</td>
+                                <td>Número De Documento</td>
+                                <td>Dirección</td>
+                                <td>Código Postal</td>
+                                <td>Municipio</td>
+                                <td>Rol</td>
+                                <td>Último Inicio</td>
+                                <td>Estado</td>
+                                <td>Editar</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {%if Usuario%} {% for user in Usuario%}
+                            <tr>
+                                <td>{{user.username}}</td>
+                                <td>{{user.nombres}}</td>
+                                <td>{{user.apellidos}}</td>
+                                <td>
+                                    {% if user.telefono %} {{user.telefono}} {%else%} No Aplica {% endif %}
+                                </td>
+                                <td>{{user.celular}}</td>
+                                <td>{{user.email}}</td>
+                                <td>{{user.tipo_documento}}</td>
+                                <td>{{user.num_documento}}</td>
+                                <td>{% if user.direccion %} {{user.direccion}} {%else%} No Aplica {% endif %}</td>
+                                <td>{{user.cod_postal}}</td>
+                                <td>{{user.municipio}}</td>
+                                <td>{{user.rol}}</td>
+                                <td>{% if user.last_login %} {{user.last_login}} {%else%} No ha iniciado sesión {% endif %}</td>
+                                <td>
+                                    <form id="EstadoUsuarioForm" method="post" action="{% url 'editarEstadoUsuario' %}">
+                                        {%csrf_token%}
+                                        <div class="form-check form-switch switch-Cambio-TipoServicio" style="margin-left: 20px;">
+                                            <input class="form-check-input" type="checkbox" role="switch" name="esatdo" onclick="CambiarEstadoUsuario('{{user.id_usuario}}')" {% if user.estado %}checked{%endif%}>
+                                        </div>
+                                    </form>
+                                </td>
+                                <td>
+                                    {% csrf_token %}
+                                    <button type="button" class="Edit" onclick="EditarUsuario('{{user.id_usuario}}')">
+                                        <i class="mdi mdi-account-edit"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %} {%else%}
+                            <tr>
+                                <td>
+                                    No hay usuarios Registrados
+                                </td>
+                            </tr>
+                            {%endif%}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td>Apodo</td>
+                                <td>Nombres</td>
+                                <td>Apellidos</td>
+                                <td>Télefono</td>
+                                <td>Celular</td>
+                                <td>E-mail</td>
+                                <td>Tipo De Documento</td>
+                                <td>Número De Documento</td>
+                                <td>Dirección</td>
+                                <td>Código Postal</td>
+                                <td>Municipio</td>
+                                <td>Rol</td>
+                                <td>Último Inicio</td>
+                                <td>Estado</td>
+                                <td>Editar</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+<!--------------------------------------Fin Dashborad Usuarios-------------------------------------->
+
+{% endblock Contenido %} {% block modal %} {% endblock modal %} {% block scripts %}
+<script src="/static/Proyecto_Ekiria/js/jsTablesInformations.js"></script>
+<script src="/static/ModuloUsuarios/js/mainAdministration.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+{% endblock scripts %}
