@@ -42,7 +42,8 @@
             <div class="col-md-3">
                <img class="img ImgServiceCatalogo" src="/media/{{servicio.servicio_id.img_servicio}}"  height="241">
                <div class="box-element product" style="height: 160px;">
-                  <h6><strong>{{servicio.servicio_id.nombre}}</strong></h6>
+                  <h6 style="width:100%; overflow: hidden; white-space:nowrap; text-overflow: ellipsis;" ><strong>{{servicio.servicio_id.nombre}}</strong></h6>
+
                   <hr>
                   <button data-servicio="{{servicio.servicio_id.id_servicio}}" data-action="add" class="btn btn-outline-success addToCar">Al carrito!</button>
                   <a  class="btn  btn-outline-primary" onclick="abrir_modal_detalleServicio('{% url 'Ventas:detalleSer' servicio.servicio_id.slug %}')">Ver</a>

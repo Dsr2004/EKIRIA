@@ -30,14 +30,14 @@ FORMATO_DJANGO = "%Y-%m-%d"
 #funcion que convierte el formato de 12 horas a 24 horas
 def conversor12a24(str1):
 
-    if str1[-2:] == "AM" and str1[:2] == "12": 
+    if str1[-2:] == "AM" and str1[:2] == "12":
         return "00" + str1[2:-2] 
     elif str1[-2:] == "AM": 
         return str1[:-2] 
-    elif str1[-2:] == "PM" and str1[:2] == "12": 
+    elif str1[-2:] == "PM" and str1[:2] == "12":
         return str1[:-2]    
     else: 
-        return str(int(str1[:1]) + 12) + str1[1:5] 
+        return  str(int(str1[:1]) + 12) + str1[1:5] 
 
 class AgregarCita(TemplateView,PermissionMixin):
     permission_required = ['add_cita']
@@ -181,6 +181,8 @@ class EditarCita(ActualiarCitaMixin, UpdateView,PermissionMixin):
                     context["serviciosPer"]=serviciosPerx
       
         return context
+    
+    
 
     
 
@@ -258,11 +260,12 @@ class EditarCitaCliente(ActualiarCitaClienteMixin, UpdateView, PermissionMixin):
             return response
         else:
             try:
-                hora = datetime.strptime(hora, "%H:%M %p")
-                horaOriginal = hora
-                hora = hora.strftime("%H:%M %p")
+                print("hora original desde la vista", hora)
                 hora = conversor12a24(hora)
-            except:
+                print("hora despues de la conversion ", hora)
+                
+            except Exception as e:
+                print(e)
                 errores["horaInicioCita"]="La hora de la cita no es válida."
                 response = JsonResponse({"errores":errores})
                 response.status_code = 400
@@ -382,6 +385,10 @@ class DetalleCitaCliente(DetailView,PermissionMixin):
             context["Cancelado"]=False
 
         return context
+    
+class DetalleCitaCalendario(DetailView):
+    model = Cita
+    template_name = "Calendario/DetalleCitaCalendario.html"
 
 class CambiarEstadoDeCita(TemplateView,PermissionMixin):
     permission_required = ['delete_cita']

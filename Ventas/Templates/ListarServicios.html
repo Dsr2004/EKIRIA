@@ -28,32 +28,40 @@
       <a class="btn" href="{% url 'Ventas:agregarServicio' %}"><span class="float-end" style="font-size: 48px; margin-right: 80px; margin-top: 10px;"><i class="fa-solid fa-circle-plus"></i></span></a>
     </div>
   </div>
-     <table id="listarServiciosTable" class="display" style="width:100%">
+    <table id="listarServiciosTable" class="display" style="width:100%">
       <thead>
         <tr>
+          <th rowspan="2">Imagen</th>
+          <th colspan="5">Datos del servicio</th>
+          <th colspan="2">Acciones</th>
+      </tr>
+      <tr>
           <th>Nombre</th>
-          <th>Imagen</th>
+
           <th>Precio</th>
           <th>Tipo Servicio</th>
           <th>Descripción</th>
           <th>Slug</th>
-          <th>Estado</th>
-          <th>Acciones</th>
-       </tr>
+          <th><small><strong>Editar</strong></small></th>
+          <th><small><strong>Estado</strong></small></th>
+      </tr>
       </thead>
       <tbody>
         
         {% if servicios %}
         {% for servicio in servicios %}
         <tr>
-          <td>{{servicio.nombre}}</td>
           <td><img src="/media/{{servicio.img_servicio}}" style="border-radius: 15px;" width="150" height="100"></td>
+          <td>{{servicio.nombre}}</td>
+
           <td>${{servicio.precio}}</td>
           <td>{{servicio.tipo_servicio_id}}</td>
           <td><p style="width:80px; overflow: hidden; white-space:nowrap; text-overflow: ellipsis;">{{servicio.descripcion}}</p></td>
           <td>{{servicio.slug}}</td>
-          <td>{% if servicio.estado == True %}Activo{%else%}Inactivo{% endif %}</td>
-          <td><form action="{%url 'Ventas:cambiarEstadoServicio'%}" method="post" id="EstadoServicioForm">
+          <td><a href="{%url 'Ventas:editarServicio' servicio.id_servicio %}"><i class="fa-solid fa-pen-to-square" style="font-size: 25px; color: rgb(226, 195, 19);"></i></a></td>
+          <td>
+            <form action="{%url 'Ventas:cambiarEstadoServicio'%}" method="post" id="EstadoServicioForm">
+
             {%csrf_token%}
             <div class="form-check form-switch switch-Cambio-TipoServicio">
                <input class="form-check-input" type="checkbox" role="switch" id="lopsdyu" name="esatdo" onclick="CambiarEstadoServicio('{{servicio.id_servicio}}')"  {% if servicio.estado == True%}checked{%endif%}>

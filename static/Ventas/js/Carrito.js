@@ -119,4 +119,54 @@ function EnviarTerminarPedido(){
     }
   });
 
+
+}
+
+function ModificarServicioPer(){
+  let form = $("#ActualizarServicioPerForm")
+  swal({
+    title: "¿Estás seguro?",
+    text: "Se modificarán los datos del servicio personalizado",
+    icon: "warning",
+    buttons: {
+        confirm : {text:'Confirmar',className:'btn-success'},
+        cancel : 'Cancelar'
+    },
+    dangerMode: true,
+  }).then((changeStatus) => {
+    if (changeStatus) {
+      $(document).ready(function(){
+
+      $.ajax({
+        data: form.serialize(),
+        url: form.attr('action'),
+        type: form.attr('method'),
+        success: function(datas){
+          swal("¡OK! Se ha modificado el Servicio personalizado", {
+              icon: "success",
+            }).then(function(){
+              location.reload()
+            });
+        },
+        error: function(error){
+          for (let i in error.responseJSON["errores"]){
+            let x=form.find('input[name='+i+']')
+            x.addClass("is-invalid")
+            $("#"+i).text(error.responseJSON["errores"][i])
+        }
+        for (let i in error.responseJSON["errores"]){
+          let x=form.find('select[name='+i+']')
+          x.addClass("is-invalid")
+          $("#"+i).text(error.responseJSON["errores"][i])
+      }
+        }
+      }); 
+      })
+    } else {
+      swal("¡OK! Ningún dato del servicio ha sido modificado").then(function(){
+        location.reload()
+      });
+      
+    }
+  });
 }

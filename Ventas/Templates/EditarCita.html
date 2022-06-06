@@ -120,61 +120,53 @@
                 <br><br>
                 {{form.errors}}
                 <form action="{% url 'Ventas:editarCita' object.id_cita  %}" method="POST" id="EditarCitaForm">
-                    {% csrf_token %}
-                    <div class="col Datos1DetalleCita ">
-                        <label class="label-control">Seleccione un empleado: <sup class="requerido">(*)</sup></label>
-                         {{form.empleado_id}}
-                    </div>
-                    <br>
-                    <div class="row container">
-                        <div class="col Datos1DetalleCita" id="diaInicioBoxCita">
-                          <label  class="label-control">Seleccione una Dia: <sup class="requerido">(*)</sup></label>
-                            <div class="input-group">
-                                {{form.diaCita}}
-                                <div class="input-group-text">
-                                  <i style="font-size: 15px;" class=" fa-regular fa-calendar"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col Datos1DetalleCita">
-                            <div class="row">
-                                <div class="col"  id="horaInicioBoxCita">
-                                  <label class="label-control">Seleccione una Hora: <sup class="requerido">(*)</sup></label>
-                                    <div class="input-group">
-                                        {{form.horaInicioCita}}
-                                       <div class="input-group-text">
-                                         <i style="font-size: 15px;" class=" fa-regular fa-clock"></i>
-                                       </div>
-                                       </div>
-                                </div>
-                            </div>
+                  {% csrf_token %}
+                  <label class="label-control">Seleccione un empleado: <sup class="requerido">(*)</sup></label>
+                 {{form.empleado_id}}
+                 <p id="empleado_id" class="bg-light text-dange errorSegunCrispy"></p>
+                  <br>
+                  <div class="row">
+                    <div class="col-6" id="DiaCitaBox">
+      
+                      <label  class="label-control">Seleccione una Dia: <sup class="requerido">(*)</sup></label>
+                      <div class="input-group">
+                        {{form.diaCita}}
+                        <div class="input-group-text">
+                          <i style="font-size: 15px;" class=" fa-regular fa-calendar"></i>
                         </div>
                     </div>
-                    <br>
-                    <input type="hidden" name="id_cita" value="{{object.id_cita}}">
-                <div class="col Datos1DetalleCita">
-                        <Label><strong>Comentarios: </strong></Label>
-                            {{form.descripcion}}
+                    <p id="diaCita" class="bg-light text-danger errorSegunCrispy"></p>
+                    </div>  
+                    <div class="col-6" id="horaInicioBox">
+                      <label class="label-control">Seleccione una Hora: <sup class="requerido">(*)</sup></label>
+                      <br>
+                      <div class="input-group">
+                       {{form.horaInicioCita}}
+                      <div class="input-group-text">
+                        <i style="font-size: 15px;" class=" fa-regular fa-clock"></i>
+                      </div>
+                      </div>
+                      <p id="horaInicioCita" class="bg-light text-danger errorSegunCrispy"></p>
                     </div>
-                    <br>
-                    <div id="spinner" class="no-Display">
-                        <div class="text-center">
-                            <div class="spinner-border" role="status"></div>
-                        </div>
+                  </div>
+                  
+                  <br><br>
+                  <label class="label-control">Descripción (Opcional):</label>
+                  <br>
+                 {{form.descripcion}}
+                  <br><br>
+                  <div class="row">
+                    <div class="col">
+                         <a class="btn btn-block btn-secondary" href="{% url 'Ventas:calendario' %}" >Salir</a>   <!--onclick="ConfirmarNoGuardarCita()"-->
                     </div>
-                      <br><br>
-                    <div class="row">
-                        <div class="col">
-                             <a class="btn btn-block btn-secondary" href="{% url 'Ventas:listarCitas' %}" >Salir</a>   <!--onclick="ConfirmarNoGuardarCita()"-->
-                        </div>
-                        <div class="col">
-                            <button class="btn btn-block btn-success" type="button" onclick="ActualizarCita2('{{object.id_cita}}')">Modificar</button>
-                        </div>
-                        <div class="col">
-                            <a class="btn btn-block btn-danger" onclick="CancelarCita2('{{object.id_cita}}')">Cancelar Cita</a>
-                        </div>
+                    <div class="col">
+                        <button class="btn btn-block btn-success" type="button" onclick="ActualizarCita2('{{object.id_cita}}')">Modificar</button>
                     </div>
-                    <br><br><br>
+                    <div class="col">
+                        <a class="btn btn-block btn-danger" onclick="CancelarCita3('{{object.id_cita}}')">Cancelar Cita</a>
+                    </div>
+                </div>
+                <br><br><br>
                 </form>
 
                
@@ -188,57 +180,58 @@
 <script src="/static/Plugins/datetimepicker/build/jquery.datetimepicker.full.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
-   
-    $.datetimepicker.setLocale('es');
-    //funcion que busca horas disponibles
-    function ejecutarReloj(horas){
-    $('#horaInicio').datetimepicker({
-    formatTime:"g:i a",
-    format:'g:i A',
-    datepicker:false,
+  var id_cita = '{{object.id_cita}}';
+  $.datetimepicker.setLocale('es');
+  //funcion que busca horas disponibles
+  function ejecutarReloj(horas){
+  $('#horaInicio').datetimepicker({
+  formatTime:"g:i a",
+  format:'g:i A',
+  datepicker:false,
+  validateOnBlur: false,
+  allowTimes:horas
+})
+}
+
+  //buscar dia cita
+  $("#DiaCita").datetimepicker({
+  timepicker:false,
+    format:'d/m/Y',
+    minDate: 0,
     validateOnBlur: false,
-    allowTimes:horas
-  })
-  }
-  
-    //buscar dia cita
-    $("#DiaCita").datetimepicker({
-    timepicker:false,
-      format:'d/m/Y',
-      minDate: 0,
-      onChangeDateTime:function(dp,$input){
-        let empleado=$("#empleado").val()
-        $.ajax({
-          type: "POST",
-          url: "/Ventas/BuscarEmpleadoParaCita/",
-          data: {"csrfmiddlewaretoken":csrftoken,"accion":"BuscarDiaDeEmpleado","empleado":empleado,"dia":$input.val()},
-          success: function(response){
-    
-            var horas = response["horasDisponibles"]
-            ejecutarReloj(horas)
-          },
-          error: function(error){
-            console.log(error.responseJSON)
-          }
-        })
-      },
-      disabledDates:['2022/03/17'],
-    })
-    //buscar empleado
-    $("#empleado").on("change", function(){
-      let empleado=this.value
+    onChangeDateTime:function(dp,$input){
+      let empleado=$("#empleado").val()
       $.ajax({
-          type: "POST",
-          url: "/Ventas/BuscarEmpleadoParaCita/",
-          data: {"csrfmiddlewaretoken":csrftoken,"empleado":empleado,"accion":"BuscarEmpleado"},
-          success: function (response){
-            
-          }
-          
-        });
+        type: "POST",
+        url: "/Ventas/BuscarEmpleadoParaEditarCita/",
+        data: {"csrfmiddlewaretoken":csrftoken,"accion":"BuscarDiaDeEmpleado","empleado":empleado,"dia":$input.val(), "id_cita":id_cita},
+        success: function(response){
+          jQuery("#horaInicioBox").css("display", "block")
+          var horas = response["horasDisponibles"]
+          ejecutarReloj(horas)
+        },
+        error: function(error){
+          console.log(error.responseJSON)
+        }
       })
-  
-  </script>
+      event.preventDefault()
+    },
+  })
+  //buscar empleado
+  $("#empleado").on("click", function(){
+    let empleado=this.value
+    $.ajax({
+        type: "POST",
+        url: "/Ventas/BuscarEmpleadoParaEditarCita/",
+        data: {"csrfmiddlewaretoken":csrftoken,"empleado":empleado,"accion":"BuscarEmpleado"},
+        success: function (response){
+          $("#DiaCitaBox").css("display", "block")
+        }
+        
+      });
+    })
+
+</script>
 {% endblock scripts %}
 
 
