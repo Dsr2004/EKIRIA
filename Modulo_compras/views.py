@@ -222,6 +222,7 @@ class Crearcompra(CreateView):
             cambiosfQueryset = cambiosFooter.objects.all()
             context['productos']=Producto.objects.all()
             context['proveedor']=Proveedor.objects.all()
+            context['Tipo']=Tipo_producto.objects.all()
             context['form']=self.form_class
             context["User"]=UserSesion
             context['cambios']=cambiosQueryset
@@ -232,20 +233,34 @@ class Crearcompra(CreateView):
 
     def post(self,request, *args, **kwargs): 
             if request.is_ajax():
-                x=request.POST.get("datos")
-                print(x)
-                return JsonResponse({"s":"dfd"})
-
-            comp_form = ComprasForm(request.POST)
-            if comp_form.is_valid():
-                comp_form.save()
-                return redirect('listarcompra')
-            else:
-                errors=comp_form.errors
-                mensaje=f"{self.model.__name__} no ha sido registrado"
-                response=JsonResponse({"errors":errors,"mensaje":mensaje})
-                response.status_code=400
-                return response 
+                x=request.POST.getlist('Datos[]')
+                DatosCompra = json.loads(x[0])
+                Permite = [0]
+                for datos in DatosCompra:
+                    if datos['Cantidad'] == "" and datos['Precio']=="":
+                        Permite[0]=False
+                if Permite[0]==True:
+                    # Compra=self.model.objects.create(total = 0)
+                    Total = 0
+                    for datos in DatosCompra:
+                        ValorNeto = int(datos['Cantidad'])*int(datos['Precio'])
+                        Total = Total + ValorNeto
+                        producto = Producto.objects.get(pk=int(datos['Id']))
+                        producto.cantidad= producto.cantidad + int(datos['Cantidad'])
+                        # producto.save()
+                        # Compra.producto.add(int(datos['Id']))
+                    if Total != 0 :
+                        Compra.total = Total
+                        # Compra.save()
+                        return JsonResponse({"total":Total})
+                    else:
+                        # Compra.delete()
+                        data = json.dumps({'error': 'El total no puede tener un valor de 0'})
+                        return HttpResponse(data, content_type="application/json", status=400)
+                else:
+                    data = json.dumps({'error': 'No se puede crear una compra si los campos están vacios'})
+                    return HttpResponse(data, content_type="application/json", status=400)
+        # Hay que retornar los mensajes :3
 
 def Eliminarprov(request, id_proveedor):
     prov_form =Proveedor.objects.filter(pk=id_proveedor)
