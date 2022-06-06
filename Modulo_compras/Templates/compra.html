@@ -1,104 +1,103 @@
-{%extends 'Menu_Usuario.html'%}
+{%extends 'Menu_Usuario.html'%} {% block head %}
 
-{% block head %}
 <head>
-   <meta charset="UTF-8">
-   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>compras</title>
-   <link rel="stylesheet" href="/static/Modulo_compras/css/style.css">
-   <link rel="icon" href="/static/Proyecto_Ekiria/Img/Logo Ekiria.png">
-   <link rel="preconnect" href="https://fonts.googleapis.com">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>compras</title>
+    <link rel="stylesheet" href="/static/Modulo_compras/css/style.css">
+    <link rel="icon" href="/static/Proyecto_Ekiria/Img/Logo Ekiria.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Vast+Shadow&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/Proyecto_Ekiria/css/styleTablesInformations.css">
-   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
-   <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">  
-   <link rel="stylesheet" href="sweetalert2.min.css">
-   <script src="/static/bootstrap/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="sweetalert2.min.css">
+    <script src="/static/bootstrap/js/bootstrap.js"></script>
 
- 
+
 </head>
-{% endblock head %}
-
-{% block Contenido %}
+{% endblock head %} {% block Contenido %}
 
 
 
 <div class="container">
-  
 
 
-  <div class="Table Content-table">
-    <div class="Information">
-        <div class="cardHeader">
-            <h2>compras</h2>
+
+    <div class="Table Content-table">
+        <div class="Information">
+            <div class="cardHeader">
+                <h2>compras</h2>
+            </div>
+            <div class="Table Add">
+                <button class="pdf img btn btn-dribbble">
+                    <a href="" style="color: #fff;">
+                        <i class="mdi mdi-file-pdf"></i>
+                        <b class="etiquetaReporte" style="display: none;">Reporte</b>
+                    </a>
+                </button>
+                <button type="button" class="Add img btn btn-bordred">
+                  <a href="{%url 'crearcompra'%}" style="color:black;">
+                    <i class="fas fa-user-plus"></i>
+                    <b class="etiquetaCrearCompra" style="display: none;">Crear Compra</b>
+                    </a>
+                </button>
+            </div>
+            <table id="TablaCompra">
+                <thead>
+                    <tr>
+                        <th scope="col">Fecha de creación</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Valor Total</th>
+                        <th scope="col">Detalle</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {% for compra in Compras %}
+                    <tr>
+                        <td>{{compra.fecha_creacion}}</td>
+                        <td>{{compra.estado}}</td>
+                        <td>{{compra.total}}</td>
+                        <td><i class="mdi mdi-file-document" style="cursor:pointer;" onclick="verDetalle('{{compra.pk}}')"></i></td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+            </table>
         </div>
-        <div class="Table Add">
-          <button type="button" class="Add img" onclick="agregarcompra('{%url 'crearcompra' %}')">
-            <i class="fas fa-user-plus"></i>
-          </button>
-        </div>
-        <table >
-          <thead >
-            <tr>
-              <th scope="col">Producto</th> 
-              <th scope="col">Proveedor</th>
-              <th scope="col">Cantidad</th>
-              <th scope="col">Precio</th>
-              <th scope="col">Total</th>
-              <th scope="col">Estado</th>
-            </tr>
-          </thead>
-          <tbody>
-
-  {%if Compras%}
-
-  {%for compra in Compras%}
-          <tr>
-            <td>{{compra.producto}}</td>
-            <td>{{compra.descripcion}}</td>
-            <td>{{compra.cantidad_id}}</td>
-            <td>{{compra.precio_id}}</td>
-            <td>{{compra.total}}</td>
-          </tr>
-
-    {%endfor%} 
-
-    {% else %}
-
-      <h1>No hay registros</h1>
-
-    {% endif %}
-        
-         
-          </tbody>
-        </table>
-      </div>
-  </div>
+    </div>
 </div>
 
 
 
-{% endblock Contenido %}
+{% endblock Contenido %} {% block modal %}
 
-{% block modal %}
+<div class="modal fade" id="agregar_comp" role="dialog">
 
-<div class="modal fade" id="agregar_comp" role="dialog" >
-    
 </div>
 
-{% endblock modal%}
+{% endblock modal%} {%block scripts%}
+<script>
+    $(document).ready(function() {
+        $('#TablaCompra').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+            },
+            responsive: true
+        });
+    });
 
-{%block scripts%}
-
+    function verDetalle(id) {
+        window.location.href = "../VerDetalleCompra/" + id;
+    }
+</script>
 <script src="/static/Proyecto_Ekiria/js/jsMenuL.js"></script>
 <script src="/static/Modulo_compras/js/js.js"></script>
 <script src="sweetalert2.all.min.js"></script>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 {%endblock scripts%}
+
 </html>
-
-
-
-

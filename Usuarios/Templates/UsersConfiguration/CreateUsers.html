@@ -13,11 +13,14 @@
 </head>
 <div class="contenido">
     <form method="POST">
-        <h1>{{User.titulo}}</h1> {% if Error %}
+        <h1>
+            {% if User.titulo %} {{User.titulo}} {% else %} Crear Usuario {% endif %}
+        </h1> {% if Error %}
         <div class="alert alert-danger">{{Error}}</div>
         {% endif %} {% csrf_token %}
         <div class="form">
-            {{form.estado}}
+
+            {% if form.estado %} {{form.estado}} {% endif %}
             <div class="apodo">{{form.username}}
                 <p id="username-p" class="text-danger"></p>
             </div>
@@ -55,6 +58,10 @@
             <div class="num"> {{form.num_documento}}
                 <p id="num_documento-p" class="text-danger"></p>
             </div>
+
+            {% if form.password1 %}
+
+
             <div class="pass1" id="password1-div"><label>
                     {{form.password1}}
                     <i class="fas fa-eye show" id="show" onclick="show('')"></i>
@@ -71,6 +78,7 @@
                 <p id="password2-p" class="text-danger"></p>
             </div>
         </div>
+        {% endif %}
         <br>
         <div class="botonflex">
             <button type="submit" class="boton"><strong>Confirmar</strong></button>

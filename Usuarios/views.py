@@ -107,8 +107,6 @@ class Register(CreateView):
     success_url = reverse_lazy("IniciarSesion")
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST or None)
-        print(form.is_valid())
-        print(form.cleaned_data)
         context = {
             'form':self.form_class,
         }
@@ -334,8 +332,6 @@ class CreateUser(CreateView, PermissionMixin):
     success_url = reverse_lazy("Administracion")
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST or None)
-        print(form.is_valid())
-        print(form.cleaned_data)
         context = {
             'form':self.form_class,
         }
@@ -360,6 +356,7 @@ class CreateUser(CreateView, PermissionMixin):
                     estado = 1
                 )
                 registro.save()
+                return redirect('Administracion')
             except:
                 context['errors'] = form.errors
                 context['Error'] = 'No se pudo enviar el correo'
@@ -371,6 +368,11 @@ class CreateUser(CreateView, PermissionMixin):
             context['Error']= 'Los datos ingresados son incorrectos'
             context['cambios']=cambiosQueryset
             context['footer']=cambiosfQueryset
+        UserSesion=""
+        imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+        imagen = imagen.img_usuario
+        UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+        context['User']=UserSesion
         return render(request, self.template_name, context)
                 
     def get_context_data(self, *args, **kwargs):
@@ -390,7 +392,7 @@ class UpdateUser(UpdateView,PermissionMixin):
     permission_required = ['change_usuario']
     model = Usuario    
     template_name = 'UsersConfiguration/CreateUsers.html'
-    form_class = Regitro
+    form_class = EditUser 
     success_url=reverse_lazy("Administracion")  
     def get(self, request, *args,**kwargs):
         get_object = Usuario.objects.get(id_usuario=kwargs['pk'])
@@ -401,13 +403,10 @@ class UpdateUser(UpdateView,PermissionMixin):
             'form':form
         }
         UserSesion=""
-        if request.session:
-            if request.session['pk']:
-                if request.session['Admin']:
-                    imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-                    imagen = imagen.img_usuario
-                    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin'], 'titulo':'Editar '+get_object.nombres}
-                
+        imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+        imagen = imagen.img_usuario
+        UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+        context['User']=UserSesion
         context['cambios']=cambiosQueryset
         context['footer']=cambiosfQueryset
         context['User']=UserSesion
@@ -415,19 +414,19 @@ class UpdateUser(UpdateView,PermissionMixin):
         return render(request, self.template_name, context)
     def post(self, request, *args, **kwargs):
         get_object = Usuario.objects.get(id_usuario=kwargs['pk'])
-        form = self.form_class(request.POST or None, request.FILES or None, instance=get_object)
+        form = self.form_class(request.POST or None, instance=get_object)
         context = {
             'form':self.form_class,
         }
+        print(form.is_valid())
         cambiosQueryset = cambios.objects.all()
         cambiosfQueryset = cambiosFooter.objects.all()
         if form.is_valid():
             try:
                 form.save()
                 return redirect('Administracion')
-            except:
+            except Exception as e:
                 context['errors'] = form.errors
-                context['Error'] = 'No se pudo enviar el correo'
                 context['cambios']=cambiosQueryset
                 context['footer']=cambiosfQueryset
                 return render(request, self.template_name, context)
@@ -437,12 +436,9 @@ class UpdateUser(UpdateView,PermissionMixin):
         context['cambios']=cambiosQueryset
         context['footer']=cambiosfQueryset
         UserSesion=""
-        if request.session:
-            if request.session['pk']:
-                if request.session['Admin']:
-                    imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-                    imagen = imagen.img_usuario
-                    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin'], 'titulo':'Editar '+get_object.nombres}
+        imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+        imagen = imagen.img_usuario
+        UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
         context['User']=UserSesion
         return render(request, self.template_name, context)
                 

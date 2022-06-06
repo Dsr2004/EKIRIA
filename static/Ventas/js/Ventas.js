@@ -1,3 +1,10 @@
+ //ELIMINAR TIPO DE SERVICIO 
+ function abrir_modal_calendario(url){ 
+  $("#ModalCitaCalendario").load(url, function (){ 
+    $(this).appendTo("body").modal('show');
+  });
+}
+
 function GuardarCita(){
     swal({
       title: "¿Estás seguro?",
@@ -161,6 +168,62 @@ function ActualizarCita(id){
     }).then((changeStatus) => {
       if (changeStatus) {
         $(document).ready(function(){
+          form = $("#EditarCitaForm")
+        $.ajax({
+          data: form.serialize(),
+          url: form.attr("action"),
+          type: 'POST',
+          success: function(datas){
+            swal({
+              title: "¡Está hecho!",
+              text: "Se modifico  la cita",
+              icon: "success",
+            }).then((update)=>{
+              location.href = "/Ventas/Calendario/"
+            })
+          },
+          error: function(error){
+            if (error.responseJSON["errores"]["empleado_id"]){
+              $("#DiaCitaBox").css("display", "none")
+              $("#horaInicioBox").css("display", "none")
+            }
+            for (let i in error.responseJSON["errores"]){
+              let x=form.find('input[name='+i+']')
+              x.addClass("is-invalid")
+              $("#"+i).text(error.responseJSON["errores"][i])
+          }
+          for (let i in error.responseJSON["errores"]){
+            let x=form.find('select[name='+i+']')
+            x.addClass("is-invalid")
+            $("#"+i).text(error.responseJSON["errores"][i])
+        }
+          }
+        }); 
+        })
+      } else {
+        swal("¡OK! no se han aplicado cambios").then(function(){
+          location.reload()
+        });
+        
+      }
+    });
+}
+
+function ActualizarCita2(id){
+  let ids=id
+  
+    swal({
+      title: "¿Estás seguro?",
+      text: "Se modificara  la cita",
+      icon: "warning",
+      buttons: {
+          confirm : {text:'Confirmar',className:'btn-success'},
+          cancel : 'Cancelar'
+      },
+      dangerMode: true,
+    }).then((changeStatus) => {
+      if (changeStatus) {
+        $(document).ready(function(){
           ruta = '/Ventas/EditarCita/'+ids
           form = $("#EditarCitaForm")
         $.ajax({
@@ -182,7 +245,7 @@ function ActualizarCita(id){
               text: "Ha ocurrido un error",
               icon: "error",
             }).then((update)=>{
-              location.href = "/Ventas/ListadoCitas/"
+              location.href = "/Ventas/Calendario/"
             })
           }
         }); 
@@ -195,7 +258,6 @@ function ActualizarCita(id){
       }
     });
 }
-
 
 function CancelarCita3(id){
   swal({

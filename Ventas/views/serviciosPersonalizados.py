@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView
@@ -51,3 +52,15 @@ class EditarServiciosPersonalizados(UpdateView, PermissionMixin):
     form_class = Servicio_PersonalizadoForm
     template_name = "Carrito/ActualizarServicioPer.html"
     success_url=reverse_lazy("Ventas:carrito")
+    
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST, instance=self.get_object())
+        if form.is_valid():
+            form.save()
+            return redirect("Ventas:carrito")
+        else:
+            respuesta = JsonResponse({"errores":form.errors})
+            respuesta.status_code = 400
+            return respuesta
+      
+

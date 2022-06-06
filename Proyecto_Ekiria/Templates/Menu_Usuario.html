@@ -116,7 +116,6 @@
                         <div class="list 
                                 {% if request.path == '/Compras/listarprov/'%}activar{% endif %} 
                                 {% if request.path == '/Compras/listarprod/'%}activar{% endif %}
-                                {% if request.path == '/Compras/listartp/'%}activar{% endif %}
                                 {% if request.path == '/Compras/listarcompra/'%}activar{% endif %}list_button--click">
                             <i class="mdi mdi-archive centrado"></i>
                             <a class="nav_link escon"> Productos</a>
@@ -126,7 +125,6 @@
 
                             <li class="nav_link--inside"><a href="{%url 'listarprov' %}">Proveedor</a></li>
                             <li class="nav_link--inside"><a href="{%url 'listarprod' %}">Productos</a></li>
-                            <li class="nav_link--inside"><a href="{%url 'listartp' %}">Tipo de producto</a></li>
                             <li class="nav_link--inside"><a href="{%url 'listarcompra' %}">Compras</a></li>
                             <br>
                         </ul>

@@ -11,73 +11,92 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
     <!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"> -->
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <!--  Datatables  -->
+    <link rel="stylesheet" type="text/css" href="{%static 'Plugins/DataTables/jquery.dataTables.min.css' %}" />
+
+    <!--  extension responsive  -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.3.0/css/responsive.dataTables.min.css">
 </head>{% endblock head %}
 
 {% block Contenido %}
 <div class="container">
   <div class="row">
-    <div class="col">
+    <div class="col-10">
       <h1>Listar Servicios</h1>
     </div>
-    <div class="col">
-      <a href="{% url 'Ventas:agregarServicio' %}"><span class=" float-end" style="font-size: 48px; margin-right: 80px; margin-top: 10px;"><i class="fa-solid fa-circle-plus"></i></span></a>
+    <div class="col-2">
+      <a class="btn" href="{% url 'Ventas:agregarServicio' %}"><span class="float-end" style="font-size: 48px; margin-right: 80px; margin-top: 10px;"><i class="fa-solid fa-circle-plus"></i></span></a>
     </div>
   </div>
-  <br>
-    <table class="table table-striped">
-        <thead>
-           <tr>
-              <th scope="col">Nombre</th>
-              <th scope="col">Imagen</th>
-              <th scope="col">Precio</th>
-              <th scope="col">Tipo Servicio</th>
-              <th scope="col">Descripción</th>
-              <th scope="col">Slug</th>
-              <th scope="col">Estado</th>
-              <th scope="row" colspan="2">Acciones</th>
-           </tr>
-        </thead>
-        <tbody>
-          
-          {% if servicios %}
-            {% for servicio in servicios %}
-            <tr>
-              <th scope="row">{{servicio.nombre}}</th>
-              <td><img src="/media/{{servicio.img_servicio}}" style="border-radius: 15px;" width="150" height="100"></td>
-              <td>${{servicio.precio}}</td>
-              <td>{{servicio.tipo_servicio_id}}</td>
-              <td ><p style="width:80px; overflow: hidden; white-space:nowrap; text-overflow: ellipsis;">{{servicio.descripcion}}</p></td>
-              <td>{{servicio.slug}}</td>
-              <td>
-              {% if servicio.estado == True %}Activo{%else%}Inactivo{% endif %}
-                </td>
-              <td><a href="{%url 'Ventas:editarServicio' servicio.id_servicio %}"><i class="fa-solid fa-pen-to-square" style="font-size: 25px; color: rgb(226, 195, 19);"></i></a></td>
-              <td>
-                <form action="{%url 'Ventas:cambiarEstadoServicio'%}" method="post" id="EstadoServicioForm">
-                  {%csrf_token%}
-                  <div class="form-check form-switch switch-Cambio-TipoServicio">
-                     <input class="form-check-input" type="checkbox" role="switch" id="lopsdyu" name="esatdo" onclick="CambiarEstadoServicio('{{servicio.id_servicio}}')"  {% if servicio.estado == True%}checked{%endif%}>
-                   </div>                                  
-               </form>
+    <table id="listarServiciosTable" class="display" style="width:100%">
+      <thead>
+        <tr>
+          <th rowspan="2">Imagen</th>
+          <th colspan="5">Datos del servicio</th>
+          <th colspan="2">Acciones</th>
+      </tr>
+      <tr>
+          <th>Nombre</th>
+
+          <th>Precio</th>
+          <th>Tipo Servicio</th>
+          <th>Descripción</th>
+          <th>Slug</th>
+          <th><small><strong>Editar</strong></small></th>
+          <th><small><strong>Estado</strong></small></th>
+      </tr>
+      </thead>
+      <tbody>
         
-              </td>
-           </tr>
-            {% endfor %}
-            {%else%}
-            <h1>No hay Registros</h1>
-          {% endif %}
-        </tbody>
-     </table>
-     <br><br>
+        {% if servicios %}
+        {% for servicio in servicios %}
+        <tr>
+          <td><img src="/media/{{servicio.img_servicio}}" style="border-radius: 15px;" width="150" height="100"></td>
+          <td>{{servicio.nombre}}</td>
+
+          <td>${{servicio.precio}}</td>
+          <td>{{servicio.tipo_servicio_id}}</td>
+          <td><p style="width:80px; overflow: hidden; white-space:nowrap; text-overflow: ellipsis;">{{servicio.descripcion}}</p></td>
+          <td>{{servicio.slug}}</td>
+          <td><a href="{%url 'Ventas:editarServicio' servicio.id_servicio %}"><i class="fa-solid fa-pen-to-square" style="font-size: 25px; color: rgb(226, 195, 19);"></i></a></td>
+          <td>
+            <form action="{%url 'Ventas:cambiarEstadoServicio'%}" method="post" id="EstadoServicioForm">
+
+            {%csrf_token%}
+            <div class="form-check form-switch switch-Cambio-TipoServicio">
+               <input class="form-check-input" type="checkbox" role="switch" id="lopsdyu" name="esatdo" onclick="CambiarEstadoServicio('{{servicio.id_servicio}}')"  {% if servicio.estado == True%}checked{%endif%}>
+             </div>                                  
+         </form></td>
+      </tr>
+        {% endfor %}
+      {% else %}
+      <h1>No hay servicios registrados</h1>
+        {% endif %}
+          
+      </tbody>
+    
+    </table>
 </div>
-
-
-
-
-
-{% endblock Contenido %}
 
 {% block scripts %}
 <script src="{% static 'Ventas/js/Servicios.js' %}"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script type="text/javascript" src="{%static 'Plugins/DataTables/jquery.dataTables.min.js' %}"></script>
+<!-- extension responsive -->
+<script src="https://cdn.datatables.net/responsive/2.3.0/js/dataTables.responsive.min.js"></script>
+
+<script>
+ $(document).ready(function () {
+    $('#listarServiciosTable').DataTable({
+          "language": {
+             "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+         },
+         responsive:true
+    });
+  });
+</script>
 {% endblock scripts %}
+
+{% endblock Contenido %}
+
+

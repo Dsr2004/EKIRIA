@@ -14,8 +14,10 @@ urlpatterns = [
     path('EditarCitaCliente/<int:pk>', login_required(citas.EditarCitaCliente.as_view()), name="editarCitaCliente"),
     path('CambiarEstadoCita/', login_required(citas.CambiarEstadoDeCita.as_view()), name="cambiarEstadoCita"),
     path('CancelarCita/', login_required(citas.CancelarCita.as_view()), name="cancelarCita"),
+    path('DetalleCalendario/<int:pk>', login_required(citas.DetalleCitaCalendario.as_view()), name="detalleCalendario"),
 
     path("BuscarEmpleadoParaCita/", login_required(citas.BuscarDisponibilidadEmpleado.as_view()), name="buscarEmpleadoParaCita"),
+    path("BuscarEmpleadoParaEditarCita/", login_required(citas.BuscarDisponibilidadEmpleadoEditarCita.as_view()), name="buscarEmpleadoParaEditarCita"),
 
     path('Catalogo/', login_required(views.Catalogo.as_view()), name="catalogo"),
     path('AgregarServicioCatalogo/', login_required(admin.AgregarServicioalCatalogo.as_view()), name="agregarServicioCatalogo"),

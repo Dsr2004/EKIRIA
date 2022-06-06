@@ -145,10 +145,9 @@ def ListarRol(request):
     ListRoles = Group.objects.all()
     cambiosQueryset = cambios.objects.all()
     cambiosfQueryset = cambiosFooter.objects.all()
-    if if_admin(request):
-        UserSesion=if_admin(request)
-    else: 
-        return redirect('SinPermisos')
+    imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+    imagen = imagen.img_usuario
+    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
     contexto= {'roles':ListRoles}
     contexto["User"]=UserSesion
     contexto['cambios']=cambiosQueryset

@@ -4,10 +4,10 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from django.template.loader import render_to_string
 
-from datetime import datetime, timedelta, time
+from datetime import date, datetime, timedelta, time
 
 from django.db import models
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import pre_save, post_save, m2m_changed
 from django.utils.text import slugify
 from django.shortcuts import reverse 
 
@@ -224,7 +224,8 @@ class Cita(models.Model):
     @property 
     def EstadoCita(self):
         hoy = datetime.today()
-        fechaCita = datetime(self.diaCita.year, self.diaCita.month, self.diaCita.day)
+        horaCita = self.horaInicioCita
+        fechaCita = datetime(year=self.diaCita.year, month=self.diaCita.month, day=self.diaCita.day, hour=horaCita.hour, minute=horaCita.minute)
         if hoy<fechaCita:
             estado = False
         else:
@@ -286,6 +287,7 @@ def pre_save_servicio_personalizado_receiver(sender, instance, *args, **kwargs):
 def pre_save_cita_receiver(sender, instance, *args, **kwargs):
     if not instance.horaFinCita:
         inicio = instance.horaInicioCita
+
         fin = datetime(1970, 1, 1, inicio.hour, inicio.minute, inicio.second) + timedelta(minutes=instance.pedido_id.get_cantidad)           
         fin = time(fin.hour, fin.minute, fin.second)
         instance.horaFinCita = fin
@@ -310,13 +312,20 @@ def pre_save_cita_receiver(sender, instance, *args, **kwargs):
         inicio = inicio.strftime("%H:%M")
         fin = fin.strftime("%H:%M")
         
-            
+        # print(horasNoDisponibles)
+        # if not len(horasNoDisponibles)==0:
+        #     horasQuitadas = [x for x in horas for i in horasNoDisponibles if (horasNoDisponibles[i]["horaInicio"] <= x <= horasNoDisponibles[i]["horaFin"])]
+        #     print(horasQuitadas)
+        #     for i in horasQuitadas:
+        #         print(i)
+        #         if  (inicio <= i <= fin):
+        #             print(f"{i} esta dentro del rango de la cita  {inicio} --- {fin}")
+           
         if not len(horasNoDisponibles)==0:
             horasQuitadas = [x for x in horas for i in horasNoDisponibles if (horasNoDisponibles[i]["horaInicio"] <= x <= horasNoDisponibles[i]["horaFin"])]
-            horasdeCita =  [x for x in horas  if (inicio <= x <= fin)]
-            
-            for i in horasdeCita:
-                if i in horasQuitadas:
+            for i in horasQuitadas:
+                print(i)
+                if  (inicio <= i <= fin):
                     raise Exception("Ya existe una cita en esa hora, por favor seleccione otra hora")
 
 
@@ -344,7 +353,17 @@ def post_save_cita(sender, instance, created, *args, **kwargs):
 
             print("Se envio el correo")
         except Exception as e:
-            print(e)    
+            print(e)
+    else:
+        citaCalendario = Calendario.objects.get(cita_id=instance.id_cita)
+        citaCalendario.dia = instance.diaCita
+        citaCalendario.horaInicio = instance.horaInicioCita
+        citaCalendario.horaFin = instance.horaFinCita
+        citaCalendario.empleado_id = instance.empleado_id
+        citaCalendario.save()
+            
+
+      
 
 pre_save.connect(pre_save_servicio_receiver,sender=Servicio)
 pre_save.connect(pre_save_servicio_personalizado_receiver,sender=Servicio_Personalizado)
