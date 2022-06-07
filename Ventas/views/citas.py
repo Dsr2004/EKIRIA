@@ -8,6 +8,7 @@ from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.generic import View, TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.db.models import Q
 from Proyecto_Ekiria.Mixin.Mixin import PermissionDecorator, PermissionMixin
 
 from Configuracion.models import cambios, cambiosFooter
@@ -39,6 +40,7 @@ def conversor12a24(str1):
     else: 
         return  str(int(str1[:1]) + 12) + str1[1:5] 
 
+
 class AgregarCita(TemplateView,PermissionMixin):
     permission_required = ['add_cita']
     template_name = "AgregarCita.html"
@@ -62,6 +64,22 @@ class AgregarCita(TemplateView,PermissionMixin):
         except Exception as e:
             print("desde Agregar cita: ", e)
         return context
+    
+    def get(self, request, *args, **kwargs):
+        accion = request.GET.get("accion")
+        errores ={}
+        
+        if accion == "BuscarUsuario":
+            busqueda = request.GET.get("busqueda", "")
+            if busqueda == "":
+               errores["BuscarUsuario"] = "Este campo no puede estar vacío."
+            else:
+                consulta = Usuario.objects.filter(Q(username=busqueda) |  Q(nombres=busqueda) | Q(apellidos=busqueda) | Q(email=busqueda)).filter(estado=True).distinct().values()
+                respuesta = JsonResponse({"consulta": list(consulta)})
+                respuesta.status_code = 200
+                return respuesta
+        return super(AgregarCita, self).get(request, *args, **kwargs)
+               
 
 class ListarCita(ListView,PermissionMixin):
     permission_required = ['view_cita']

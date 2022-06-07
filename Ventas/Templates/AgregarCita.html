@@ -13,25 +13,24 @@
 </head>{% endblock head %}
 
 {% block Contenido %}
-<h1>Agregar Cita</h1>
 <div class="container">
-    <div class="input-group">
-        <label style="margin-right: 20px; margin-top: 10px;"> Buscar Usuarios: </label> 
-        <div class="form-outline" style="display: flex;">
-            
-          <input type="search"  class="form-control">
-        
-        </div>
-        <button type="button" class="btn btn-primary">
-          <i class="fas fa-search"></i>
-        </button>
-        </div>
+    <h1>Agregar Cita</h1>
+    <form action="{% url 'Ventas:agregarCita' %}" method="get" id="BuscarUsuarioForm">
+        <div class="input-group">
+            <label style="margin-right: 20px; margin-top: 10px;"> Buscar Usuario: </label> 
+            <div class="form-outline" style="display: flex;">
+              <input type="text"  class="form-control" name="BuscarUsuario" id="busqueda">
+            </div>
+            <button type="button" class="btn btn-primary" onclick="BuscarUsuarioParaCita()"><i class="fas fa-search"></i> </button>
+            </div>
+    </form>
+    <div id="ResultadoBusquedaUsuario"></div>
         <div class="row" style="margin-top: 50px;">
             <div class="col">
                 <div class="input-group">
                     <label style="margin-right: 20px; margin-top: 10px;"> Buscar Servicios: </label> 
                     <div class="form-outline">
-                      <input type="search" id="form1" class="form-control">
+                      <input type="text" id="form1" class="form-control">
                     
                     </div>
                     <button type="button" class="btn btn-primary">

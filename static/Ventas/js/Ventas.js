@@ -1,3 +1,16 @@
+$(document).ready(function(){
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('input[type=text]').forEach( node => node.addEventListener('keypress', e => {
+      if(e.keyCode == 13) {
+        e.preventDefault();
+      }
+    }))
+  });
+});
+
+
+
+ 
  //ELIMINAR TIPO DE SERVICIO 
  function abrir_modal_calendario(url){ 
   $("#ModalCitaCalendario").load(url, function (){ 
@@ -375,3 +388,26 @@ function abrir_modal_img_servicioPer(modalAabrir){
   $("#"+modalAabrir).appendTo("body").modal("show");
 }
 
+// Agendar citas por parte del admin
+
+function BuscarUsuarioParaCita(){
+  let form = $("#BuscarUsuarioForm")
+  let busqueda = $("#busqueda").val()
+  $.ajax({
+    data: {"csrfmiddlewaretoken":csrftoken, "busqueda":busqueda, "accion":"BuscarUsuario"},
+    url: form.attr("action"),
+    type: form.attr("method"),
+    dataType: 'json',
+    success: function(data){
+     for(i in data){
+       console.log("sii")
+       console.log(data[i])
+       console.log(data)
+     }
+    },
+    error: function(error){
+      console.log("nooo")
+      console.log(error)
+    }
+  })
+}
