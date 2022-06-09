@@ -139,16 +139,20 @@ class Admin(PermissionMixin,DetailView):
 
 @login_required()
 @PermissionDecorator(['view_group'])
-def ListarRol(request):
+def ListarRol(request ):
     UserSesion=""
     formulario=RolForm
     ListRoles = Group.objects.all()
+    # esto lo hice para listar el tipo
+    listartipo= Permission.objects.filter(codename__icontains='Empleado')
+    
     cambiosQueryset = cambios.objects.all()
     cambiosfQueryset = cambiosFooter.objects.all()
     imagen = Usuario.objects.get(id_usuario=request.session['pk'])
     imagen = imagen.img_usuario
     UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
     contexto= {'roles':ListRoles}
+    contexto ['tipo']=listartipo
     contexto["User"]=UserSesion
     contexto['cambios']=cambiosQueryset
     contexto['footer']=cambiosfQueryset
@@ -190,9 +194,12 @@ class CreateRolView(CreateView, PermissionMixin):
     form_class = RolForm
     template_name = 'CrearRol.html'
 
+    
     def post(self, request, *args, **kwargs):
             if request.method == "POST":
                 formulario=self.form_class(request.POST)
+                # empleado =(request.POST['name'])
+                # print(empleado)
                 if formulario.is_valid():
                     formulario.save()
                     return JsonResponse({"mensaje": "{self.model.__name__} Se ha creado correctamente", "errores":"No hay errores"})
