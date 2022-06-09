@@ -5,7 +5,6 @@ import smtplib
 from Proyecto_Ekiria import settings
 from importlib import import_module
 # -----
-
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from django.template.loader import render_to_string
@@ -45,7 +44,7 @@ from Configuracion.models import cambiosFooter, cambios
 from Usuarios.authentication_mixins import Authentication
 from datetime import datetime
 from Usuarios.forms import Cambiar, Regitro, Editar, CustomAuthForm, EditUser
-from Usuarios.Mixins.Mixin import Asimetric_Cipher
+from Usuarios.Mixins.Mixin import Asimetric_Cipher,if_admin
 from Proyecto_Ekiria.settings.local import Public_Key
 import cryptocode
 from Proyecto_Ekiria.Mixin.Mixin import PermissionDecorator, PermissionMixin

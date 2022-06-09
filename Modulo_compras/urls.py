@@ -18,7 +18,10 @@ urlpatterns = [
     path ("actprov/", Actprov, name="actprov"),
     path ("cambiarestado/", cambiarestado, name="camestado"),
     path ("cambiarestadoDeProducto/", cambiarestadoProducto, name="camestadoProducto"),
+    path ("cambiarestadoDeCompra/", cambiarestadoCompra, name="camestadoCompra"),
     path ("cambiarestadoDeTProducto/", cambiarestadoTProducto, name="camestadoTProducto"),
-    path("VerDetalleCompra/<int:pk>", login_required(verDetalleCompra.as_view()), name="VerDetalle")
+    path("VerDetalleCompra/<int:pk>", login_required(verDetalleCompra.as_view()), name="VerDetalle"),
+    path("crearHistory/", login_required(crearHistorial), name="CrearHistorial"),
+    path("restarProductos/", login_required(eliminarProductos.as_view()), name="RestarProductos")
 ]
  

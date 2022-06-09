@@ -1,4 +1,4 @@
-{%extends 'Menu_Usuario.html'%} {% block head %} {% load static %}
+ {%extends 'Menu_Usuario.html'%} {% block head %} {% load static %}
 
 <head>
     <meta charset="UTF-8">
@@ -82,7 +82,7 @@ p.style.display='none'"></i></p>
         <td id="remove0" class="closeButton"><button type="button" class="btn btn-danger" style="padding:0px 0.35rem;"><i class="mdi mdi-trash-can-outline"style="font-size:24px;"></i><b style="display: none;">0</b></button></td>
     </tbody>
 </table>
-
+<form id="CrearHistorial" action="{%url 'CrearHistorial'%}" method="post">{% csrf_token %}</form>
 <!--  -->
 
 {% endblock Contenido %} {% block modal %} {% endblock modal%} {%block scripts%}
@@ -148,7 +148,25 @@ p.style.display='none'"></i></p>
                                 timer: 6000,
                                 timerProgressBar: true,
                                 willClose: () => {
-                                    window.location.href = "/Compras/listarcompra/"
+                                    $.ajax({
+                                        data: {
+                                            'historial[]': JSON.stringify(data['historial']),
+                                            "csrfmiddlewaretoken": $("#CrearHistorial").find('input[name=csrfmiddlewaretoken]').val()
+                                        },
+                                        url: $("#CrearHistorial").attr('action'),
+                                        type: $("#CrearHistorial").attr('method'),
+                                        success: function(data) {
+                                            window.location.href = "../listarcompra/";
+                                        },
+                                        error: function(error) {
+                                            Error = error['responseJSON']
+                                            Swal.fire({
+                                                icon: 'info',
+                                                title: 'Atención.',
+                                                text: Error['error'] + '.',
+                                            })
+                                        }
+                                    })
                                 }
                             })
                         },
@@ -175,6 +193,8 @@ p.style.display='none'"></i></p>
 <!-- extension responsive -->
 <script src="https://cdn.datatables.net/responsive/2.3.0/js/dataTables.responsive.min.js"></script>
 <script src="/static/Modulo_compras/js/js.js"></script>
-<script src="/static/Modulo_compras/js/CrearCompra.js"></script>{%endblock scripts%}
+<script src="/static/Modulo_compras/js/CrearCompra.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>{%endblock scripts%}
+
 
 </html>

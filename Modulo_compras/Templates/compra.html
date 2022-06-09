@@ -59,10 +59,64 @@
                     {% for compra in Compras %}
                     <tr>
                         <td>{{compra.fecha_creacion}}</td>
-                        <td>{{compra.estado}}</td>
+                        <td>
+                            <div class="form-switch" class="Swictder">
+                                <form action="{%url 'camestadoCompra'%}" method="POST" id="CambioEC">
+                                    {%csrf_token%}
+                                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" {%if compra.estado %} checked {%endif%} onclick="CambioEstadoCompra('{{compra.pk}}')">
+                                </form>
+                            </div>
+                        </td>
                         <td>{{compra.total}}</td>
                         <td><i class="mdi mdi-file-document" style="cursor:pointer;" onclick="verDetalle('{{compra.pk}}')"></i></td>
                     </tr>
+                    <script>
+                        function CambioEstadoCompra(id) {
+                            let token = $("#CambioEC").find('input[name=csrfmiddlewaretoken]').val()
+                            swal.fire({
+                                title: '¿Estás seguro de cambiar el estado de esta compra?',
+                                text: "{%if compra.estado %}Al inhabilitar esta compra no se podrá sacar el reporte y la cantidad de productos se verá alterada por la cantidad agregada en esta compra{%else%}Al habilitar esta compra se repondrán la cantidad productos agregados en esta compra{%endif%}",
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonText: 'Si, estoy seguro',
+                                cancelButtonText: 'No, cancelar!',
+                                reverseButtons: true,
+                            }).then((willDelete) => {
+                                if (willDelete.isConfirmed) {
+                                    $.ajax({
+                                        data: {
+                                            "csrfmiddlewaretoken": token,
+                                            "estado": id
+                                        },
+                                        url: $("#CambioEC").attr('action'),
+                                        type: $("#CambioEC").attr('method'),
+                                        success: function(data) {
+                                            swal.fire("Se ha modificado el estado de la compra", {
+                                                icon: 'success',
+                                            }).then(function() {
+                                                location.reload()
+                                            });
+                                        },
+                                        error: function(error) {
+                                            Error = error['responseJSON']
+                                            let mensaje = Error['error']
+                                            Swal.fire({
+                                                icon: 'info',
+                                                title: 'Atención.',
+                                                text: mensaje + '.',
+                                                willClose: () => {
+                                                    location.reload()
+                                                }
+                                            })
+                                        }
+                                    });
+
+                                } else {
+                                    location.reload()
+                                }
+                            });
+                        }
+                    </script>
                     {% endfor %}
 
                 </tbody>

@@ -10,6 +10,11 @@
           <form method='post' id=CrearRoles action="{%url 'CreateRol'%}">
             {% csrf_token %}
             {{form.name|as_crispy_field}}
+            <select name="tipo" id="tipo">
+              <option value="Administrador">Administrador</option>
+              <option value="Empleado">Empleado</option>
+              <option value="Cliente" selected>Cliente</option>
+          </select>
             <p id="name" class="bg-light text-danger"></p>
            <div class="modal-footer" id="botones">
           <button type="button" class="btn btn-success" onclick="CrearRol()">Confirmar</button>

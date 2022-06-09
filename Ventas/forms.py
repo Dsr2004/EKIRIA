@@ -4,6 +4,8 @@ from tempus_dominus.widgets import DatePicker, TimePicker, DateTimePicker
 from bootstrap_datepicker_plus.widgets import DatePickerInput, TimePickerInput, DateTimePickerInput
 
 from django import forms
+
+from Usuarios.models import Usuario
 from .models import Servicio, Tipo_servicio, Catalogo, Servicio_Personalizado,Cita
 
 
@@ -97,8 +99,7 @@ class CitaForm(forms.ModelForm):
            
         }
     def __init__(self, *args, **kwargs):
-        super(CitaForm, self).__init__(*args, **kwargs) 
-        self.fields['diaCita'].label = False
+        super(CitaForm, self).__init__(*args, **kwargs)
         self.fields['horaInicioCita'].label = False
         self.fields['empleado_id'].label = False
         self.fields['descripcion'].label = False
