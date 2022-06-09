@@ -1,0 +1,265 @@
+{% extends 'Menu_Usuario.html' %}{% block head %} {% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reducir Productos</title>
+    <link rel="stylesheet" href="/static/Modulo_compras/css/style.css">
+    <link rel="icon" href="/static/Proyecto_Ekiria/Img/Logo Ekiria.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vast+Shadow&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="sweetalert2.min.css">
+    <script src="/static/bootstrap/js/bootstrap.js"></script>
+    <!--  Datatables  -->
+    <link rel="stylesheet" type="text/css" href="{%static 'Plugins/DataTables/jquery.dataTables.min.css' %}" />
+
+    <!--  extension responsive  -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.3.0/css/responsive.dataTables.min.css">
+
+
+</head>
+{% endblock head %} {% block Contenido %}
+<button class="btn btn-link col-md-1" style="text-decoration: none;"><a style="text-decoration: none; font-size: 24px; "  href="{%url 'listarprod'%}">Volver</a></button>
+<p class="container alert-warning pAlertContenedor" id="pAlertContenedor">Este bloque ya se ha puesto <i class="mdi mdi-close" style="float: right!important; font-size: 24px; margin-top: -6px;cursor: pointer;" onclick="let p = document.getElementById('pAlertContenedor')
+    p.style.display='none'"></i></p>
+<div class="container GridProductos" style="margin-top: 0px!important;">
+
+    <form class="fomularioProducto" id="fomularioProducto" action="{%url 'RestarProductos'%}" method="post">
+
+        {% if Error %}
+        <div class="alert alert-danger">{{Error}}</div>
+        {% endif %} {% csrf_token %}
+        <div id="mensaje" class="mensaje" style="border: 1px solid rgba(0,0,0,0.5); width: 100%;
+        height: 60vh; border-radius: 20px; text-align: center; padding-top: 25vh; font-size: 42px; margin-bottom: 5px;">
+            Sin productos
+        </div>
+        <table class="table">
+            <tbody id="Productos" style="width: 100%;">
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-success " style="float: right;" onclick="ReducirProductos()">Enviar</button>
+    </form>
+    <div class="tipo_productoroductos">
+        <h1>Productos</h1>
+        <hr>
+        <table id="TableProducto" class="table display nowrap" cellspacing="0" width="100">
+            <thead>
+                <tr class="table-dark idNull">
+                    <th style="display: none !important;">Num</th>
+                    <th scope="col">Producto</th>
+                    <th scope="col">Cantidad</th>
+                    <th scope="col">Agregar</th>
+                </tr>
+            </thead>
+            <tbody id="tbody">
+                {% for producto in Productos %}
+                <tr class="table-light focus idNull" id="caja{{producto.pk}}">
+                    <th class="estado" style="display: none !important;">{{producto.pk}}</th>
+                    <th scope="row">{{producto.nombre}}</th>
+                    <td class="cantidad">{{producto.cantidad}}</td>
+                    <td class="cantidad"><i class="mdi mdi-plus-box-outline" style="text-align: center;" onclick="añadirP('{{producto.pk}}')"></i></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<table style="display: none;">
+    <tbody style="display: none;">
+        <td id="cantidad"><input class="form-control cantidadInput" id="inputcantidad" type="number" placeholder="Cantidad a reducir"></td>
+        <td id="remove" class="closeButton"><button type="button" class="btn btn-danger" style="padding:0px 0.35rem;"><i class="mdi mdi-trash-can-outline"style="font-size:24px;"></i><b style="display: none;">0</b></button></td>
+</table>
+{% endblock Contenido %} {% block modal %} {% endblock modal%} {%block scripts%}
+<script>
+    $(document).ready(function() {
+        $('#TableProducto').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+            },
+            responsive: true
+        });
+    });
+    var AntId = 0
+
+    function añadirP(id) {
+        let caja = document.getElementById('caja' + id)
+        try {
+            let cant = document.getElementById('cantidad')
+            let inputcant = document.getElementById('inputcantidad')
+            let close = document.getElementById('remove')
+            cant.id = "cantidad" + id
+            inputcant.id = "inputcantidad" + id
+            close.id = 'remove' + id
+            AntId = id
+        } catch (error) {
+            try {
+                let cant = document.getElementById('cantidad' + id)
+                let inputcant = document.getElementById('inputcantidad' + id)
+                let close = document.getElementById('remove' + id)
+                cant.id = "cantidad" + id
+                inputcant.id = "inputcantidad" + id
+                close.id = 'remove' + id
+                AntId = id
+            } catch (error) {
+                let cant = document.getElementById('cantidad' + AntId)
+                let inputcant = document.getElementById('inputcantidad' + AntId)
+                let close = document.getElementById('remove' + AntId)
+                cant.id = "cantidad" + id
+                inputcant.id = "inputcantidad" + id
+                close.id = 'remove' + id
+                AntId = id
+            }
+        }
+        let clon = caja.cloneNode(true)
+        let contenedor = document.getElementById('Productos')
+        if (contenedor.hasChildNodes()) {
+            var children = contenedor.childNodes;
+            var boolean = []
+            children.forEach(child => {
+                if (child.innerHTML == clon.innerHTML) {
+                    boolean[0] = false
+                }
+            })
+            if (boolean[0] != false) {
+                contenedor.appendChild(clon)
+                let mensaje = document.getElementById('mensaje')
+                mensaje.style.display = "none"
+                let cant = document.getElementById('cantidad' + id)
+                let inputcant = document.getElementById('inputcantidad' + id)
+                let cantclon = cant.cloneNode(true);
+                let close = document.getElementById('remove' + id)
+                let removeclon = close.cloneNode(true)
+                let btn_close = close.lastChild
+                btn_close.lastChild.innerHTML = id
+                contenedor.lastChild.appendChild(cantclon)
+                contenedor.lastChild.appendChild(removeclon)
+            } else {
+                let p = document.getElementById('pAlertContenedor')
+                p.style.display = "block"
+            }
+        }
+        try {
+            const close = document.querySelectorAll(".closeButton")
+            if (close) {
+                close.forEach(btn => {
+                    btn.parentNode.addEventListener('click', e => {
+                        let i = e.target
+                        let button = i.parentNode
+                        if (button.classList[0] == 'btn') {
+                            try {
+                                let td = button.parentNode
+                                let tr = td.parentNode
+                                let tbody = tr.parentNode
+                                let ids = tbody.getAttribute('id')
+                                let secionC = document.getElementById(ids)
+                                secionC.removeChild(tr)
+                                let pk = document.getElementById(tr.id).id.substring(4)
+                                let ClassCantidad = document.querySelectorAll('.cantidad')
+                                cantidad = []
+                                Precio = []
+                                let Productos = document.getElementById('Productos')
+                                var children = Productos.childNodes;
+                                if (children[1] == undefined) {
+                                    let Alerta = document.getElementById('mensaje')
+                                    Alerta.style.display = "block"
+                                }
+                                for (let i = 0; i < ClassCantidad.length - 1; i++) {
+                                    if (i != pk - 1) {
+                                        identi = ClassCantidad[i].id.substring(13)
+                                        let precioInput = document.getElementById('inputprecio' + identi).value
+                                        let cantInput = document.getElementById('inputcantidad' + identi).value
+                                        if (precioInput != "") {
+                                            ValorNeto(i, cantInput, precioInput)
+                                        }
+                                    }
+                                }
+                                Calcular()
+                            } catch (error) {}
+                        }
+                    })
+                })
+            }
+        } catch (ex) {}
+    }
+
+    function ReducirProductos() {
+        let cantidades = document.querySelectorAll('.cantidadInput')
+        cantidad = []
+        productos = []
+        for (let i = 0; i < cantidades.length - 1; i++) {
+            let td = cantidades[i].parentNode
+            let tr = td.parentNode
+            let id = tr.childNodes[1].innerHTML
+            productos.push(tr.childNodes[3].innerHTML)
+            cantidad.push({
+                'Id': id,
+                'Cantidad': cantidades[i].value
+            })
+        }
+        let token = $("#fomularioProducto").find('input[name=csrfmiddlewaretoken]').val()
+        swal({
+            title: "¿Estás seguro?",
+            text: "Se reducirá de manera permanente la cantidad de stock de los productos: " + productos,
+            icon: "warning",
+            dangerMode: true,
+            buttons: {
+                confirm: {
+                    text: 'Confirmar',
+                    className: 'btn-success'
+                },
+                cancel: 'Cancelar'
+            },
+        }).then((willDelete) => {
+            if (willDelete) {
+                swal("¡OK¡ Se ha enviado la información correctamente", {
+                    icon: "success",
+                }).then(function() {
+                    $.ajax({
+                        data: {
+                            'Datos[]': JSON.stringify(cantidad),
+                            "csrfmiddlewaretoken": token
+                        },
+                        url: $("#fomularioProducto").attr('action'),
+                        type: $("#fomularioProducto").attr('method'),
+                        success: function(data) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Se ha realizado la acción correctamente',
+                                html: 'La cantidad en stock de los productos han sido modificada correctamente',
+                                timer: 6000,
+                                timerProgressBar: true,
+                                willClose: () => {
+                                    window.location.href = "../listarprod/";
+                                }
+                            })
+                        },
+                        error: function(error) {
+                            Error = error['responseJSON']
+                            Swal.fire({
+                                icon: 'info',
+                                title: 'Atención.',
+                                text: Error['error'] + '.',
+                            })
+                        }
+                    });
+                });
+            } else {
+                swal("¡OK! Puedes seguir modificando los productos");
+
+            }
+        });
+        return false;
+    }
+</script>
+<script src="/static/Proyecto_Ekiria/js/jsMenuL.js"></script>
+<script src="/static/Modulo_compras/js/js.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="sweetalert2.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+{%endblock scripts%}
+
+</html>

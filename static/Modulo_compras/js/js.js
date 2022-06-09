@@ -11,18 +11,18 @@ function eliminarprov(id_proveedor) {
     })
 
     swalWithBootstrapButtons.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
+        title: 'Estás seguro?',
+        text: "Se eliminará este proveedor",
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: 'No, cancel!',
+        confirmButtonText: 'Si, eliminar!',
+        cancelButtonText: 'No, cancelar!',
         reverseButtons: true
     }).then((result) => {
         if (result.isConfirmed) {
             swalWithBootstrapButtons.fire(
-                'Deleted!',
-                'Your file has been deleted.',
+                'Eliminado!',
+                'El proveedor ha sido eliminado.',
                 'success',
                 window.location.href = ruta
 
@@ -32,8 +32,8 @@ function eliminarprov(id_proveedor) {
             result.dismiss === Swal.DismissReason.cancel
         ) {
             swalWithBootstrapButtons.fire(
-                'Cancelled',
-                'Your imaginary file is safe 🙂',
+                'Cancelado',
+                'No se ha realizado ningún cambio',
                 'error'
             )
         }
@@ -77,10 +77,7 @@ function agregartp(url) {
 };
 
 function agregarcompra(url) {
-    $("#agregar_comp").load(url, function() {
-        $(this).modal('show')
-    })
-
+    window.location.href = "../crearcompra/";
 };
 
 
@@ -278,6 +275,7 @@ function cambioestadoP(id) {
         }
     });
 }
+
 
 function cambioestadoTP(id) {
     let ids = id
