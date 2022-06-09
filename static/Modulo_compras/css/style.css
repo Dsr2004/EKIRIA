@@ -322,6 +322,10 @@ main {
     display: none;
 }
 
+#Productos .cantidad {
+    display: none!important;
+}
+
 #DropCompra.estado {
     display: none;
 }
@@ -345,6 +349,11 @@ main {
 
 #Tabletipo_producto .sorting_1,
 #Tabletipo_producto .sorting_asc {
+    display: none!important;
+}
+
+#TableProducto .sorting_1,
+#TableProducto .sorting_asc {
     display: none!important;
 }
 

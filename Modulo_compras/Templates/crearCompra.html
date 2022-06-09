@@ -1,5 +1,4 @@
-
-{%extends 'Menu_Usuario.html'%} {% block head %} {% load static %}
+ {%extends 'Menu_Usuario.html'%} {% block head %} {% load static %}
 
 <head>
     <meta charset="UTF-8">
@@ -150,12 +149,23 @@ p.style.display='none'"></i></p>
                                 timerProgressBar: true,
                                 willClose: () => {
                                     $.ajax({
-                                        data:{
-                                            'historial[]' : data['historial'],
+                                        data: {
+                                            'historial[]': JSON.stringify(data['historial']),
                                             "csrfmiddlewaretoken": $("#CrearHistorial").find('input[name=csrfmiddlewaretoken]').val()
                                         },
                                         url: $("#CrearHistorial").attr('action'),
                                         type: $("#CrearHistorial").attr('method'),
+                                        success: function(data) {
+                                            window.location.href = "../listarcompra/";
+                                        },
+                                        error: function(error) {
+                                            Error = error['responseJSON']
+                                            Swal.fire({
+                                                icon: 'info',
+                                                title: 'Atención.',
+                                                text: Error['error'] + '.',
+                                            })
+                                        }
                                     })
                                 }
                             })
@@ -183,7 +193,8 @@ p.style.display='none'"></i></p>
 <!-- extension responsive -->
 <script src="https://cdn.datatables.net/responsive/2.3.0/js/dataTables.responsive.min.js"></script>
 <script src="/static/Modulo_compras/js/js.js"></script>
-<script src="/static/Modulo_compras/js/CrearCompra.js"></script>{%endblock scripts%}
+<script src="/static/Modulo_compras/js/CrearCompra.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>{%endblock scripts%}
 
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
 </html>

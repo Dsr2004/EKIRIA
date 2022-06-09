@@ -276,6 +276,7 @@ function cambioestadoP(id) {
     });
 }
 
+
 function cambioestadoTP(id) {
     let ids = id
     let token = $("#camestado").find('input[name=csrfmiddlewaretoken]').val()

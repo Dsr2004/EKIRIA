@@ -73,10 +73,13 @@ class Compra(models.Model):
         db_table = 'Compra'
 
     def __str__(self):
-        return str(self.producto)
+        return str(self.id_compras)
 
 class HistorialCompra(models.Model):
     id_HC=models.AutoField("id_HC",primary_key=True, unique=True)
     precio=models.FloatField(blank=False, null=False)
     cantidad=models.IntegerField(blank=False, null=False)
-    compra_id=models.ForeignKey(Compra, verbose_name="Compra",on_delete=models.CASCADE,null=False, blank=True, db_column="id_compras")
+    compra = models.ForeignKey(Compra, null=True, blank=True, on_delete=models.CASCADE)
+    producto = models.ForeignKey(Producto, null=True, blank=True, on_delete=models.CASCADE)
+    class Meta:
+        db_table = 'Historial_Compra'

@@ -35,9 +35,18 @@
                 <h2>Productos</h2>
             </div>
             <div class="Table Add">
+                <button class="pdf img btn btn-dropbox">
+                    <a href="{%url 'RestarProductos'%}" style="color: #fff;">
+                        <i class="mdi mdi-delete-empty"></i>
+                        <b class="etiquetaReporte" style="display: none;">Reducir Productos</b>
+                    </a>
+                </button>
                 <button type="button" class="Add img" onclick="agregarprod('{%url 'crearprod' %}')">
-                  <i class="fas fa-user-plus"></i>
-              </button>
+                    <a style="color:black;"onclick="agregarprod('{%url 'crearprod' %}')">
+                        <i class="fas fa-user-plus"></i>
+                        <b class="etiquetaCrearCompra" style="display: none;">Crear Producto</b>
+                    </a>
+                </button>
             </div>
             <table id="TableProveedores" class="display nowrap" cellspacing="0" width="100">
                 <thead>

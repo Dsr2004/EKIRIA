@@ -237,8 +237,7 @@ class Crearcompra(CreateView):
                 DatosCompra = json.loads(x[0])
                 Permite=True
                 for datos in DatosCompra:
-                    print(datos['Cantidad'])
-                    if datos['Cantidad'] == "" and datos['Precio']=="":
+                    if datos['Cantidad'] == "" or datos['Precio']=="":
                         Permite=False
                 if Permite==True:
                     Compra=self.model.objects.create(total = 0)
@@ -249,7 +248,7 @@ class Crearcompra(CreateView):
                         Total = Total + ValorNeto
                         producto = Producto.objects.get(pk=int(datos['Id']))
                         producto.cantidad= producto.cantidad + int(datos['Cantidad'])
-                        historial.append({"Id":Compra.pk, "Precio":float(datos['Precio']), "Cantidad":int(datos['Cantidad'])})
+                        historial.append({"Id":Compra.pk, "Precio":float(datos['Precio']), "Cantidad":int(datos['Cantidad']), "IdProducto":producto.pk})
                         producto.save()
                         Compra.producto.add(int(datos['Id']))
                     if Total != 0 :
@@ -266,11 +265,27 @@ class Crearcompra(CreateView):
 
 
 def crearHistorial(request):
-    if request.method=="POST":
+    if request.is_ajax():
         x=request.POST.getlist('historial[]')
-        historial = json.loads(x[0])
-        print(historial)
-        return redirect('listarcompra')
+        Historial = json.loads(x[0])
+        try:
+            for historial in Historial:
+                HistorialCompra.objects.create(
+                    precio = historial['Precio'],
+                    cantidad = historial['Cantidad'],
+                    compra_id = int(historial['Id']),
+                    producto_id=int(historial['IdProducto']),
+                )
+            return JsonResponse({"success":'Success'})
+        except Exception as e:
+            id=None
+            for historial in Historial:
+                id = int(historial['Id'])
+            compra = Compra.objects.get(pk = id)
+            compra.producto.remove()
+            compra.delete()
+            data = json.dumps({'error': 'No se puedo crear el historial correctamente, por lo que la compra será eliminada'})
+            return HttpResponse(data, content_type="application/json", status=400)
 
 def Eliminarprov(request, id_proveedor):
     prov_form =Proveedor.objects.filter(pk=id_proveedor)
@@ -399,12 +414,73 @@ def cambiarestadoTProducto(request):
                 return redirect('listarprov')
     return JsonResponse({"kiwi":"yes"})
 
+
+def cambiarestadoCompra(request):
+    if request.is_ajax:
+        if request.method=="POST":
+            id = request.POST["estado"]
+            update=Compra.objects.get(pk=id)
+            estatus=update.estado
+            historial = HistorialCompra.objects.filter(compra_id = id)
+            if estatus==True:
+                try:
+                    update.estado=False
+                    actualiza=True
+                    datos =[]
+                    errores = []
+                    for h in historial:
+                        cantidad = h.cantidad
+                        producto = Producto.objects.get(pk = int(h.producto_id))
+                        if producto.cantidad < cantidad:
+                            actualiza = False
+                            errores.append({'producto':producto.nombre})
+                        else:
+                            datos.append({'Id':producto.pk,'cantidad':cantidad})
+                    if actualiza:
+                        for data in datos:
+                            producto = Producto.objects.get(pk = data['Id'])
+                            producto.cantidad = producto.cantidad - int(data['cantidad'])
+                            producto.save()
+                        update.save()
+                    else:
+                        productos = ""
+                        for p in errores:
+                            productos = productos+p['producto']+", "
+                        data = json.dumps({'error': 'No se puede cambiar el estado de esta compra porque los productos: '+str(productos)+" no tienen la cantidad suficiente para descontar la cantidad al stock"})
+                        return HttpResponse(data, content_type="application/json", status=400)
+                except Exception as e:
+                    data = json.dumps({'error': e})
+                    return HttpResponse(data, content_type="application/json", status=400)
+            elif estatus==False:
+                try:
+                    update.estado=True
+                    for h in historial:
+                        cantidad = h.cantidad
+                        producto = Producto.objects.get(pk = int(h.producto_id))
+                        producto.cantidad = producto.cantidad + int(cantidad)
+                        producto.save()
+                    update.save()
+                except Exception as e:
+                    data = json.dumps({'error': e})
+                    return HttpResponse(data, content_type="application/json", status=400)
+            else:
+                return redirect('listarprov')
+    return JsonResponse({"kiwi":"yes"})
+
+
+
+
 class verDetalleCompra(TemplateView):
     template_name = "DetalleCompra.html"
     model = Compra
     def get_context_data(self, *args, **kwargs):
         context = super(verDetalleCompra, self).get_context_data(**kwargs)
-        context['Compra']=self.model.objects.get(pk = kwargs['pk'])
+        compra = self.model.objects.get(pk = kwargs['pk'])
+        productos=compra.producto.all()
+        context['Compra']=compra
+        context['History']=HistorialCompra.objects.filter(compra_id = kwargs['pk'])
+        context['Proveedores']=Proveedor.objects.all()
+        context['Productos']=productos
         UserSesion=if_admin(self.request)
         cambiosQueryset = cambios.objects.all()
         cambiosfQueryset = cambiosFooter.objects.all()
@@ -413,3 +489,48 @@ class verDetalleCompra(TemplateView):
         context['footer']=cambiosfQueryset
         return context
 
+class eliminarProductos(TemplateView):
+    model=Producto
+    template_name = "Funciones/RestarProductos.html"
+    def get_context_data(self, *args, **kwargs):
+        context = super(eliminarProductos, self).get_context_data(**kwargs)
+        UserSesion=if_admin(self.request)
+        cambiosQueryset = cambios.objects.all()
+        cambiosfQueryset = cambiosFooter.objects.all()
+        context['Productos']=Producto.objects.all()
+        context["User"]=UserSesion
+        context['cambios']=cambiosQueryset
+        context['footer']=cambiosfQueryset
+        return context
+    def post(self,request, *args, **kwargs): 
+        if request.is_ajax():
+            x=request.POST.getlist('Datos[]')
+            DatosProductos = json.loads(x[0])
+            Permite=True
+            error=[]
+            for datos in DatosProductos:
+                if datos['Cantidad'] == "" or datos['Id']=="":
+                    Permite=False
+                    producto = Producto.objects.get(pk = datos['Id'])
+                    error.append(producto.nombre)
+            if Permite==True:
+                cambiar = True
+                for datos in DatosProductos:
+                    producto = Producto.objects.get(pk = datos['Id'])
+                    if producto.cantidad < int(datos['Cantidad']):
+                        cambiar = False
+                if cambiar==True: 
+                    print('si')
+                    for datos in DatosProductos: 
+                        producto = Producto.objects.get(pk = datos['Id'])
+                        producto.cantidad = producto.cantidad - int(datos['Cantidad'])
+                        producto.save()
+                        return JsonResponse({"success":"Succes"})
+                else:
+                    data = json.dumps({'error': 'No se puede realizar la acción si algunos de los productos no tiene la suficiente cantidad'})
+                    return HttpResponse(data, content_type="application/json", status=400)
+            else:
+                data = json.dumps({'error': 'No se puede realizar la acción si alguno de los campos está vacio: '+str(error)})
+                return HttpResponse(data, content_type="application/json", status=400)
+                    
+                        
