@@ -18,6 +18,7 @@
 </div>
 {%endfor%} {% endif %}
 
+    
 <h1 class="titulo">Listado De Roles</h1>
 <div class="tabla">
     <table class="table table-striped">
@@ -27,7 +28,6 @@
                 <th scope="col">Nombre</th>
                 <th scope="col">Editar</th>
                 <th scope="col">Permiso</th>
-                <th scope="col">Tipo_Rol</th>
                 <th scope="col">Eliminar</th>
 
                 <!-- <th scope="col">Estado</th> -->
@@ -54,17 +54,10 @@
                           {%csrf_token%}
                             <input class="form-check-input" type="checkbox" name="estado" onclick="ds('')"></div>
                             <label class="switch"></label> -->
-                <!-- </form>
-                    </td>  -->
-                {%if tipo=="Empleado"%}
-                <td><p>Empleado</p></td>
-                {%if tipo == "Administrador"%}
-                <td><p>Administrador</p></td>
-                {%if tipo == "Cliente"%}
-                <td><p>Cliente</p></td>
-                {%else%}
-                <td><p>sin tipo</p></td>
-                {% endif %}
+                 <!-- </form> -->
+                    
+                    <!-- </td> -->
+
                 {% if Rol.id > 6%}
                 <td>
                     <form action="{%url 'eliminarRol'%}" id="eliminar" method="post">
@@ -108,32 +101,6 @@
 <!-- Modal Crear Rol -->
 <div class="modal fade" id="CreateRol" role="dialog">
     <div class="modal fade" id="CrearRol" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Crear Rol</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-
-                    <form method='post' id=CrearRoles action="{%url 'CreateRol'%}" enctype="multipart/form-data">
-                        {% csrf_token %} {{createform.errors}}
-                        <div id="errores"></div>
-                        <label for="nombreRol">Nombre</label><br> {{crear.name}}
-                        <select name="tipo" id="tipo">
-                            <option value="Administrador">Administrador</option>
-                            <option value="Empleado">Empleado</option>
-                            <option value="Cliente">Cliente</option>
-                        </select>
-                        <br>
-                        <div class="modal-footer" id="botones">
-                            <button type="submit" class="btn btn-warning" onclick="CrearUsuarios();">Confirmar</button>
-                            <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal" id="cancelar">Cancelar</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 

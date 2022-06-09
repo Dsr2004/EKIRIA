@@ -28,6 +28,7 @@ from django.shortcuts import get_object_or_404
 from .models import  cambios, cambiosFooter
 from Proyecto_Ekiria.Mixin.Mixin import PermissionMixin, PermissionDecorator
 from .forms import RolForm, CambiosForm, FooterForm
+from Commands.seeders import PermisosCliente
 
 
 
@@ -143,8 +144,6 @@ def ListarRol(request ):
     UserSesion=""
     formulario=RolForm
     ListRoles = Group.objects.all()
-    # esto lo hice para listar el tipo
-    listartipo= Permission.objects.filter(codename__icontains='Empleado')
     
     cambiosQueryset = cambios.objects.all()
     cambiosfQueryset = cambiosFooter.objects.all()
@@ -152,7 +151,6 @@ def ListarRol(request ):
     imagen = imagen.img_usuario
     UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
     contexto= {'roles':ListRoles}
-    contexto ['tipo']=listartipo
     contexto["User"]=UserSesion
     contexto['cambios']=cambiosQueryset
     contexto['footer']=cambiosfQueryset
@@ -201,7 +199,24 @@ class CreateRolView(CreateView, PermissionMixin):
                 # empleado =(request.POST['name'])
                 # print(empleado)
                 if formulario.is_valid():
-                    formulario.save()
+                    rol = formulario.save()
+                    roles = Group.objects.all()
+                    if request.POST['tipo']=="Administrador":
+                        Permisos = Permission.objects.all()
+                        for permiso in Permisos:
+                            rol.permissions.add(permiso)
+                            rol.save()
+                    if request.POST['tipo']=="Cliente":
+                        PermisosCliente(rol)
+                    if request.POST['tipo']=="Empleado":
+                        Permisos = Permission.objects.all()
+                        for permiso in Permisos:
+                            rol.permissions.add(permiso)
+                            rol.permissions.remove(Permission.objects.get(
+                            codename='Administrador',
+                            content_type=ContentType.objects.get_for_model(Usuario),
+                            ))
+                            rol.save()
                     return JsonResponse({"mensaje": "{self.model.__name__} Se ha creado correctamente", "errores":"No hay errores"})
                 else:
                     errores=formulario.errors
