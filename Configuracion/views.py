@@ -95,6 +95,7 @@ class Admin(PermissionMixin,DetailView):
         contexto= self.model.objects.all()
         rol = Group.objects.get(id=self.kwargs["pk"])
         permisos = rol.permissions.all()
+        permisos2=rol.permissions.all()
         lista=[]
         if queryset:
             # contexto = self.model.objects.filter(
