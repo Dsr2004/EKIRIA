@@ -16,7 +16,7 @@ from django.conf import settings
 from Usuarios.models import Usuario
 from .views import is_list_empty
 from ..mixins import ActualiarCitaMixin, ActualiarCitaClienteMixin
-from ..models import Cita, Pedido, Calendario
+from ..models import Cita, Pedido, Calendario, Servicio
 from ..forms import CitaForm
 """
 <----------------------------------------------------------------->
@@ -44,6 +44,7 @@ def conversor12a24(str1):
 class AgregarCita(TemplateView,PermissionMixin):
     permission_required = ['add_cita']
     template_name = "AgregarCita.html"
+    form_class = CitaForm
     def get_context_data(self, *args, **kwargs):
         context = super(AgregarCita, self).get_context_data(**kwargs)
         try:
@@ -58,6 +59,7 @@ class AgregarCita(TemplateView,PermissionMixin):
                     context["User"] = UserSesion
                     context['cambios']=cambiosQueryset
                     context['footer']=cambiosfQueryset
+                    context["form"] = self.form_class
                     return context
                 else:
                     return redirect("SinPermisos")
@@ -65,19 +67,39 @@ class AgregarCita(TemplateView,PermissionMixin):
             print("desde Agregar cita: ", e)
         return context
     
-    def get(self, request, *args, **kwargs):
-        accion = request.GET.get("accion")
+    def post(self, request, *args, **kwargs):
+        accion = request.POST.get("accion")
         errores ={}
         
         if accion == "BuscarUsuario":
-            busqueda = request.GET.get("busqueda", "")
+            busqueda = request.POST.get("busqueda", "")
             if busqueda == "":
                errores["BuscarUsuario"] = "Este campo no puede estar vacío."
             else:
-                consulta = Usuario.objects.filter(Q(username=busqueda) |  Q(nombres=busqueda) | Q(apellidos=busqueda) | Q(email=busqueda)).filter(estado=True).distinct().values()
-                respuesta = JsonResponse({"consulta": list(consulta)})
-                respuesta.status_code = 200
-                return respuesta
+                data = []
+                consulta = Usuario.objects.filter(Q(username__icontains=busqueda) |  Q(nombres=busqueda)  | Q(email__icontains=busqueda)).filter(estado=True).distinct()
+                print(consulta)
+                for i in consulta:
+                    print(i)
+                    item = i.toJSON()
+                    respuesta = {"imagen":item["img"],"celular":item["celular"],"direccion":item["direccion"],"email":item["email"],"nombreUser":item["username"], "rol":i.rol.name}
+                    respuesta["text"] = item["nombre_completo"]
+                    respuesta["id"] = item["id_usuario"]
+                    data.append(respuesta)
+                return  JsonResponse(data, safe=False)
+        elif accion == "BuscarServicio":
+            busqueda = request.POST.get("busqueda", "")
+            if busqueda == "":
+               errores["BuscarServicio"] = "Este campo no puede estar vacío."
+            else:
+                data = []
+                consulta = Servicio.objects.filter(Q(nombre__icontains=busqueda)).filter(estado=True).distinct()
+                for i in consulta:
+                    item = i.toJSON()
+                    item["value"] = i.nombre
+                    data.append(item)
+                return  JsonResponse(data, safe=False)
+                
         return super(AgregarCita, self).get(request, *args, **kwargs)
                
 

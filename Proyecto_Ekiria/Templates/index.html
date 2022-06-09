@@ -6,9 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="/static/Proyecto_Ekiria/Img/Logo Ekiria.png">
     <link rel="stylesheet" href="/static/Configuracion/css/estilo.css">
+    <link rel="stylesheet" href="{% static 'Ventas/css/Ventas.css' %}">
     <title>Inicio</title>
 </head>{% endblock head %} {% block Contenido %}
 <div class="contenedorcambios">
+    
+    <h1 class="container">Sobre nosotros</h1>
     {%if cambios%} {%for cambios in cambios%}
     <div class="ContenedorMision">
         <div class="ContMision">
@@ -29,7 +32,55 @@
 
     {%endif%}
 </div>
+<div class="container">
+    <h1>Catálogo</h1>
+    <br>
+    <div class="row">
+       <div class="col-md-3">
+          <div class="box-element">
+             <div align="center"><img class="img-fluid ServicePersonaliza" src="/static/Ventas/img/masMorado.png" width="200" height="200"></div>
+          </div>
+          <div class="box-element product" style="height: 160px;">
+          <h6 ><strong><center>Personalizar Servicio</center> </strong></h6>
+              <hr>
+          <div class="contenedor-botones">
+             <a style="position: relative; top: 17px !important" class="btn btn-outline-dark" href="{%url 'Ventas:personalizar'%}"><span>Personalizar</span></a><!--sI EL AZUL PERSISTE COLOCAR EL COLOR AQUI -->
+          </div>
+       </div>
+       </div>
+       
+       {% if catalogo %}
+          {% for servicio in catalogo %}
+          
+          <div class="col-md-3">
+             <img class="img ImgServiceCatalogo" src="/media/{{servicio.servicio_id.img_servicio}}"  height="241">
+             <div class="box-element product" style="height: 160px;">
+                <h6 style="width:100%; overflow: hidden; white-space:nowrap; text-overflow: ellipsis;" ><strong>{{servicio.servicio_id.nombre}}</strong></h6>
 
-<br><br><br><br><br><br><br> {% endblock Contenido %} {% block modal %} {% endblock modal %} {% block scripts %}
+                <hr>
+                <button data-servicio="{{servicio.servicio_id.id_servicio}}" data-action="add" class="btn btn-outline-success addToCar">Al carrito!</button>
+                <a  class="btn  btn-outline-primary" onclick="abrir_modal_detalleServicio('{% url 'Ventas:detalleSer' servicio.servicio_id.slug %}')">Ver</a>
+                <hr>
+                <h6 style="float: left; color: gray;"><strong>Precio:</strong></h6>
+                <h6 style="float: right; "><strong>${{servicio.servicio_id.precio}}</strong></h6>
+    
+             </div>
+          </div>
+          {% endfor %}
+             {% else %}
+             <h1>No hay servicios que mostrar</h1>
+       {% endif %}
+          
+    </div>
+ </div>
+
+ <div class="modal fade" id="VerMasServivios" role="dialog" >
+</div>
+{% endblock Contenido %} 
+{% block modal %} {% endblock modal %} 
+{% block scripts %}
 <script src=""></script>
+<link rel="stylesheet" href="{% static 'Ventas/css/Ventas.css' %}">
+<script src="{% static 'Ventas/js/Ventas.js' %}"></script>
+<script src="{% static 'Ventas/js/Carrito.js' %}"></script>
 {% endblock scripts %}

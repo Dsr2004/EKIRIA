@@ -3,6 +3,8 @@ from email.policy import default
 from turtle import width
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Group
+from django.forms import model_to_dict
+from django.conf import settings
 
 
 
@@ -127,6 +129,16 @@ class Usuario(AbstractBaseUser):
 
     def has_module_perms(self, app_label):
         return True
+    
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['nombre_completo'] = f"{self.nombres.capitalize()} {self.apellidos.lower()}"
+        item["img"] = self.get_img()
+        return item
+    
+    def get_img(self):
+        if self.img_usuario:
+            return "{}{}".format(settings.MEDIA_URL, self.img_usuario)
     
 
     @property

@@ -2,6 +2,8 @@ import smtplib
 
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from this import d
+from django.forms import model_to_dict
 from django.template.loader import render_to_string
 
 from datetime import date, datetime, timedelta, time
@@ -56,6 +58,13 @@ class Servicio(models.Model):
 
     def get_absolute_url(self):
         return reverse("Ventas:detalleSer", kwargs={"slug": self.slug})
+    
+    def toJSON(self):
+        servicio = {"id_servicio": self.id_servicio,"nombre": self.nombre, "precio": self.precio, "tipo_servicio_id": self.tipo_servicio_id.nombre, "duracion": self.duracion, "fecha_creacion": self.fecha_creacion, "fecha_actualizacion": self.fecha_actualizacion, "estado": self.estado}
+        servicio["img_servicio"] = "{}{}".format(settings.MEDIA_URL, self.img_servicio)
+        return servicio
+    
+    
 
    
     
@@ -126,7 +135,7 @@ class Pedido(models.Model):
     @property
     def get_items_carrito(self):
         itemspedido = self.pedidoitem_set.all()
-        total = sum([item.cantidad for item in itemspedido])
+        total = len(itemspedido)
         return total 
     
     @property
@@ -152,7 +161,6 @@ class PedidoItem(models.Model):
     id_pedidoItem=models.AutoField("Id del Item del  Pedido", primary_key=True, unique=True)
     servicio_id=models.ForeignKey(Servicio, verbose_name="Id del Servicio",db_column="servicio_id", on_delete=models.SET_NULL, null=True)
     servicio_personalizado_id=models.ForeignKey(Servicio_Personalizado, verbose_name="Servicios Personalizados",on_delete=models.SET_NULL, null=True,db_column="servicio_personalizado_id")
-    cantidad=models.IntegerField("Cantidad", default=1, null=True, blank=True)
     pedido_id=models.ForeignKey(Pedido, verbose_name="Id del Pedido",db_column="pedido_id", on_delete=models.SET_NULL, null=True)
     fecha_creacion=models.DateField("Fecha de Creacion", auto_now=False, auto_now_add=True)
     fecha_actualizacion= models.DateTimeField("Fecha de Actualizacion", auto_now=True, auto_now_add=False)
@@ -169,9 +177,9 @@ class PedidoItem(models.Model):
     @property
     def get_total(self):
         try:
-            total = self.servicio_id.precio * self.cantidad
+            total = self.servicio_id.precio * 1
         except Exception as e:
-            print(str(e))
+            print("desde el modelo pedido item", str(e))
             total=0
         return total
    
