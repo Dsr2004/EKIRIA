@@ -324,8 +324,8 @@ def Cambios():
         'tamano_Titulo':'24', 
         'tamano_Texto':'18', 
         'Tipo_Letra':'Arial', 
-        'Texto_Mision':'hola',
-        'Texto_Vision':'hola2',
+        'Texto_Mision':'La Misión de EKIRIA es ofrecer a mujeres, hombres y niñ@s de Medellín, servicios de belleza para la presentación personal a través de servicios como manicura, pedicura, aplanchados, masajes, etc.',
+        'Texto_Vision':'Tener y/o poseer un mejor establecimiento para dar al cliente los mejores servicios de calidad. Y garantía. Ser reconocida por muchos más clientes y satisfacer sus necesidades.',
         }
     try: 
         Objecto = cambios.objects.get(pk = Cambios['id'])

@@ -10,6 +10,7 @@ class RolForm(forms.ModelForm):
         fields = ('name',)
         widgets={
             'name':forms.TextInput(attrs={"class":"form-control" }),
+            
         }
 
     def __init__(self, *args, **kwargs):

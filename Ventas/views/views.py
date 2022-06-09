@@ -139,8 +139,10 @@ Seccion de las Vistas donde se realizan las pruebas
 def ejemplo(request, id):
     consuta=Servicio.objects.filter(id_servicio=id)
 
+
+
+
 def pruebas(request):
-   
     try:
         if request.session:
             imagen = Usuario.objects.get(id_usuario=request.session['pk'])

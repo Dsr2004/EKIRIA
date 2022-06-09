@@ -19,19 +19,22 @@
 <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Detalle del servicio: </h5>
+        <h5 class="modal-title" id="exampleModalLabel">Detalle del servicio</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">         
         <div class="img_detailService">
+          <strong>Precio:</strong> <span class="badge badge-pill badge-primary"><h6> ${{object.precio}}</h6></span> </h5>
+          <br>
+          <br>
             <img src="/media/{{object.img_servicio}}" class="img-fluid rounded mx-auto  d-block img_Detail" alt="{{object.nombre}}">
         </div>
         <br>
-        <h3>{{object.nombre}} cuesta ${{object.precio}}</h3>
-        <br>
+        <h5><center>{{object.nombre}}</center></h5>
+          <hr>
         <div class="">
           <h4>Descripción:</h4>
-            <p class="">{{object.descripcion}}</p>
+            <p class="font-size:5px !important">{{object.descripcion}}</p>
         </div>
       </div>
     </div>

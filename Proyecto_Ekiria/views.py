@@ -12,6 +12,7 @@ from Usuarios.models import Usuario, VistasDiarias
 from Configuracion.models import cambios, cambiosFooter
 from datetime import datetime
 from Usuarios.views import *
+from Ventas.models import Catalogo
 #--------------------------------------Cargadores de templates------------------------------------
 class Inicio(View):
     def get(self, request, *args, **kwargs):  
@@ -24,15 +25,25 @@ class Inicio(View):
             Vista = VistasDiarias.objects.get(id_dia=datetime.today().strftime('%Y-%m-%d')) 
             Vista.Contador = Vista.Contador + 1
             Vista.save()
+        catalogo = Catalogo.objects.all()
+        catalogoLista = []
+        if catalogo:
+            for i in catalogo:
+                tipoServicio = i.servicio_id.tipo_servicio_id.id_tipo_servicio
+                if tipoServicio==1 or tipoServicio==2:
+                        if len(catalogoLista) <=7-1:
+                            catalogoLista.append(i)
+                        else:
+                            break
+        cambiosQueryset = cambios.objects.all()
+        cambiosfQueryset = cambiosFooter.objects.all()
+        contexto = {'cambios':cambiosQueryset, 'footer':cambiosfQueryset, 'catalogo':catalogoLista}
         try:
-            cambiosQueryset = cambios.objects.all()
-            cambiosfQueryset = cambiosFooter.objects.all()
             UserSesion = if_User(request)
-            return render(request, 'index.html', {'User':UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
+            contexto["User"] = UserSesion
+            return render(request, 'index.html', contexto)
         except:
-            cambiosQueryset = cambios.objects.all()
-            cambiosfQueryset = cambiosFooter.objects.all()
-            return render(request, 'index.html',{'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
+            return render(request, 'index.html',contexto)
             
 class menu(View):
     def get(self, request, *args, **kwargs):

@@ -44,7 +44,7 @@ urlpatterns = [
     path('ListadoServicios/', login_required(servicios.ListarServicio.as_view()), name="listarServicios"),
     path('CambiarEstadoServicio/', login_required(servicios.CambiarEstadoServicio), name="cambiarEstadoServicio"),
     path('EditarServicio/<int:pk>', login_required(servicios.EditarServicio.as_view()), name="editarServicio"),
-    path('<slug>/', login_required(servicios.ServicioDetalle.as_view()), name="detalleSer"),
+    path('<slug>/', servicios.ServicioDetalle.as_view(), name="detalleSer"),
 ]
 
     # SIN LOGIN REQUIRED
