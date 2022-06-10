@@ -525,7 +525,7 @@ class eliminarProductos(TemplateView):
                         producto = Producto.objects.get(pk = datos['Id'])
                         producto.cantidad = producto.cantidad - int(datos['Cantidad'])
                         producto.save()
-                        return JsonResponse({"success":"Succes"})
+                    return JsonResponse({"success":"Succes"})
                 else:
                     data = json.dumps({'error': 'No se puede realizar la acción si algunos de los productos no tiene la suficiente cantidad'})
                     return HttpResponse(data, content_type="application/json", status=400)

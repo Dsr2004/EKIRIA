@@ -61,7 +61,7 @@
                     <th class="estado" style="display: none !important;">{{producto.pk}}</th>
                     <th scope="row">{{producto.nombre}}</th>
                     <td class="cantidad">{{producto.cantidad}}</td>
-                    <td class="cantidad"><i class="mdi mdi-plus-box-outline" style="text-align: center;" onclick="añadirP('{{producto.pk}}')"></i></td>
+                    <td class="cantidad"><i class="mdi mdi-plus-box-outline" style="text-align: center; cursor:pointer;" onclick="añadirP('{{producto.pk}}')"></i></td>
                 </tr>
                 {% endfor %}
             </tbody>
