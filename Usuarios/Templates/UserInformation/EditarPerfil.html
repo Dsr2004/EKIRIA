@@ -14,7 +14,7 @@
         {% csrf_token %}
         <label for="imagen"><img src="/media/{{form.img_usuario.value}}"></label>
         {{form.img_usuario}}
-        <label for="">Telefono:</label>
+        <label for="">Teléfono:</label>
         {{form.telefono}}
         <label for="">Celular:</label>
         {{form.celular}}
@@ -24,7 +24,7 @@
         {{form.municipio}}
         <label for="">Dirección:</label>
         {{form.direccion}}
-        <label for="">Codigo Postal:</label>
+        <label for="">Código Postal:</label>
         {{form.cod_postal}}
         {% if User.admin %}
             <a href="{%url 'Cambiar'%}">Cambiar contraseña</a>

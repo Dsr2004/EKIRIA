@@ -10,6 +10,9 @@ $(document).ready(function() {
         name = name.replace("log entry","iniciar sesión")
         name = name.replace("group","roles")
         name = name.replace("permission","permisos")
+        name = name.replace("notificacion","notificación")
+        name = name.replace("content type","tipo de contenido")
+        name = name.replace("codigo postal","código postal")
         permiso[i].innerHTML = name
     }
 });

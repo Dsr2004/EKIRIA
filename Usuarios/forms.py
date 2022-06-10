@@ -110,7 +110,7 @@ class Regitro(forms.ModelForm):
                     'class':'form-control',
                     'id':'telefono',
                     'autocomplete':'off',
-                    'placeholder':'Telefono',
+                    'placeholder':'Teléfono',
                     'name':'telefono',
                     'type':'number',
                 }
@@ -408,7 +408,7 @@ class EditUser(forms.ModelForm):
                     'class':'form-control',
                     'id':'telefono',
                     'autocomplete':'off',
-                    'placeholder':'Telefono',
+                    'placeholder':'Teléfono',
                     'name':'telefono',
                     'type':'number',
                 }
