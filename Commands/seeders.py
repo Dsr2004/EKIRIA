@@ -287,6 +287,12 @@ def PermisosCliente(rol):
                 content_type=ContentType.objects.get_for_model(Usuario),
                 )
             rol.permissions.add(permission_Es_un_cliente)
+                            # Usuario Puede visualizar elemntos de grado 1
+            permission_Grado_1 = Permission.objects.get(
+                codename='Grado 1',
+                content_type=ContentType.objects.get_for_model(Usuario),
+                )
+            rol.permissions.add(permission_Grado_1)
 
     
 
@@ -300,12 +306,36 @@ def Rol_Permisos():
                 rol.save()
         if rol.id == 2:
             PermisosCliente(rol)
+            # Usuario Puede visualizar elemntos de grado 2
+            permission_Grado_2 = Permission.objects.get(
+                codename='Grado 2',
+                content_type=ContentType.objects.get_for_model(Usuario),
+                )
+            rol.permissions.add(permission_Grado_2)
         if rol.id == 3:
             PermisosCliente(rol)
+            # Usuario Puede visualizar elemntos de grado 3
+            permission_Grado_3 = Permission.objects.get(
+                codename='Grado 3',
+                content_type=ContentType.objects.get_for_model(Usuario),
+                )
+            rol.permissions.add(permission_Grado_3)
         if rol.id == 4:
             PermisosCliente(rol)
+            # Usuario Puede visualizar elemntos de grado 4
+            permission_Grado_4 = Permission.objects.get(
+                codename='Grado 4',
+                content_type=ContentType.objects.get_for_model(Usuario),
+                )
+            rol.permissions.add(permission_Grado_4)
         if rol.id == 5:
             PermisosCliente(rol)
+            # Usuario Puede visualizar elemntos de grado 5
+            permission_Grado_5 = Permission.objects.get(
+                codename='Grado 5',
+                content_type=ContentType.objects.get_for_model(Usuario),
+                )
+            rol.permissions.add(permission_Grado_5)
         if rol.id == 6:
             Permisos = Permission.objects.all()
             for permiso in Permisos:

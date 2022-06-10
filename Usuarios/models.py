@@ -115,9 +115,21 @@ class Usuario(AbstractBaseUser):
     
     class Meta:
         db_table = 'usuarios'
-        permissions = [('Empleado',"Es un empleado"),
-                       ('Cliente',"Es un cliente"),
-                       ('Administrador',"Es un administrador"),]
+        permissions = [
+            ('Empleado',"Es un empleado"),
+            ('Cliente',"Es un cliente"),
+            ('Administrador',"Es un administrador"),
+            ('Grado 1','Puede visualizar elementos de grado 1'),
+            ('Grado 2','Puede visualizar elementos de grado 2'),
+            ('Grado 3','Puede visualizar elementos de grado 3'),
+            ('Grado 4','Puede visualizar elementos de grado 4'),
+            ('Grado 5','Puede visualizar elementos de grado 5'),
+            ('Grado 6','Puede visualizar elementos de grado 6'),
+            ('Grado 7','Puede visualizar elementos de grado 7'),
+            ('Grado 8','Puede visualizar elementos de grado 8'),
+            ('Grado 9','Puede visualizar elementos de grado 9'),
+            ('Grado 10','Puede visualizar elementos de grado 10'),
+                       ]
 
     def __str__(self):
         return '{}'.format(self.nombres+' '+self.apellidos)
