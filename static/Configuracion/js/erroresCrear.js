@@ -5,9 +5,9 @@ function abrir_modal_crear(url){
 }
 function CrearRol(){
     let name = document.getElementById('id_name').value
+    let tipo = document.getElementById('tipo').value
     $.ajax({
-
-        data:{"csrfmiddlewaretoken":csrftoken, "name":name},
+        data:{"csrfmiddlewaretoken":csrftoken, "name":name, "tipo":tipo},
         url:$('#CrearRoles').attr('action'),
         type:$('#CrearRoles').attr('method'),
         success: function (response) {
