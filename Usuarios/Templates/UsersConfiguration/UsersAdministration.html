@@ -112,6 +112,7 @@
                         <thead>
                             <tr>
                                 <td>Apodo</td>
+                                <td>Estado</td>
                                 <td>Nombres</td>
                                 <td>Apellidos</td>
                                 <td>Télefono</td>
@@ -124,7 +125,6 @@
                                 <td>Municipio</td>
                                 <td>Rol</td>
                                 <td>Último Inicio</td>
-                                <td>Estado</td>
                                 <td>Editar</td>
                             </tr>
                         </thead>
@@ -132,6 +132,14 @@
                             {%if Usuario%} {% for user in Usuario%}
                             <tr>
                                 <td>{{user.username}}</td>
+                                <td>
+                                    <form id="EstadoUsuarioForm" method="post" action="{% url 'editarEstadoUsuario' %}">
+                                        {%csrf_token%}
+                                        <div class="form-check form-switch switch-Cambio-TipoServicio" style="margin-left: 20px;">
+                                            <input class="form-check-input" type="checkbox" role="switch" name="esatdo" onclick="CambiarEstadoUsuario('{{user.id_usuario}}')" {% if user.estado %}checked{%endif%}>
+                                        </div>
+                                    </form>
+                                </td>
                                 <td>{{user.nombres}}</td>
                                 <td>{{user.apellidos}}</td>
                                 <td>
@@ -146,14 +154,6 @@
                                 <td>{{user.municipio}}</td>
                                 <td>{{user.rol}}</td>
                                 <td>{% if user.last_login %} {{user.last_login}} {%else%} No ha iniciado sesión {% endif %}</td>
-                                <td>
-                                    <form id="EstadoUsuarioForm" method="post" action="{% url 'editarEstadoUsuario' %}">
-                                        {%csrf_token%}
-                                        <div class="form-check form-switch switch-Cambio-TipoServicio" style="margin-left: 20px;">
-                                            <input class="form-check-input" type="checkbox" role="switch" name="esatdo" onclick="CambiarEstadoUsuario('{{user.id_usuario}}')" {% if user.estado %}checked{%endif%}>
-                                        </div>
-                                    </form>
-                                </td>
                                 <td>
                                     {% csrf_token %}
                                     <button type="button" class="Edit" onclick="EditarUsuario('{{user.id_usuario}}')">

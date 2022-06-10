@@ -9,13 +9,13 @@ from dateutil.relativedelta import relativedelta
 
 class CustomAuthForm(AuthenticationForm):
     username = forms.CharField(widget=TextInput(attrs={'class':'validate','placeholder': 'Apodo'}))
-    password = forms.CharField(widget=PasswordInput(attrs={'placeholder':'Password','id':'Contraseña'}))
+    password = forms.CharField(widget=PasswordInput(attrs={'placeholder':'Contraseña','id':'password'}))
     
 class Regitro(forms.ModelForm):
     password1 = forms.CharField(label = "Contraseña", widget=forms.PasswordInput(
         attrs={
             'class':'form-control',
-            'id':"password1",
+            'id':"password",
             'requerid':'requerid',
             'placeholder':'Contraseña (*)',
             'name':'password1',
@@ -24,7 +24,7 @@ class Regitro(forms.ModelForm):
     password2 = forms.CharField(label="Confirmar contraseña",widget=forms.PasswordInput(
         attrs={
             'class':'form-control',
-            'id':"password2",
+            'id':"password1",
             'requerid':'requerid',
             'placeholder':'Confirmar contraseña (*)',
             'name':'password2'
