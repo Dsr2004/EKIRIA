@@ -37,10 +37,9 @@
                 <thead>
                     <tr>
                         <td scope="col">Nombre</td>
-                        <td scope="col">Télefono</td>
+                        <td scope="col">Teléfono</td>
                         <td scope="col">Celular</td>
                         <td scope="col">Estado</td>
-                        <td scope="col">Borrar</td>
                         <td scope="col">Editar</td>
                     </tr>
                 </thead>
@@ -58,10 +57,6 @@
                                     <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" {%if prov.estado %} checked {%endif%} onclick="cambioestado('{{prov.id_proveedor}}')">
                                 </form>
                             </div>
-                        </td>
-                        <td>
-                            <button onclick="eliminarprov('{{ prov.id_proveedor }}')" class='buttonEliminar'><i class="mdi mdi-close" style="font-size: 17px;"></i></button>
-
                         </td>
                         <td>
 

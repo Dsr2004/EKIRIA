@@ -6,7 +6,10 @@ class ProveedorForm(forms.ModelForm):
     class Meta:
         model = Proveedor
         fields = ['nombre','telefono','celular']
-
+    
+    def __init__(self, *args, **kwargs):
+        super(ProveedorForm, self).__init__( *args, **kwargs)
+        self.fields["telefono"].label = "Teléfono"
 
 
 class Tipo_productoForm(forms.ModelForm):

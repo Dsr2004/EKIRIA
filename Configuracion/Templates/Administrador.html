@@ -40,7 +40,7 @@
                     {%if permisos%}
                     {% for i in permisos %}
                     <div class="contenedorName">
-                            <li class="form-check-label" for="flexSwitchCheckDefault">Permiso - {{forloop.counter}}: {{i.name}}</li><br>
+                            <li class="form-check-label" for="flexSwitchCheckDefault">Permiso - {{forloop.counter}}: <s id="PermisoName">{{i.name}}</s></li><br>
                           </div>
                           {% endfor %}
                         {%else%}
@@ -56,7 +56,7 @@
                         {%if permisosexclu%}
                         {% for i in permisosexclu %}
                         <div class="contenedorName">
-                                <li class="form-check-label" for="flexSwitchCheckDefault">Permiso - {{forloop.counter}}: {{i.name}}</li><br>
+                                <li class="form-check-label" for="flexSwitchCheckDefault">Permiso - {{forloop.counter}}: <s id="PermisoName">{{i.name}}</s></li><br>
                               </div>
                             {% endfor %}
                             {%else%}
@@ -68,5 +68,11 @@
             </div>
     </div>
     
-                
+    
     {% endblock Contenido %}
+    
+    {% block scripts %}
+        
+    <script src="/static/Configuracion/js/TraducirPermisos.js"></script>
+    {% endblock scripts %}
+        
