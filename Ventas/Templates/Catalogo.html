@@ -18,15 +18,51 @@
 
 <!--     Empieza el contenido del catalogo    -->
 {% block Contenido %}
-<div class="body">
+<div class="text-center quitar"  id="spinnerLoad">
+   <div class="spinner-grow " style="width: 3rem; height: 3rem;" role="status">
+     <span class="visually-hidden">Cargando...</span>
+   </div>
+   <h4 class="quitar" id="titleSpinner">Buscando Servicio... <br> <sub> Esto puede tardar un poco...</sub></h4>
+</div>
+<div class="body" id="containerInicio">
    <div class="container">
-      <h1>Catálogo</h1>
-      
-      <br>
       <div class="row">
+         <div class="col-lg-3">
+            <h1>Catálogo</h1>
+         </div>
+         <div class="col-lg-9">
+            <div class="row">
+               <div class="col-8">
+                  <div class="input-group mb-1">
+                     <input type="search" class="form-control" placeholder="Buscar servicios.." id="BuscarServicioCatalogo">
+                     <div class="input-group-append">
+                        <button class="input-group-text" id="basic-addon2" onclick="BuscarServicioCatalogo()" ><i class="fa-solid fa-magnifying-glass"></i></button>
+                       <button class="input-group-text" id="basic-addon2"onclick="location.reload()" ><i class="fa-solid fa-rotate-right"></i></button>
+                     </div>
+                   </div>
+               </div>
+               <div class="col-4" >
+                  <div class="dropdown" style="position: relative; z-index: 10 !important;">
+                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton">
+                       Dropdown button
+                     </button>
+                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="z-index: 500;">
+                       <a class="dropdown-item" href="#">Action</a>
+                       <a class="dropdown-item" href="#">Another action</a>
+                       <a class="dropdown-item" href="#">Something else here</a>
+                     </div>
+                   </div>
+               </div>
+            </div>
+         </div>
+        
+      </div>
+     
+      <br>
+      <div class="row" id="CatalogoContainer">
          <div class="col-md-3">
             <div class="box-element">
-               <div align="center"><img class="img-fluid ServicePersonaliza" src="/static/Ventas/img/masMorado.png" width="200" height="200"></div>
+               <div align="center"><img class="img-fluid ServicePersonaliza" src="/static/Ventas/img/masMorado.png" width="200" height="200" style="z-index: 0 !important;"></div>
             </div>
             <div class="box-element product" style="height: 160px;">
             <h6 ><strong><center>Personalizar Servicio</center> </strong></h6>
@@ -41,7 +77,7 @@
             {% for servicio in servicios %}
             
             <div class="col-md-3">
-               <img class="img ImgServiceCatalogo" src="/media/{{servicio.servicio_id.img_servicio}}"  height="241">
+               <img class="img ImgServiceCatalogo" src="/media/{{servicio.servicio_id.img_servicio}}" style="z-index: 0 !important;" height="241">
                <div class="box-element product" style="height: 160px;">
                   <h6 style="width:100%; overflow: hidden; white-space:nowrap; text-overflow: ellipsis;" ><strong>{{servicio.servicio_id.nombre}}</strong></h6>
 
@@ -85,4 +121,60 @@
 <script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
 <script src="{%static 'Ventas/js/Ventas.js'%}"></script>
 <script src="{% static 'Ventas/js/Carrito.js' %}"></script>
+<script>
+   function BuscarServicioCatalogo(){
+      $("#CatalogoContainer").css("display", "none");
+      let cajaI = $("#containerInicio")
+      let spinner = $("#spinnerLoad")
+      let titulo = $("#titleSpinner") 
+      cajaI.css("display", "none")
+      spinner.removeClass("quitar")
+      spinner.css("margin-top", "40vh")
+      titulo.removeClass("quitar")
+      titulo.css("margin-top", "15px")
+      var busqueda = $("#BuscarServicioCatalogo").val();
+      $.ajax({
+         url: "{% url 'Ventas:buscarServicioCatalogo' %}",
+         type: "POST",
+         data: {
+            "csrfmiddlewaretoken": "{{ csrf_token }}",
+            "busqueda": busqueda,
+            "accion":"BuscarServicioCatalogo"
+         },
+         success: function(data){
+            $("#CatalogoContainer").css("display", "flex");
+            cajaI.css("display", "block")
+            spinner.addClass("quitar")
+            spinner.css("margin-top", "0vh")
+            titulo.addClass("quitar")
+            titulo.css("margin-top", "0px")
+            function InsertToHTML(datos){
+               var html = "";
+               for(dato in datos){
+                  let slug = datos[dato]["slug"]
+                  console.log(typeof(slug))
+                  html += '<div class="col-md-3">'+
+                     '<img class="img ImgServiceCatalogo" src="'+datos[dato]["img_servicio"]+'" style="z-index: 0 !important;" height="241">'+
+                     '<div class="box-element product" style="height: 160px;">'+
+                        '<h6 style="width:100%; overflow: hidden; white-space:nowrap; text-overflow: ellipsis;" ><strong>'+datos[dato]["nombre"]+'</strong></h6>'+
+                        '<hr>'+
+                       ' <button data-servicio="'+datos[dato]["id_servicio"]+'" data-action="add" class="btn btn-outline-success addToCar">Al carrito!</button>'+
+                        '<a  class="btn  btn-outline-primary" onclick="abrir_modal_detalleServicio('+slug+')">Ver</a>'+
+                        '<hr>'+
+                        '<h6 style="float: left; color: gray;"><strong>Precio:</strong></h6>'+
+                        '<h6 style="float: right; "><strong>$'+datos[dato]["precio"]+'</strong></h6>'+
+                     '</div>'+
+                  '</div>'
+                  
+               }
+            return html
+            }
+
+            $("#CatalogoContainer").html(InsertToHTML(data))
+         }
+      });
+   }
+  
+  
+</script>
 {% endblock scripts %}

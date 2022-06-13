@@ -69,6 +69,7 @@ class AgregarCita(TemplateView,PermissionMixin):
             context['cambios']=cambiosQueryset
             context['footer']=cambiosfQueryset
             context["form"] = self.form_class
+            context["formPer"]=Servicio_PersonalizadoForm
             return context
         except Exception as e:
             print("desde Agregar cita: ", e)

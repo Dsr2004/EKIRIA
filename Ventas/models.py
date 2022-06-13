@@ -60,7 +60,7 @@ class Servicio(models.Model):
         return reverse("Ventas:detalleSer", kwargs={"slug": self.slug})
     
     def toJSON(self):
-        servicio = {"id_servicio": self.id_servicio,"nombre": self.nombre, "precio": self.precio, "tipo_servicio_id": self.tipo_servicio_id.nombre, "duracion": self.duracion, "fecha_creacion": self.fecha_creacion, "fecha_actualizacion": self.fecha_actualizacion, "estado": self.estado}
+        servicio = {"id_servicio": self.id_servicio,"nombre": self.nombre, "precio": self.precio, "tipo_servicio_id": self.tipo_servicio_id.nombre, "duracion": self.duracion, "fecha_creacion": self.fecha_creacion, "fecha_actualizacion": self.fecha_actualizacion, "estado": self.estado, "slug": self.slug}
         servicio["img_servicio"] = "{}{}".format(settings.MEDIA_URL, self.img_servicio)
         return servicio
     
@@ -229,7 +229,7 @@ class Cita(models.Model):
         horaCita = self.horaInicioCita
         fechaCita = datetime(year=self.diaCita.year, month=self.diaCita.month, day=self.diaCita.day, hour=horaCita.hour, minute=horaCita.minute)
         if hoy.date()>=fechaCita.date():
-            if hoy.time()>=fechaCita.time():
+            if hoy.time()<fechaCita.time():
                 estado = False
             else:
                 estado = True
