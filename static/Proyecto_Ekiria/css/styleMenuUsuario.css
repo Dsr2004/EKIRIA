@@ -294,8 +294,6 @@ body {
     border-bottom: 2px solid black;
     background: var(--menu_color);
     z-index: 9;
-    animation-duration: 2s;
-    transition: 2s;
     background-color: black;
 }
 

@@ -37,7 +37,33 @@
 </head>
 
 <body>
-
+    <div class="body_preloader" id="body_preloader">
+        <div class="containerPreloader">
+            <div class="loader">
+                <span>
+                </span>
+            </div>
+            <b>CARGANDO</b>
+        </div>
+    </div>
+    <script>
+        window.
+        window.onload = function() {
+            let ct = document.getElementById('contentMenu')
+            ct.style.display = "block";
+            let contenedor = document.getElementById("texto2")
+            let content = document.getElementById('body-content-menu')
+            content.style.marginBottom = contenedor.clientHeight + "px"
+            let body = document.getElementById('body_preloader')
+            try {
+                let icono = document.querySelector('.btn-wsp')
+                body.style.display = "none"
+                icono.style.marginBottom = contenedor.clientHeight + 20 + "px"
+            } catch (error) {
+                body.style.display = "none"
+            }
+        }
+    </script>
     <style media="print">
         .toggle {
             display: none;
@@ -191,6 +217,8 @@
         });
     </script>
     {% endfor %}
+
+
 </body>
 
 </html>

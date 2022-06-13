@@ -1,6 +1,9 @@
 /* variable definition */
 
 * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
     --black: #000000;
     --menu_color: #0f0f0f;
     --white: #fff;
@@ -13,4 +16,94 @@
 
 body {
     background: #fff !important;
+    overflow: hidden;
+}
+
+.body_preloader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    height: 100vh;
+    background: #0f0f0f;
+    z-index: 100;
+}
+
+.contentMenu {
+    display: none;
+}
+
+.containerPreloader {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    -webkit-box-reflect: below 1px linear-gradient(#0001, #0004);
+}
+
+.containerPreloader .loader {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: #180a1b;
+    animation: loader 2s linear infinite;
+}
+
+@keyframes loader {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.containerPreloader .loader::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to top, transparent, rgba(87, 35, 100, 1));
+    background-size: 100px 180px;
+    background-repeat: no-repeat;
+    border-top-left-radius: 100px;
+    border-bottom-left-radius: 100px;
+}
+
+.containerPreloader .loader::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 20px;
+    background: #ad00ad;
+    border-radius: 50%;
+    z-index: 10;
+    box-shadow: 0 0 10px #ad00ad, 0 0 20px #ad00ad, 0 0 30px #ad00ad, 0 0 40px #ad00ad, 0 0 50px #ad00ad, 0 0 60px #ad00ad, 0 0 70px #ad00ad, 0 0 80px #ad00ad, 0 0 90px #ad00ad, 0 0 100px #ad00ad;
+}
+
+.containerPreloader .loader span {
+    position: absolute;
+    content: 'Cargando';
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    background: #0f0f0f;
+    border-radius: 50%;
+}
+
+.containerPreloader b {
+    position: absolute;
+    top: 87px;
+    font-size: 20px;
+    font-family: 'Times New Roman', Times, serif;
+    color: #fff;
+    text-shadow: -1px 12x 0px #fff;
 }

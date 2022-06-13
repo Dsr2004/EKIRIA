@@ -1,4 +1,5 @@
 from gc import get_objects
+import os
 from itertools import product
 import json
 from pickle import TRUE
@@ -11,6 +12,10 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DeleteView, View
+from Proyecto_Ekiria import settings
+from django.template import Context
+from django.template.loader import get_template
+from xhtml2pdf import pisa
 from Usuarios.models import *
 from Usuarios.views import *
 from Configuracion.models import cambios, cambiosFooter
@@ -512,6 +517,50 @@ class verDetalleCompra(TemplateView):
         context['cambios']=cambiosQueryset
         context['footer']=cambiosfQueryset
         return context
+    
+    def link_callback(self, uri, rel):
+        sUrl = settings.local.STATIC_URL
+        sRoot = settings.local.STATIC_ROOT
+        mUrl = settings.local.MEDIA_URL
+        mRoot = settings.local.MEDIA_ROOT
+        
+        if uri.startswith(mUrl):
+                path = os.path.join(mRoot, uri.replace(mUrl, ""))
+        elif uri.startswith(sUrl):
+                path = os.path.join(sRoot, uri.replace(sUrl, ""))
+        else:
+                return uri
+
+        if not os.path.isfile(path):
+                raise Exception(
+                        'media URI must start with %s or %s' % (sUrl, mUrl)
+                )
+        return path
+        
+    def post(self, request, *args, **kwargs):
+        compra = self.model.objects.get(pk = kwargs['pk'])
+        productos=compra.producto.all()
+        context = {}
+        context['Compra']=compra
+        context['History']=HistorialCompra.objects.filter(compra_id = kwargs['pk'])
+        context['Proveedores']=Proveedor.objects.all()
+        context['Productos']=productos
+        UserSesion = if_admin(self.request)
+        if UserSesion == False:
+            return redirect("IniciarSesion")
+        cambiosQueryset = cambios.objects.all()
+        cambiosfQueryset = cambiosFooter.objects.all()
+        context["User"]=UserSesion
+        context['cambios']=cambiosQueryset
+        context['footer']=cambiosfQueryset
+        template = get_template("Reportes/DetalleCompra.html")
+        html = template.render(context)
+        response = HttpResponse(content_type="application/pdf")
+        # response['Content-Disposition']='attachment; filename="Detalle de la compra '+str(compra.fecha_creacion)+'.pdf'
+        pisaStatus = pisa.CreatePDF(html, dest=response, link_callbac=self.link_callback)
+        if pisaStatus.err:
+            return HttpResponse('Se ha encontrado un error <pre>'+html+'</pre>')
+        return response
 
 class eliminarProductos(TemplateView):
     model=Producto

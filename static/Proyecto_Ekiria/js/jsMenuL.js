@@ -47,6 +47,8 @@ menuToggle.onclick = function() {
 function Footer() {
     let contenedor = document.getElementById("texto2")
     contenedor.classList.toggle('activar')
+    let icono = document.querySelector('.btn-wsp')
     let content = document.getElementById('body-content-menu')
     content.style.marginBottom = contenedor.clientHeight + "px"
+    icono.style.marginBottom = contenedor.clientHeight + 20 + "px"
 }
