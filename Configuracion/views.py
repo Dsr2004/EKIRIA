@@ -132,7 +132,7 @@ class Admin(PermissionMixin,DetailView):
         context['footer']=cambiosfQueryset
         context["rol"] = rol
         context["permisos"] = permisos
-        # context['permisosexclu']=permisosexclu
+        context['permisosexclu']=permisosexclu
 
         return render(request, self.template_name, context)
 
