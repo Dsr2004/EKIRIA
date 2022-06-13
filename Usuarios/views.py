@@ -320,6 +320,7 @@ def Change(request):
             print(e)
     return render(request, 'UserInformation/ChangePassword.html', {"form":form, "User":UserSesion,'message':Error, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
 
+
 @login_required()
 @PermissionDecorator(['add_usuario','change_usuario', 'delete_usuario', 'view_usuario'])
 def Admin(request):
@@ -333,7 +334,10 @@ def Admin(request):
     if request.method=="GET":
         queryset = Usuario.objects.all()
         Servicios = Servicio.objects.all()
-        Vistas = VistasDiarias.objects.get(id_dia=datetime.today().strftime('%Y-%m-%d'))
+        try:
+            Vistas = VistasDiarias.objects.get(id_dia=datetime.today().strftime('%Y-%m-%d'))
+        except:
+            Vistas=0
     return render(request, template_name, {"Usuario":queryset,"contexto":Servicios, "User":UserSesion, "Vistas":Vistas, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
   
   
@@ -433,28 +437,39 @@ class UpdateUser(UpdateView,PermissionMixin):
         context['fecha']=str(get_object.fec_nac)
         context['roles']=Group.objects.all()
         return render(request, self.template_name, context)
+
     def post(self, request, *args, **kwargs):
         get_object = Usuario.objects.get(id_usuario=kwargs['pk'])
         form = self.form_class(request.POST or None, instance=get_object)
         context = {
-            'form':self.form_class,
+            'form':form,
         }
         cambiosQueryset = cambios.objects.all()
         cambiosfQueryset = cambiosFooter.objects.all()
         if form.is_valid():
             try:
+                print(form.cleande_data('username'))
                 form.save()
                 return redirect('Administracion')
             except Exception as e:
                 context['errors'] = form.errors
                 context['cambios']=cambiosQueryset
                 context['footer']=cambiosfQueryset
+                print(form.errors)
                 return render(request, self.template_name, context)
         else:
+            print('no')
             context['errors'] =  form.errors
             context['Error']= 'Los datos ingresados son incorrectos'
+        UserSesion = if_admin(request)
+        if UserSesion == False:
+            return redirect("IniciarSesion")
+        context['titulo']="Editar Usuario "+UserSesion['username']
+        context['User']=UserSesion
+        context['roles']=Group.objects.all()
         context['cambios']=cambiosQueryset
         context['footer']=cambiosfQueryset
+        context['UsuarioE']=get_object
         UserSesion = if_admin(request)
         if UserSesion == False:
             return redirect("IniciarSesion")

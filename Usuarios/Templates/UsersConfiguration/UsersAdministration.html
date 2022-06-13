@@ -65,7 +65,7 @@
         <div class="cardbox">
             <div class="Card">
                 <div>
-                    <div class="numbers" id="numVis"></div>
+                    <div class="numbers" id="numVis">0</div>
                     <div class="cardName">Visitas Diarias</div>
                 </div>
                 <div class="iconA">
@@ -240,4 +240,12 @@
 <script src="/static/Proyecto_Ekiria/js/jsTablesInformations.js"></script>
 <script src="/static/ModuloUsuarios/js/mainAdministration.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>$(document).ready(function() {
+    $('#TableUsers').DataTable({
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+        },
+        responsive: true
+    });
+});</script>
 {% endblock scripts %}
