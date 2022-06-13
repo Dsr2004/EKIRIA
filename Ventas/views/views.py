@@ -13,7 +13,7 @@ from ..forms import Servicio_PersonalizadoForm
 from Proyecto_Ekiria.Mixin.Mixin import PermissionDecorator, PermissionMixin
 from ..Accesso import acceso
 from Ventas import models
-
+from django.contrib.auth.models import Permission,Group
 def is_list_empty(list):
     if len(list) == 0:
         return True
@@ -34,6 +34,13 @@ class Catalogo(ListView, PermissionMixin):
 
     def get_context_data(self, *args, **kwargs):
         context = super(Catalogo, self).get_context_data(**kwargs)
+        roles = Group.objects.all()
+        for rol in roles:
+            if rol.id == 1:
+                permisos = rol.permissions.filter(content_type_id=20)
+                for permiso in permisos:
+                    if permiso.codename[0:5] == "Grado":
+                        print(permiso.codename)
         try:
            if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
@@ -46,6 +53,7 @@ class Catalogo(ListView, PermissionMixin):
                 context['cambios']=cambiosQueryset
                 context['footer']=cambiosfQueryset
                 return context
+            
         except:
             return context
 

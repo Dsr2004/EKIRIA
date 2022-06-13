@@ -1,3 +1,4 @@
+from email.headerregistry import Group
 import smtplib
 
 from email.mime.text import MIMEText
@@ -14,7 +15,7 @@ from django.utils.text import slugify
 from django.shortcuts import reverse 
 
 from django.conf import settings
-
+from django.contrib.auth.models import Permission,Group
 from Usuarios.models import Usuario
 
 usuario = Usuario
@@ -60,9 +61,14 @@ class Servicio(models.Model):
         return reverse("Ventas:detalleSer", kwargs={"slug": self.slug})
     
     def toJSON(self):
-        servicio = {"id_servicio": self.id_servicio,"nombre": self.nombre, "precio": self.precio, "tipo_servicio_id": self.tipo_servicio_id.nombre, "duracion": self.duracion, "fecha_creacion": self.fecha_creacion, "fecha_actualizacion": self.fecha_actualizacion, "estado": self.estado, "slug": self.slug}
+        servicio = {"id_servicio": self.id_servicio,"nombre": self.nombre, "precio": self.precio, 
+                    "tipo_servicio_id": self.tipo_servicio_id.nombre, "duracion": self.duracion, 
+                    "fecha_creacion": self.fecha_creacion, "fecha_actualizacion": self.fecha_actualizacion, 
+                    "estado": self.estado}
         servicio["img_servicio"] = "{}{}".format(settings.MEDIA_URL, self.img_servicio)
+        servicio["slug"] = "abrir_modal_detalleServicio('{}')".format(self.get_absolute_url())
         return servicio
+    
     
     
 

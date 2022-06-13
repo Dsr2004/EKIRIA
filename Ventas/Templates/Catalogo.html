@@ -42,11 +42,12 @@
                    </div>
                </div>
                <div class="col-4" >
-                  <div class="dropdown" style="position: relative; z-index: 10 !important;">
-                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton">
-                       Dropdown button
-                     </button>
-                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="z-index: 500;">
+                  <div class="dropdown">
+                     <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-expanded="false">
+                       Dropdown link
+                     </a>
+                   
+                     <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                        <a class="dropdown-item" href="#">Action</a>
                        <a class="dropdown-item" href="#">Another action</a>
                        <a class="dropdown-item" href="#">Something else here</a>
@@ -106,7 +107,7 @@
    <i class="fa-brands fa-whatsapp"></i>
 </a>  
 {% endfor %}
-
+<button type="button" onclick="ajafFuncion()">Enviar</button>
 {% endblock Contenido %}
 
 
@@ -151,15 +152,14 @@
             function InsertToHTML(datos){
                var html = "";
                for(dato in datos){
-                  let slug = datos[dato]["slug"]
-                  console.log(typeof(slug))
+                  let slug =  datos[dato]["slug"]
                   html += '<div class="col-md-3">'+
                      '<img class="img ImgServiceCatalogo" src="'+datos[dato]["img_servicio"]+'" style="z-index: 0 !important;" height="241">'+
                      '<div class="box-element product" style="height: 160px;">'+
                         '<h6 style="width:100%; overflow: hidden; white-space:nowrap; text-overflow: ellipsis;" ><strong>'+datos[dato]["nombre"]+'</strong></h6>'+
                         '<hr>'+
-                       ' <button data-servicio="'+datos[dato]["id_servicio"]+'" data-action="add" class="btn btn-outline-success addToCar">Al carrito!</button>'+
-                        '<a  class="btn  btn-outline-primary" onclick="abrir_modal_detalleServicio('+slug+')">Ver</a>'+
+                       ' <button data-servicio="'+parseInt(datos[dato]["id_servicio"])+'" data-action="add" class="btn btn-outline-success addToCar">Al carrito!</button>'+
+                        '<a  class="btn  btn-outline-primary" onclick="'+slug+'")">Ver</a>'+
                         '<hr>'+
                         '<h6 style="float: left; color: gray;"><strong>Precio:</strong></h6>'+
                         '<h6 style="float: right; "><strong>$'+datos[dato]["precio"]+'</strong></h6>'+
@@ -167,14 +167,15 @@
                   '</div>'
                   
                }
-            return html
+               return html
             }
 
             $("#CatalogoContainer").html(InsertToHTML(data))
          }
       });
    }
-  
+datoss = 
+   AjaxAddService(datos)
   
 </script>
 {% endblock scripts %}

@@ -1,4 +1,19 @@
+function AjaxAddService(datos){
+  $.ajax({
+    data: datos,
+    url: url,
+    type: "POST",
+    success: function(datas){
+        location.href="/Ventas/Carrito/"
+    },
+    error: function(error){
+      return error.json()
+    }
+  });
+ }
+
 var UpdateBoton = document.getElementsByClassName('addToCar')
+
 
 for(var i=0 ; i<UpdateBoton.length; i++){
     UpdateBoton[i].addEventListener('click', function(){
@@ -54,17 +69,9 @@ function ActualizarPedidoDeUsuario(servicioId, accion){
         
     }
     else{
-        $.ajax({
-            data: {"csrfmiddlewaretoken":csrftoken, "servicioId":servicioId, "accion":accion},
-            url: url,
-            type: "POST",
-            success: function(datas){
-                location.href="/Ventas/Carrito/"
-            },
-            error: function(error){
-              return error.json()
-            }
-          });
+      datos =  {"csrfmiddlewaretoken":csrftoken, "servicioId":servicioId, "accion":accion}
+      AjaxAddService(datos)
+      
     }
     
     
