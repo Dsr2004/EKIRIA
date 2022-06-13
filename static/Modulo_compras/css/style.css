@@ -400,7 +400,7 @@ main {
     transition: 0.3s;
 }
 
-.Table.Add .Add.img:hover a b.etiquetaCrearCompra {
+.Table.Add .Add.img:hover a b.etiquetaCrearCompra { 
     margin-left: 10px;
     display: block!important;
     font-size: 16px;

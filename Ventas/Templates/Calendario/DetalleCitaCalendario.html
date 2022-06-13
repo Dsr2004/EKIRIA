@@ -1,11 +1,22 @@
 <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Deatalle de la cita de <strong>{{object.titulo | title}}</strong></h5>
+        
+          {% if object.estado %}
+          <div class="row">
+            <div class="col-1"><i class="fa-solid fa-circle-check" style="color: green;transform: scale(1.5);"></i></div>
+            <div class="col-11"> <h5 class="modal-title" id="exampleModalLabel">Deatalle de la cita de <strong>{{object.titulo | title}}</strong></h5></div>
+          </div>
+        {% else %}
+        <div> <h5 class="modal-title" id="exampleModalLabel">Deatalle de la cita de <strong>{{object.titulo | title}}</strong></h5></div>
+          {% endif %}
+         
+       
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="col Datos1DetalleCita">
+        
             <Label><strong>Empleado que atendera la cita: </strong></Label>
             <h5>{{object.empleado_id.nombres | title}} {{object.empleado_id.apellidos | title}}</h5>
         </div>

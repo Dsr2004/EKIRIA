@@ -360,7 +360,8 @@ class EditUser(forms.ModelForm):
             'num_documento',
             'municipio',
             'direccion',
-            'cod_postal'
+            'cod_postal',
+            'rol'
         ]
         widgets = {
             'email': forms.EmailInput(
@@ -443,6 +444,15 @@ class EditUser(forms.ModelForm):
                     'required':'requerid',
                     'autocomplete':'off',
                     'name':'tipo_documento',
+                }
+            ),
+            'rol': forms.Select(
+                attrs={
+                    'class':'form-control',
+                    'id':'rol',
+                    'required':'requerid',
+                    'autocomplete':'off',
+                    'name':'rol',
                 }
             ),
             'num_documento': forms.TextInput(

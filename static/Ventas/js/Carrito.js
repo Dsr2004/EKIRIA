@@ -134,13 +134,20 @@ function ModificarServicioPer(){
     },
     dangerMode: true,
   }).then((changeStatus) => {
+    formData = new FormData()
+    formData.append("csrfmiddlewaretoken", csrftoken)
+    formData.append("tipo_servicio_id", form.find('#id_tipo_servicio_id').val())
+    formData.append("img_servicio", form.find('#id_img_servicio').prop('files')[0])
+    formData.append("descripcion", form.find('#id_descripcion').val())
+    console.log(formData)
     if (changeStatus) {
       $(document).ready(function(){
-
       $.ajax({
-        data: form.serialize(),
+        data: formData,
         url: form.attr('action'),
         type: form.attr('method'),
+        contentType : false, // added
+        processData : false, // added
         success: function(datas){
           swal("¡OK! Se ha modificado el Servicio personalizado", {
               icon: "success",

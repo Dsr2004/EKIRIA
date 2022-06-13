@@ -18,7 +18,9 @@ from django.contrib.auth.decorators import login_required, permission_required
 
 @login_required()
 def Listproductos (request):
-    UserSesion=if_admin(request)
+    UserSesion = if_admin(request)
+    if UserSesion == False:
+        return redirect("IniciarSesion")
     cambiosQueryset = cambios.objects.all()
     cambiosfQueryset = cambiosFooter.objects.all()
     Productos=Producto.objects.all()
@@ -27,7 +29,9 @@ def Listproductos (request):
 
 @login_required()
 def Listcompra(request):
-    UserSesion=if_admin(request)
+    UserSesion = if_admin(request)
+    if UserSesion == False:
+        return redirect("IniciarSesion")
     cambiosQueryset = cambios.objects.all()
     cambiosfQueryset = cambiosFooter.objects.all()
     Compras=Compra.objects.all()
@@ -35,7 +39,9 @@ def Listcompra(request):
 
 @login_required()
 def Listarprov(request):
-    UserSesion=if_admin(request)
+    UserSesion = if_admin(request)
+    if UserSesion == False:
+        return redirect("IniciarSesion")
     cambiosQueryset = cambios.objects.all()
     cambiosfQueryset = cambiosFooter.objects.all()
     Proveedores=Proveedor.objects.all()
@@ -70,7 +76,9 @@ class Crearprod(CreateView):
                 producto.save()
                 return redirect('listarprod')
             else:
-                UserSesion=if_admin(self.request)
+                UserSesion = if_admin(request)
+                if UserSesion == False:
+                    return redirect("IniciarSesion")
                 cambiosQueryset = cambios.objects.all()
                 cambiosfQueryset = cambiosFooter.objects.all()
                 tipo_producto = Tipo_producto.objects.all()
@@ -83,7 +91,9 @@ class Crearprod(CreateView):
                 context['Error']="El nombre del producto ya esta relacionado a un proveedor"
                 return render(request, self.template_name, context)
         else:
-            UserSesion=if_admin(self.request)
+            UserSesion = if_admin(request)
+            if UserSesion == False:
+                return redirect("IniciarSesion")
             cambiosQueryset = cambios.objects.all()
             cambiosfQueryset = cambiosFooter.objects.all()
             tipo_producto = Tipo_producto.objects.all()
@@ -97,7 +107,9 @@ class Crearprod(CreateView):
     def get_context_data(self, *args, **kwargs):
         context = super(Crearprod, self).get_context_data(**kwargs)
         try:
-            UserSesion=if_admin(self.request)
+            UserSesion = if_admin(self.request)
+            if UserSesion == False:
+                return redirect("IniciarSesion")
             cambiosQueryset = cambios.objects.all()
             cambiosfQueryset = cambiosFooter.objects.all()
             tipo_producto = Tipo_producto.objects.all()
@@ -122,7 +134,9 @@ class Modificarprod(UpdateView):
                 producto_form.save()
                 return redirect('listarprod')
             else:
-                UserSesion=if_admin(self.request)
+                UserSesion = if_admin(request)
+                if UserSesion == False:
+                    return redirect("IniciarSesion")
                 cambiosQueryset = cambios.objects.all()
                 cambiosfQueryset = cambiosFooter.objects.all()
                 tipo_producto = Tipo_producto.objects.all()
@@ -136,7 +150,9 @@ class Modificarprod(UpdateView):
     def get_context_data(self, *args, **kwargs):
         context = super(Modificarprod, self).get_context_data(**kwargs)
         try:
-            UserSesion=if_admin(self.request)
+            UserSesion = if_admin(self.request)
+            if UserSesion == False:
+                return redirect("IniciarSesion")
             cambiosQueryset = cambios.objects.all()
             cambiosfQueryset = cambiosFooter.objects.all()
             tipo_producto = Tipo_producto.objects.all()
@@ -168,7 +184,9 @@ class Creartp(CreateView):
     def get_context_data(self, *args, **kwargs):
         context = super(Creartp, self).get_context_data(**kwargs)
         try:
-            UserSesion=if_admin(self.request)
+            UserSesion = if_admin(self.request)
+            if UserSesion == False:
+                return redirect("IniciarSesion")
             cambiosQueryset = cambios.objects.all()
             cambiosfQueryset = cambiosFooter.objects.all()
             context["User"]=UserSesion
@@ -199,7 +217,9 @@ class Crearprov(CreateView):
     def get_context_data(self, *args, **kwargs):
         context = super(Crearprov, self).get_context_data(**kwargs)
         try:
-            UserSesion=if_admin(self.request)
+            UserSesion = if_admin(self.request)
+            if UserSesion == False:
+                return redirect("IniciarSesion")
             cambiosQueryset = cambios.objects.all()
             cambiosfQueryset = cambiosFooter.objects.all()
             context["User"]=UserSesion
@@ -217,7 +237,9 @@ class Crearcompra(CreateView):
     def get_context_data(self, *args, **kwargs):
         context = super(Crearcompra, self).get_context_data(**kwargs)
         try:
-            UserSesion=if_admin(self.request)
+            UserSesion = if_admin(self.request)
+            if UserSesion == False:
+                return redirect("IniciarSesion")
             cambiosQueryset = cambios.objects.all()
             cambiosfQueryset = cambiosFooter.objects.all()
             context['productos']=Producto.objects.all()
@@ -481,7 +503,9 @@ class verDetalleCompra(TemplateView):
         context['History']=HistorialCompra.objects.filter(compra_id = kwargs['pk'])
         context['Proveedores']=Proveedor.objects.all()
         context['Productos']=productos
-        UserSesion=if_admin(self.request)
+        UserSesion = if_admin(self.request)
+        if UserSesion == False:
+            return redirect("IniciarSesion")
         cambiosQueryset = cambios.objects.all()
         cambiosfQueryset = cambiosFooter.objects.all()
         context["User"]=UserSesion
@@ -494,7 +518,9 @@ class eliminarProductos(TemplateView):
     template_name = "Funciones/RestarProductos.html"
     def get_context_data(self, *args, **kwargs):
         context = super(eliminarProductos, self).get_context_data(**kwargs)
-        UserSesion=if_admin(self.request)
+        UserSesion = if_admin(self.request)
+        if UserSesion == False:
+            return redirect("IniciarSesion")
         cambiosQueryset = cambios.objects.all()
         cambiosfQueryset = cambiosFooter.objects.all()
         context['Productos']=Producto.objects.all()

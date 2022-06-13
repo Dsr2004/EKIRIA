@@ -1,5 +1,6 @@
 {% extends "Menu_Usuario.html" %} 
 {%load static%}
+{% load crispy_forms_tags %}
 {% block head %}
 <head>
     <meta charset="UTF-8">
@@ -29,17 +30,26 @@
     <h1>Agregar Cita</h1>
     <br>
     <div class="row">
-        <div class="col-4">
+        <div class="col-lg-4">
             <div class="row">
                 <div class="col-md-12">
                     <div class="box-element">
-                        <h4>Detalles del usuario</h4>
+                      <div class="row">
+                        <div class="col-9">
+                          <h4>Detalles del usuario</h4>
+                        </div>
+                        <div class="col-3" style="display: none;" id="RepetirUsuarioBoton">
+                          <div class="col-md-2"><button class="btn" onclick="repetirUsuarioFuncion()"><i style="color:rgb(227, 199, 16);transform: scale(1.5);" class="fa-solid fa-repeat"></i></button></div>
+                        </div>
+                      </div>
+                        
                         <hr>
-                        <div class="input-group">
+                        <div class="" id="EsconderDespuesSelectUser">
                             <label>Seleccione un usuario: <sup class="requerido">(*)</sup></label>
                             <select class="form-control select2" style="width: 100%;" name="buscarUsuario">
                             </select>
                         </div>
+                        <div class="card-body" id="MostarDespuesSelectUser" ></div>
                       </div>
                 </div>
             </div>
@@ -85,34 +95,97 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-8">
-            <div class="box-element" style="margin-bottom: 30px;">
+        <div class="col-lg-8">
+            <div class="box-element card" style="margin-bottom: 30px;">
                 <h4>Detalles del pedido</h4>
                 <hr>
-                <div class="input-group">
-                    <label class="label-control"> Buscador de servicios: </label>
-                    <!-- <select class="form-control " style="width: 100%;" name="buscarServicio">
-                    </select> -->
-                    <input type="text" class="form-control" name="buscarServicio" autocomplete="off">
+                <div class="card-header">
+                    <input type="text" class="form-control" name="buscarServicio" autocomplete="off" placeholder="Buscador de servicios:">
+                    <br>
                 </div>
-                <table class="table table-bordered" id="ServiciosTable">
-                        <thead>
-                        <tr>
-                            <th>Eliminar</th>
-                            <th>Imagen</th>
-                            <th>Servicio</th>
-                            <th>Tipo de servicio</th>
-                            <th>precio</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+                <div class="class-body">
+                  <div class="row" style="margin-top: 10px">
+                    <div class="col-8"><h5>Servicios</h5></div>
+                  <div class="col-4 Table Add">
+                    <button type="button" style="border: 5px solid #18191b1d; padding:2px" onclick="PersonalizarServAgendarCitaModal()">
+                      Personalizar Servicio <i class="fa-solid fa-pencil" style="transform: scale(1.0);"></i>
+                    </button>
+                  </div>
+                </div>
+                <br>
+                  <table class="table table-bordered" id="ServiciosTable">
+                    <thead>
+                    <tr>
+                        <th>Imagen</th>
+                        <th>Servicio</th>
+                        <th>Tipo de servicio</th>
+                        <th>precio</th>
+                        <th>Eliminar</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                  </table>
+              <div id="serviciosPersonalizados">
+                <h5>Servicios Personalizados</h5>
+                <table class="table table-bordered" id="ServiciosPersonalizadosTable">
+                  <thead>
+                  <tr>
+                      <th>Imagen</th>
+                      <th>Tipo de servicio</th>
+                      <th>Descripción</th>
+                      <th>Eliminar</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                </table>
+              </div>
+             
+                </div>
             </div>
+        </div>
+        <div class="box-element">
+          <h4>Agendar cita</h4>
+          <hr>
+          <div class="row">
+            <div class="col-8">
+              <h5><strong>Total:</strong></h5>
+            </div>
+            <div class="col-4">
+              <h5><strong>Items:</strong></h5>
+            </div>
+          </div>
+          <div class="d-grid gap-2">
+            <button class="btn btn-success" type="button">Continuar</button>
+          </div>
         </div>
     </div>
 </div>
+<div class="modal fade" id="ServicioPersonalizadoCita" role="dialog" >
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modifique su servicio personalizado</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form enctype="multipart/form-data"  id="AgregarServicioPerForm">
+            <Label><strong>Tipo de Servicio: <sup class="requerido">(*)</sup></strong></Label>
+            {{formPer.tipo_servicio_id|as_crispy_field}}
+            <Label><strong>Imagen: <sup class="requerido">(*)</sup></strong></Label>
+            {{formPer.img_servicio|as_crispy_field}}
+            <label class=" tituloServicioPersonalizadoComentario">Descríbanos lo que quiere</label>
+            <div class="form-floating container descripcion" >
+            {{formPer.descripcion|as_crispy_field}}
+            </div>
+            <button class="btn btn-block btn-success" type="submit" >Agregar Servicio al pedido</button>
+        </form>
+      </div>
+    </div>
+  </div>
 
+</div>
 
 {% endblock Contenido %}
 
@@ -124,10 +197,6 @@
 <script src="/static/Plugins/datetimepicker/build/jquery.datetimepicker.full.js"></script>
 <script src="{% static 'Plugins/select2/dist/js/select2.min.js' %}"></script>
 <script src="{% static 'Plugins/select2/lang/es.js'%}"></script>
-<!--   Datatables-->
-<script type="text/javascript" src="{%static 'Plugins/DataTables/jquery.dataTables.min.js' %}"></script>
-<!-- extension responsive -->
-<script src="https://cdn.datatables.net/responsive/2.3.0/js/dataTables.responsive.min.js"></script>
 
 <script>
     $.datetimepicker.setLocale('es');

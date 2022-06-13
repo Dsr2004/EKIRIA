@@ -1,23 +1,35 @@
+import os
 import smtplib
 from datetime import datetime, timedelta, time
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from xhtml2pdf import pisa
 
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
-from django.template.loader import render_to_string
+from django.template import Context
+from django.template.loader import render_to_string, get_template
 from django.urls import reverse_lazy
-from django.views.generic import View, TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import View, TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from django.db.models import Q
-from Proyecto_Ekiria.Mixin.Mixin import PermissionDecorator, PermissionMixin
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.staticfiles import finders
 
+from Proyecto_Ekiria.Mixin.Mixin import PermissionDecorator, PermissionMixin
 from Configuracion.models import cambios, cambiosFooter
 from django.conf import settings
+from Usuarios.views import if_admin
 from Usuarios.models import Usuario
+
 from .views import is_list_empty
 from ..mixins import ActualiarCitaMixin, ActualiarCitaClienteMixin
 from ..models import Cita, Pedido, Calendario, Servicio
 from ..forms import CitaForm
+from Usuarios.views import if_User, if_admin
+from ..forms import CitaForm, Servicio_PersonalizadoForm
+
+from ..Accesso import acceso
 """
 <----------------------------------------------------------------->
 Seccion de las Vistas donde se administran las citas
@@ -48,21 +60,16 @@ class AgregarCita(TemplateView,PermissionMixin):
     def get_context_data(self, *args, **kwargs):
         context = super(AgregarCita, self).get_context_data(**kwargs)
         try:
-            UserSesion=""
-            if self.request.session:
-                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
-                imagen = imagen.img_usuario
-                cambiosQueryset = cambios.objects.all()
-                cambiosfQueryset = cambiosFooter.objects.all()
-                if self.request.session['Admin'] == True:
-                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
-                    context["User"] = UserSesion
-                    context['cambios']=cambiosQueryset
-                    context['footer']=cambiosfQueryset
-                    context["form"] = self.form_class
-                    return context
-                else:
-                    return redirect("SinPermisos")
+            UserSesion = if_admin(self.request)
+            if UserSesion == False:
+                return redirect("IniciarSesion")
+            cambiosQueryset = cambios.objects.all()
+            cambiosfQueryset = cambiosFooter.objects.all()
+            context["User"] = UserSesion
+            context['cambios']=cambiosQueryset
+            context['footer']=cambiosfQueryset
+            context["form"] = self.form_class
+            return context
         except Exception as e:
             print("desde Agregar cita: ", e)
         return context
@@ -79,6 +86,8 @@ class AgregarCita(TemplateView,PermissionMixin):
                 data = []
                 consulta = Usuario.objects.filter(Q(username__icontains=busqueda) |  Q(nombres=busqueda)  | Q(email__icontains=busqueda)).filter(estado=True).distinct()
                 print(consulta)
+
+                
                 for i in consulta:
                     print(i)
                     item = i.toJSON()
@@ -102,7 +111,6 @@ class AgregarCita(TemplateView,PermissionMixin):
                 
         return super(AgregarCita, self).get(request, *args, **kwargs)
                
-
 class ListarCita(ListView,PermissionMixin):
     permission_required = ['view_cita']
     queryset = Cita.objects.all()
@@ -112,21 +120,19 @@ class ListarCita(ListView,PermissionMixin):
     def get_context_data(self, *args, **kwargs):
         context = super(ListarCita, self).get_context_data(**kwargs)
         try:
-            if self.request.session:
-                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
-                imagen = imagen.img_usuario
-                cambiosQueryset = cambios.objects.all()
-                cambiosfQueryset = cambiosFooter.objects.all()
-                if self.request.session['Admin'] == True:
-                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
-                    context["User"] = UserSesion
-                    context['cambios']=cambiosQueryset
-                    context['footer']=cambiosfQueryset
-                    return context
-                else:
-                    return redirect("SinPermisos")
-        except:
+            UserSesion = if_admin(self.request)
+            if UserSesion == False:
+                return redirect("IniciarSesion")
+            cambiosQueryset = cambios.objects.all()
+            cambiosfQueryset = cambiosFooter.objects.all()
+            context["User"] = UserSesion
+            context['cambios']=cambiosQueryset
+            context['footer']=cambiosfQueryset
+            context["form"] = self.form_class
             return context
+        except Exception as e:
+            print("desde Agregar cita: ", e)
+        return context
     
 class EditarCitaDetalle(DetailView,PermissionMixin):
     permission_required = ['change_cita']
@@ -135,23 +141,21 @@ class EditarCitaDetalle(DetailView,PermissionMixin):
     form_class = CitaForm
 
     def get_context_data(self, *args, **kwargs):
-        UserSesion = ""
         context = super(EditarCitaDetalle, self).get_context_data(**kwargs)
         try:
-            if self.request.session:
-                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
-                imagen = imagen.img_usuario
-                cambiosQueryset = cambios.objects.all()
-                cambiosfQueryset = cambiosFooter.objects.all()
-                
-                UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
-                context["User"]=UserSesion
-                context['cambios']=cambiosQueryset
-                context['footer']=cambiosfQueryset
-            else:
-                return redirect("SinPermisos")
-        except:
+            UserSesion = if_admin(self.request)
+            if UserSesion == False:
+                return redirect("IniciarSesion")
+            cambiosQueryset = cambios.objects.all()
+            cambiosfQueryset = cambiosFooter.objects.all()
+            context["User"] = UserSesion
+            context['cambios']=cambiosQueryset
+            context['footer']=cambiosfQueryset
+            context["form"] = self.form_class
             return context
+        except Exception as e:
+            print("desde Agregar cita: ", e)
+        return context
 
 
         citax = Cita.objects.get(id_cita=self.kwargs["pk"])
@@ -192,20 +196,19 @@ class EditarCita(ActualiarCitaMixin, UpdateView,PermissionMixin):
     def get_context_data(self, *args, **kwargs):
         context = super(EditarCita, self).get_context_data(**kwargs)
         try:
-            if self.request.session:
-                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
-                imagen = imagen.img_usuario
-                cambiosQueryset = cambios.objects.all()
-                cambiosfQueryset = cambiosFooter.objects.all()
-                if self.request.session['Admin'] == True:
-                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
-                    context["User"]=UserSesion
-                    context['cambios']=cambiosQueryset
-                    context['footer']=cambiosfQueryset
-                else:
-                    return redirect("SinPermisos")  
-        except:
-            return redirect("IniciarSesion")
+            UserSesion = if_admin(self.request)
+            if UserSesion == False:
+                return redirect("IniciarSesion")
+            cambiosQueryset = cambios.objects.all()
+            cambiosfQueryset = cambiosFooter.objects.all()
+            context["User"] = UserSesion
+            context['cambios']=cambiosQueryset
+            context['footer']=cambiosfQueryset
+            context["form"] = self.form_class
+            return context
+        except Exception as e:
+            print("desde Agregar cita: ", e)
+        return context
         citax = Cita.objects.get(id_cita=self.kwargs["pk"])
         pedido = Pedido.objects.get(id_pedido = citax.pedido_id.id_pedido)
         items = pedido.pedidoitem_set.all()
@@ -222,10 +225,6 @@ class EditarCita(ActualiarCitaMixin, UpdateView,PermissionMixin):
       
         return context
     
-    
-
-    
-
 class EditarCitaCliente(ActualiarCitaClienteMixin, UpdateView, PermissionMixin): 
     permission_required = ['change_cita','view_cita','add_cita']
     model = Cita
@@ -236,20 +235,19 @@ class EditarCitaCliente(ActualiarCitaClienteMixin, UpdateView, PermissionMixin):
     def get_context_data(self, *args, **kwargs):
         context = super(EditarCitaCliente, self).get_context_data(**kwargs)
         try:
-            if self.request.session:
-                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
-                imagen = imagen.img_usuario
-                cambiosQueryset = cambios.objects.all()
-                cambiosfQueryset = cambiosFooter.objects.all()
-                if self.request.session['Admin'] == True:
-                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
-                    context["User"]=UserSesion
-                    context['cambios']=cambiosQueryset
-                    context['footer']=cambiosfQueryset
-                else:
-                    return redirect("SinPermisos")  
-        except:
-            return redirect("IniciarSesion")
+            UserSesion = if_admin(self.request)
+            if UserSesion == False:
+                return redirect("IniciarSesion")
+            cambiosQueryset = cambios.objects.all()
+            cambiosfQueryset = cambiosFooter.objects.all()
+            context["User"] = UserSesion
+            context['cambios']=cambiosQueryset
+            context['footer']=cambiosfQueryset
+            context["form"] = self.form_class
+            return context
+        except Exception as e:
+            print("desde Agregar cita: ", e)
+        return context
         citax = Cita.objects.get(id_cita=self.kwargs["pk"])
         pedido = Pedido.objects.get(id_pedido = citax.pedido_id.id_pedido)
         items = pedido.pedidoitem_set.all()
@@ -373,10 +371,7 @@ class EditarCitaCliente(ActualiarCitaClienteMixin, UpdateView, PermissionMixin):
                     response = JsonResponse({"errores":errores})
                     response.status_code = 400
                     return response
-    
-    
-    
-    
+      
 class DetalleCitaCliente(DetailView,PermissionMixin):
     permission_required = ['change_cita','view_cita','add_cita']
     model = Cita
@@ -385,15 +380,14 @@ class DetalleCitaCliente(DetailView,PermissionMixin):
     def get_context_data(self, *args, **kwargs):
         context = super(DetalleCitaCliente, self).get_context_data(**kwargs)
         try:
-            if self.request.session:
-                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
-                imagen = imagen.img_usuario
-                cambiosQueryset = cambios.objects.all()
-                cambiosfQueryset = cambiosFooter.objects.all()
-                UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
-                context["User"]=UserSesion
-                context['cambios']=cambiosQueryset
-                context['footer']=cambiosfQueryset
+            UserSesion = if_User(self.request)
+            if UserSesion == False:
+                return redirect("IniciarSesion")
+            cambiosQueryset = cambios.objects.all()
+            cambiosfQueryset = cambiosFooter.objects.all()
+            context["User"]=UserSesion
+            context['cambios']=cambiosQueryset
+            context['footer']=cambiosfQueryset
         except:
             return redirect("IniciarSesion")
 
@@ -477,6 +471,7 @@ class CancelarCita(View,PermissionMixin):
         if request.is_ajax():
             cita = self.model.objects.get(id_cita=request.POST["cita"])
             cita.cancelado = True
+            cita.estado=False
             cita.save()
             try:
                 Servidor = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
@@ -534,16 +529,15 @@ class AgandarCita(CreateView,PermissionMixin):
             return redirect("IniciarSesion")
 
         try:
-            if self.request.session:
-                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
-                imagen = imagen.img_usuario
-                cambiosQueryset = cambios.objects.all()
-                cambiosfQueryset = cambiosFooter.objects.all()
-                UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
-                contexto["User"]=UserSesion
-                contexto["User"]=UserSesion
-                contexto['cambios']=cambiosQueryset
-                contexto['footer']=cambiosfQueryset
+            UserSesion = if_User(request)
+            if UserSesion == False:
+                return redirect("IniciarSesion")
+            cambiosQueryset = cambios.objects.all()
+            cambiosfQueryset = cambiosFooter.objects.all()
+            contexto["User"]=UserSesion
+            contexto["User"]=UserSesion
+            contexto['cambios']=cambiosQueryset
+            contexto['footer']=cambiosfQueryset
 
         except:
             pass
@@ -668,7 +662,6 @@ class BuscarDisponibilidadEmpleado(View):
                 
             return JsonResponse({"horasDisponibles":res})
 
-
 class BuscarDisponibilidadEmpleadoEditarCita(View):
     permission_required = ['view_calendario']
     def post(self,request,*args,**kwargs):
@@ -721,3 +714,39 @@ class BuscarDisponibilidadEmpleadoEditarCita(View):
                 res = [x for x in horas if x not in [x for x in horas for i in horasNoDisponibles if (horasNoDisponibles[i]["horaInicio"] <= x <= horasNoDisponibles[i]["horaFin"])]]
                 
             return JsonResponse({"horasDisponibles":res})
+
+class CitasHoyReportePDF(View):
+    def link_callback(self, uri, rel):
+        sUrl = settings.STATIC_URL
+        sRoot = settings.STATIC_ROOT
+        mUrl = settings.MEDIA_URL 
+        mRoot = settings.MEDIA_ROOT
+
+        if uri.startswith(mUrl):
+                path = os.path.join(mRoot, uri.replace(mUrl, ""))
+        elif uri.startswith(sUrl):
+                path = os.path.join(sRoot, uri.replace(sUrl, ""))
+        else:
+                return uri
+
+        if not os.path.isfile(path):
+                raise Exception(
+                        'media URI must start with %s or %s' % (sUrl, mUrl)
+                )
+        return path
+    
+    def get(self,request,*args,**kwargs):
+        citas=Cita.objects.filter(empleado_id=request.session['pk']).filter(diaCita=datetime.now().date()).filter(estado=1)
+        empleado=Usuario.objects.get(pk=request.session['pk'])
+        try:
+            template = get_template('Reportes/citas_hoy.html')
+            context = {"citas":citas, "hoy":datetime.now(), "empleado":empleado}
+            html = template.render(context)
+            response = HttpResponse(content_type='application/pdf')
+            # response["Content-Disposition"] = 'attachment; filename="citas_hoy.pdf"'
+            pisaStatus = pisa.CreatePDF(html, dest=response, link_callback=self.link_callback)
+            return response
+        except:
+            pass
+        messages.add_message(request, messages.INFO, 'Ocurrió un error al generar el PDF.')
+        return HttpResponseRedirect(reverse_lazy("Ventas:calendarioEmpleado"))

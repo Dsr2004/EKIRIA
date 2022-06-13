@@ -38,11 +38,9 @@ def Configuracion(request):
     user = request.user
     cambiosQueryset = cambios.objects.all()
     cambiosfQueryset = cambiosFooter.objects.all()
-    if if_admin(request):
-        UserSesion=if_admin(request)
-    else: 
-        return redirect('SinPermisos')
-    
+    UserSesion = if_admin(request)
+    if UserSesion == False:
+        return redirect("IniciarSesion")
     return render(request, "Configuracion.html",{'User':UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
 
 
@@ -50,7 +48,9 @@ def Configuracion(request):
 @login_required()
 @PermissionDecorator(['add_group', 'change_group', 'delete_group', 'view_group'])
 def Roles(request):
-    UserSesion=if_admin(request)
+    UserSesion = if_admin(request)
+    if UserSesion == False:
+        return redirect("IniciarSesion")
     cambiosQueryset = cambios.objects.all()
     cambiosfQueryset = cambiosFooter.objects.all()
     return render(request, "Roles.html", {'User':UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
@@ -63,10 +63,9 @@ def Cambios(request):
     formulario2 = FooterForm
     cambiosQueryset = cambios.objects.all()
     cambiosfQueryset = cambiosFooter.objects.all()
-    if if_admin(request):
-        UserSesion=if_admin(request)
-    else: 
-        return redirect('SinPermisos')
+    UserSesion = if_admin(request)
+    if UserSesion == False:
+        return redirect("IniciarSesion")
     contexto = {'Cambios' :ListarCambios, 'Foter':cambiosfQueryset}
     contexto["User"]=UserSesion
     contexto['cambios']=cambiosQueryset
@@ -80,7 +79,9 @@ def Cambios(request):
 def Permisos(request):
     cambiosQueryset = cambios.objects.all()
     cambiosfQueryset = cambiosFooter.objects.all()
-    UserSesion=if_admin(request)
+    UserSesion = if_admin(request)
+    if UserSesion == False:
+        return redirect("IniciarSesion")
     return render(request, "Permisos.html", {'User':UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
     
 
@@ -92,7 +93,6 @@ class Admin(PermissionMixin,DetailView):
         grupo = kwargs['pk']
         context = {}
         queryset = self.request.GET.get("buscar")
-        UserSesion=""
         contexto= self.model.objects.all()
         rol = Group.objects.get(id=self.kwargs["pk"])
         permisos = rol.permissions.all()
@@ -119,10 +119,9 @@ class Admin(PermissionMixin,DetailView):
             
         
 
-        if if_admin(request):
-            UserSesion=if_admin(request)
-        else: 
-            return redirect('SinPermisos')
+        UserSesion = if_admin(request)
+        if UserSesion == False:
+            return redirect("IniciarSesion")
         cambiosQueryset = cambios.objects.all()
         cambiosfQueryset = cambiosFooter.objects.all()
         context["User"]=UserSesion
@@ -142,15 +141,14 @@ class Admin(PermissionMixin,DetailView):
 @login_required()
 @PermissionDecorator(['view_group'])
 def ListarRol(request ):
-    UserSesion=""
     formulario=RolForm
     ListRoles = Group.objects.all()
     
     cambiosQueryset = cambios.objects.all()
     cambiosfQueryset = cambiosFooter.objects.all()
-    imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-    imagen = imagen.img_usuario
-    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+    UserSesion = if_admin(request)
+    if UserSesion == False:
+        return redirect("IniciarSesion")
     contexto= {'roles':ListRoles}
     contexto["User"]=UserSesion
     contexto['cambios']=cambiosQueryset
@@ -231,10 +229,9 @@ class CreateRolView(CreateView, PermissionMixin):
                 return HttpResponse("holi")
     def get_context_data(self, *args, **kwargs):
         context = super(CreateRolView, self).get_context_data(**kwargs)
-        if if_admin(self.request):
-            UserSesion=if_admin(self.request)
-        else: 
-            return redirect('SinPermisos')
+        UserSesion = if_admin(self.request)
+        if UserSesion == False: 
+            return redirect("IniciarSesion")
         cambiosQueryset = cambios.objects.all()
         cambiosfQueryset = cambiosFooter.objects.all()
         context["User"]=UserSesion
@@ -279,10 +276,9 @@ class EditarRolView(UpdateView,PermissionMixin):
         #     return redirect("Ventas:adminVentas")
     def get_context_data(self, *args, **kwargs):
         context = super(EditarRolView, self).get_context_data(**kwargs)
-        if if_admin(self.request):
-            UserSesion=if_admin(self.request)
-        else: 
-            return redirect('SinPermisos')
+        UserSesion = if_admin(self.request)
+        if UserSesion == False:
+            return redirect("IniciarSesion")
         cambiosQueryset = cambios.objects.all()
         cambiosfQueryset = cambiosFooter.objects.all()
         context["User"]=UserSesion
@@ -313,10 +309,9 @@ class CrearCambios(View,PermissionMixin):
             return respuesta
     def get_context_data(self, *args, **kwargs):
         context = super(CrearCambios, self).get_context_data(**kwargs)
-        if if_admin(self.request):
-            UserSesion=if_admin(self.request)
-        else: 
-            return redirect('SinPermisos')
+        UserSesion = if_admin(self.request)
+        if UserSesion == False:
+            return redirect("IniciarSesion")
         cambiosQueryset = cambios.objects.all()
         cambiosfQueryset = cambiosFooter.objects.all()
         context["User"]=UserSesion
@@ -347,10 +342,9 @@ class CrearCambiosFooter(View,PermissionMixin):
 
     def get_context_data(self, *args, **kwargs):
         context = super(CrearCambiosFooter, self).get_context_data(**kwargs)
-        if if_admin(self.request):
-            UserSesion=if_admin(self.request)
-        else: 
-            return redirect('SinPermisos')
+        UserSesion = if_admin(self.request)
+        if UserSesion == False:
+            return redirect("IniciarSesion")
         cambiosQueryset = cambios.objects.all()
         cambiosfQueryset = cambiosFooter.objects.all()
         context["User"]=UserSesion
@@ -383,15 +377,9 @@ class listarPermisos(ListView,PermissionMixin):
         context = super(listarPermisos, self).get_context_data(**kwargs)
         # este metodo era para intentar mostrar la consulta pero no dio
         
-        UserSesion=""
-        try:
-            if request.session['pk']:
-                if request.session['Admin']:
-                    imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-                    imagen = imagen.img_usuario
-                    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
-        except:
-            pass
+        UserSesion = if_admin(self.request)
+        if UserSesion == False:
+            return redirect("IniciarSesion")
         cambiosQueryset = cambios.objects.all()
         cambiosfQueryset = cambiosFooter.objects.all()
         context["User"]=UserSesion

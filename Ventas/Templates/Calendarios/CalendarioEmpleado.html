@@ -1,0 +1,229 @@
+{% extends "Menu_Usuario.html" %}
+{% load static %}
+{% block head %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario Empleado</title>
+    <link rel="stylesheet" href="{% static 'Ventas/css/Ventas.css' %}">
+   <link rel="icon" href="{% static 'Proyecto_Ekiria/Img/Logo Ekiria.png' %}">
+   <link rel="stylesheet" href="{% static 'Plugins/fullcalendar/lib/main.css' %}">
+   
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+ 
+
+</head>
+{% endblock head %}
+
+{% block Contenido %}
+<style>
+  .botonX:hover{
+    color: white !important;
+  }
+</style>
+<div class="text-center quitar"  id="spinnerLoad">
+  <div class="spinner-grow " style="width: 3rem; height: 3rem;" role="status">
+    <span class="visually-hidden">Cargando...</span>
+  </div>
+  <h4 class="quitar" id="titleSpinner">Confirmando cita... <br> <sub> Notificando al cliente...</sub></h4>
+</div>
+<div id="containerInicio">
+  <div style="margin-left:30px">
+    <div class="row ">
+      <div class="col-9 ">
+        <h1 style="margin:5px">Calendario de Empleados</h1>
+        <h6 style="margin:15px">Bienvenido <strong>{{request.user.nombres | title}} {{request.user.apellidos}}</strong> aquí podrá administrar su calendario.</h6>
+      </div>
+      
+      {% if EsAdmin %}
+      <div class="col-3" style="margin-top:20px">
+        <a  class="btn btn-outline-dark botonX">Administrar Calendarios</a>
+      </div>
+      {% endif %}
+        
+      
+    </div>
+  </div>
+    
+    
+  <div class="row" style="margin:5px">
+    <div class="col-md-8 ">
+      <!--aqui va el calendario-->
+      <div id="calendar" style="padding: 40px;" class=""></div>
+     </div> 
+   <div class="col-md-4 ContainerHistorialCitas">
+       <legend>Historial</legend>
+       <table class="table  historialCitas" id="HistorialTable">
+           <thead>
+             <tr>
+               <th scope="col">Fecha</th>
+               <th scope="col">Ver cita</th>
+               <th scope="col">Estado</th>
+             </tr>
+           </thead>
+           <tbody sty>
+             
+             {% if citas %}
+                 {% for cita in citas %}
+                 <tr>
+                   <td scope="row">{{cita.diaCita}}</td>
+                   <td style="text-align: center;"><a href="{%url 'Ventas:detalleEditarCita' cita.id_cita %}"><i class="fas fa-eye" style="font-size: 25px;"></i></a></td>
+               <td style="text-align: center;">
+                  {% if cita.cancelado == True %}
+                  <i class="fas fa-times-circle" style="font-size: 25px; color: red;" ></i>
+                  {% else %}
+                     {% if cita.estado == True %}
+                     <!-- onclick="CancelarCita3('{{cita.id_cita}}')" -->
+                        <i class="fas fa-check-circle" style="font-size: 25px; color: green;" ></i>
+                     {% else %}
+                        <a type="button" onclick="ConfirmarCita('{{cita.id_cita}}')"><i class="fas fa-clock" style="font-size: 25px; color: orange;" ></i></a>
+                     {% endif %}
+                  {% endif %}
+                 
+               </td>
+                 {% endfor %}
+             {% else %}
+                 <h4>No hay citas que mostrar</h4>
+             {% endif %}
+           </tbody>
+        </table>
+   </div>
+  </div>
+  <div class="col-12">
+      <div class="container">
+        <div class="card" style="padding: 25px;">
+          <div class="card-header">
+            <div class="row">
+              <div class="col-8"><h2>Citas para el día de hoy</h2></div>
+              <div class="col-4">
+                <div class="row">
+                  <div class="col-12" style="margin-bottom: 15px;">Generar reportes</div>
+                  <div class="col-4">
+                    <a href="{% url 'Ventas:reporte_citaHoyPDF' %}" class="btn"><i class="fa-solid fa-file-pdf" style="color: red;transform: scale(2.0);"></i></a>
+                  </div>
+                  <div class="col-4">
+                    <a href="" class="btn"><i class="fa-solid fa-file-circle-plus" style="color: rgb(219, 118, 10);transform: scale(2.0);"></i></a>
+                  </div>
+                  <div class="col-2"></div>
+                </div>
+                <br>
+            </div>
+          </div>
+          <div class="card-footer ">
+            <table id="listarCitasTable"  style="width:100%" class="table" >
+              <thead>
+                 <tr>
+                    <th>Cliente</th>
+                    <th>Total</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th style="text-align: center;">Ver cita</th>
+                    <th style="text-align: center;">Estado</th>
+                 </tr>
+              </thead>
+              <tbody>
+                 {% if citasHoy %}
+                  {% for cita in citasHoy %}
+                  <tr>
+                     <th scope="row">{{cita.cliente_id.nombres | upper}} {{cita.cliente_id.apellidos | upper}}</th>
+                     <td>${{cita.pedido_id.total_pagar}}</td>
+                     <td>{{cita.diaCita}}</td>
+                     <td>{% if cita.cancelado == True %} Cancelado {% else %}{% if cita.estado == True %}Confirmado {% else %}Pendiente{% endif %}{% endif %}
+        
+                     </td>
+                     <td style="text-align: center;"><a href="{%url 'Ventas:detalleEditarCita' cita.id_cita %}"><i class="fas fa-eye" style="font-size: 25px;"></i></a></td>
+                     <td style="text-align: center;">
+                        {% if cita.cancelado == True %}
+                        <i class="fas fa-times-circle" style="font-size: 25px; color: red;" ></i>
+                        {% else %}
+                           {% if cita.estado == True %}
+                           <!-- onclick="CancelarCita3('{{cita.id_cita}}')" -->
+                              <i class="fas fa-check-circle" style="font-size: 25px; color: green;" ></i>
+                           {% else %}
+                              <a type="button" onclick="ConfirmarCita('{{cita.id_cita}}')"><i class="fas fa-clock" style="font-size: 25px; color: orange;" ></i></a>
+                           {% endif %}
+                        {% endif %}
+                       
+                     </td>
+                  </tr>
+                  {% endfor %}
+                  {% else  %}
+                  <h1>No hay registros</h1>
+              {% endif %}
+              </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+  </div>
+  
+</div>
+<div class="modal fade" id="ModalCitaCalendario"  role="dialog">
+
+</div>
+
+{% endblock Contenido %}
+
+{%block scripts%}
+<script src="{% static 'Plugins/fullcalendar/lib/main.js' %}"></script>
+<script src="{% static 'Plugins/fullcalendar/lib/locales-all.js' %}"></script>
+<script src="/static/Ventas/js/Ventas.js"></script>
+  
+<script>
+   $(document).ready(function () {
+      $('#HistorialTable').DataTable({
+            "language": {
+               "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+           },
+           responsive:true
+      });
+    });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function(){
+    var calendarUI  = document.getElementById("calendar")
+    var calendar = new FullCalendar.Calendar(calendarUI,{
+      eventTimeFormat: { 
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+    },
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+      },
+      events: [
+        {% for cita in citas %}
+        {
+          id: '{% url 'Ventas:detalleCalendario' cita.id_cita %}',
+          title:"{{cita.titulo}}",
+          start: "{{cita.inicio}}",
+          end: "{{cita.fin}}",
+          {% if cita.cancelado == True %} 
+            color:"rgba(177, 0, 0, 0.562)",
+          {% else %}
+              {% if cita.EstadoCita %}
+                color:"rgba(0, 177, 38, 0.562)",
+              {% else %}
+                color:"rgba(0, 0, 177, 0.562)",
+              {% endif %}
+          {% endif %}
+        },
+        {% endfor %}
+
+      ],
+      eventClick: function(arg) {
+        url = arg.event.id;
+        console.log(url);
+        abrir_modal_calendario(url)
+      },
+    });
+    calendar.render();
+    calendar.setOption('locale','es')
+  });
+</script>
+{%endblock scripts%}
