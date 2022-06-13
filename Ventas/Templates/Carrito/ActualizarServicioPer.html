@@ -6,7 +6,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form action="{%url 'Ventas:actualizarServicioPer' object.id_servicio_personalizado  %}" enctype="multipart/form-data" method="post" id="ActualizarServicioPerForm">
+        <form action="{%url 'Ventas:actualizarServicioPer' object.id_servicio_personalizado  %}"  enctype="multipart/form-data" method="post" id="ActualizarServicioPerForm">
             {% csrf_token %}
             <label class="label-control">Tipo de servicio: <sup class="requerido">(*)</sup></label>
             {{form.tipo_servicio_id|as_crispy_field}}

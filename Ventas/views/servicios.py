@@ -42,8 +42,9 @@ class AgregarServicio(CreateView,PermissionMixin):#crear
     def form_valid(self, form, **kwargs):
         objeto=form.save()
         if objeto.estado == True:
-            ServicioToCatalogo = Catalogo.objects.create(servicio_id=objeto)
-            ServicioToCatalogo.save()
+            if not Catalogo.objects.filter(servicio_id=objeto).exists():
+                ServicioToCatalogo = Catalogo.objects.create(servicio_id=objeto)
+                ServicioToCatalogo.save()
         objeto.save()
         return redirect("Ventas:listarServicios")
 
@@ -81,8 +82,9 @@ class EditarServicio(UpdateView,PermissionMixin):#actualizar
         if objeto.estado == False:
             QuitarServicioToCatalogo = Catalogo.objects.filter(servicio_id=objeto).delete()
         elif objeto.estado == True:
-            ServicioToCatalogo = Catalogo.objects.create(servicio_id=objeto)
-            ServicioToCatalogo.save()
+            if not Catalogo.objects.filter(servicio_id=objeto).exists():
+                ServicioToCatalogo = Catalogo.objects.create(servicio_id=objeto)
+                ServicioToCatalogo.save()
         objeto.save()
         return redirect("Ventas:listarServicios")
 
@@ -133,8 +135,9 @@ def CambiarEstadoServicio(request):
         elif estatus==False:
             update.estado=True
             update.save()
-            ServicioToCatalogo = Catalogo.objects.create(servicio_id=update)
-            ServicioToCatalogo.save()
+            if not Catalogo.objects.filter(servicio_id=update).exists():
+                ServicioToCatalogo = Catalogo.objects.create(servicio_id=update)
+                ServicioToCatalogo.save()
         else:
             return redirect("Ventas:listarServicios")
         return HttpResponse(update)

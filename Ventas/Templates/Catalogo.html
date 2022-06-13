@@ -21,6 +21,7 @@
 <div class="body">
    <div class="container">
       <h1>Catálogo</h1>
+      
       <br>
       <div class="row">
          <div class="col-md-3">
@@ -64,6 +65,12 @@
 <br><br>
 <div class="modal fade" id="VerMasServivios" role="dialog" >
 </div>
+{% for i in footer %}
+<a href="https://wa.me/{{i.Telefono}}" class="btn-wsp" target="_blank">
+   <i class="fa-brands fa-whatsapp"></i>
+</a>  
+{% endfor %}
+
 {% endblock Contenido %}
 
 

@@ -1,13 +1,17 @@
+
+from multiprocessing.sharedctypes import Value
 from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.views.generic import View, TemplateView
 from Proyecto_Ekiria.Mixin.Mixin import PermissionDecorator, PermissionMixin
+from heapq import nlargest
 
 from Configuracion.models import cambiosFooter, cambios
 from Usuarios.models import Usuario
-from ..models import Catalogo, Tipo_servicio, Servicio
+from ..models import Catalogo, Tipo_servicio, Servicio, PedidoItem
 from ..forms import CatalogoForm, Tipo_servicioForm
+
 
 """
 <----------------------------------------------------------------->
@@ -18,10 +22,29 @@ Seccion de las Vistas donde se administra el Admin de las ventas
 class AdminVentas(TemplateView):
     permission_required = ['view_catalogo']
     template_name = "Ventas.html"
+    
+    def get_grafico_serviciosMasSolicitados(self):
+        pedidos = PedidoItem.objects.all()
+        servicios = Servicio.objects.filter(estado=True)
+        serviciosEnPedido = {}
+        
+        for i in servicios:
+            CantServiciosEnPedido = PedidoItem.objects.filter(servicio_id=i).count()
+            serviciosEnPedido[i.nombre] = CantServiciosEnPedido
+        servicios_mas_solicitados =nlargest(10, serviciosEnPedido, key=serviciosEnPedido.get)
+        datosDeServicos_mas_solcitados = []
+        
+        for i in servicios_mas_solicitados:
+            servicio = serviciosEnPedido[i] 
+            datosDeServicos_mas_solcitados.append(servicio)
+            
+        return {"servicio":servicios_mas_solicitados, "cantidad":datosDeServicos_mas_solcitados}
+            
 
     def get(self,request, *args, **kwargs):
         formTipo_Servicio = Tipo_servicioForm
         servicios=Catalogo.objects.all()
+<<<<<<< HEAD
 
        
         #autenticacion usuario
@@ -30,7 +53,30 @@ class AdminVentas(TemplateView):
             return redirect("IniciarSesion")
         cambiosQueryset = cambios.objects.all()
         cambiosfQueryset = cambiosFooter.objects.all()
+=======
+        try:
+            if request.session:
+                imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+                imagen = imagen.img_usuario
+                cambiosQueryset = cambios.objects.all()
+                cambiosfQueryset = cambiosFooter.objects.all()
+                if request.session['Admin'] == True:
+                    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+                else:
+                    return redirect("SinPermisos")
+        except:
+            return redirect("IniciarSesion")
+        
+        servicios_mas_solicitados = self.get_grafico_serviciosMasSolicitados()
+>>>>>>> d7b5053875a1873d5d1dc8b0de38de6b10e4d0bd
 
+        datosServicios=servicios_mas_solicitados["servicio"]
+        datosCantidadServicio = servicios_mas_solicitados["cantidad"]
+        
+        print(datosServicios)
+        print("sdsdsdsdsdsd")
+        print(datosCantidadServicio)
+        
         #contexto
         context={
             'Tipo_Servicios':Tipo_servicio.objects.all(),
@@ -38,7 +84,9 @@ class AdminVentas(TemplateView):
             'servicios':servicios,
             "User":UserSesion,
             'cambios':cambiosQueryset,
-            'footer':cambiosfQueryset
+            'footer':cambiosfQueryset,
+            'datosServicios':datosServicios,
+            'datosCantidadServicio':datosCantidadServicio,
         }
         
         return render(request, self.template_name, context)

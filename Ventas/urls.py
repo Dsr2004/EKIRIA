@@ -5,7 +5,7 @@ from Ventas import carrito
 app_name="Ventas"
 urlpatterns = [
     path('AddtoCarrito/', login_required(carrito.actualizarItem), name="addtoCarrito"),
-
+   
     path('AgregarCita/', login_required(citas.AgregarCita.as_view()), name="agregarCita"),
     path('ListadoCitas/', login_required(citas.ListarCita.as_view()), name="listarCitas"),
     path('DetalleCita/<int:pk>', login_required(citas.DetalleCitaCliente.as_view()), name="detalleCita"),
@@ -15,6 +15,7 @@ urlpatterns = [
     path('CambiarEstadoCita/', login_required(citas.CambiarEstadoDeCita.as_view()), name="cambiarEstadoCita"),
     path('CancelarCita/', login_required(citas.CancelarCita.as_view()), name="cancelarCita"),
     path('DetalleCalendario/<int:pk>', login_required(citas.DetalleCitaCalendario.as_view()), name="detalleCalendario"),
+   
 
     path("BuscarEmpleadoParaCita/", login_required(citas.BuscarDisponibilidadEmpleado.as_view()), name="buscarEmpleadoParaCita"),
     path("BuscarEmpleadoParaEditarCita/", login_required(citas.BuscarDisponibilidadEmpleadoEditarCita.as_view()), name="buscarEmpleadoParaEditarCita"),
@@ -29,8 +30,11 @@ urlpatterns = [
     path('Carrito/', login_required(views.Carrito), name="carrito"),
     path('TerminarPedido/', login_required(citas.AgandarCita.as_view()), name="terminarPedido"),
     path('Calendario/', login_required(views.Calendario.as_view()), name="calendario"),
+    path('CalendarioEmpleado/', login_required(views.CalendarioEmpleado.as_view()), name="calendarioEmpleado"),
+    path('CalendarioAdmin/', login_required(views.CalendarioAdmin.as_view()), name="calendarioAdmin"),
     path('PersonalizarSer/', login_required(serviciosPersonalizados.ServiciosPersonalizados.as_view()), name="personalizar"),
     path('ActualizarServicioPer/<int:pk>', login_required(serviciosPersonalizados.EditarServiciosPersonalizados.as_view()), name="actualizarServicioPer"),
+
     # path("AgendarCita/", AgandarCita.as_view(), name="agendarCita"),
     
     
@@ -45,6 +49,8 @@ urlpatterns = [
     path('CambiarEstadoServicio/', login_required(servicios.CambiarEstadoServicio), name="cambiarEstadoServicio"),
     path('EditarServicio/<int:pk>', login_required(servicios.EditarServicio.as_view()), name="editarServicio"),
     path('<slug>/', servicios.ServicioDetalle.as_view(), name="detalleSer"),
+    
+    path('Reportes/CitaHoyPDF/', login_required(citas.CitasHoyReportePDF.as_view()), name="reporte_citaHoyPDF"),
 ]
 
     # SIN LOGIN REQUIRED

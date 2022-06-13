@@ -1,0 +1,196 @@
+/* Variables definition */
+
+
+/*-------------------------Desing of search--------------------*/
+
+.Table.Header-table {
+    position: relative;
+    width: 95%;
+    margin: 0 2.5%;
+}
+
+.Table.Add {
+    width: 100%;
+    position: relative;
+    display: flex;
+    justify-content: end;
+    margin-top: -65px;
+    margin-bottom: 20px;
+}
+
+.Table.Add .Add.img {
+    background: none;
+    color: inherit;
+    border: 2px solid;
+    padding: 10px 13px;
+    font: inherit;
+    font-size: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    outline: inherit;
+    margin-top: 0px;
+    z-index: 1;
+}
+
+
+/*-----------------------End of design search-----------------*/
+
+
+/*---------------------------Users table layout-------------------------*/
+
+.Table.Content-table {
+    position: relative;
+    width: 90%;
+    padding: 20px;
+    margin: 20px 5%;
+    border-radius: 20px;
+}
+
+.Table.Content-table .Information .cardHeader {
+    position: sticky;
+    top: -20px;
+    left: 0;
+    background-color: #fff;
+    padding: 10px;
+    padding-top: 20px;
+    margin-left: -10px;
+    width: 100%;
+    z-index: 1;
+}
+
+table.dataTable {
+    border-collapse: collapse!important;
+    width: 100%!important;
+}
+
+.Table.Content-table .Information .cardHeader h2 {
+    margin-top: 0;
+    font-weight: 600;
+    color: #a200ff;
+}
+
+.Table.Content-table .Information .cardHeader i {
+    font-weight: 600;
+    color: #a200ff;
+    font-size: 32px;
+}
+
+.Table.Content-table .Information table {
+    width: 100%;
+}
+
+.sorting_1::before {
+    margin-top: -10px !important;
+}
+
+.dataTables_filter label,
+.dataTables_length label {
+    font-family: 'Tahoma';
+}
+
+.dataTables_length label select {
+    position: relative!important;
+    border-radius: 10px!important;
+    padding: 5px 10px!important;
+    font-size: 18px!important;
+    width: 100%!important;
+    outline: none!important;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2)!important;
+}
+
+.dataTables_filter label input {
+    position: relative !important;
+    border-radius: 10px !important;
+    padding: 5px 15px!important;
+    font-size: 18px !important;
+    width: 100% !important;
+    outline: none !important;
+    box-shadow: 0 7px 25px rgba(0, 0, 0, 0.18)!important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    position: relative !important;
+    border-radius: 10px !important;
+    font-size: 18px !important;
+    outline: none !important;
+    box-shadow: 0 7px 25px rgba(0, 0, 0, 0.18)!important;
+}
+
+,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    position: relative !important;
+    border-radius: 10px !important;
+    font-size: 18px !important;
+    outline: none !important;
+    box-shadow: 0 7px 25px rgba(0, 0, 0, 0.18)!important;
+}
+
+.Table.Content-table .Information table thead td,
+.Table.Content-table .Information table tfoot td {
+    font-weight: 600;
+}
+
+.Table.Content-table .Information table tr {
+    color: #000;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.18);
+}
+
+
+/* .Table.Content-table .Information table tr {
+    display: grid;
+    grid-template-columns: repeat(15, 1fr);
+} */
+
+.Table.Content-table .Information table tr td.ver_mas {
+    display: none;
+}
+
+.Table.Content-table .Information table tr .Edit {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+}
+
+.Table.Content-table .Information table tr td i {
+    font-size: 25px;
+}
+
+.Table.Content-table .Information table .child {
+    text-align: start;
+}
+
+.Table.Content-table .Information table .child ul {
+    float: none;
+}
+
+.form-switch .form-check-input {
+    display: block !important;
+    position: relative !important;
+    right: -10px!important;
+    top: -2px!important;
+    margin-left: 0 !important;
+}
+
+.form-switch.Swictder .form-check-input {
+    display: block !important;
+    position: relative !important;
+    right: -20px!important;
+    top: -7px!important;
+    margin-left: 10px !important;
+}
+
+.form-switch {
+    margin: 0!important;
+    padding: 0!important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    color: #fff !important;
+    background: linear-gradient(to bottom, rgb(119, 119, 119) 0%, #800080 100%);
+}
+
+
+/*--------------------------Users table layout-------------------------*/

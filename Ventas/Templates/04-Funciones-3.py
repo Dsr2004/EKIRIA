@@ -1,5 +1,7 @@
-numeros = [20, 51, 23, 20]
+numeros = [1,2,3,5,6,8,9]
 
-numerosSinRepetir = [x for x in numeros if x != min(numeros)]
+inicio,fin = 3,5
 
-print(numerosSinRepetir)
+for i in numeros:
+    if  inicio<=i-1<=fin:
+        print("{} esta en el rango".format(i))

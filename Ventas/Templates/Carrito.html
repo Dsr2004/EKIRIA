@@ -121,7 +121,11 @@
     <div class="modal fade" id="ActualizarServicioPer"  role="dialog">
 
     </div>
-    
+    {% for i in footer %}
+    <a href="https://wa.me/{{i.Telefono}}" class="btn-wsp" target="_blank">
+       <i class="fa-brands fa-whatsapp"></i>
+    </a>  
+    {% endfor %}
 {% endblock Contenido %}
 
 
