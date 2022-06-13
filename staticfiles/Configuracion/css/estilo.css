@@ -1,0 +1,500 @@
+* {
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+}
+
+.contPrincipal {
+    width: 45%;
+    height: 350px;
+    margin-left: 15%;
+    margin-top: 10%;
+    display: inline-flex;
+    background: rgb(240, 240, 247);
+    box-shadow: 0px 4px 60px #AF8DBB;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+}
+
+textarea {
+    height: 100px!important;
+    width: 100%!important;
+    writing-mode: horizontal-tb !important;
+    font-family: monospace;
+    text-rendering: auto;
+    color: none !important;
+    letter-spacing: normal;
+    word-spacing: normal;
+    line-height: normal;
+    text-transform: none;
+    text-indent: 0px;
+    text-shadow: none;
+    display: inline-block;
+    text-align: start;
+    appearance: auto;
+    -webkit-rtl-ordering: logical;
+    resize: none !important;
+    cursor: text;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    background-color: transparent !important;
+    column-count: initial !important;
+    margin: 0em;
+    border-width: 1px;
+    border-style: none !important;
+    border-color: none;
+    border-image: none;
+    padding: 2px;
+}
+
+.imagenLogo {
+    width: 70%;
+    margin-left: 15%;
+    margin-top: -20%;
+}
+
+.LetraBienvenida {
+    font-size: 200%;
+    margin-top: -10%;
+    text-align: center;
+    color: #000000;
+}
+
+
+/*aqui empieza los tres div d e la izquierda */
+
+.contenedor {
+    position: absolute;
+    width: 15%;
+    height: 90%;
+    left: 71%;
+    top: 5%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+
+/*Roles, cambios de pagina, permisos */
+
+.contRoles,
+.contCambios,
+.contPermisos {
+    height: 25%;
+    margin-top: 5%;
+    padding: 10%;
+    text-align: center;
+    border-color: #000;
+    border-radius: 30px;
+    box-shadow: 0.5rem 0.5rem black, -0.5rem -0.5rem rgb(240, 240, 247);
+    background: #AF8DBB;
+    color: #000000;
+}
+
+.contRoles:hover,
+.contCambios:hover,
+.contPermisos:hover {
+    box-shadow: 0.5rem 0.5rem black, -0.5rem -0.5rem #AF8DBB;
+    background-color: rgb(240, 240, 247);
+    animation-iteration-count: infinite;
+    transition-property: all;
+    transition-duration: 0.3s;
+    transition-timing-function: steps(5, jump-both);
+}
+
+.Letracont {
+    color: #000;
+    margin-top: 50%;
+    font-size: 150%;
+    text-decoration: none;
+}
+
+.Letracont2 {
+    color: #000;
+    font-size: 150%;
+    text-align: center;
+    text-decoration: none;
+}
+
+
+/*tabla de roles*/
+
+.Letracont:hover,
+.Letracont2:hover {
+    color: #000;
+}
+
+.titulo {
+    text-align: center;
+    font-size: x-large;
+}
+
+.tabla {
+    width: 60%;
+    margin-left: 20%;
+}
+
+
+/*seccion de crear boton para cear un nuevo rol*/
+
+.contNuevoRol {
+    position: relative;
+    width: 30%;
+    right: 0;
+    float: right;
+    display: inline-flex;
+    align-items: center;
+}
+
+@media (max-width:700px) {
+    .contNuevoRol {
+        position: relative;
+        width: 100%;
+        right: 0;
+        float: right;
+        display: inline-flex;
+        align-items: center;
+    }
+}
+
+.imgAgregar {
+    width: 20%;
+    height: 5%;
+    margin-left: 5%;
+    margin-top: -2%;
+}
+
+.nuevoRol {
+    width: 100%;
+    padding: 2%;
+    background-color: white;
+}
+
+.nuevoRol:hover {
+    background-color: gray;
+}
+
+
+/*modal de crear rol*/
+
+#botones {
+    justify-content: space-between;
+}
+
+#nombreRol,
+#nombreRolEdi {
+    width: 97%;
+}
+
+#CrearRol,
+#EditarRol {
+    height: 80vh;
+}
+
+#boton {
+    justify-content: center;
+}
+
+#habilitarPermisos {
+    justify-content: center;
+    align-content: center;
+}
+
+
+/* Cambios de pagina */
+
+.recuadro #text {
+    font-weight: 600;
+}
+
+.text {
+    color: white;
+}
+
+.ContenedorMision,
+.contactenos {
+    width: 80%;
+    margin-left: 10%;
+    margin-bottom: 5%;
+}
+
+.ContMision,
+.seleccionar2,
+.contfooter,
+.principalPermisos {
+    padding: 5%;
+}
+
+.tituloCambios {
+    margin-top: 2%;
+    text-align: center;
+    text-decoration: overline purple 2px;
+}
+
+
+/* permisos */
+
+.jldghajkldgjkfdhgk {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.principalPermisos {
+    box-shadow: 0 7px 25px rgba(0, 0, 0, 0.50);
+    align-items: center;
+    margin: 75px 5%;
+    width: 90%;
+    height: 500px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: initial;
+    overflow: auto;
+    padding: 0 0em 0 5%;
+    padding-left: 8.5% !important;
+}
+
+.principalPermisos .con1 {
+    width: 200px;
+    /* height: 70%; */
+    margin: 20px 20px;
+    /* border-radius: 10px; */
+}
+
+.color {
+    height: 100px;
+    overflow: auto;
+    border-width: 1%;
+    /* border-style: solid; */
+    /* border-color: black; */
+    background-color: #530677;
+    border-radius: 10px 10px 0px 0px;
+    padding: 0 5px;
+}
+
+.dentropermi {
+    background-color: white;
+    /* height: 60%; */
+    padding: 0% 5%;
+    border-radius: 0 0 5px 5px;
+}
+
+.letraDes {
+    color: white;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    margin-bottom: 0px !important;
+    /* border-radius: 10px; */
+    /* border-radius: 5px; */
+}
+
+#asignar {
+    /* width: 100%; */
+    margin-top: 25px!important;
+    position: relative;
+    margin-bottom: 10px;
+    right: 5% !important;
+    /* margin-left: 68%; */
+    /* right: 0px !important; */
+    /* float: right; */
+}
+
+.PermiAdmin {
+    width: 44%;
+    height: auto;
+    margin-top: 5%;
+    padding: 2%;
+    text-align: center;
+    box-shadow: 0 7px 25px rgba(195, 29, 255, 0.1);
+    background-color: white;
+    border-color: #000;
+    border-radius: 30px;
+    animation-iteration-count: infinite;
+    transition-property: all;
+    transition-duration: 0.3s;
+    transition-timing-function: steps(5, jump-both);
+}
+
+.PermiAdmin {
+    margin: auto;
+    margin-top: 3%;
+}
+
+.PermiAdmin2 .custom-control div {
+    margin: 50px;
+    width: 20%;
+    border-width: 3px;
+    border-style: solid;
+    border-color: black;
+}
+
+.form-check-input:checked {
+    width: 7%;
+}
+
+.input#flexSwitchCheckChecked {
+    width: 7%;
+}
+
+.sweetAlertB {
+    margin: 0 10px;
+}
+
+.imgwhats {
+    width: 10%;
+    height: 15%;
+}
+
+.contenedorName {
+    width: 90%;
+    list-style-type: square;
+}
+
+.nada {
+    border-left: 3px solid black;
+    height: 500px;
+    padding: 20px;
+    overflow: auto;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-gap: 0px;
+    text-align: start;
+}
+
+.detallesCambioPa {
+    width: 100%;
+}
+
+.detallesCambioPa ul {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    padding-right: 15px;
+    font-size: 18px;
+    margin-bottom: 0px;
+}
+
+.detallesCambioPa ul li {
+    margin-top: 10px;
+}
+
+.detallesCambioPa ul li i {
+    font-size: 32px;
+    margin-top: -20px;
+    padding: 0 7.5px 5px 7px;
+}
+
+.detallesCambioPa.activar ul li i {
+    margin-top: -5px!important;
+}
+
+.detallesCambioPa ul li i:hover {
+    border: 1px solid #fff;
+    border-radius: 5px;
+}
+
+.detallesCambioPa ul li .icon_hide {
+    display: none;
+}
+
+.detallesCambioPa.activar ul li .icon_hide {
+    display: block;
+}
+
+.detallesCambioPa.activar ul li .icon_show {
+    display: none;
+}
+
+.detallesCambioPa.activar .contenidoCambios {
+    display: block;
+    padding: 0 20px;
+    transition: 1s;
+}
+
+.detallesCambioPa .contenidoCambios {
+    display: none;
+    transition: 1s;
+}
+
+#CambiosFooterForm ul {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    list-style: none;
+    text-decoration: none;
+}
+
+#CambiosFooterForm ul li {
+    list-style: none;
+    text-decoration: none;
+}
+
+.cambiosFlexWrap {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    list-style: none;
+    text-decoration: none;
+}
+
+.cambiosFlexWrap li {
+    list-style: none;
+    text-decoration: none;
+}
+
+.contactenos input[type='number'],
+.contenedorcambios input[type='text'] {
+    writing-mode: horizontal-tb !important;
+    text-rendering: auto;
+    color: none!important;
+    letter-spacing: normal;
+    word-spacing: normal;
+    line-height: normal;
+    text-transform: none;
+    text-indent: 0px;
+    text-shadow: none;
+    display: inline-block;
+    text-align: start;
+    appearance: auto;
+    -webkit-rtl-ordering: logical;
+    cursor: text;
+    background-color: transparent;
+    margin: 0em;
+    padding: 1px 2px;
+    border-width: 2px;
+    border-style: none;
+    border-color: none!important;
+    border-image: none;
+}
+.editarcambios h4{
+    font-weight: 600;
+}
+
+.contactenos input[type='text'],
+.contenedorcambios input[type='number'] {
+    writing-mode: horizontal-tb !important;
+    text-rendering: auto;
+    color: none!important;
+    letter-spacing: normal;
+    word-spacing: normal;
+    line-height: normal;
+    text-transform: none;
+    text-indent: 0px;
+    text-shadow: none;
+    display: inline-block;
+    text-align: start;
+    appearance: auto;
+    -webkit-rtl-ordering: logical;
+    cursor: text;
+    background-color: transparent;
+    margin: 0em;
+    padding: 1px 2px;
+    border-width: 2px;
+    border-style: none;
+    border-color: none!important;
+    border-image: none;
+}

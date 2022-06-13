@@ -34,8 +34,6 @@ from rest_framework import viewsets
 from Usuarios.authentication import ExpiringTokenAuthentication
 #-----------------------------------------Serializers---------------------------------------------------
 from Proyecto_Ekiria import settings
-from Usuarios.Serializers.general_serializers import UsuarioTokenSerializer
-from Usuarios.Serializers.general_serializers import UsuarioTokenSerializer
 #-----------------------------------------Models---------------------------------------------------
 from Usuarios.models import Usuario, VistasDiarias
 from Ventas.models import Servicio

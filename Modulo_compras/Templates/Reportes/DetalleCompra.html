@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle Compra</title>
+</head>
+<style>
+    .thead td {
+        border-top: 1px solid;
+        border-bottom: 1px solid;
+        padding: 5px;
+    }
+</style>
+
+<body>
+    <img src="{{logo}}">
+
+    <h2>FECHA DE COMPRA: {{Compra.fecha_creacion}}</h2>
+    <h2>VALOR TOTAL DE LA COMPRA: ${{Compra.total}}</h2>
+    <table>
+        <thead class="thead" style="text-align: center;">
+            <td colspan="4">
+                <h1>Productos</h1>
+            </td>
+        </thead>
+        <thead class="thead">
+            <td>
+                <h2>Proveedor</h2>
+            </td>
+            <td>
+                <h2>Cantidad</h2>
+            </td>
+            <td>
+                <h2>Producto</h2>
+            </td>
+            <td>
+                <h2>Precio</h2>
+            </td>
+        </thead>
+        <tbody>
+            {% for h in History %}
+            <tr>
+                <td>{% for p in Productos %} {% if p.pk == h.producto_id%} {% for pr in Proveedores %} {% if pr.pk == p.proveedor_id %} {{pr.nombre}} {% endif %}{% endfor %} {% endif %} {% endfor %}</td>
+                <td>{{h.cantidad}}</td>
+                <td>{% for p in Productos %} {% if p.pk == h.producto_id%} {{p.nombre}}{% endif %} {% endfor %}</td>
+                <td>${{h.precio}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+
+</html>
