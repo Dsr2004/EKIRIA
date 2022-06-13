@@ -20,7 +20,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import Permission,Group
 from django.contrib.auth.decorators import login_required
-
+from django.contrib.contenttypes.models import ContentType
 
 #-----------------------------------------Rest Framework---------------------------------------------------
 from rest_framework.decorators import api_view
@@ -68,9 +68,12 @@ def Login(request):
                 if user.administrador:
                     user.rol_id = 1
                     user.save()
-                elif user.rol_id == 1:
-                    user.rol_id = 2
-                    user.save()
+                try:
+                    if user.rol.permissions.get(codename="Administrador"):
+                        user.administrador = 1
+                        user.save()
+                except:
+                    pass
                 usuario = authenticate(username=username, password=password)
                 if usuario is not None:
                     if usuario.estado:
@@ -78,7 +81,14 @@ def Login(request):
                         request.session['username'] = usuario.username
                         request.session['rol']= usuario.rol.name
                         request.session['pk'] = usuario.id_usuario
-                        request.session['Admin'] = usuario.administrador
+                        if usuario.administrador:
+                            request.session['Admin'] = 1
+                        else:
+                            try:
+                                if user.rol.permissions.get(codename="Empleado"):
+                                    request.session['Admin'] = 2
+                            except:
+                                 request.session['Admin'] = 3
                         # pedido, = Pedido.objects.get(cliente_id=usuario, completado=False)
                         # request.session["carrito"]=pedido.get_items_carrito
                         if 'next' in request.POST:
@@ -195,7 +205,6 @@ class ConfirmarCuenta(TemplateView):
     def post(self,request,*args,**kwargs):
         if request.POST['user'] != '':
             user = Usuario.objects.get(pk=request.POST['user'])
-            print(user.estado)
             try:
                 user.estado=True
                 user.save()
@@ -221,29 +230,37 @@ def Perfil(request):
 def if_User(request):
     UserSesion=""
     if request.session:
-        if request.session['pk']:
-            imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-            imagen = imagen.img_usuario
-            UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
-            return UserSesion
+        try:
+            if request.session['pk']:
+                imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+                imagen = imagen.img_usuario
+                UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "admin":request.session['Admin'],"imagen":imagen}
+                return UserSesion
+        except:
+            return False
 
 def if_admin(request):
     UserSesion=""
     if request.session:
-        if request.session['pk']:
-            if request.session['Admin']:
-                imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-                imagen = imagen.img_usuario
-                UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
-                return UserSesion
-            else:
-                return False
+        try:
+            if request.session['pk']:
+                if request.session['Admin']:
+                    imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+                    imagen = imagen.img_usuario
+                    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+                    return UserSesion
+                else:
+                    return False
+        except:
+            return False
 
 @login_required()
 @PermissionDecorator(['change_usuario'])
 def EditarPerfil(request):  
     template_name = "UserInformation/EditarPerfil.html"
     UserSesion = if_User(request)
+    if UserSesion == False:
+        return redirect("IniciarSesion")
     get_object = Usuario.objects.get(id_usuario=request.session['pk'])
     form = Editar(instance=get_object)
     cambiosQueryset = cambios.objects.all()
@@ -255,24 +272,21 @@ def EditarPerfil(request):
             return redirect("Perfil")
         else:
             e=form.errors
-            print(e)
             return JsonResponse({"x":e})
     return render(request, template_name, {"form":form, "User":UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
     
 @login_required()
 @PermissionDecorator(['add_usuario','change_usuario', 'delete_usuario', 'view_usuario'])
 def Change(request):
-    UserSesion=""
-    if request.session['pk']:
-        get_object = Usuario.objects.get(id_usuario=request.session['pk'])
-        form = Cambiar(instance=get_object)
-        imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-        imagen = imagen.img_usuario
-        cambiosQueryset = cambios.objects.all()
-        cambiosfQueryset = cambiosFooter.objects.all()
-        UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session["Admin"]}
-    else: 
-        return redirect("SinPermisos")
+    UserSesion = if_User(request)
+    if UserSesion == False:
+        return redirect("IniciarSesion")
+    get_object = Usuario.objects.get(id_usuario=request.session['pk'])
+    form = Cambiar(instance=get_object)
+    imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+    imagen = imagen.img_usuario
+    cambiosQueryset = cambios.objects.all()
+    cambiosfQueryset = cambiosFooter.objects.all
     Error = ""
     if request.method == "POST":
         try:
@@ -312,6 +326,8 @@ def Change(request):
 @PermissionDecorator(['add_usuario','change_usuario', 'delete_usuario', 'view_usuario'])
 def Admin(request):
     UserSesion = if_admin(request)
+    if UserSesion == False:
+        return redirect("IniciarSesion")
     cambiosQueryset = cambios.objects.all()
     cambiosfQueryset = cambiosFooter.objects.all()
     filter = "yes"
@@ -367,10 +383,9 @@ class CreateUser(CreateView, PermissionMixin):
             context['Error']= 'Los datos ingresados son incorrectos'
             context['cambios']=cambiosQueryset
             context['footer']=cambiosfQueryset
-        UserSesion=""
-        imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-        imagen = imagen.img_usuario
-        UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+        UserSesion = if_admin(request)
+        if UserSesion == False:
+            return redirect("IniciarSesion")
         context['User']=UserSesion
         return render(request, self.template_name, context)
                 
@@ -378,6 +393,8 @@ class CreateUser(CreateView, PermissionMixin):
         context = super(CreateUser, self).get_context_data(**kwargs)
         try:
             UserSesion = if_admin(self.request)
+            if UserSesion == False:
+                return redirect("IniciarSesion")
             cambiosQueryset = cambios.objects.all()
             cambiosfQueryset = cambiosFooter.objects.all()
             context["User"]=UserSesion
@@ -394,22 +411,29 @@ class UpdateUser(UpdateView,PermissionMixin):
     form_class = EditUser 
     success_url=reverse_lazy("Administracion")  
     def get(self, request, *args,**kwargs):
-        get_object = Usuario.objects.get(id_usuario=kwargs['pk'])
+        try:
+            get_object = Usuario.objects.get(id_usuario=kwargs['pk'])
+        except:
+            return redirect('Administracion')
         cambiosQueryset = cambios.objects.all()
         cambiosfQueryset = cambiosFooter.objects.all()
         form = self.form_class(instance=get_object)
         context= {
             'form':form
         }
-        UserSesion=""
-        imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-        imagen = imagen.img_usuario
-        UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+        if request.user.administrador == False:
+            if get_object.administrador:
+                return redirect("Administracion")
+        UserSesion = if_admin(request)
+        if UserSesion == False:
+            return redirect("IniciarSesion")
+        context['titulo']="Editar Usuario "+UserSesion['username']
         context['User']=UserSesion
+        context['UsuarioE']=get_object
         context['cambios']=cambiosQueryset
         context['footer']=cambiosfQueryset
-        context['User']=UserSesion
         context['fecha']=str(get_object.fec_nac)
+        context['roles']=Group.objects.all()
         return render(request, self.template_name, context)
     def post(self, request, *args, **kwargs):
         get_object = Usuario.objects.get(id_usuario=kwargs['pk'])
@@ -417,7 +441,6 @@ class UpdateUser(UpdateView,PermissionMixin):
         context = {
             'form':self.form_class,
         }
-        print(form.is_valid())
         cambiosQueryset = cambios.objects.all()
         cambiosfQueryset = cambiosFooter.objects.all()
         if form.is_valid():
@@ -434,44 +457,39 @@ class UpdateUser(UpdateView,PermissionMixin):
             context['Error']= 'Los datos ingresados son incorrectos'
         context['cambios']=cambiosQueryset
         context['footer']=cambiosfQueryset
-        UserSesion=""
-        imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-        imagen = imagen.img_usuario
-        UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
+        UserSesion = if_admin(request)
+        if UserSesion == False:
+            return redirect("IniciarSesion")
         context['User']=UserSesion
         return render(request, self.template_name, context)
                 
     def get_context_data(self, *args, **kwargs):
-        print(kwargs) 
         context = super(CreateUser, self).get_context_data(**kwargs)
         try:
             UserSesion = if_admin(self.request)
+            if UserSesion == False:
+                return redirect("IniciarSesion")
             cambiosQueryset = cambios.objects.all()
             cambiosfQueryset = cambiosFooter.objects.all()
+            context['titulo']="Editar Usuario "+UserSesion['username']
             context["User"]=UserSesion
             context['cambios']=cambiosQueryset
             context['footer']=cambiosfQueryset
             return context
         except:
             return context
-    
-
-# class Notification(View):
-#     template_name = 'UserInformation/Notification.html'
-# class Notificacion(TemplateView):
-#     template_name="UserInformation/Notification.html"
-
 @csrf_exempt
 @login_required()
 def Notification(request):
     UserSesion = if_User(request)
+    if UserSesion == False:
+        return redirect("IniciarSesion")
     cambiosQueryset = cambios.objects.all()
     cambiosfQueryset = cambiosFooter.objects.all()
     return render(request, "UserInformation/Notification.html", {"User":UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
     
 @PermissionDecorator(['delete_usuario'])
 def CambiarEstadoUsuario(request):
-    print(request.POST)
     if request.method=="POST":
         id = request.POST["estado"]
         update=Usuario.objects.get(id_usuario=id)
@@ -487,8 +505,6 @@ def CambiarEstadoUsuario(request):
         return HttpResponse(update)
     else:
         return JsonResponse({"x":"no"})
-
-
 
 class PassR(TemplateView):
     template_name="UserInformation/PasswordRecovery.html"
@@ -551,8 +567,6 @@ class PassR(TemplateView):
             }
         return render(request, self.template_name, context)
     
-
-
 def PassRec(request):
     messages = []
     success = []
@@ -597,7 +611,6 @@ def PassRec(request):
                         success = "Se ha enviado el correo correctamente al email "+user.email
                     except Exception as e:
                         messages = e
-                        print(e)
                 except:
                     messages = "Este email no está rgistrado a ningún usuario"
             else:

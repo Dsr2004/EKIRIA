@@ -13,8 +13,7 @@
 </head>
 <div class="contenido">
     <form method="POST">
-        <h1>
-            {% if User.titulo %} {{User.titulo}} {% else %} Crear Usuario {% endif %}
+        <h1>{% if titulo %} {{titulo}} {% else %} Crear Usuario {% endif %}
         </h1> {% if Error %}
         <div class="alert alert-danger">{{Error}}</div>
         {% endif %} {% csrf_token %}
@@ -58,8 +57,20 @@
             <div class="num"> {{form.num_documento}}
                 <p id="num_documento-p" class="text-danger"></p>
             </div>
-
-            {% if form.password1 %}
+            {% if titulo %}
+            <div class="mun"><b>Rol: <sup>(*)</sup></b>
+                <select name="rol" id="rol" class="form-control">
+                    <option value="{{UsuarioE.rol.id}}">{% if UsuarioE %}
+                      {{UsuarioE.rol}}
+                    {% endif %}</option>{% for rol in roles %}
+                    {% if  rol.id != UsuarioE.rol.id%}
+                        <option value="{{rol.id}}">{{rol}}</option>
+                    {% endif %}
+                    {% endfor %} 
+                </select>
+                <p id="rol-p" class="text-danger"></p>
+            </div>
+            {% endif %} {% if form.password1 %}
 
 
             <div class="pass1" id="password1-div"><label>
@@ -80,6 +91,7 @@
         </div>
         {% endif %}
         <br>
+
         <div class="botonflex">
             <button type="submit" class="boton"><strong>Confirmar</strong></button>
             <button onclick="cancelCreate()" class="boton" style="background-color: lightgray; color:#000;">Cancelar</button>

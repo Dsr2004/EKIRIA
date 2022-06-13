@@ -46,7 +46,7 @@ menuToggle.onclick = function() {
 
 function Footer() {
     let contenedor = document.getElementById("texto2")
-    let br = document.getElementById("br")
     contenedor.classList.toggle('activar')
-    br.classList.toggle('block')
+    let content = document.getElementById('body-content-menu')
+    content.style.marginBottom = contenedor.clientHeight + "px"
 }

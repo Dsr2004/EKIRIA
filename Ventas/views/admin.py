@@ -25,18 +25,11 @@ class AdminVentas(TemplateView):
 
        
         #autenticacion usuario
-        try:
-            if request.session:
-                imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-                imagen = imagen.img_usuario
-                cambiosQueryset = cambios.objects.all()
-                cambiosfQueryset = cambiosFooter.objects.all()
-                if request.session['Admin'] == True:
-                    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
-                else:
-                    return redirect("SinPermisos")
-        except:
+        UserSesion = if_admin(request)
+        if UserSesion == False:
             return redirect("IniciarSesion")
+        cambiosQueryset = cambios.objects.all()
+        cambiosfQueryset = cambiosFooter.objects.all()
 
         #contexto
         context={
