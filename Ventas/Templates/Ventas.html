@@ -11,9 +11,12 @@
     <link rel="stylesheet" href="{% static 'Ventas/css/Ventas-admin.css'%}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-    
-    
-    <!-- <link rel="stylesheet" href="{%static 'Data_Table/jquery.dataTables.min.css'%}"> -->
+    <!-- graficos -->
+   <script src="{% static 'Plugins/highcharts/code/highcharts.js' %}"></script>
+   <script src="{% static 'Plugins/highcharts/code/modules/exporting.js' %}"></script>
+   <script src="{% static 'Plugins/highcharts/code/modules/export-data.js' %}"></script>
+   <script src="{% static 'Plugins/highcharts/code/modules/accessibility.js' %}"></script>
+ 
 </head>{% endblock head %}
 
 {% block Contenido %}
@@ -142,6 +145,15 @@
 <div class="modal fade bd-example-modal-lg" id="AgregarServicioCatalogo" role="dialog">
 
 </div>
+<div class="container-fluid">
+   <div class="row">
+      <div class="col-lg-12">
+         <div id="container">
+
+         </div>
+      </div>
+   </div>
+</div>
 </div>
 {% endblock Contenido %}
 
@@ -151,6 +163,73 @@
 
 
 {% block scripts %}
+
+<script type="application/javascript">
+   Highcharts.chart('container', {
+      lang: {
+         downloadCSV:"Descarga CSV",       
+         viewFullscreen:"Ver en pantalla completa",
+         loading: 'Cargando...',
+         viewData: 'Ver datos',
+         exitFullscreen: 'Salir de pantalla completa',
+         hideData: 'Ocultar datos',
+         exportButtonTitle: "Exportar",
+         printButtonTitle: "Importar",
+         rangeSelectorFrom: "Desde",
+         rangeSelectorTo: "Hasta",
+         rangeSelectorZoom: "Período",
+         downloadPNG: 'Descargar imagen PNG',
+         downloadJPEG: 'Descargar imagen JPEG',
+         downloadPDF: 'Descargar imagen PDF',
+         downloadXLS: 'Descargar imagen XLS',
+         downloadSVG: 'Descargar imagen SVG',
+         printChart: 'Imprimir',
+         resetZoom: 'Reiniciar zoom',
+         resetZoomTitle: 'Reiniciar zoom',
+         thousandsSep: ",",
+         decimalPoint: '.'
+     },
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: 'Reporte de servicios más solicitados.'
+    },
+    subtitle: {
+        text: 'Reporte de columnas.'
+    },
+    xAxis: {
+        categories:{{datosServicios|safe}},
+        crosshair: true
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: 'Solicitudes'
+        }
+    },
+    tooltip: {
+        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+            '<td style="padding:0"><b>{point.y:1f} Solicitudes</b></td></tr>',
+        footerFormat: '</table>',
+        shared: true,
+        useHTML: true
+    },
+    plotOptions: {
+        column: {
+            pointPadding: 0.2,
+            borderWidth: 0
+        }
+    },
+    series: [{
+        name: 'Cantidad de solicitudes',
+        data: {{datosCantidadServicio|safe}},
+        showInLegend: false,
+        colorByPoint: true,
+    }]
+});
+</script>
 
 
 <script src="{% static 'Ventas/js/Admin.js' %}"></script>

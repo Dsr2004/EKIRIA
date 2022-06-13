@@ -1,0 +1,166 @@
+{% extends "Menu_Usuario.html" %}
+{% load static %}
+{% block head %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario</title>
+    <link rel="stylesheet" href="{% static 'Ventas/css/Ventas.css' %}">
+   <link rel="icon" href="{% static 'Proyecto_Ekiria/Img/Logo Ekiria.png' %}">
+   <link rel="stylesheet" href="{% static 'Plugins/fullcalendar/lib/main.css' %}">
+ 
+
+</head>
+{% endblock head %}
+
+{% block Contenido %}
+<style>
+  .botonX:hover{
+    color: white !important;
+  }
+</style>
+{% if messages %}
+    {% for me in messages %}
+    <div class="container alert alert-warning  alert-dismissible fade show" role="alert">
+         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
+           <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+         </svg>
+      {{me}}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div> 
+    {% endfor %}
+    <br>
+{% endif %}
+<div class="row">
+  <div class="col-md-9">
+    <h1 class="container" style="margin:5px">Calendario</h1>
+  </div>
+  
+  {% if EsEmpleado %}
+  <div class="col-md-3" style="margin-top:20px">
+    <a  class="btn btn-outline-dark botonX" href="{% url 'Ventas:calendarioEmpleado' %}">Administrar Citas</a>
+  </div>
+  {% endif %}
+    
+  
+</div>
+  
+  
+<div class="row" style="margin:5px">
+     <div class="col-md-7 ">
+       <!--aqui va el calendario-->
+       <div id="calendar" style="padding: 40px;" class=""></div>
+      </div> 
+    <div class="col-md-5 ContainerHistorialCitas">
+        <legend>Historial</legend>
+        <table class="table  historialCitas" id="HistorialTable">
+            <thead>
+              <tr>
+                <th scope="col">Fecha</th>
+                <th scope="col">Total</th>
+                <th scope="col">Estado</th>
+                <th scope="col">Acciones</th>
+              </tr>
+            </thead>
+            <tbody sty>
+              
+              {% if citas %}
+                  {% for cita in citas %}
+                  <tr>
+                    <th scope="row">{{cita.diaCita}}</th>
+                    <td>${{cita.pedido_id.get_total_carrito}}</td>
+                    {% if cita.cancelado == True %} 
+                    <td><div class="containerEstadoCita Cancelado"><p class="EstadoCitaTextoCalendario">Cancelado</p></div></td>
+                    {% else %}
+                      {% if cita.EstadoCita %}
+                      <td><div class="containerEstadoCita Realizado"><p class="EstadoCitaTextoCalendario">Realizado</p></div></td>
+                      {% else %}
+                      <td><div class="containerEstadoCita EnEspera"><p class="
+                        EstadoCitaTextoCalendario">Pendiente</p></div></td>
+                      {% endif %}
+                    {% endif %}
+                   
+                    <td><a href="{% url 'Ventas:detalleCita' cita.id_cita%}" class="LinkDetalleCita"><i class="fas fa-info-circle verMasDetalleCitaCalendario"></a></i></td>
+                  </tr>
+                  {% endfor %}
+              {% else %}
+                  <h4>No hay citas que mostrar</h4>
+              {% endif %}
+            </tbody>
+          </table>
+    </div>
+</div>
+{% for i in footer %}
+<a href="https://wa.me/{{i.Telefono}}" class="btn-wsp" target="_blank">
+   <i class="fa-brands fa-whatsapp"></i>
+</a>  
+{% endfor %}
+<div class="modal fade" id="ModalCitaCalendario"  role="dialog">
+
+</div>
+
+{% endblock Contenido %}
+
+{%block scripts%}
+<script src="{% static 'Plugins/fullcalendar/lib/main.js' %}"></script>
+<script src="{% static 'Plugins/fullcalendar/lib/locales-all.js' %}"></script>
+<script src="/static/Ventas/js/Ventas.js"></script>
+  
+<script>
+   $(document).ready(function () {
+      $('#HistorialTable').DataTable({
+            "language": {
+               "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+           },
+           responsive:true
+      });
+    });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function(){
+    var calendarUI  = document.getElementById("calendar")
+    var calendar = new FullCalendar.Calendar(calendarUI,{
+      eventTimeFormat: { 
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+    },
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+      },
+      events: [
+        {% for cita in citas %}
+        {
+          id: '{% url 'Ventas:detalleCalendario' cita.id_cita %}',
+          title:"{{cita.titulo}}",
+          start: "{{cita.inicio}}",
+          end: "{{cita.fin}}",
+          {% if cita.cancelado == True %} 
+            color:"rgba(177, 0, 0, 0.562)",
+          {% else %}
+              {% if cita.EstadoCita %}
+                color:"rgba(0, 177, 38, 0.562)",
+              {% else %}
+                color:"rgba(0, 0, 177, 0.562)",
+              {% endif %}
+          {% endif %}
+        },
+        {% endfor %}
+
+      ],
+      eventClick: function(arg) {
+        url = arg.event.id;
+        console.log(url);
+        abrir_modal_calendario(url)
+      },
+    });
+    calendar.render();
+    calendar.setOption('locale','es')
+  });
+</script>
+{%endblock scripts%}

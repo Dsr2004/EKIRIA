@@ -151,11 +151,6 @@ class Pedido(models.Model):
         return duracion
 
     
-
-
-    
-    
-
 # modelos para administrar los items del pedido
 class PedidoItem(models.Model):
     id_pedidoItem=models.AutoField("Id del Item del  Pedido", primary_key=True, unique=True)
@@ -233,10 +228,13 @@ class Cita(models.Model):
         hoy = datetime.today()
         horaCita = self.horaInicioCita
         fechaCita = datetime(year=self.diaCita.year, month=self.diaCita.month, day=self.diaCita.day, hour=horaCita.hour, minute=horaCita.minute)
-        if hoy<fechaCita:
-            estado = False
+        if hoy.date()>=fechaCita.date():
+            if hoy.time()>=fechaCita.time():
+                estado = False
+            else:
+                estado = True
         else:
-            estado = True
+            estado = False
         return estado
         
 
@@ -297,6 +295,7 @@ def pre_save_cita_receiver(sender, instance, *args, **kwargs):
 
         fin = datetime(1970, 1, 1, inicio.hour, inicio.minute, inicio.second) + timedelta(minutes=instance.pedido_id.get_cantidad)           
         fin = time(fin.hour, fin.minute, fin.second)
+        
         instance.horaFinCita = fin
         
         empleado = instance.empleado_id
@@ -319,21 +318,16 @@ def pre_save_cita_receiver(sender, instance, *args, **kwargs):
         inicio = inicio.strftime("%H:%M")
         fin = fin.strftime("%H:%M")
         
-        # print(horasNoDisponibles)
-        # if not len(horasNoDisponibles)==0:
-        #     horasQuitadas = [x for x in horas for i in horasNoDisponibles if (horasNoDisponibles[i]["horaInicio"] <= x <= horasNoDisponibles[i]["horaFin"])]
-        #     print(horasQuitadas)
-        #     for i in horasQuitadas:
-        #         print(i)
-        #         if  (inicio <= i <= fin):
-        #             print(f"{i} esta dentro del rango de la cita  {inicio} --- {fin}")
-           
         if not len(horasNoDisponibles)==0:
             horasQuitadas = [x for x in horas for i in horasNoDisponibles if (horasNoDisponibles[i]["horaInicio"] <= x <= horasNoDisponibles[i]["horaFin"])]
+            print(horasQuitadas)
             for i in horasQuitadas:
+                print(i[:2])
+                print(i[3:])
                 print(i)
                 if  (inicio <= i <= fin):
                     raise Exception("Ya existe una cita en esa hora, por favor seleccione otra hora")
+                
 
 
 def post_save_cita(sender, instance, created, *args, **kwargs):

@@ -2,6 +2,9 @@ from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+
 from Proyecto_Ekiria.Mixin.Mixin import PermissionDecorator, PermissionMixin
 from Configuracion.models import cambios, cambiosFooter
 from Usuarios.models import Usuario
@@ -45,7 +48,10 @@ class ServiciosPersonalizados(CreateView,PermissionMixin):
         pedido.save()
 
         return redirect("Ventas:carrito")
-        
+
+
+
+@method_decorator(csrf_exempt, name='dispatch')
 class EditarServiciosPersonalizados(UpdateView, PermissionMixin):
     permission_required = ['change_servicio_personalizado']
     model = Servicio_Personalizado
@@ -54,7 +60,8 @@ class EditarServiciosPersonalizados(UpdateView, PermissionMixin):
     success_url=reverse_lazy("Ventas:carrito")
     
     def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST, instance=self.get_object())
+        print(request.FILES)
+        form = self.form_class(request.POST,request.FILES, instance=self.get_object())
         if form.is_valid():
             form.save()
             return redirect("Ventas:carrito")

@@ -11,13 +11,13 @@ from .models import *
 def actualizarItem(request):
 
     data = request.POST
-    servicioid = data["servicioId"]
+    if data["servicioId"]:
+        servicioid = data["servicioId"]
     accion = data["accion"]
     
     cliente = Usuario.objects.get(username=request.session['username'])
     
     pedido,creado = Pedido.objects.get_or_create(cliente_id=cliente, completado=False)
-
 
     if accion== "remove":
         servicio= Servicio.objects.get(id_servicio=servicioid)
