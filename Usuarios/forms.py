@@ -503,12 +503,12 @@ class EditUser(forms.ModelForm):
         return fec_nac
 
     def clean_celular(self):
-        cel = self.cleaned_data.get('celular')
-        if cel.isdigit() is False:
+        celular = self.cleaned_data.get('celular')
+        if celular.isdigit() is False:
             raise  forms.ValidationError('Por favor ingresa solo números')
-        if len(cel)!=10:
+        if len(celular)!=10:
             raise forms.ValidationError('Por favor ingresa un número de celular correcto')
-        return cel
+        return celular
 
     def clean_num_documento(self):
         num = self.cleaned_data.get('num_documento')

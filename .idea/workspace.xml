@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="66830116-caa5-4c1a-975a-83d24d6e1173" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/Ventas/Templates/AgregarServicio.html" beforeDir="false" afterPath="$PROJECT_DIR$/Ventas/Templates/AgregarServicio.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Ventas/Templates/Calendario.html" beforeDir="false" afterPath="$PROJECT_DIR$/Ventas/Templates/Calendario.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Ventas/Templates/EditarServicio.html" beforeDir="false" afterPath="$PROJECT_DIR$/Ventas/Templates/EditarServicio.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Ventas/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/Ventas/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Ventas/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/Ventas/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Ventas/views/citas.py" beforeDir="false" afterPath="$PROJECT_DIR$/Ventas/views/citas.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Ventas/views/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/Ventas/views/views.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Ventas/Templates/AgregarServicio.html" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Ventas/Templates/Calendario.html" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Ventas/Templates/EditarServicio.html" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Ventas/Templates/TerminarPedido.html" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Ventas/carrito.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Ventas/forms.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Ventas/models.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Ventas/tests.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Ventas/views/citas.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Ventas/views/views.py" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="29Z3gv89n2Hps9vAO2Id0PflJzd" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Sena/OneDrive/EKIRIA&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Sena\OneDrive\EKIRIA" />
+      <recent name="C:\Users\Sena\OneDrive\EKIRIA\Proyecto_Ekiria" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="66830116-caa5-4c1a-975a-83d24d6e1173" name="Changes" comment="" />
+      <created>1653306894703</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1653306894703</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="93b7c3fb-b0b3-40ec-8cf1-a6cbf71de1ce">
+          <value>
+            <State />
+          </value>
+        </entry>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="OPEN_GENERIC_TABS">
+      <map>
+        <entry key="93b7c3fb-b0b3-40ec-8cf1-a6cbf71de1ce" value="TOOL_WINDOW" />
+      </map>
+    </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Ventas/views/citas.py</url>
+          <line>24</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Ventas/views/tipoServicios.py</url>
+          <line>85</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Proyecto_Ekiria/urls.py</url>
+          <line>16</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Proyecto_Ekiria/settings/base.py</url>
+          <line>141</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
