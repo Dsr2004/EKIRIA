@@ -135,6 +135,12 @@ class Admin(PermissionMixin,DetailView):
 
         return render(request, self.template_name, context)
 
+    def post(self, request,*args, **kwargs):
+        queryset = request.POST
+        print(queryset)
+        # param = Codename
+        # rol.permissions.add("codename"=parametro)
+        return redirect('Admin',kwargs['pk'])
 
 
 
@@ -362,7 +368,6 @@ class listarPermisos(ListView,PermissionMixin):
         
     def get_context_data(self, *args, **kwargs):
         contexto="" 
-        # este es porque daña un error el contexto por no definirlo cono string
         queryset = self.request.GET.get("buscar")
         
         contexto= self.model.objects.all()
@@ -390,5 +395,5 @@ class listarPermisos(ListView,PermissionMixin):
         return context
 
 
-
-    
+def AgregarPer(request):
+    pass

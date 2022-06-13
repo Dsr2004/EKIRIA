@@ -30,7 +30,7 @@ body {
 }
 
 .contentMenu {
-    display: none;
+    visibility:hidden;
 }
 
 .containerPreloader {
