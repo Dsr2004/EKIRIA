@@ -11,7 +11,7 @@ from Configuracion.models import cambiosFooter, cambios
 from Usuarios.models import Usuario
 from ..models import Catalogo, Tipo_servicio, Servicio, PedidoItem
 from ..forms import CatalogoForm, Tipo_servicioForm
-
+from Usuarios.views import if_User, if_admin
 
 """
 <----------------------------------------------------------------->
@@ -44,8 +44,6 @@ class AdminVentas(TemplateView):
     def get(self,request, *args, **kwargs):
         formTipo_Servicio = Tipo_servicioForm
         servicios=Catalogo.objects.all()
-<<<<<<< HEAD
-
        
         #autenticacion usuario
         UserSesion = if_admin(request)
@@ -53,22 +51,8 @@ class AdminVentas(TemplateView):
             return redirect("IniciarSesion")
         cambiosQueryset = cambios.objects.all()
         cambiosfQueryset = cambiosFooter.objects.all()
-=======
-        try:
-            if request.session:
-                imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-                imagen = imagen.img_usuario
-                cambiosQueryset = cambios.objects.all()
-                cambiosfQueryset = cambiosFooter.objects.all()
-                if request.session['Admin'] == True:
-                    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
-                else:
-                    return redirect("SinPermisos")
-        except:
-            return redirect("IniciarSesion")
         
         servicios_mas_solicitados = self.get_grafico_serviciosMasSolicitados()
->>>>>>> d7b5053875a1873d5d1dc8b0de38de6b10e4d0bd
 
         datosServicios=servicios_mas_solicitados["servicio"]
         datosCantidadServicio = servicios_mas_solicitados["cantidad"]

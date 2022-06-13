@@ -18,24 +18,18 @@ from django.contrib.staticfiles import finders
 
 from Proyecto_Ekiria.Mixin.Mixin import PermissionDecorator, PermissionMixin
 from Configuracion.models import cambios, cambiosFooter
-<<<<<<< HEAD
 from django.conf import settings
-from Usuarios.Mixins.Mixin import if_admin
-=======
->>>>>>> d7b5053875a1873d5d1dc8b0de38de6b10e4d0bd
+from Usuarios.views import if_admin
 from Usuarios.models import Usuario
 
 from .views import is_list_empty
 from ..mixins import ActualiarCitaMixin, ActualiarCitaClienteMixin
 from ..models import Cita, Pedido, Calendario, Servicio
-<<<<<<< HEAD
 from ..forms import CitaForm
 from Usuarios.views import if_User, if_admin
-=======
 from ..forms import CitaForm, Servicio_PersonalizadoForm
 
 from ..Accesso import acceso
->>>>>>> d7b5053875a1873d5d1dc8b0de38de6b10e4d0bd
 """
 <----------------------------------------------------------------->
 Seccion de las Vistas donde se administran las citas
@@ -66,7 +60,6 @@ class AgregarCita(TemplateView,PermissionMixin):
     def get_context_data(self, *args, **kwargs):
         context = super(AgregarCita, self).get_context_data(**kwargs)
         try:
-<<<<<<< HEAD
             UserSesion = if_admin(self.request)
             if UserSesion == False:
                 return redirect("IniciarSesion")
@@ -77,24 +70,6 @@ class AgregarCita(TemplateView,PermissionMixin):
             context['footer']=cambiosfQueryset
             context["form"] = self.form_class
             return context
-=======
-            UserSesion=""
-            if self.request.session:
-                imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
-                imagen = imagen.img_usuario
-                cambiosQueryset = cambios.objects.all()
-                cambiosfQueryset = cambiosFooter.objects.all()
-                if self.request.session['Admin'] == True:
-                    UserSesion = {"username":self.request.session['username'], "rol":self.request.session['rol'], "imagen":imagen, "admin":self.request.session['Admin']}
-                    context["User"] = UserSesion
-                    context['cambios']=cambiosQueryset
-                    context['footer']=cambiosfQueryset
-                    context["form"] = self.form_class
-                    context["formPer"] = Servicio_PersonalizadoForm
-                    return context
-                else:
-                    return redirect("SinPermisos")
->>>>>>> d7b5053875a1873d5d1dc8b0de38de6b10e4d0bd
         except Exception as e:
             print("desde Agregar cita: ", e)
         return context
