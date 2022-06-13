@@ -129,7 +129,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {%if Usuario%} {% for user in Usuario%}
+
+                            {%if Usuario%} {% for user in Usuario%} {% if User.admin == 2 %} {%if user.administrador == False %}
+
                             <tr>
                                 <td>{{user.username}}</td>
                                 <td>
@@ -161,7 +163,40 @@
                                     </button>
                                 </td>
                             </tr>
-                            {% endfor %} {%else%}
+
+                            {%endif%} {%else%}
+                            <tr>
+                                <td>{{user.username}}</td>
+                                <td>
+                                    <form id="EstadoUsuarioForm" method="post" action="{% url 'editarEstadoUsuario' %}">
+                                        {%csrf_token%}
+                                        <div class="form-check form-switch switch-Cambio-TipoServicio" style="margin-left: 20px;">
+                                            <input class="form-check-input" type="checkbox" role="switch" name="esatdo" onclick="CambiarEstadoUsuario('{{user.id_usuario}}')" {% if user.estado %}checked{%endif%}>
+                                        </div>
+                                    </form>
+                                </td>
+                                <td>{{user.nombres}}</td>
+                                <td>{{user.apellidos}}</td>
+                                <td>
+                                    {% if user.telefono %} {{user.telefono}} {%else%} No Aplica {% endif %}
+                                </td>
+                                <td>{{user.celular}}</td>
+                                <td>{{user.email}}</td>
+                                <td>{{user.tipo_documento}}</td>
+                                <td>{{user.num_documento}}</td>
+                                <td>{% if user.direccion %} {{user.direccion}} {%else%} No Aplica {% endif %}</td>
+                                <td>{{user.cod_postal}}</td>
+                                <td>{{user.municipio}}</td>
+                                <td>{{user.rol}}</td>
+                                <td>{% if user.last_login %} {{user.last_login}} {%else%} No ha iniciado sesión {% endif %}</td>
+                                <td>
+                                    {% csrf_token %}
+                                    <button type="button" class="Edit" onclick="EditarUsuario('{{user.id_usuario}}')">
+                                        <i class="mdi mdi-account-edit"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endif %} {% endfor %} {%else%}
                             <tr>
                                 <td>
                                     No hay usuarios Registrados

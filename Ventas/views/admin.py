@@ -44,6 +44,16 @@ class AdminVentas(TemplateView):
     def get(self,request, *args, **kwargs):
         formTipo_Servicio = Tipo_servicioForm
         servicios=Catalogo.objects.all()
+<<<<<<< HEAD
+
+       
+        #autenticacion usuario
+        UserSesion = if_admin(request)
+        if UserSesion == False:
+            return redirect("IniciarSesion")
+        cambiosQueryset = cambios.objects.all()
+        cambiosfQueryset = cambiosFooter.objects.all()
+=======
         try:
             if request.session:
                 imagen = Usuario.objects.get(id_usuario=request.session['pk'])
@@ -58,6 +68,7 @@ class AdminVentas(TemplateView):
             return redirect("IniciarSesion")
         
         servicios_mas_solicitados = self.get_grafico_serviciosMasSolicitados()
+>>>>>>> d7b5053875a1873d5d1dc8b0de38de6b10e4d0bd
 
         datosServicios=servicios_mas_solicitados["servicio"]
         datosCantidadServicio = servicios_mas_solicitados["cantidad"]
