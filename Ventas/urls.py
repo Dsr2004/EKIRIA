@@ -27,6 +27,7 @@ urlpatterns = [
     path('pruebas/', views.pruebas, name="pruebas"),
     path('correo/', views.correoPrueba, name="correo"),
 
+    path('BuscarServicioCatalogo', login_required(views.BuscarServicioCatalogo.as_view()), name="buscarServicioCatalogo"),
     path('Carrito/', login_required(views.Carrito), name="carrito"),
     path('TerminarPedido/', login_required(citas.AgandarCita.as_view()), name="terminarPedido"),
     path('Calendario/', login_required(views.Calendario.as_view()), name="calendario"),

@@ -1,0 +1,453 @@
+/*imagen de fondo*/
+
+body {
+    background-image: linear-gradient(rgba(5, 7, 12, 0.75)), url(/static/Modulo_compras/img/ESPACIO.jpg);
+}
+
+
+/*size img*/
+
+.table td img {
+    width: 50%;
+    height: 30px;
+    padding: 0;
+    margin: 0;
+}
+
+
+/*Estilos de icono borrar*/
+
+#b {
+    width: 60%;
+    height: 30px;
+    padding: 0;
+    margin: 0;
+    border-radius: 10px;
+}
+
+#b:hover {
+    background-color: rgba(247, 8, 8, 0.205);
+}
+
+
+/*Estilos de icono editar*/
+
+#e {
+    border-radius: 6px;
+}
+
+#e:hover {
+    background-color: rgba(231, 247, 8, 0.253);
+}
+
+
+/*contenerdor*/
+
+#cont1 {
+    width: 65%;
+    height: 120px;
+}
+
+.contend {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+
+/*TITULO ANIMADO*/
+
+:root {
+    --logotipo: #2b035fc4;
+    --profesion: #ffffff;
+    --primario: #480575;
+}
+
+main {
+    width: 90%;
+    max-width: 400px;
+    min-height: 10vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logotipo {
+    padding: 10px;
+    color: var(--logotipo);
+}
+
+.logotipo .subtitulo {
+    color: var(--profesion);
+    background: var(--logotipo);
+    padding: 12px 20px;
+    transition: .5s ease all;
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.logotipo:hover .subtitulo {
+    background: var(--primario);
+}
+
+.texto-animado {
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.texto-animado>div {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: .3s ease all;
+}
+
+.texto-animado>div.animacion {
+    transform: translateY(-100px);
+}
+
+.texto-animado>div span {
+    font-size: 45px;
+    font-weight: normal;
+    line-height: 40px;
+}
+
+.texto-animado .segunda-linea {
+    position: absolute;
+    top: 100px;
+}
+
+@media screen and (max-width: 600px) {
+    .texto-animado>div span {
+        font-size: 50px;
+        line-height: 50px;
+    }
+    .texto-animado .segunda-linea {
+        top: 50px;
+    }
+    .texto-animado>div.animacion {
+        transform: translateY(-50px);
+    }
+    .logotipo .subtitulo {
+        font-size: 20px;
+    }
+}
+
+
+/*contenerdor de la tabla en el modal*/
+
+.cont-tabl {
+    width: 80%;
+}
+
+.cont-tabl td {
+    justify-items: center;
+}
+
+.modal-content {
+    width: 145% !important;
+    right: 22% !important;
+}
+
+.Table.Content-table .Information table tr td {
+    text-align: start !important;
+}
+
+.Table.Add .Add.img {
+    padding: 10px 15px !important;
+}
+
+.buttonEliminar {
+    background: #e93737;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 50%;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+}
+
+
+/* icono */
+
+.cardName {
+    font-size: 25px !important;
+}
+
+
+/* anuncio de no registros */
+
+.anunre {
+    font-size: 40px;
+    margin-left: 25%;
+}
+
+
+/* imagen de espera */
+
+.imgespera {
+    width: 40%;
+    height: 40%;
+    margin-left: 10%;
+}
+
+.form-switch .form-check-input {
+    left: 0 !important;
+}
+
+
+/*    Funciones compras     */
+
+.GridProductos {
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: 65% 35%;
+    grid-gap: 20px;
+}
+
+.pAlertContenedor {
+    width: 65%!important;
+    text-align: center;
+    display: none;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+@media (max-width: 700px) {
+    .GridProductos {
+        margin-top: 40px;
+        display: grid;
+        grid-template-columns: 100%;
+        grid-gap: 20px;
+    }
+    .pAlertContenedor {
+        width: 100%!important;
+        text-align: center;
+        display: none;
+        padding: 10px;
+        border-radius: 10px;
+    }
+}
+
+.GridProductos .fomularioProducto,
+.GridProductos .tipo_productoroductos {
+    padding: 10px;
+    width: 100%;
+    border-radius: 20px;
+    border: 0.3px solid rgb(146, 146, 146);
+    height: 70vh;
+    box-shadow: 0px 7px 20px rgba(0, 0, 0, 0.28);
+    overflow: auto;
+}
+
+.GridProductos .fomularioProducto h1 {
+    font-size: 24px;
+}
+
+.GridProductos .fomularioProducto h1 sup {
+    color: #e93737;
+}
+
+.GridProductos .fomularioProducto #labelTp {
+    border-radius: 5px;
+    border: 0.5px solid rgba(0, 0, 0, 0.185);
+    text-align: center;
+    width: 100%;
+    height: 200px;
+}
+
+.GridProductos .fomularioProducto #labelTp b {
+    position: relative;
+    font-size: 38px;
+    margin-top: 100px;
+    color: rgba(0, 0, 0, 0.336);
+}
+
+.GridProductos .tipo_productoroductos table {
+    width: 100%!important;
+}
+
+.dataTables_info {
+    display: none;
+}
+
+.GridProductos .tipo_productoroductos i {
+    font-size: 24px;
+    position: relative;
+    right: -5px;
+    top: -10px;
+    float: right;
+}
+
+.GridProductos .tipo_productoroductos h1 {
+    text-align: center;
+    font-size: 24px;
+}
+
+.tipo_productoroductos .dataTables_length {
+    display: none;
+}
+
+.dataTables_filter label {
+    position: relative;
+    top: -10px;
+    margin-left: -100%!important;
+    width: 100%!important;
+}
+
+.dataTables_filter label input {
+    position: relative !important;
+    border-radius: 10px !important;
+    padding: 5px 15px!important;
+    font-size: 18px !important;
+    width: 80% !important;
+    outline: none !important;
+    box-shadow: 0 7px 25px rgba(0, 0, 0, 0.18)!important;
+}
+
+#DropTipo {
+    margin-top: 10px;
+}
+
+#DropTipo tr th {
+    width: 100%;
+    border-radius: 10px;
+    text-align: center;
+    background-color: rgba(0, 255, 55, 0.5);
+}
+
+#DropTipo .estado {
+    display: none;
+}
+
+#Productos .cantidad {
+    display: none!important;
+}
+
+#DropCompra.estado {
+    display: none;
+}
+
+#DropCompra .estado.ocultoSi {
+    display: block!important;
+}
+
+#DropCompra tr td {
+    text-align: center;
+}
+
+.estado.ocultoSi {
+    display: none!important;
+}
+
+.form-check-input {
+    margin-top: 15px!important;
+    margin-left: 10px!important;
+}
+
+#Tabletipo_producto .sorting_1,
+#Tabletipo_producto .sorting_asc {
+    display: none!important;
+}
+
+
+/* estilos Compras */
+
+.Table.Add .pdf.img {
+    color: inherit;
+    padding: 0px 13px;
+    font: inherit;
+    font-size: 25px;
+    border-radius: 50%;
+    cursor: pointer;
+    outline: inherit;
+    margin-top: 0px;
+    z-index: 1;
+    margin-right: 20px;
+}
+
+.Table.Add .pdf.img:hover {
+    border-radius: 10px;
+    transition: 0.1s;
+}
+
+.Table.Add .pdf.img:hover a {
+    display: flex;
+    flex-wrap: wrap;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.Table.Add .pdf.img:hover a b.etiquetaReporte {
+    margin-left: 10px;
+    display: block!important;
+    font-size: 16px;
+    transition: 0.3s;
+    margin-top: 7px;
+}
+
+.Table.Add .Add.img:hover {
+    border-radius: 10px;
+    transition: 0.1s;
+}
+
+.Table.Add .Add.img:hover a {
+    display: flex;
+    flex-wrap: wrap;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.Table.Add .Add.img:hover a b.etiquetaCrearCompra { 
+    margin-left: 10px;
+    display: block!important;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+#Alerta b {
+    position: relative;
+    font-size: 38px;
+    margin-top: 100px;
+    color: rgba(0, 0, 0, 0.336);
+}
+
+#Alerta {
+    border-radius: 5px;
+    border: 0.5px solid rgba(0, 0, 0, 0.185);
+    text-align: center;
+    width: 100%;
+    height: 50vh;
+}
+
+.TituloCompra {
+    position: sticky;
+    width: 100%;
+    top: 0;
+    height: 50px;
+    background-color: #fff;
+    text-align: center;
+    box-shadow: 0px 7px 20px rgba(0, 0, 0, 0.18);
+    font-size: 32px;
+    font-weight: 600;
+    padding-top: 9px;
+    z-index: 2;
+}
+
+.gridFootCompra {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 30px;
+    bottom: 0%;
+    position: sticky;
+    background-color: #fff;
+    height: 45px;
+}
+
+.BottonCompra {
+    height: 40px;
+    float: right;
+    width: 100%;
+}

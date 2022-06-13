@@ -553,6 +553,7 @@ class verDetalleCompra(TemplateView):
         context["User"]=UserSesion
         context['cambios']=cambiosQueryset
         context['footer']=cambiosfQueryset
+        context['logo']='{}{}'.format(settings.local.STATIC_URL, 'Proyecto_Ekiria/Img/Logo Ekiria Negro 1.png')
         template = get_template("Reportes/DetalleCompra.html")
         html = template.render(context)
         response = HttpResponse(content_type="application/pdf")

@@ -1,3 +1,4 @@
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import View, TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -47,7 +48,18 @@ class Catalogo(ListView, PermissionMixin):
                 return context
         except:
             return context
-    
+
+class BuscarServicioCatalogo(View):
+    def post(self, request, *args, **kwargs):
+        accion = request.POST.get("accion")
+        if accion == "BuscarServicioCatalogo":
+            busqueda = request.POST.get("busqueda")
+            servicios = Servicio.objects.filter(nombre__icontains=busqueda)
+            data=[]
+            for i in servicios:
+                    item = i.toJSON()
+                    data.append(item)
+        return JsonResponse(data, safe=False)
 # @PermissionDecorator(['view_pedido', 'view pedidoItem'])    
 def Carrito(request):
     try:
