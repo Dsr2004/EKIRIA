@@ -1,4 +1,6 @@
-function AjaxAddService(datos){
+function AjaxAddService(datos, accion){
+  var url = "/Ventas/AddtoCarrito/"
+  datos =  {"csrfmiddlewaretoken":csrftoken, "servicioId":datos, "accion":accion}
   $.ajax({
     data: datos,
     url: url,
@@ -30,7 +32,7 @@ for(var i=0 ; i<UpdateBoton.length; i++){
     })
 }
 
-function ActualizarPedidoDeUsuario(servicioId, accion){ 
+function ActualizarPedidoDeUsuario(servicioId, accion){
     var url = "/Ventas/AddtoCarrito/"
     if (accion == "removePer"){
         swal({
@@ -65,12 +67,10 @@ function ActualizarPedidoDeUsuario(servicioId, accion){
               
             }
           });
-    }else if(accion == "updatePer"){
-        
     }
     else{
-      datos =  {"csrfmiddlewaretoken":csrftoken, "servicioId":servicioId, "accion":accion}
-      AjaxAddService(datos)
+      datos = servicioId
+      AjaxAddService(datos, accion)
       
     }
     

@@ -107,7 +107,6 @@
    <i class="fa-brands fa-whatsapp"></i>
 </a>  
 {% endfor %}
-<button type="button" onclick="ajafFuncion()">Enviar</button>
 {% endblock Contenido %}
 
 
@@ -123,6 +122,9 @@
 <script src="{%static 'Ventas/js/Ventas.js'%}"></script>
 <script src="{% static 'Ventas/js/Carrito.js' %}"></script>
 <script>
+   function executeTest(){
+      alert("Hola");
+   }
    function BuscarServicioCatalogo(){
       $("#CatalogoContainer").css("display", "none");
       let cajaI = $("#containerInicio")
@@ -153,12 +155,14 @@
                var html = "";
                for(dato in datos){
                   let slug =  datos[dato]["slug"]
+                  let id  = datos[dato]["id_servicio"]
+                  var url = datos[dato]["carrito"]
                   html += '<div class="col-md-3">'+
                      '<img class="img ImgServiceCatalogo" src="'+datos[dato]["img_servicio"]+'" style="z-index: 0 !important;" height="241">'+
                      '<div class="box-element product" style="height: 160px;">'+
                         '<h6 style="width:100%; overflow: hidden; white-space:nowrap; text-overflow: ellipsis;" ><strong>'+datos[dato]["nombre"]+'</strong></h6>'+
                         '<hr>'+
-                       ' <button data-servicio="'+parseInt(datos[dato]["id_servicio"])+'" data-action="add" class="btn btn-outline-success addToCar">Al carrito!</button>'+
+                       ' <button data-servicio="'+datos[dato]["id_servicio"]+'" data-action="add" class="btn btn-outline-success addToCar" onclick="AjaxAddService('+url+')">Al carrito!</button>'+
                         '<a  class="btn  btn-outline-primary" onclick="'+slug+'")">Ver</a>'+
                         '<hr>'+
                         '<h6 style="float: left; color: gray;"><strong>Precio:</strong></h6>'+

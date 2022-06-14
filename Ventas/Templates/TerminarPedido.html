@@ -115,16 +115,16 @@
       </div>
     </div>
     <br><br>
+    {% for i in footer %}
     <div class="alert alert-dark alert-dismissible fade show" role="alert">
       <h4 class="alert-heading">Señor Usuario!</h4>
       <p>Recuerde que los precios de los servicios que usted este agendando puede variar, este es un precio base, pero si al momento de prestar el servicio se requiere de más materiales estos serán cobrados </p>
       <hr>
-      <p class="mb-0">Para más información escriba a nuestro WhatsApp <strong>1234567890</strong> o escribanos a nuestro correo <strong>servicioalcliente@ekiria.com</strong> lo atenderemos lo mas pronto posible .</p>
+      <p class="mb-0">Para más información, escriba a nuestro WhatsApp <strong><a href="https://wa.me/{{i.Telefono}}" target="_blank">+{{i.Telefono}}</a> </strong>. Lo atenderemos lo más pronto posible.</p>
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
+{% endfor %}
 
-   
-    
 </div>
 </div>
 

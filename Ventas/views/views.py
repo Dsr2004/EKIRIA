@@ -11,7 +11,7 @@ from Usuarios.views import if_User
 from ..models import Cita, Catalogo, Servicio_Personalizado, Pedido, Servicio
 from ..forms import Servicio_PersonalizadoForm
 from Proyecto_Ekiria.Mixin.Mixin import PermissionDecorator, PermissionMixin
-from ..Accesso import acceso
+from ..Accesso import acceso, accesoCatalogo
 from Ventas import models
 from django.contrib.auth.models import Permission,Group
 def is_list_empty(list):
@@ -27,20 +27,27 @@ Seccion de las Vistas donde se administra el catalogo
 """
 
 class Catalogo(ListView, PermissionMixin): 
+    def consulta(self, user):
+        AccesoUsuario = accesoCatalogo(self.request.user)
+        gradoDeUsuario= AccesoUsuario.DefinirGrado()
+        servicios = []
+        for i in range(gradoDeUsuario["gradoNumero"], 0, -1):
+            print(i)
+            # permiso = Group.permissions.filter(codename="Grado {}".format(i))
+            # print(permiso)
+            
+        print(gradoDeUsuario)
+    
     permission_required = ['view_catalogo']
     queryset = Catalogo.objects.filter(estado=True)
     context_object_name = "servicios"
     template_name = "Catalogo.html"
-
+    
+    
+        
     def get_context_data(self, *args, **kwargs):
         context = super(Catalogo, self).get_context_data(**kwargs)
-        roles = Group.objects.all()
-        for rol in roles:
-            if rol.id == 1:
-                permisos = rol.permissions.filter(content_type_id=20)
-                for permiso in permisos:
-                    if permiso.codename[0:5] == "Grado":
-                        print(permiso.codename)
+        self.consulta(self.request.user)
         try:
            if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])

@@ -11,6 +11,17 @@
         {{form.nombre}}
         <p id="nombre" class="bg-light text-danger" style="color: #dc3545;"></p>
         <br>
+        <Label><strong>Grado: </strong></Label>
+        {% with field=form.grado_id %}
+        <select name="{{ field.html_name }}" class="form-control" required="" id="{{ field.id_for_label }}">
+          <option>---------</option>
+          {% for key, value in grados.items %}
+          <option value="{{ key}}" {% if key == object.grado_id.id %}selected{% endif %} >{{  value }}</option>
+          {% endfor %}
+        </select>
+        {% endwith %}
+        <p id="grado_id" class="bg-light text-danger" style="color: #dc3545;"></p>
+        <br>
         <Label><strong>Estado:   </strong></Label>
         <div class="form-check form-switch">
             {{form.estado}}

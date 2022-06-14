@@ -39,12 +39,16 @@
         window.location.href="/Ventas/AdminVentas/"
       },
       error: function(error){
-          $("#formCrearTipo_Servicio").find('.text-danger').text('');
+        $("#formCrearTipo_Servicio").find('.text-danger').text('');
+        $("#formCrearTipo_Servicio").find('.is-invalid').removeClass('is-invalid');
           for (let i in error.responseJSON["errors"]){
             let x=$("#formCrearTipo_Servicio").find('input[name='+i+']')
+            let y=$("#formCrearTipo_Servicio").find('select[name='+i+']')
             x.addClass("is-invalid")
-            $("#"+i).text(error.responseJSON["errors"][i])
+            y.addClass("is-invalid")
+            $("#"+i).text( error.responseJSON["errors"][i])
         }
+      
       }
     });
   }
@@ -61,9 +65,12 @@
       },
       error: function(error){
         $("#formEditarTipo_Servicio").find('.text-danger').text('');
+        $("#formEditarTipo_Servicio").find('.is-invalid').removeClass('is-invalid');
         for (let i in error.responseJSON["errors"]){
           let x=$("#formEditarTipo_Servicio").find('input[name='+i+']')
+          let y=$("#formEditarTipo_Servicio").find('select[name='+i+']')
           x.addClass("is-invalid")
+          y.addClass("is-invalid")
           $("#"+i).text( error.responseJSON["errors"][i])
         }
       }

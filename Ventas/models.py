@@ -19,10 +19,15 @@ from django.contrib.auth.models import Permission,Group
 from Usuarios.models import Usuario
 
 usuario = Usuario
+
+
 # modelo para administrar los tipos de servicios
 class Tipo_servicio(models.Model):
+    
+    
     id_tipo_servicio=models.AutoField("Id del Tipo de Servicio", primary_key=True, unique=True)
     nombre=models.CharField("Nombre", max_length=50, null=False,blank=False, unique=True)
+    grado_id = models.ForeignKey(Permission, verbose_name="Grado", on_delete=models.CASCADE, null=False, blank=False,db_column="grado_id")
     fecha_creacion=models.DateField("Fecha de Creacion", auto_now=False, auto_now_add=True)
     fecha_actualizacion= models.DateTimeField("Fecha de Actualizacion", auto_now=True, auto_now_add=False)
     estado=models.BooleanField("Estado", default=True)
@@ -67,6 +72,8 @@ class Servicio(models.Model):
                     "estado": self.estado}
         servicio["img_servicio"] = "{}{}".format(settings.MEDIA_URL, self.img_servicio)
         servicio["slug"] = "abrir_modal_detalleServicio('{}')".format(self.get_absolute_url())
+        servicio["carrito"]="AjaxAddService({}, 'add')".format(self.id_servicio)
+        print("servicioklsds", servicio["carrito"])
         return servicio
     
     

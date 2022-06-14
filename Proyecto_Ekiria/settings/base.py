@@ -40,8 +40,8 @@ BASE_APPS = [
     'django.contrib.staticfiles',
 ]
 LOCAL_APPS =[
-    'Ventas',
     'Configuracion',
+    'Ventas',
     'Usuarios',
     'Modulo_compras',
     'Commands'

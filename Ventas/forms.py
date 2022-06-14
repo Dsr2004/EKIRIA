@@ -46,12 +46,15 @@ class Tipo_servicioForm(forms.ModelForm):
         fields="__all__"
         widgets={
             'nombre':forms.TextInput(attrs={'class':'form-control','autocomplete':'off'}),
-            'estado':forms.CheckboxInput(attrs={'class':'form-check-input estadoServicioRegistro',  "style":"margin-left: -5px; height: 30px; width: 60px; margin-top: -5px"})
+            'estado':forms.CheckboxInput(attrs={'class':'form-check-input estadoServicioRegistro',  "style":"margin-left: -5px; height: 30px; width: 60px; margin-top: -5px"}),
+            'grado_id':forms.Select(attrs={"class":"form-select"}),
         }
     def __init__(self, *args, **kwargs):
             super(Tipo_servicioForm, self).__init__(*args, **kwargs) 
             self.fields['nombre'].label = False
             self.fields['estado'].label = False
+            self.fields['grado_id'].label = False
+            
             
 
 class CatalogoForm(forms.ModelForm):
