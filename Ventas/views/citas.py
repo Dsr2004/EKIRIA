@@ -744,7 +744,7 @@ class CitasHoyReportePDF(View):
             context = {"citas":citas, "hoy":datetime.now(), "empleado":empleado}
             html = template.render(context)
             response = HttpResponse(content_type='application/pdf')
-            # response["Content-Disposition"] = 'attachment; filename="citas_hoy.pdf"'
+            response["Content-Disposition"] = 'attachment; filename="citas_hoy.pdf"'
             pisaStatus = pisa.CreatePDF(html, dest=response, link_callback=self.link_callback)
             return response
         except:

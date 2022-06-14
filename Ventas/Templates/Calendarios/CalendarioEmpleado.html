@@ -104,7 +104,7 @@
                     <a href="{% url 'Ventas:reporte_citaHoyPDF' %}" class="btn"><i class="fa-solid fa-file-pdf" style="color: red;transform: scale(2.0);"></i></a>
                   </div>
                   <div class="col-4">
-                    <a href="" class="btn"><i class="fa-solid fa-file-circle-plus" style="color: rgb(219, 118, 10);transform: scale(2.0);"></i></a>
+                    <a onclick="abrir_modal_reporte_empleado()" class="btn"><i class="fa-solid fa-file-circle-plus" style="color: rgb(219, 118, 10);transform: scale(2.0);"></i></a>
                   </div>
                   <div class="col-2"></div>
                 </div>
@@ -162,6 +162,21 @@
 </div>
 <div class="modal fade" id="ModalCitaCalendario"  role="dialog">
 
+</div>
+
+<div class="modal fade" id="ModalReportePersonalizadoEmpleado"  role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">GENERAR REPORTE POR FECHA</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            dfdf
+          </div>
+        </div>
+      </div>
+    
 </div>
 
 {% endblock Contenido %}

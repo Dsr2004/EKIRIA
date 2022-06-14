@@ -5,6 +5,10 @@
   });
 }
 
+function abrir_modal_reporte_empleado(){
+  $("#ModalReportePersonalizadoEmpleado").appendTo("body").modal('show');
+}
+
 function PersonalizarServAgendarCitaModal(){
   $("#ServicioPersonalizadoCita").appendTo("body").modal('show');
 }
