@@ -41,6 +41,7 @@ function PersonalizarServAgendarCitaModal(){
 function abrir_modal_reporte_empleado(){
   $("#ModalReporteEmpleado").appendTo("body").modal("show");
 }
+
 function GuardarCita(){
   swal({
     title: "¿Estás seguro?",
@@ -430,7 +431,7 @@ function BuscarUsuarioParaCita(){
 
 // AGENDAR CITA POR PARTE DEL ADMIN
 
- $('#ServiciosTable').DataTable()
+ var ServiciosCitaTable = $('#ServiciosTable').DataTable()
  $('#ServiciosPersonalizadosTable').DataTable()
 
 $("#AgregarServicioPerForm").on("submit", function(e){
@@ -490,6 +491,7 @@ var citaObject = {
     servicios:[],
     serviciosPersonalizados:[],
     id:[],
+    objServiciosPersonalizados:[],
 
   },
   add : function(item){
@@ -535,7 +537,7 @@ var citaObject = {
               class: 'text-center',
               orderable: false,
               render: function (data, type, row) {
-                  return '<a rel="remove" class="btn btn-danger btn-xs btn-flat" style="color: white;"><i class="fas fa-trash-alt"></i></a>';
+                  return '<a rel="quitar" class="btn btn-danger btn-xs btn-flat" style="color: white;"><i class="fas fa-trash-alt"></i></a>';
               }
           },
           {
@@ -572,7 +574,6 @@ var citaObject = {
       destroy: true,
       data: this.items.serviciosPersonalizados,
       columns: [
-          {"data": "urlImg"},
           {"data": "tipo_servicio_nombre"},
           {"data": "descripcion"},
           {"data": "id"},
@@ -583,17 +584,10 @@ var citaObject = {
               class: 'text-center',
               orderable: false,
               render: function (data, type, row) {
-                  return '<a rel="remove" class="btn btn-danger btn-xs btn-flat" style="color: white;"><i class="fas fa-trash-alt"></i></a>';
+                  return '<a rel="quitar" class="btn btn-danger btn-xs btn-flat" style="color: white;"><i class="fas fa-trash-alt"></i></a>';
               }
           },
-          {
-            targets: [0],
-            class: 'text-center',
-            orderable: false,
-            render: function (data, type, row) {
-                return '<img src="'+row.img_servicio+'" style="border-radius: 15px;" width="80" height="50">'
-            }
-        },
+         
           
       ],
       initComplete: function (settings, json) {
@@ -602,8 +596,6 @@ var citaObject = {
   });
   },
   calcularTotal: function(){
-
-    
     $("#TotalPedido").html("$"+citaObject.items.total)
   }
 }
@@ -658,12 +650,12 @@ function repetirUsuarioFuncion(){
   $("#EsconderDespuesSelectUser").css("display", "block");
   $("#MostarDespuesSelectUser").html("");
   $("#RepetirUsuarioBoton").css("display", "none");
-  $('select[name="buscarUsuario"]').val(null).trigger('change');
+  $('select[name="cliente_id"]').val(null).trigger('change');
  
 }
 $(document).ready(function() {
   // buscar usuario 
-  $('select[name="buscarUsuario"]').select2({
+  $('select[name="cliente_id"]').select2({
     theme: 'bootstrap4',
     language: "es",
     ajax: {
@@ -709,4 +701,58 @@ $(document).ready(function() {
       $(this).val("")
     }
   });
+  $("#ServiciosTable tbody").on("click","a[rel=quitar]", function(){
+    console.log(citaObject.items.servicios)
+    var precio = $(this).closest("tr").find("td:eq(3)").text();
+    precio = parseInt(precio)
+    var tr = $(this).closest("td, li").index();
+    citaObject.items.servicios.splice(tr.row, 1);
+    citaObject.items.total = citaObject.items.total - precio;
+    console.log(citaObject.items.total)
+    $("#TotalPedido").html("$"+citaObject.items.total)
+    citaObject.list()
+   
+  })
 });
+
+$("#agregarCitaForm").on("submit", function(e){
+  e.preventDefault();
+  // asignacion de datos faltantes
+  citaObject.items.cliente = $(this).find("select[name='cliente_id']").val();
+  citaObject.items.empleado = $(this).find("select[name='empleado_id']").val();
+  citaObject.items.dia = $(this).find("input[name='diaCita']").val();
+  citaObject.items.hora = $(this).find("input[name='horaInicioCita']").val();
+  citaObject.items.descricpion  = $(this).find("textarea[name='descripcion']").val();
+
+  // defninicion de variables para el envio de datos
+  let datos = JSON.stringify(citaObject.items);
+  let personalizados = citaObject.items.serviciosPersonalizados
+  var form = new FormData();
+  form.append("csrfmiddlewaretoken", csrftoken);
+  form.append("accion", "AgregarCita");
+  form.append("cita", datos);
+  if (personalizados.length > 0) {
+    $(personalizados).each(function(index, value){
+      form.append("serviciosPersonalizados["+index+"]", value);
+      form.append("imgServiciosPersonalizados["+index+"]", citaObject.items.serviciosPersonalizados[index].img_servicio);
+    })
+  }
+  form.append("serviciosPersonalizados", citaObject.items.serviciosPersonalizados)
+
+  // enviando los datos a la vista 
+  $.ajax({
+    url: window.location.pathname,
+    type: "POST",
+    data: form,
+    contentType: false,
+    processData: false,
+    success: function(data){
+      if(data.status == "ok"){
+        alert("Cita agregada correctamente");
+        
+      }
+    },error: function(jqXHR, textStatus, errorThrown){
+      alert("Error al agregar la cita");
+    }
+  });
+})

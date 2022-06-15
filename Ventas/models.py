@@ -1,4 +1,5 @@
 from email.headerregistry import Group
+from pickle import FALSE
 import smtplib
 
 from email.mime.text import MIMEText
@@ -23,8 +24,6 @@ usuario = Usuario
 
 # modelo para administrar los tipos de servicios
 class Tipo_servicio(models.Model):
-    
-    
     id_tipo_servicio=models.AutoField("Id del Tipo de Servicio", primary_key=True, unique=True)
     nombre=models.CharField("Nombre", max_length=50, null=False,blank=False, unique=True)
     grado_id = models.ForeignKey(Permission, verbose_name="Grado", on_delete=models.CASCADE, null=False, blank=False,db_column="grado_id")
@@ -73,7 +72,6 @@ class Servicio(models.Model):
         servicio["img_servicio"] = "{}{}".format(settings.MEDIA_URL, self.img_servicio)
         servicio["slug"] = "abrir_modal_detalleServicio('{}')".format(self.get_absolute_url())
         servicio["carrito"]="AjaxAddService({}, 'add')".format(self.id_servicio)
-        print("servicioklsds", servicio["carrito"])
         return servicio
     
     
@@ -187,7 +185,6 @@ class PedidoItem(models.Model):
         try:
             total = self.servicio_id.precio * 1
         except Exception as e:
-            print("desde el modelo pedido item", str(e))
             total=0
         return total
    
@@ -304,43 +301,53 @@ def pre_save_servicio_personalizado_receiver(sender, instance, *args, **kwargs):
         
 def pre_save_cita_receiver(sender, instance, *args, **kwargs):
     if not instance.horaFinCita:
+        # creacion de varibales para la hora de inicio y fin de la cita
         inicio = instance.horaInicioCita
-
-        fin = datetime(1970, 1, 1, inicio.hour, inicio.minute, inicio.second) + timedelta(minutes=instance.pedido_id.get_cantidad)           
+        fin = datetime(1970, 1, 1, inicio.hour, inicio.minute, inicio.second) + timedelta(minutes=instance.pedido_id.get_cantidad)
         fin = time(fin.hour, fin.minute, fin.second)
-        
+        #guradar hora fin de la cita
         instance.horaFinCita = fin
+        # convertit los numeros 8 y 18 en formato de 24 horas
+        AM8 = time(8).strftime("%H:%M")
+        AM8 = datetime.strptime(AM8, "%H:%M")
+        PM6 = time(18).strftime("%H:%M")
+        PM6 = datetime.strptime(PM6, "%H:%M")
         
-        empleado = instance.empleado_id
-        diaCita=instance.diaCita.strftime("%Y-%m-%d")
-        diasConsulta = Calendario.objects.filter(empleado_id=empleado).filter(dia=diaCita)
-        horas = [(time(i).strftime("%H:%M")) for i in range(24)]
-        
-        horasNoDisponibles={}
-        cont=1
-        for i in diasConsulta:
-            horaInicioC=i.horaInicio.strftime("%H:%M")
-            horaFinC=i.horaFin
-            horaFinC = datetime.strptime(str(horaFinC), "%H:%M:%S")
-            horaFinC = horaFinC.strftime("%H:%M")
-            cont=str(cont)
-            horasNoDisponibles[str("cita"+cont)]={"horaInicio":horaInicioC,"horaFin":horaFinC}
-            cont=int(cont)
-            cont+=1
+        if  not AM8.time() <= inicio <=  PM6.time():
+            raise Exception("La hora de inicio debe estar entre las  8:00 AM y las 6:00 PM")
+        elif not AM8.time() <= fin <=  PM6.time():
+            raise Exception("La hora de fin debe estar entre las  8:00 AM y las 6:00 PM, la duracion estimada es de {} minutos ,la hora de fin estimamda es {}".format(instance.pedido_id.get_cantidad, fin.strftime("%I:%M %p")))
+        else:
+            empleado = instance.empleado_id
+            diaCita=instance.diaCita.strftime("%Y-%m-%d")
+            diasConsulta = Calendario.objects.filter(empleado_id=empleado).filter(dia=diaCita)
+            horas = [(time(i).strftime("%H:%M")) for i in [8,9,10,11,12,13,14,15,16,17,18]]
             
-        inicio = inicio.strftime("%H:%M")
-        fin = fin.strftime("%H:%M")
-        
-        if not len(horasNoDisponibles)==0:
-            horasQuitadas = [x for x in horas for i in horasNoDisponibles if (horasNoDisponibles[i]["horaInicio"] <= x <= horasNoDisponibles[i]["horaFin"])]
-            print(horasQuitadas)
-            for i in horasQuitadas:
-                print(i[:2])
-                print(i[3:])
-                print(i)
-                if  (inicio <= i <= fin):
-                    raise Exception("Ya existe una cita en esa hora, por favor seleccione otra hora")
+            horasNoDisponibles={}
+            cont=1
+            for i in diasConsulta:
+                horaInicioC=i.horaInicio.strftime("%H:%M")
+                horaFinC=i.horaFin
+                horaFinC = datetime.strptime(str(horaFinC), "%H:%M:%S")
+                horaFinC = horaFinC.strftime("%H:%M")
+                cont=str(cont)
+                horasNoDisponibles[str("cita"+cont)]={"horaInicio":horaInicioC,"horaFin":horaFinC}
+                cont=int(cont)
+                cont+=1
                 
+            iniciox = inicio.strftime("%H:%M")
+            finx = fin.strftime("%H:%M")
+            finDatetime = datetime.strptime(iniciox, "%H:%M")
+            finMinuto = finDatetime-timedelta(minutes=1)
+            finMinuto = finMinuto.strftime("%H:%M")
+            print(iniciox, finMinuto)
+            print(horasNoDisponibles)
+            if not len(horasNoDisponibles)==0:
+                horasQuitadas = [x for x in horas for i in horasNoDisponibles if (horasNoDisponibles[i]["horaInicio"] <= x <= horasNoDisponibles[i]["horaFin"])]
+                print(horasQuitadas)
+                for i in horasQuitadas:
+                    if not (iniciox <= i <= finMinuto):
+                        raise Exception("Ya existe una cita en esa hora, por favor seleccione otra hora")
 
 
 def post_save_cita(sender, instance, created, *args, **kwargs):

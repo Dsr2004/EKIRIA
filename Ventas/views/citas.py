@@ -1,3 +1,4 @@
+import json
 import os
 import smtplib
 from datetime import datetime, timedelta, time
@@ -110,7 +111,16 @@ class AgregarCita(TemplateView,PermissionMixin):
                     item["value"] = i.nombre
                     data.append(item)
                 return  JsonResponse(data, safe=False)
-                
+        elif accion == "AgregarCita": 
+            cita = json.loads(request.POST["cita"])
+            print("ARCHIVOS",request.FILES)
+            
+            print(request.POST)
+            cliente = cita["cliente"]
+            empleado = cita["empleado"]
+            # print(cita) 
+            # print(empleado)
+            return HttpResponse("hola") 
         return super(AgregarCita, self).get(request, *args, **kwargs)
                
 class ListarCita(ListView,PermissionMixin):
@@ -617,7 +627,6 @@ class BuscarDisponibilidadEmpleado(View):
         accion=request.POST["accion"]
         if accion == "BuscarEmpleado":
             empleado=request.POST["empleado"]
-            agenda=Calendario.objects.filter(empleado_id=empleado)
             return JsonResponse({"empleado":empleado})
 
         elif accion == "BuscarDiaDeEmpleado":
@@ -654,9 +663,7 @@ class BuscarDisponibilidadEmpleado(View):
                         horasNoDisponibles[str("cita"+cont)]={"horaInicio":horaInicio,"horaFin":horaFin}
                         cont=int(cont)
                         cont+=1
-
-            horas = [(time(i).strftime("%H:%M")) for i in range(24)]
-
+            horas = [(time(i).strftime("%H:%M")) for i in [8,9,10,11,12,13,14,15,16,17,18]]
             if len(horasNoDisponibles)==0:
                 res=horas
             else:
