@@ -3,6 +3,7 @@ import smtplib
 from datetime import datetime, timedelta, time
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from typing import final
 from xhtml2pdf import pisa
 
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
@@ -716,7 +717,7 @@ class BuscarDisponibilidadEmpleadoEditarCita(View):
                 
             return JsonResponse({"horasDisponibles":res})
 
-class CitasHoyReportePDF(View):
+class CitasReportePDF(View):
     def link_callback(self, uri, rel):
         sUrl = settings.STATIC_URL
         sRoot = settings.STATIC_ROOT
@@ -744,10 +745,39 @@ class CitasHoyReportePDF(View):
             context = {"citas":citas, "hoy":datetime.now(), "empleado":empleado}
             html = template.render(context)
             response = HttpResponse(content_type='application/pdf')
-            # response["Content-Disposition"] = 'attachment; filename="citas_hoy.pdf"'
+            response["Content-Disposition"] = 'attachment; filename="citas_hoy.pdf"'
             pisaStatus = pisa.CreatePDF(html, dest=response, link_callback=self.link_callback)
             return response
         except:
             pass
         messages.add_message(request, messages.INFO, 'Ocurrió un error al generar el PDF.')
         return HttpResponseRedirect(reverse_lazy("Ventas:calendarioEmpleado"))
+    
+    def post(self,request,*args,**kwargs):
+        accion = request.POST.get("accion", "")
+        if accion != "":
+            if accion == "GenerarReporte":
+                inicio = request.POST.get("fechaInicio", "")
+                fin= request.POST.get("fechaFin", "")
+                
+                citas = Cita.objects.all()
+                empleado=Usuario.objects.get(pk=request.session['pk'])
+                if len(inicio) and len(fin):
+                    citas = citas.filter(diaCita__range=[inicio, fin])
+                    try:
+                        template = get_template('Reportes/empleadoPersonalizado.html')
+                        context = {"citas":citas, "hoy":datetime.now(), "empleado":empleado}
+                        html = template.render(context)
+                        response = HttpResponse(content_type='application/pdf')
+                        # response["Content-Disposition"] = 'attachment; filename="Reporte_Personalizado.pdf"'
+                        pisaStatus = pisa.CreatePDF(html, dest=response, link_callback=self.link_callback)
+                        return response
+                    except:
+                        pass
+                    respone = JsonResponse({"error":"Sin herror creado correctamente"})
+                    respone.status_code = 200
+                    return respone
+        else:
+            response = JsonResponse({"error":"No se ha recibido ninguna acción"})
+            response.status_code = 400
+            return response

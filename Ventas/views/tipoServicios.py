@@ -18,10 +18,10 @@ def get_grado():
     roles = Group.objects.all()
     grados={}
     for rol in roles:
-        if rol.id == 1:
-            permisos =rol.permissions.filter(name__icontains="Puede visualizar elementos de grado").order_by('id')
-            for permiso in permisos:
-                    grados[permiso.id]=permiso.codename
+        permisos =rol.permissions.filter(name__icontains="Puede visualizar elementos de grado").order_by('id')
+        for permiso in permisos:
+            print(permiso)
+            grados[permiso.id]=permiso.codename
     return grados
 
 class AgregarTipo_Servicio(CreateView):#crear
