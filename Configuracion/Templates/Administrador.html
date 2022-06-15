@@ -14,18 +14,19 @@
 
         
     <h1 class="titulo">Asignacion de Permisos</h1>
+    <div id="container-main" >
     <div class="container">
         <div class="row">
             <div class=" col-md-12 search">
                 <form method="GET">
                     <div id="custom-search-input">
                         <div class="input-group col-md-12">
-                            <input type="text" class="form-control" name="buscar" placeholder="Buscar...">
-                            <span class="input-group-list">
+                            <input type="text" class="form-control" name="buscar" id="buscar"  placeholder="Buscar...">
+                            <!-- <span class="input-group-list">
                                 <i class="icon icon-search"></i>
                                 <button type="submit" class=" botonlist btn-primary" style="height: 38px;"  >Buscar</button>
                                 <a   class="btn replay" style="height: 38px;"href="{% url 'Admin'  grupo %}"><i class="fa-solid fa-arrow-rotate-left"></i></a>
-                            </span>
+                            </span> -->
                         </div>
                     </div>
                 </form>
@@ -41,9 +42,9 @@
             <div class="nada"id="permisoSi">
                     {%if permisos%}
                     {% for i in permisos %}
-                    <div class="contenedorName" ><div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault{{i.pk}}">
-                        <label class="form-check-label" for="flexCheckDefault{{i.pk}}">Permiso - {{forloop.counter}}: <s id="PermisoName">{{i.name}}</s><br><br>
+                    <div class="articulo contenedorName" ><div class="form-check">
+                        <input class=" form-check-input" type="checkbox" value="" id="flexCheckDefault{{i.pk}}">
+                        <label class="form-check-label" for="flexCheckDefault{{i.pk}}">Permiso - {{forloop.counter}}: <s id="PermisoName" >{{i.name}}</s><br><br>
                         </label>
                       </div>
                       
@@ -70,10 +71,10 @@
                         <div class="nada"id="permisoNo">
                         {%if permisosexclu%}
                         {% for i in permisosexclu %}
-                        <div class="contenedorName">
+                        <div class="articulo contenedorName">
                             <div class="form-check" id="{{i.pk}}">
-                                <input class="form-check-input" type="checkbox" value="{{i.codename}}" id="flexCheckDefaultA{{i.pk}}">
-                                <label class="form-check-label" for="flexCheckDefaultA{{i.pk}}">Permiso - {{forloop.counter}}: <s id="PermisoNameA">{{i.name}}</s><br><br>
+                                <input class=" form-check-input" type="checkbox" value="{{i.codename}}" id="flexCheckDefaultA{{i.pk}}">
+                                <label class="form-check-label" for="flexCheckDefaultA{{i.pk}}">Permiso - {{forloop.counter}}: <s id="PermisoNameA" >{{i.name}}</s><br><br>
                                 </label>
                               </div>
                             </div>
@@ -87,6 +88,7 @@
                     </form>
                 </div>
             </div>
+        </div>
     </div>
     
     
@@ -140,6 +142,7 @@
     }
 
     </script>
+    <script src="/static/Configuracion/js/main.js"></script>
     <script src="/static/Configuracion/js/TraducirPermisos.js"></script>
     {% endblock scripts %}
         
