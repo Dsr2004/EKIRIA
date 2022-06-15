@@ -17,6 +17,7 @@ class RolForm(forms.ModelForm):
         super(RolForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.attrs = {"novalidate": "novalidate"}
+        self.fields['name'].label=False
 
     def clean_name(self):  
         name = self.cleaned_data.get('name')

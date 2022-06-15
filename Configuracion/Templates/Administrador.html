@@ -1,3 +1,4 @@
+{% extends 'Menu_Usuario.html' %}
 
 {% block head %}
 <head>
@@ -37,7 +38,7 @@
         
         <div class="PermiAdmin col-lg-6">
         <div class="PermiAdmin2" >
-                <h3>Permisos del {{rol.name}}</h3>
+                <h3>Permisos del rol {{rol.name}}</h3>
                 <form action="" method="POST">
             <div class="nada"id="permisoSi">
                     {%if permisos%}
@@ -65,7 +66,7 @@
         
         <div class="PermiAdmin col-lg-6">
             <div class="PermiAdmin2" >
-                    <h3>Permisos para Agregar al {{rol.name}}</h3>
+                    <h3>Permisos para Agregar al rol {{rol.name}}</h3>
                     <form action="{%url 'Admin' grupo %}" method="post">
                         {% csrf_token %}
                         <div class="nada"id="permisoNo">

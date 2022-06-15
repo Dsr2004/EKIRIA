@@ -32,16 +32,6 @@ from Commands.seeders import PermisosCliente
 
 
 
-@login_required()
-@PermissionDecorator(['add_group', 'add_cambios', 'add_permission'])
-def Configuracion(request):
-    user = request.user
-    cambiosQueryset = cambios.objects.all()
-    cambiosfQueryset = cambiosFooter.objects.all()
-    UserSesion = if_admin(request)
-    if UserSesion == False:
-        return redirect("IniciarSesion")
-    return render(request, "Configuracion.html",{'User':UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
 
 
 
