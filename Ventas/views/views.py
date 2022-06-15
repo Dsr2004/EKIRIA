@@ -8,7 +8,7 @@ from datetime import datetime
 from Configuracion.models import cambios, cambiosFooter
 from Usuarios.models import Usuario
 from Usuarios.views import if_User
-from ..models import Cita, Catalogo, Servicio_Personalizado, Pedido, Servicio
+from ..models import Cita, Catalogo, Servicio_Personalizado, Pedido, Servicio, Tipo_servicio
 from ..forms import Servicio_PersonalizadoForm
 from Proyecto_Ekiria.Mixin.Mixin import PermissionDecorator, PermissionMixin
 from ..Accesso import acceso, accesoCatalogo
@@ -27,27 +27,16 @@ Seccion de las Vistas donde se administra el catalogo
 """
 
 class Catalogo(ListView, PermissionMixin): 
-    def consulta(self, user):
-        AccesoUsuario = accesoCatalogo(self.request.user)
-        gradoDeUsuario= AccesoUsuario.DefinirGrado()
-        servicios = []
-        for i in range(gradoDeUsuario["gradoNumero"], 0, -1):
-            print(i)
-            # permiso = Group.permissions.filter(codename="Grado {}".format(i))
-            # print(permiso)
-            
-        print(gradoDeUsuario)
-    
     permission_required = ['view_catalogo']
-    queryset = Catalogo.objects.filter(estado=True)
-    context_object_name = "servicios"
     template_name = "Catalogo.html"
+    model = models.Catalogo
     
     
         
     def get_context_data(self, *args, **kwargs):
         context = super(Catalogo, self).get_context_data(**kwargs)
-        self.consulta(self.request.user)
+        AccesoUsuario = accesoCatalogo(self.request.user)
+        servicios= AccesoUsuario.DefinirServicios()
         try:
            if self.request.session:
                 imagen = Usuario.objects.get(id_usuario=self.request.session['pk'])
@@ -59,6 +48,7 @@ class Catalogo(ListView, PermissionMixin):
                 context["User"]=UserSesion
                 context['cambios']=cambiosQueryset
                 context['footer']=cambiosfQueryset
+                context['servicios']=servicios
                 return context
             
         except:
@@ -66,6 +56,9 @@ class Catalogo(ListView, PermissionMixin):
 
 class BuscarServicioCatalogo(View):
     def post(self, request, *args, **kwargs):
+        AccesoUsuario = accesoCatalogo(self.request.user)
+        serviciosx= AccesoUsuario.DefinirServicios()
+        print(serviciosx)
         accion = request.POST.get("accion")
         if accion == "BuscarServicioCatalogo":
             busqueda = request.POST.get("busqueda")

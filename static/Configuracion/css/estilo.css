@@ -498,3 +498,6 @@ textarea {
     border-color: none!important;
     border-image: none;
 }
+.filtro{
+    display: none;
+}

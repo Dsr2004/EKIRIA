@@ -96,26 +96,25 @@ class Admin(PermissionMixin,DetailView):
         contexto= self.model.objects.all()
         rol = Group.objects.get(id=self.kwargs["pk"])
         permisos = rol.permissions.all()
-        permisos2=rol.permissions.all()
         lista=[]
-        if queryset:
-            # contexto = self.model.objects.filter(
-            #     Q(name__icontains = queryset)
-            # )
-            permisos = self.model.objects.filter(
-                Q(name__icontains = queryset)
-            )
+        # if queryset:
+        #     # contexto = self.model.objects.filter(
+        #     #     Q(name__icontains = queryset)
+        #     # )
+        #     permisos = self.model.objects.filter(
+        #         Q(name__icontains = queryset)
+        #     )
         
 
         for i in permisos:
             id = i.codename
             lista.append(id)
         permisosexclu = Permission.objects.exclude(codename__in=lista)
-        if queryset: 
-            lista1 = []
-            for permiso2 in permisosexclu:
-                if "delete" in permiso2.codename:
-                        lista1.append(permisosexclu)
+        # if queryset: 
+        #     lista1 = []
+        #     for permiso2 in permisosexclu:
+        #         if "delete" in permiso2.codename:
+        #                 lista1.append(permisosexclu)
             
         
 
