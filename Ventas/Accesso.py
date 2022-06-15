@@ -1,3 +1,4 @@
+from .models import Servicio, Tipo_servicio, Catalogo
 
 class acceso():
     def __init__(self, usuario):
@@ -47,5 +48,19 @@ class accesoCatalogo():
                 
         except:
             return False
+        
+    def DefinirServicios(self):
+        gradoDeUsuario= self.DefinirGrado()
+        tipoServicioDisponibles = []
+        
+        for i in gradoDeUsuario["permisos"]:
+            tipoServicio = Tipo_servicio.objects.filter(grado_id=i)
+            if tipoServicio:
+                tipoServicioDisponibles.append(tipoServicio)
+            
+        servicios = Servicio.objects.filter(tipo_servicio_id__in=[j.id_tipo_servicio for x in tipoServicioDisponibles for j in x])
+        servicioEnCatalogo = Catalogo.objects.filter(estado=True).filter(servicio_id__in=[x.id_servicio for x in servicios])
+       
+        return servicioEnCatalogo
         
     

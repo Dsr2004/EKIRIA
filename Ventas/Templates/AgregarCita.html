@@ -27,6 +27,7 @@
 
 {% block Contenido %}
 <div class="container">
+  <div id="alertas"></div>
     <h1>Agregar Cita</h1>
     <br>
     <div class="row">
@@ -127,6 +128,7 @@
                     </tbody>
                   </table>
               <div id="serviciosPersonalizados">
+                <hr style="background-color: rgb(153, 0, 255);">
                 <h5>Servicios Personalizados</h5>
                 <table class="table table-bordered" id="ServiciosPersonalizadosTable">
                   <thead>
@@ -150,10 +152,18 @@
           <hr>
           <div class="row">
             <div class="col-8">
-              <h5><strong>Total:</strong></h5>
+              <div class="row">
+                <div class="col-2"><h5><strong>Total:</strong></h5></div>
+                <div class="col-10" id="TotalPedido">$0</div>
+              </div>
+              
             </div>
             <div class="col-4">
-              <h5><strong>Items:</strong></h5>
+              <div class="row">
+                <div class="col-2"> <h5><strong>Items:</strong></h5></div>
+                <div class="col-10" id="ItemsPedido"></div>
+              </div>
+             
             </div>
           </div>
           <div class="d-grid gap-2">
@@ -175,7 +185,7 @@
             {{formPer.tipo_servicio_id|as_crispy_field}}
             <Label><strong>Imagen: <sup class="requerido">(*)</sup></strong></Label>
             {{formPer.img_servicio|as_crispy_field}}
-            <label class=" tituloServicioPersonalizadoComentario">Descríbanos lo que quiere</label>
+            <label class=" tituloServicioPersonalizadoComentario">Describa lo que quiere</label>
             <div class="form-floating container descripcion" >
             {{formPer.descripcion|as_crispy_field}}
             </div>

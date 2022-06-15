@@ -57,9 +57,6 @@ class AdminVentas(TemplateView):
         datosServicios=servicios_mas_solicitados["servicio"]
         datosCantidadServicio = servicios_mas_solicitados["cantidad"]
         
-        print(datosServicios)
-        print("sdsdsdsdsdsd")
-        print(datosCantidadServicio)
         
         #contexto
         context={

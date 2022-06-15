@@ -11,7 +11,11 @@
    <link rel="icon" href="{% static 'Proyecto_Ekiria/Img/Logo Ekiria.png' %}">
    <link rel="stylesheet" href="{% static 'Plugins/fullcalendar/lib/main.css' %}">
    
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+   <script src="{% static 'Plugins/daterangepicker/moment.min.js' %}"></script>
+   <script src="{% static 'Plugins/daterangepicker/spanish.js' %}"></script>
+   <script src="{% static 'Plugins/daterangepicker/daterangepicker.js' %}"></script>
+   <link rel="stylesheet" href="{% static 'Plugins/daterangepicker/daterangepicker.css' %}">
  
 
 </head>
@@ -32,13 +36,13 @@
 <div id="containerInicio">
   <div style="margin-left:30px">
     <div class="row ">
-      <div class="col-9 ">
+      <div class="col-lg-9 ">
         <h1 style="margin:5px">Calendario de Empleados</h1>
         <h6 style="margin:15px">Bienvenido <strong>{{request.user.nombres | title}} {{request.user.apellidos}}</strong> aquí podrá administrar su calendario.</h6>
       </div>
       
       {% if EsAdmin %}
-      <div class="col-3" style="margin-top:20px">
+      <div class="col-lg-3" style="margin-top:20px">
         <a  class="btn btn-outline-dark botonX">Administrar Calendarios</a>
       </div>
       {% endif %}
@@ -101,10 +105,10 @@
                 <div class="row">
                   <div class="col-12" style="margin-bottom: 15px;">Generar reportes</div>
                   <div class="col-4">
-                    <a href="{% url 'Ventas:reporte_citaHoyPDF' %}" class="btn"><i class="fa-solid fa-file-pdf" style="color: red;transform: scale(2.0);"></i></a>
+                    <a href="{% url 'Ventas:reporte_citas_PDF' %}" class="btn"><i class="fa-solid fa-file-pdf" style="color: red;transform: scale(2.0);"></i></a>
                   </div>
                   <div class="col-4">
-                    <a href="" class="btn"><i class="fa-solid fa-file-circle-plus" style="color: rgb(219, 118, 10);transform: scale(2.0);"></i></a>
+                    <a onclick="abrir_modal_reporte_empleado()" class="btn"><i class="fa-solid fa-file-circle-plus" style="color: rgb(219, 118, 10);transform: scale(2.0);"></i></a>
                   </div>
                   <div class="col-2"></div>
                 </div>
@@ -164,15 +168,39 @@
 
 </div>
 
+<div class="modal fade" id="ModalReporteEmpleado">
+  <div class="modal-dialog " role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">GENERAR REPORTE PERSONALIZADO</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <b>Seleccione el rango de fechas que quiere que se busquen para generar el reporte</b>
+        <hr>
+        <div class="form-group">
+          <label>Rango de fecha para generar reporte:</label>
+          <input type="text" class="form-control" id="RangoFecha" name="RangoFecha">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-block btn-secondary" data-dismiss="modal"><i class="fa-solid fa-xmark-large"></i> Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock Contenido %}
 
 {%block scripts%}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
 <script src="{% static 'Plugins/fullcalendar/lib/main.js' %}"></script>
 <script src="{% static 'Plugins/fullcalendar/lib/locales-all.js' %}"></script>
 <script src="/static/Ventas/js/Ventas.js"></script>
   
 <script>
    $(document).ready(function () {
+
       $('#HistorialTable').DataTable({
             "language": {
                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
