@@ -29,9 +29,12 @@
                 <h2>Proveedores</h2>
             </div>
             <div class="Table Add">
-                <button type="button" class="Add img" onclick="agregarprov('{%url 'crearprov' %}')">
-                  <i class="fas fa-user-plus"></i>
-              </button>
+                <button type="button" class="Add img" onclick="agregarprod('{%url 'crearprod' %}')">
+                    <a style="color:black;"onclick="agregarprod('{%url 'crearprod' %}')">
+                        <i class="fas fa-plus"></i>
+                        <b class="etiquetaCrearCompra" style="display: none;">Crear Proveedor</b>
+                    </a>
+                </button>
             </div>
             <table id="TableProveedores" class="display nowrap" cellspacing="0" width="100">
                 <thead>
@@ -103,15 +106,14 @@
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="sweetalert2.min.js"></script>
 <script>
-    
-$(document).ready(function() {
-    $('#TableProveedores').DataTable({
-        "language": {
-            "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
-        },
-        responsive: true
+    $(document).ready(function() {
+        $('#TableProveedores').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+            },
+            responsive: true
+        });
     });
-});
 </script>
 {%endblock scripts%}
 

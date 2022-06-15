@@ -22,6 +22,8 @@ urlpatterns = [
     path ("cambiarestadoDeTProducto/", cambiarestadoTProducto, name="camestadoTProducto"),
     path("VerDetalleCompra/<int:pk>", login_required(verDetalleCompra.as_view()), name="VerDetalle"),
     path("crearHistory/", login_required(crearHistorial), name="CrearHistorial"),
-    path("restarProductos/", login_required(eliminarProductos.as_view()), name="RestarProductos")
+    path("restarProductos/", login_required(eliminarProductos.as_view()), name="RestarProductos"),
+    path("ListaCompra/", login_required(ListaCompra.as_view()), name="ListaCompra"),
+    path("Graficos/", login_required(GraficoCompras.as_view()), name="GraficoCompras"),
 ]
  

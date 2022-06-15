@@ -1,8 +1,10 @@
 from gc import get_objects
+from operator import index
 import os
 from itertools import product
 import json
 from pickle import TRUE
+from re import I
 from wsgiref.util import request_uri
 from xmlrpc.client import boolean
 from django.shortcuts import render, redirect
@@ -69,7 +71,6 @@ class Crearprod(CreateView):
             for producto in productos:
                 if producto.nombre == nombre:
                     if producto.proveedor_id == proveedor.pk:
-                        print(producto.proveedor_id)
                         boolean=False
             if boolean != False:
                 producto = self.model(
@@ -563,6 +564,111 @@ class verDetalleCompra(TemplateView):
             return HttpResponse('Se ha encontrado un error <pre>'+html+'</pre>')
         return response
 
+
+
+class ListaCompra(TemplateView):
+    template_name = "ListaCompra.html"
+    model = Producto
+    def get_context_data(self, *args, **kwargs):
+        context = super(ListaCompra, self).get_context_data(**kwargs)
+        productos = self.model.objects.all()
+        context['Productos']=productos
+        UserSesion = if_admin(self.request)
+        if UserSesion == False:
+            return redirect("IniciarSesion")
+        cambiosQueryset = cambios.objects.all()
+        cambiosfQueryset = cambiosFooter.objects.all()
+        context["User"]=UserSesion
+        context['cambios']=cambiosQueryset
+        context['footer']=cambiosfQueryset
+        return context
+
+class GraficoCompras(TemplateView):
+    template_name = "GraficoCompra.html"
+    model = Producto
+    
+    def InformacionGrafico(self, mes, año):
+        Compras = Compra.objects.all()
+        Productos=[]
+        prov = Proveedor.objects.all()
+        Proveedores=[]
+        datos=[]
+        for pr in prov:
+            cant = []
+            for produ in Producto.objects.all():
+                if produ.nombre not in Productos:
+                    Productos.append(produ.nombre)
+            for i in range(len(Productos)):
+                cant.append(0)
+            Proveedores.append({'Proveedor':pr.nombre, 'Precios':cant})
+            
+        for compra in Compras:
+            if compra.fecha_creacion.month == mes and compra.fecha_creacion.year == año:
+                if compra.estado:
+                    History = HistorialCompra.objects.filter(compra_id = compra.pk)
+                    for historial in History:
+                        producto = Producto.objects.get(pk = historial.producto_id)
+                        repP = HistorialCompra.objects.filter(producto_id = producto.pk)
+                        if len(repP) > 1:
+                            producto = Producto.objects.get(pk = repP[0].producto_id)
+                            proveedor = Proveedor.objects.get(pk = producto.proveedor_id)
+                            Precio = [0]
+                            for r in repP:
+                                Precio[0] = Precio[0] + r.precio
+                            Precio[0] = Precio[0] / len(repP)
+                            index = Productos.index(producto.nombre)
+                            for prove in Proveedores:
+                                if prove['Proveedor'] == proveedor.nombre:
+                                    prove['Precios'][index]=Precio[0]
+                        else:
+                            proveedor = Proveedor.objects.get(pk = producto.proveedor_id)
+                            index = Productos.index(producto.nombre)
+                            for prove in Proveedores:
+                                print(prove)
+                                if prove['Proveedor'] == proveedor.nombre:
+                                    if prove['Proveedor'] == proveedor.nombre:
+                                        prove['Precios'][index]=historial.precio
+                                  
+        datos.append(Proveedores)
+        datos.append(Productos)
+        return datos
+                                
+    def get_context_data(self, *args, **kwargs):
+        context = super(GraficoCompras, self).get_context_data(**kwargs)   
+        mes = datetime.now().month 
+        año = datetime.now().year 
+        datos=self.InformacionGrafico(mes, año)
+        Productos=datos[1]
+        Proveedores=datos[0]
+        context['Productos']=json.dumps(Productos)
+        context['Proveedores']=json.dumps(Proveedores)
+        UserSesion = if_admin(self.request)
+        if UserSesion == False:
+            return redirect("IniciarSesion")
+        cambiosQueryset = cambios.objects.all()
+        cambiosfQueryset = cambiosFooter.objects.all()
+        context["User"]=UserSesion
+        context['cambios']=cambiosQueryset
+        context['footer']=cambiosfQueryset
+        return context
+    def post(self, request, *args, **kwargs):
+        context={}
+        mes = datetime.strptime(request.POST['fecha'],"%Y-%m-%d").month 
+        año = datetime.strptime(request.POST['fecha'],"%Y-%m-%d").year 
+        datos=self.InformacionGrafico(mes, año)
+        Productos=datos[1]
+        Proveedores=datos[0]
+        context['Productos']=json.dumps(Productos)
+        context['Proveedores']=json.dumps(Proveedores)
+        UserSesion = if_admin(self.request)
+        if UserSesion == False:
+            return redirect("IniciarSesion")
+        cambiosQueryset = cambios.objects.all()
+        cambiosfQueryset = cambiosFooter.objects.all()
+        context["User"]=UserSesion
+        context['cambios']=cambiosQueryset
+        context['footer']=cambiosfQueryset
+        return render(request, self.template_name, context)    
 class eliminarProductos(TemplateView):
     model=Producto
     template_name = "Funciones/RestarProductos.html"
@@ -596,7 +702,6 @@ class eliminarProductos(TemplateView):
                     if producto.cantidad < int(datos['Cantidad']):
                         cambiar = False
                 if cambiar==True: 
-                    print('si')
                     for datos in DatosProductos: 
                         producto = Producto.objects.get(pk = datos['Id'])
                         producto.cantidad = producto.cantidad - int(datos['Cantidad'])
