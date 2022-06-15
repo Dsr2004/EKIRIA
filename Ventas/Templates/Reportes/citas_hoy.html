@@ -41,12 +41,12 @@
 
 <img src="{{icono}}" alt="">
 <p>
-    <b>FECHA DE CREACIÓN:</b> {{ hoy | date  }} {{hoy|time:"h:i A"}}<br>
-    <b>EMPLEADO:</b> {{ empleado.nombres|title }} {{empleado.apellidos|lower}}<br>
-    <b>CANT. CITAS PARA EL DIA:</b> {{citas|length}}<br>
+    <b style="font-size:13px;"><strong>FECHA DE CREACIÓN:</strong></b> {{ hoy | date  }} {{hoy|time:"h:i A"}}<br><br>
+    <b style="font-size:13px;"><strong>EMPLEADO:</strong></b> {{ empleado.nombres|title }} {{empleado.apellidos|lower}}<br><br>
+    <b style="font-size:13px; "><strong>CANT. CITAS PARA EL DIA:</strong></b> {{citas|length}}<br><br>
 </p>
 {% for cita in citas %}
-<h1>Cita{{forloop.counter}}</h1>
+<h1>Cita {{forloop.counter}}</h1>
 <h3>Detalles de la cita</h3>
 <table id="invoice">
     <thead>
@@ -79,15 +79,29 @@
         </tr>
     </thead>
     <tbody>
+        
+            
     {% for servicio in cita.pedido_id.pedidoitem_set.all %}
-    <tr>
-        <th scope="row">{{ forloop.counter}}</th>
-        <td class="text-center"><img src="/media/{{servicio.servicio_id.img_servicio}}" class="" width="80" height="50"></td>
-        <td class="text-center">{{servicio.servicio_id.tipo_servicio_id}}</td>
-        <td class="text-center">{{servicio.servicio_id.nombre}}</td>
-        <td class="text-center">{{servicio.servicio_id.precio}}</td>
-
-    </tr>
+        {% if servicio.servicio_id != null %}
+        <tr>
+                <th scope="row">{{ forloop.counter}}</th>
+                <td class="text-center"><img src="/media/{{servicio.servicio_id.img_servicio}}" class="" width="80" height="50"></td>
+                <td class="text-center">{{servicio.servicio_id.tipo_servicio_id}}</td>
+                <td class="text-center">{{servicio.servicio_id.nombre}}</td>
+                <td class="text-center">{{servicio.servicio_id.precio}}</td>
+        
+            </tr>
+        {% endif %}
+        {% if servicio.servicio_personalizado_id != null%}
+        <tr>
+                <th scope="row">{{ forloop.counter}} <br> Es personalizado</th>
+                <td class="text-center"><img src="/media/{{servicio.servicio_personalizado_id.img_servicio}}" class="" width="80" height="50"></td>
+                <td class="text-center">{{servicio.servicio_personalizado_id.tipo_servicio_id}}</td>
+                <td colspan="2"  class="text-center">{{servicio.servicio_personalizado_id.descripcion}}</td>
+        
+        </tr>
+        
+        {% endif %}
 {% endfor %}
    </tbody>
 </table>
@@ -97,8 +111,4 @@
 </body>
 </html>
 
-
-{% comment %}
-{{cita.pedido_id.pedidoitem_set.all}}
-{% endcomment %}
     

@@ -1,3 +1,28 @@
+
+$(function(){
+  $("input[name='RangoFecha']").daterangepicker({
+    locale:{
+      applyLabel:"<i class='fa-solid fa-chart-pie'></i> Generar Reporte",
+      cancelLabel:"<i class='fa-solid fa-xmark'></i> Cancelar"
+
+    },
+    applyButtonClasses: "btn-success",
+    cancelButtonClasses: "btn-danger",
+  });
+
+  $("input[name='RangoFecha']").on('apply.daterangepicker', function(ev, picker) {
+    console.log("sandia")
+    let form = document.getElementById("RangoFecha");
+    let inicio = picker.startDate.format('YYYY-MM-DD')
+    let fin = picker.endDate.format('YYYY-MM-DD')
+    document.getElementById("fechaFin").value = inicio
+    document.getElementById("fechaFin").value = fin
+    document.getElementById("accion").value = "GenerarReporte"
+    document.createElement('form').submit.call(document.RangoFechaForm)
+});
+});
+
+ 
  //ELIMINAR TIPO DE SERVICIO 
  function abrir_modal_calendario(url){ 
   $("#ModalCitaCalendario").load(url, function (){ 
@@ -5,8 +30,16 @@
   });
 }
 
+function abrir_modal_reporte_empleado(){
+  $("#ModalReportePersonalizadoEmpleado").appendTo("body").modal('show');
+}
+
 function PersonalizarServAgendarCitaModal(){
   $("#ServicioPersonalizadoCita").appendTo("body").modal('show');
+}
+
+function abrir_modal_reporte_empleado(){
+  $("#ModalReporteEmpleado").appendTo("body").modal("show");
 }
 function GuardarCita(){
   swal({
@@ -31,7 +64,6 @@ function GuardarCita(){
   });
 
   }
-
 
 function CancelarCita(){
     swal({
@@ -157,7 +189,6 @@ function ConfirmarCita(id){
     });
 }
 
-
 function ActualizarCita(id){
   let ids=id
   
@@ -213,9 +244,6 @@ function ActualizarCita(id){
       }
     });
 }
-
-
-// dsddsdsdsd
 
 function ActualizarCita2(id){
   let ids=id
@@ -370,9 +398,7 @@ function CancelarCita2(id){
       }
     });
 }
-
 // catalogo
-
 function abrir_modal_detalleServicio(url){
   $("#VerMasServivios").load(url, function (){  
     $(this).appendTo("body").modal("show");
@@ -382,9 +408,7 @@ function abrir_modal_detalleServicio(url){
 function abrir_modal_img_servicioPer(modalAabrir){
   $("#"+modalAabrir).appendTo("body").modal("show");
 }
-
 // Agendar citas por parte del admin
-
 function BuscarUsuarioParaCita(){
   let form = $("#BuscarUsuarioForm")
   let busqueda = $("#busqueda").val()
@@ -404,38 +428,55 @@ function BuscarUsuarioParaCita(){
   })
 }
 
-
 // AGENDAR CITA POR PARTE DEL ADMIN
 
  $('#ServiciosTable').DataTable()
- var countPer =1;
- 
- $('input[type=file]').change(function () { 
-  console.log(this.files[0]);
- });
-
-
-
+ $('#ServiciosPersonalizadosTable').DataTable()
 
 $("#AgregarServicioPerForm").on("submit", function(e){
   e.preventDefault()
-  let tipo_servicio = $("#id_tipo_servicio_id").val()
-  let descripcion =  document.getElementById("id_descripcion").value;
-  let img = $("#id_img_servicio").files.mozFullPath
-  let tipo_servicioNombre = 0
-  if(tipo_servicio == 1){
-     tipo_servicioNombre = "Manicure"
-  }else if(tipo_servicio == 2){
-    tipo_servicioNombre = "Pedicure"
+  let form = $(this)
+  let tipo_servicio =form.find("#id_tipo_servicio_id").val()
+  let img = form.find("#id_img_servicio").prop("files")[0]
+  let urlImg = form.find("#id_img_servicio").val()
+  let descripcion = form.find("#id_descripcion").val()
+  var validImageTypes = ["image/jfif", "image/jpeg", "image/png"];
+
+  if (tipo_servicio == "") {
+    swal("¡Error!", "Debe seleccionar un tipo de servicio", "error")
+  }else if (img == undefined) {
+    swal("¡Error!", "Debe seleccionar una imagen", "error")
+  }else if ($.inArray(img["type"], validImageTypes) < 0) {
+    swal("¡Error!", "Debe seleccionar una imagen valida", "error")
+}else if(isNaN(tipo_servicio)){
+  swal("¡Error!", "Debe seleccionar un tipo de servicio valido", "error")
+}else if(tipo_servicio != "1" && tipo_servicio != "2"){
+    swal("¡Error!", "Debe seleccionar un tipo de servicio dentro del rango", "error")
+}else{
+  try{
+    tipo_servicio = parseInt(tipo_servicio)
+  }catch(error){
+    swal("¡Error!", "Debe seleccionar un tipo de servicio valido", "error")
   }
-  let data={"tipo_servicio":tipo_servicio, "img":img, "descripcion":descripcion, "id_servicioPer":countPer, "tipo_servicioNombre":tipo_servicioNombre}
-  countPer+=1;
-  citaObject.addPersonalizado(data)
+
+  if (tipo_servicio == 1) {
+    var nombreTipo ="Manicure"
+  }else if (tipo_servicio == 2) {
+    var nombreTipo ="Pedicure"
+  }
+  let formDataPer = {
+      "tipo_servicio_id":tipo_servicio,
+      "tipo_servicio_nombre":nombreTipo,
+      "img_servicio":img,
+      "descripcion": descripcion,
+      "urlImg": urlImg
+    }
+
+  citaObject.addPersonalizado(formDataPer)
   $("#AgregarServicioPerForm").trigger("reset")
   $("#ServicioPersonalizadoCita").modal("hide")
+}
 })
-
-
 
 var citaObject = {
   items:{
@@ -444,7 +485,7 @@ var citaObject = {
     dia:'',
     hora:'',
     descricpion:'',
-    total:'',
+    total:0,
     items:'',
     servicios:[],
     serviciosPersonalizados:[],
@@ -456,19 +497,23 @@ var citaObject = {
     if (this.items.id.length == 0) {
       this.items.id.push(id)
       this.items.servicios.push(item)
+      this.items.total += parseInt(item["precio"])
+      $("#TotalPedido").html("$"+this.items.total)
     }else{
       if (!this.items.id.includes(id)) {
         this.items.servicios.push(item)
         this.items.id.push(id)
+        this.items.total += parseInt(item["precio"])
+        $("#TotalPedido").html("$"+this.items.total)
       }else{
         console.log("ya esta")
       }
     }
     this.items.items= this.items.servicios.length+this.items.serviciosPersonalizados.length
-    console.log(this.items.items)
     this.list()
   },
   list: function(){
+    $("#ItemsPedido").html(this.items.items)
     tblServices =  $('#ServiciosTable').DataTable({
       "language": {
         "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
@@ -509,12 +554,15 @@ var citaObject = {
   });
   },
   addPersonalizado : function(item){
-    this.items.serviciosPersonalizados.push(item)
-    console.log(item)
-    this.listPersonalizado()
+    let id = {"id":this.items.serviciosPersonalizados.length}
+    let personalizado = item
+    $.extend(personalizado, id)
+    this.items.serviciosPersonalizados.push(personalizado)
     this.items.items= this.items.servicios.length+this.items.serviciosPersonalizados.length
+    this.listPersonalizado()
   },
   listPersonalizado: function(){
+    $("#ItemsPedido").html(this.items.items)
     tblServices =  $('#ServiciosPersonalizadosTable').DataTable({
       "language": {
         "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
@@ -524,10 +572,10 @@ var citaObject = {
       destroy: true,
       data: this.items.serviciosPersonalizados,
       columns: [
-          {"data": "img"},
-          {"data": "tipo_servicioNombre"},
+          {"data": "urlImg"},
+          {"data": "tipo_servicio_nombre"},
           {"data": "descripcion"},
-          {"data": "id_servicioPer"},
+          {"data": "id"},
       ],
       columnDefs: [
           {
@@ -553,6 +601,11 @@ var citaObject = {
       }
   });
   },
+  calcularTotal: function(){
+
+    
+    $("#TotalPedido").html("$"+citaObject.items.total)
+  }
 }
 
 function formatRepo (repo) {
@@ -628,7 +681,6 @@ $(document).ready(function() {
     minimumInputLength: 1,
     templateResult: formatRepo,
   }).on("select2:select", function(e){
-    console.log(e.params.data)
     $("#EsconderDespuesSelectUser").css("display", "none");
     $("#MostarDespuesSelectUser").html(formatRepoAfterSelection(e.params.data));
     $("#RepetirUsuarioBoton").css("display", "block");
