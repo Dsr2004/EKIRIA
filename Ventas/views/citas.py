@@ -755,29 +755,38 @@ class CitasReportePDF(View):
     
     def post(self,request,*args,**kwargs):
         accion = request.POST.get("accion", "")
-        if accion != "":
-            if accion == "GenerarReporte":
-                inicio = request.POST.get("fechaInicio", "")
-                fin= request.POST.get("fechaFin", "")
-                
-                citas = Cita.objects.all()
-                empleado=Usuario.objects.get(pk=request.session['pk'])
-                if len(inicio) and len(fin):
-                    citas = citas.filter(diaCita__range=[inicio, fin])
-                    try:
-                        template = get_template('Reportes/empleadoPersonalizado.html')
-                        context = {"citas":citas, "hoy":datetime.now(), "empleado":empleado}
-                        html = template.render(context)
-                        response = HttpResponse(content_type='application/pdf')
-                        # response["Content-Disposition"] = 'attachment; filename="Reporte_Personalizado.pdf"'
-                        pisaStatus = pisa.CreatePDF(html, dest=response, link_callback=self.link_callback)
-                        return response
-                    except:
-                        pass
-                    respone = JsonResponse({"error":"Sin herror creado correctamente"})
-                    respone.status_code = 200
-                    return respone
+
+        if accion == "":
+            print("si hay accion")
         else:
-            response = JsonResponse({"error":"No se ha recibido ninguna acción"})
-            response.status_code = 400
-            return response
+            messages.add_message(request, messages.INFO, 'Ocurrió un error al generar el PDF.')
+            return HttpResponseRedirect(reverse_lazy("Ventas:calendarioEmpleado"))
+        return HttpResponse("sfdsdsds")
+        # if accion != "":
+        #     if accion == "GenerarReporte":
+        #         inicio = request.POST.get("fechaInicio", "")
+        #         fin= request.POST.get("fechaFin", "")
+                
+        #         citas = Cita.objects.all()
+        #         empleado=Usuario.objects.get(pk=request.session['pk'])
+        #         if len(inicio) and len(fin):
+        #             citas = citas.filter(diaCita__range=[inicio, fin])
+        #             try:
+        #                 template = get_template('Reportes/empleadoPersonalizado.html')
+        #                 context = {"citas":citas, "hoy":datetime.now(), "empleado":empleado}
+        #                 html = template.render(context)
+        #                 response = HttpResponse(content_type='application/pdf')
+        #                 response["Content-Disposition"] = 'attachment; filename="Reporte_Personalizado.pdf"'
+        #                 pisaStatus = pisa.CreatePDF(html, dest=response, link_callback=self.link_callback)
+        #                 return response
+        #             except:
+        #                 pass
+        #             respone = JsonResponse({"error":"Sin herror creado correctamente"})
+        #             respone.status_code = 200
+        #             return respone
+        #     else:
+        #         return HttpResponse(request.POST["fechaInicio"])
+        # else:
+        #     response = JsonResponse({"error":"No se ha recibido ninguna acción"})
+        #     response.status_code = 400
+        #     return response
