@@ -53,11 +53,15 @@
         <h6 style="margin:15px">Bienvenido <strong>{{request.user.nombres | title}} {{request.user.apellidos}}</strong> aquí podrá administrar su calendario.</h6>
       </div>
       
-      {% if EsAdmin %}
-      <div class="col-lg-3" style="margin-top:20px">
-        <a  class="btn btn-outline-dark botonX">Administrar Calendarios</a>
-      </div>
-      {% endif %}
+     
+     {% comment %}
+     {% if EsAdmin %}
+     <div class="col-lg-3" style="margin-top:20px">
+       <a  class="btn btn-outline-dark botonX">Administrar Calendarios</a>
+     </div>
+     {% endif %}
+     {% endcomment %}
+      
         
       
     </div>
@@ -119,9 +123,11 @@
                   <div class="col-4">
                     <a href="{% url 'Ventas:reporte_citas_PDF' %}" class="btn"><i class="fa-solid fa-file-pdf" style="color: red;transform: scale(2.0);"></i></a>
                   </div>
+                  {% comment %}
                   <div class="col-4">
                     <a onclick="abrir_modal_reporte_empleado()" class="btn"><i class="fa-solid fa-file-circle-plus" style="color: rgb(219, 118, 10);transform: scale(2.0);"></i></a>
                   </div>
+                  {% endcomment %}
                   <div class="col-2"></div>
                 </div>
                 <br>

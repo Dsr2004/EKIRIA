@@ -316,28 +316,6 @@ class EditarCitaCliente(ActualiarCitaClienteMixin, UpdateView, PermissionMixin):
             diasConsulta = Calendario.objects.filter(empleado_id=empleado).filter(dia=diaCita)
             horas = [(time(i).strftime("%H:%M")) for i in [8,9,10,11,12,13,14,15,16,17,18]]
             
-            horasNoDisponibles={}
-            cont=1
-            for i in diasConsulta:
-                horaInicioC=i.horaInicio.strftime("%H:%M")
-                horaFinC=i.horaFin
-                horaFinC = datetime.strptime(str(horaFinC), "%H:%M:%S")
-                horaFinC = horaFinC.strftime("%H:%M")
-                cont=str(cont)
-                horasNoDisponibles[str("cita"+cont)]={"horaInicio":horaInicioC,"horaFin":horaFinC}
-                cont=int(cont)
-                cont+=1
-                
-            iniciox = inicio.strftime("%H:%M")
-            finx = fin.strftime("%H:%M")
-            finDatetime = datetime.strptime(iniciox, "%H:%M")
-            finMinuto = finDatetime-timedelta(minutes=1)
-            finMinuto = finMinuto.strftime("%H:%M")
-            if not len(horasNoDisponibles)==0:
-                horasQuitadas = [x for x in horas for i in horasNoDisponibles if (horasNoDisponibles[i]["horaInicio"] <= x <= horasNoDisponibles[i]["horaFin"])]
-                for i in horasQuitadas:
-                    if not (iniciox <= i <= finMinuto):
-                        raise Exception("Ya existe una cita en esa hora, por favor seleccione otra hora")
             AM8 = time(8).strftime("%H:%M")
             AM8 = datetime.strptime(AM8, "%H:%M")
             PM6 = time(18).strftime("%H:%M")
@@ -345,26 +323,45 @@ class EditarCitaCliente(ActualiarCitaClienteMixin, UpdateView, PermissionMixin):
             
             fin = datetime(1970, 1, 1, hora.hour, hora.minute, hora.second) + timedelta(minutes=cita.pedido_id.get_cantidad)
             fin = time(fin.hour, fin.minute, fin.second)
-            print("hora fin cita", type(fin))
-            print("hora inicio cita", type(hora))
-            print("---")
-            print(AM8, PM6)
+            
     
             if  not AM8.time() <= hora <=  PM6.time():
                 errores["horaInicioCita"]="La hora de inicio debe estar entre las  8:00 AM y las 6:00 PM"
             elif not AM8.time() <= fin <=  PM6.time():
                 errores["horaInicioCita"]="La hora de fin debe estar entre las  8:00 AM y las 6:00 PM, la duracion estimada es de {} minutos ,la hora de fin estimamda es {}".format(cita.pedido_id.get_cantidad, fin.strftime("%I:%M %p"))
             
+            else:
+                horasNoDisponibles={}
+                cont=1
+                for i in diasConsulta:
+                    horaInicioC=i.horaInicio.strftime("%H:%M")
+                    horaFinC=i.horaFin
+                    horaFinC = datetime.strptime(str(horaFinC), "%H:%M:%S")
+                    horaFinC = horaFinC.strftime("%H:%M")
+                    cont=str(cont)
+                    horasNoDisponibles[str("cita"+cont)]={"horaInicio":horaInicioC,"horaFin":horaFinC}
+                    cont=int(cont)
+                    cont+=1
+                    
+                iniciox = hora.strftime("%H:%M")
+                finDatetime = datetime.strptime(iniciox, "%H:%M")
+                finMinuto = finDatetime-timedelta(minutes=1)
+                finMinuto = finMinuto.strftime("%H:%M")
+                if not len(horasNoDisponibles)==0:
+                    horasQuitadas = [x for x in horas for i in horasNoDisponibles if (horasNoDisponibles[i]["horaInicio"] <= x <= horasNoDisponibles[i]["horaFin"])]
+                    for i in horasQuitadas:
+                        if (iniciox <= i <= finMinuto):
+                            errores["horaInicioCita"]="Ya existe una cita en esa hora, por favor seleccione otra hora"
+                       
             if errores:
-                print("con error")
                 response = JsonResponse({"errores":errores})
                 response.status_code = 400
                 return response
             else:
-                print("sin error")
                 cita.empleado_id = empleado
                 cita.diaCita = dia
                 cita.horaInicioCita = hora
+                cita.horaFinCita = fin
                 cita.descripcion = descripcion
                 cita.save()
                 try:
