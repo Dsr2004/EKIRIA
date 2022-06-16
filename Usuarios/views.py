@@ -87,8 +87,6 @@ def Login(request):
                                     request.session['Admin'] = 2
                             except:
                                  request.session['Admin'] = 3
-                        # pedido, = Pedido.objects.get(cliente_id=usuario, completado=False)
-                        # request.session["carrito"]=pedido.get_items_carrito
                         if 'next' in request.POST:
                             return redirect(request.POST.get('next'))
                         else:
@@ -489,7 +487,7 @@ def Notification(request):
     cambiosfQueryset = cambiosFooter.objects.all()
     return render(request, "UserInformation/Notification.html", {"User":UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
     
-@PermissionDecorator(['delete_usuario'])
+@PermissionDecorator(['change_usuario'])
 def CambiarEstadoUsuario(request):
     if request.method=="POST":
         id = request.POST["estado"]

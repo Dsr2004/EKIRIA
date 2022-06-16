@@ -1,28 +1,27 @@
-
-{%load crispy_forms_tags%}
-<div class="modal-dialog"  role="document">
-      <div class="modal-content">
+ {%load crispy_forms_tags%}
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Crear Rol</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <h5 class="modal-title" id="exampleModalLabel">Crear Rol</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form method='post' id=CrearRoles action="{%url 'CreateRol'%}">
-            {% csrf_token %}
-            <label>Nombre: <sup style='color:red'>(*)</sup></label>
-            {{form.name}}
-            <label >Tipo rol: <sup style="color:red">(*)</sup></label>
-            <select name="tipo" id="tipo" class="form-select form-control">
+            <form method='post' id=CrearRoles action="{%url 'CreateRol'%}">
+                {% csrf_token %}
+                <label>Nombre: <sup style='color:red'>(*)</sup></label> {{form.name}}
+                <label>Tipo rol: <sup style="color:red">(*)</sup></label>
+                <select name="tipo" id="tipo" class="form-select form-control">
               <option value="Administrador">Administrador</option>
               <option value="Empleado">Empleado</option>
               <option value="Cliente" selected >Cliente</option>
           </select>
-            <p id="name" class="bg-light text-danger"></p>
-           <div class="modal-footer" id="botones">
-          <button type="button" class="btn btn-success" onclick="CrearRol()">Confirmar</button>
-          <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal" id="cancelar">Cancelar</button>
-          </div>
-          </form>
+                <p id="name" class="bg-light text-danger"></p>
+                <p id="mensaje" style="display: none;">Por favor espere...</p>
+                <div class="modal-footer" id="botones">
+                    <button type="button" class="btn btn-success" onclick="CrearRol(); document.getElementById('mensaje').style.display = 'block'">Confirmar</button>
+                    <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal" id="cancelar">Cancelar</button>
+                </div>
+            </form>
         </div>
-      </div>
     </div>
+</div>
