@@ -84,15 +84,10 @@ p.style.display='none'"></i></p>
 </table>
 <form id="CrearHistorial" action="{%url 'CrearHistorial'%}" method="post">{% csrf_token %}</form>
 <!--  -->
-
-{% endblock Contenido %} {% block modal %} {% endblock modal%} {%block scripts%}
+{%endblock Contenido%} {%block scripts%}
 <script>
     var cantidadProductos = 0
 </script>
-{% for producto in productos %}
-<script>
-    cantidadProductos = '{{ forloop.counter }} '
-</script>{% endfor %}
 <script>
     // Ajax compra
     function CrearCompra() {
@@ -100,7 +95,13 @@ p.style.display='none'"></i></p>
         Productos = []
         let identi = 0
         let Padre = document.querySelectorAll('.parent')
-        for (let i = 0; i < Padre.length - cantidadProductos; i++) {
+        for (let i = 0; i < Padre.length; i++) {
+            if (Padre[i].childNodes[9]) {
+                cantidadProductos = cantidadProductos + 1
+            }
+        }
+        for (let i = 0; i < cantidadProductos; i++) {
+            console.log('fo')
             identi = Padre[i].id.substring(4)
             let tr = document.getElementById('caja' + identi)
             let Id = tr.childNodes[1].innerHTML

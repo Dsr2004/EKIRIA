@@ -49,6 +49,7 @@
                     </a>
                 </button>
             </div>
+            <br>
             <table id="TableProveedores" class="display nowrap" cellspacing="0" width="100">
                 <thead>
                     <tr>
@@ -56,6 +57,7 @@
                         <td scope="col">Proveedor</td>
                         <td scope="col">Tipo</td>
                         <td scope="col">Cantidad</td>
+                        <td scope="col">Estado</td>
                         <td scope="col">Editar</td>
                     </tr>
                 </thead>
@@ -106,7 +108,16 @@
 </div>
 
 {% endblock modal%} {%block scripts%}
-
+<script>
+    $(document).ready(function() {
+        $('#TableProveedores').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+            },
+            responsive: true
+        });
+    });
+</script>
 <script src="/static/Proyecto_Ekiria/js/jsMenuL.js"></script>
 <script src="/static/Modulo_compras/js/js.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>

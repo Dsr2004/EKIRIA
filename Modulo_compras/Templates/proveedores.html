@@ -36,6 +36,7 @@
                     </a>
                 </button>
             </div>
+            <br>
             <table id="TableProveedores" class="display nowrap" cellspacing="0" width="100">
                 <thead>
                     <tr>
@@ -51,7 +52,7 @@
 
                     <tr>
                         <td>{{prov.nombre}}</td>
-                        <td>{{prov.telefono}}</td>
+                        <td>{% if prov.telefono %} {{prov.telefono}}{% else %}No aplica {% endif %}</td>
                         <td>{{prov.celular}}</td>
                         <td>
                             <div class="form-switch">

@@ -256,6 +256,7 @@ class Crearcompra(CreateView):
                 x=request.POST.getlist('Datos[]')
                 DatosCompra = json.loads(x[0])
                 Permite=True
+                print(DatosCompra)
                 for datos in DatosCompra:
                     producto = Producto.objects.get(pk=int(datos['Id']))
                     if datos['Cantidad'] == "" or datos['Precio']=="":
