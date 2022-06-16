@@ -1,4 +1,3 @@
-
 function agregarprod(url) {
     window.location.href = "../crearprod/";
 };
@@ -225,7 +224,12 @@ function cambioestadoP(id) {
                     });
                 },
                 error: function(errors) {
-                    alert("Error: kiwi perro " + errors.responseJSON)
+                    Error = error['responseJSON']
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Atención.',
+                        text: Error['error'] + '.',
+                    })
                 }
             });
 

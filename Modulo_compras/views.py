@@ -63,6 +63,18 @@ class Crearprod(CreateView):
     def post(self,request, *args, **kwargs):  
         context={}
         producto_form = self.form_class(request.POST or None)
+        UserSesion = if_admin(request)
+        if UserSesion == False:
+            return redirect("IniciarSesion")
+        cambiosQueryset = cambios.objects.all()
+        cambiosfQueryset = cambiosFooter.objects.all()
+        tipo_producto = Tipo_producto.objects.all()
+        context["User"]=UserSesion
+        context['form']=producto_form
+        context['cambios']=cambiosQueryset
+        context['footer']=cambiosfQueryset
+        context['tipo']=tipo_producto
+        context['errors'] = producto_form.errors
         if producto_form.is_valid():
             nombre = producto_form.cleaned_data.get('nombre')
             proveedor = producto_form.cleaned_data.get('proveedor')
@@ -73,42 +85,22 @@ class Crearprod(CreateView):
                     if producto.proveedor_id == proveedor.pk:
                         boolean=False
             if boolean != False:
-                producto = self.model(
-                    nombre = nombre,
-                    proveedor = proveedor,
-                    tipo_producto = producto_form.cleaned_data.get('tipo_producto'),
-                    cantidad = 0,
-                )
-                producto.save()
-                return redirect('listarprod')
+                if proveedor.estado:
+                    producto = self.model(
+                        nombre = nombre,
+                        proveedor = proveedor,
+                        tipo_producto = producto_form.cleaned_data.get('tipo_producto'),
+                        cantidad = 0,
+                    )
+                    producto.save()
+                    return redirect('listarprod')
+                else:
+                    context['Error']="El proveedor que ha seleccionado se encuentra inhabilitado"
+                    return render(request, self.template_name, context)
             else:
-                UserSesion = if_admin(request)
-                if UserSesion == False:
-                    return redirect("IniciarSesion")
-                cambiosQueryset = cambios.objects.all()
-                cambiosfQueryset = cambiosFooter.objects.all()
-                tipo_producto = Tipo_producto.objects.all()
-                context["User"]=UserSesion
-                context['form']=producto_form
-                context['cambios']=cambiosQueryset
-                context['footer']=cambiosfQueryset
-                context['tipo']=tipo_producto
-                context['errors'] = producto_form.errors
                 context['Error']="El nombre del producto ya esta relacionado a un proveedor"
                 return render(request, self.template_name, context)
         else:
-            UserSesion = if_admin(request)
-            if UserSesion == False:
-                return redirect("IniciarSesion")
-            cambiosQueryset = cambios.objects.all()
-            cambiosfQueryset = cambiosFooter.objects.all()
-            tipo_producto = Tipo_producto.objects.all()
-            context["User"]=UserSesion
-            context['form']=producto_form
-            context['cambios']=cambiosQueryset
-            context['footer']=cambiosfQueryset
-            context['tipo']=tipo_producto
-            context['errors'] = producto_form.errors
             return render(request, self.template_name, context)
     def get_context_data(self, *args, **kwargs):
         context = super(Crearprod, self).get_context_data(**kwargs)
@@ -265,8 +257,13 @@ class Crearcompra(CreateView):
                 DatosCompra = json.loads(x[0])
                 Permite=True
                 for datos in DatosCompra:
+                    producto = Producto.objects.get(pk=int(datos['Id']))
                     if datos['Cantidad'] == "" or datos['Precio']=="":
                         Permite=False
+                    if producto.estado == False:
+                        Permite=False
+                        data = json.dumps({'error': 'El producto '+producto.nombre+" se encuentra inhabilitado por lo que no se puede crear la compra"})
+                        return HttpResponse(data, content_type="application/json", status=400)
                 if Permite==True:
                     Compra=self.model.objects.create(total = 0)
                     historial=[]
@@ -399,7 +396,11 @@ def cambiarestado(request):
             id = request.POST["estado"]
             update=Proveedor.objects.get(id_proveedor=id)
             estatus=update.estado
+            productos = Producto.objects.filter(proveedor_id = update.pk)
             if estatus==True:
+                for producto in productos:
+                    producto.estado = False
+                    producto.save()
                 update.estado=False
                 update.save()
             elif estatus==False:
@@ -431,13 +432,18 @@ def cambiarestadoTProducto(request):
         if request.method=="POST":
             id = request.POST["estado"]
             update=Tipo_producto.objects.get(pk=id)
+            proveedor = Proveedor.objects.get(pk = update.proveedor_id)
             estatus=update.estado
             if estatus==True:
                 update.estado=False
                 update.save()
             elif estatus==False:
-                update.estado=True
-                update.save()
+                if proveedor.estado==True:
+                    update.estado=True
+                    update.save()
+                else:
+                    data = json.dumps({'error': 'No se puede Habilitar este producto si su proveedor está inhabilitado'})
+                    return HttpResponse(data, content_type="application/json", status=400)
             else:
                 return redirect('listarprov')
     return JsonResponse({"kiwi":"yes"})
@@ -459,11 +465,15 @@ def cambiarestadoCompra(request):
                     for h in historial:
                         cantidad = h.cantidad
                         producto = Producto.objects.get(pk = int(h.producto_id))
-                        if producto.cantidad < cantidad:
-                            actualiza = False
-                            errores.append({'producto':producto.nombre})
+                        if producto.estado:
+                            if producto.cantidad < cantidad:
+                                actualiza = False
+                                errores.append({'producto':producto.nombre})
+                            else:
+                                datos.append({'Id':producto.pk,'cantidad':cantidad})
                         else:
-                            datos.append({'Id':producto.pk,'cantidad':cantidad})
+                            data = json.dumps({'error': 'El producto '+producto.nombre+' se encuentra inhabilitado por lo que no se puede modificar la compra'})
+                            return HttpResponse(data, content_type="application/json", status=400)
                     if actualiza:
                         for data in datos:
                             producto = Producto.objects.get(pk = data['Id'])

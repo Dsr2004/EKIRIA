@@ -35,7 +35,7 @@
 
                             <input type="hidden" name="id_cambio" value="{{cambios.id_cambios}}">
                         </div>
-                        
+
                         <div class="detallesCambioPa" id="detallesCambioPa">
                             <ul>
                                 <h4> Más Cambios
@@ -128,7 +128,7 @@
                                 }
                             });
                         </script> {%endfor%}
-                        
+
                         <script>
                             function MasCambios() {
                                 let contenedor = document.getElementById("detallesCambioPa")
@@ -152,11 +152,10 @@
     <!-- foteeer -->
 
     <div class="contactenos">
-            <h3 class="tituloCambios">Modificación del Footer</h3>
-            <br>
-            <br>
-            <br>
-        {%if Foter%} {%for Footers in Foter%}
+        <h3 class="tituloCambios">Modificación del Footer</h3>
+        <br>
+        <br>
+        <br> {%if Foter%} {%for Footers in Foter%}
         <br>
         <form id="CambiosFooterForm" action="{% url 'CrearFooter'%}" method="post">
             <ul>
@@ -268,6 +267,11 @@
 {% endblock footer %}{%block scripts%}
 
 <script>
+    function cambiosP() {
+        let content = document.getElementById('body-content-menu')
+        content.style.marginBottom = 0 + "px"
+    }
+
     function Footer1() {
         let contenedor = document.getElementById("texto21")
         let br = document.getElementById("br")

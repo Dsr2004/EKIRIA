@@ -10,6 +10,13 @@ class ProveedorForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ProveedorForm, self).__init__( *args, **kwargs)
         self.fields["telefono"].label = "Teléfono"
+    
+    def clean_celular(self):
+        celular = self.cleaned_data.get('celular')
+        if len(celular) < 10 or len(celular) > 10:
+            raise forms.ValidationError('El número de celular no es correcto')
+        else:
+            return celular
 
 
 class Tipo_productoForm(forms.ModelForm):
