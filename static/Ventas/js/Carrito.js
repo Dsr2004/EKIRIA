@@ -1,10 +1,10 @@
-function AjaxAddService(datos, accion){
+function AjaxAddService(datos, accion, metodo){
   var url = "/Ventas/AddtoCarrito/"
   datos =  {"csrfmiddlewaretoken":csrftoken, "servicioId":datos, "accion":accion}
   $.ajax({
     data: datos,
     url: url,
-    type: "POST",
+    type: metodo,
     success: function(datas){
         location.href="/Ventas/Carrito/"
     },
@@ -67,10 +67,12 @@ function ActualizarPedidoDeUsuario(servicioId, accion){
               
             }
           });
+    } else if(accion == "addLogin"){
+      AjaxAddService(datos, accion, "GET")
     }
     else{
       datos = servicioId
-      AjaxAddService(datos, accion)
+      AjaxAddService(datos, accion, "POST")
       
     }
     

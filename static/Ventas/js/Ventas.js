@@ -11,18 +11,14 @@ $(function(){
   });
 
   $("input[name='RangoFecha']").on('apply.daterangepicker', function(ev, picker) {
-    let datos = {"csrfmiddlewaretoken":csrftoken, "fechaInicio":picker.startDate.format('YYYY-MM-DD'), "fechaFin":picker.endDate.format('YYYY-MM-DD'), "accion":"GenerarReporte"}
-    $.ajax({
-      data: datos,
-      url: "/Ventas/Reportes/CitasPDF/",
-      type: "POST",
-      success: function(datas){
-        window.open(datas);
-      },
-      error: function(error){
-        swal("¡Error!","No se pudo generar el reporte","error")
-      }
-    }); 
+    console.log("sandia")
+    let form = document.getElementById("RangoFecha");
+    let inicio = picker.startDate.format('YYYY-MM-DD')
+    let fin = picker.endDate.format('YYYY-MM-DD')
+    document.getElementById("fechaFin").value = inicio
+    document.getElementById("fechaFin").value = fin
+    document.getElementById("accion").value = "GenerarReporte"
+    document.createElement('form').submit.call(document.RangoFechaForm)
 });
 });
 
@@ -32,6 +28,10 @@ $(function(){
   $("#ModalCitaCalendario").load(url, function (){ 
     $(this).appendTo("body").modal('show');
   });
+}
+
+function abrir_modal_reporte_empleado(){
+  $("#ModalReportePersonalizadoEmpleado").appendTo("body").modal('show');
 }
 
 function PersonalizarServAgendarCitaModal(){

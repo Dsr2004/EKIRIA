@@ -113,6 +113,13 @@
 </body>
 
 <script>
+    $(document).ready(function(){
+        var input = document.querySelectorAll("input");
+        for(var i =0; i<input.length; i++){
+        input[i].removeAttribute("required");
+        }
+       
+    });
 </script>
 
 </html>

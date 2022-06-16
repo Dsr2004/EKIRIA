@@ -1,5 +1,3 @@
-from email.headerregistry import Group
-from pickle import FALSE
 import smtplib
 
 from email.mime.text import MIMEText
@@ -340,15 +338,11 @@ def pre_save_cita_receiver(sender, instance, *args, **kwargs):
             finDatetime = datetime.strptime(iniciox, "%H:%M")
             finMinuto = finDatetime-timedelta(minutes=1)
             finMinuto = finMinuto.strftime("%H:%M")
-            print(iniciox, finMinuto)
-            print(horasNoDisponibles)
             if not len(horasNoDisponibles)==0:
                 horasQuitadas = [x for x in horas for i in horasNoDisponibles if (horasNoDisponibles[i]["horaInicio"] <= x <= horasNoDisponibles[i]["horaFin"])]
-                print(horasQuitadas)
                 for i in horasQuitadas:
                     if not (iniciox <= i <= finMinuto):
                         raise Exception("Ya existe una cita en esa hora, por favor seleccione otra hora")
-
 
 def post_save_cita(sender, instance, created, *args, **kwargs):
     if created:
@@ -376,6 +370,9 @@ def post_save_cita(sender, instance, created, *args, **kwargs):
         except Exception as e:
             print(e)
     else:
+        print("desdemodelo")
+        print(type(instance.horaInicioCita))
+        print(type(instance.horaFinCita))
         citaCalendario = Calendario.objects.get(cita_id=instance.id_cita)
         citaCalendario.dia = instance.diaCita
         citaCalendario.horaInicio = instance.horaInicioCita

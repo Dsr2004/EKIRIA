@@ -164,12 +164,8 @@ class EditarCitaDetalle(DetailView,PermissionMixin):
             context['cambios']=cambiosQueryset
             context['footer']=cambiosfQueryset
             context["form"] = self.form_class
-            return context
         except Exception as e:
             print("desde Agregar cita: ", e)
-        return context
-
-
         citax = Cita.objects.get(id_cita=self.kwargs["pk"])
         pedido = Pedido.objects.get(id_pedido = citax.pedido_id.id_pedido)
         items = pedido.pedidoitem_set.all()
@@ -216,11 +212,9 @@ class EditarCita(ActualiarCitaMixin, UpdateView,PermissionMixin):
             context["User"] = UserSesion
             context['cambios']=cambiosQueryset
             context['footer']=cambiosfQueryset
-            context["form"] = self.form_class
             return context
         except Exception as e:
-            print("desde Agregar cita: ", e)
-        return context
+            print("desde Agregar cita: ", e) 
         citax = Cita.objects.get(id_cita=self.kwargs["pk"])
         pedido = Pedido.objects.get(id_pedido = citax.pedido_id.id_pedido)
         items = pedido.pedidoitem_set.all()
@@ -250,16 +244,13 @@ class EditarCitaCliente(ActualiarCitaClienteMixin, UpdateView, PermissionMixin):
             UserSesion = if_admin(self.request)
             if UserSesion == False:
                 return redirect("IniciarSesion")
-            cambiosQueryset = cambios.objects.all()
+            cambiosQueryset = cambios.objects.all() 
             cambiosfQueryset = cambiosFooter.objects.all()
             context["User"] = UserSesion
             context['cambios']=cambiosQueryset
             context['footer']=cambiosfQueryset
-            context["form"] = self.form_class
-            return context
         except Exception as e:
             print("desde Agregar cita: ", e)
-        return context
         citax = Cita.objects.get(id_cita=self.kwargs["pk"])
         pedido = Pedido.objects.get(id_pedido = citax.pedido_id.id_pedido)
         items = pedido.pedidoitem_set.all()
@@ -274,7 +265,7 @@ class EditarCitaCliente(ActualiarCitaClienteMixin, UpdateView, PermissionMixin):
                     serviciosPerx.append(i)
                     context["serviciosPer"]=serviciosPerx
         form = self.form_class(instance=citax)
-        form["horaInicioCita"].initial = citax.horaInicioCita.strftime("%H:%M %p")
+        form["horaInicioCita"].initial = citax.horaInicioCita.strftime("%I:%M %p")
         context["form"]=form
         return context
     
@@ -310,20 +301,67 @@ class EditarCitaCliente(ActualiarCitaClienteMixin, UpdateView, PermissionMixin):
             return response
         else:
             try:
-                print("hora original desde la vista", hora)
-                hora = conversor12a24(hora)
-                print("hora despues de la conversion ", hora)
-                
+                hora = datetime.strptime(hora, "%I:%M %p")
+                hora = hora.time()
             except Exception as e:
                 print(e)
-                errores["horaInicioCita"]="La hora de la cita no es válida."
+                errores["horaInicioCita"]="La hora de la cita no es válida. {}".format(str(e))
                 response = JsonResponse({"errores":errores})
                 response.status_code = 400
                 return response
             
             empleado = Usuario.objects.get(id_usuario=empleado)
-            try:
-                cita = self.model.objects.get(id_cita=self.get_object().id_cita)
+            cita = self.model.objects.get(id_cita=self.get_object().id_cita)
+            diaCita=dia.strftime("%Y-%m-%d")
+            diasConsulta = Calendario.objects.filter(empleado_id=empleado).filter(dia=diaCita)
+            horas = [(time(i).strftime("%H:%M")) for i in [8,9,10,11,12,13,14,15,16,17,18]]
+            
+            horasNoDisponibles={}
+            cont=1
+            for i in diasConsulta:
+                horaInicioC=i.horaInicio.strftime("%H:%M")
+                horaFinC=i.horaFin
+                horaFinC = datetime.strptime(str(horaFinC), "%H:%M:%S")
+                horaFinC = horaFinC.strftime("%H:%M")
+                cont=str(cont)
+                horasNoDisponibles[str("cita"+cont)]={"horaInicio":horaInicioC,"horaFin":horaFinC}
+                cont=int(cont)
+                cont+=1
+                
+            iniciox = inicio.strftime("%H:%M")
+            finx = fin.strftime("%H:%M")
+            finDatetime = datetime.strptime(iniciox, "%H:%M")
+            finMinuto = finDatetime-timedelta(minutes=1)
+            finMinuto = finMinuto.strftime("%H:%M")
+            if not len(horasNoDisponibles)==0:
+                horasQuitadas = [x for x in horas for i in horasNoDisponibles if (horasNoDisponibles[i]["horaInicio"] <= x <= horasNoDisponibles[i]["horaFin"])]
+                for i in horasQuitadas:
+                    if not (iniciox <= i <= finMinuto):
+                        raise Exception("Ya existe una cita en esa hora, por favor seleccione otra hora")
+            AM8 = time(8).strftime("%H:%M")
+            AM8 = datetime.strptime(AM8, "%H:%M")
+            PM6 = time(18).strftime("%H:%M")
+            PM6 = datetime.strptime(PM6, "%H:%M")
+            
+            fin = datetime(1970, 1, 1, hora.hour, hora.minute, hora.second) + timedelta(minutes=cita.pedido_id.get_cantidad)
+            fin = time(fin.hour, fin.minute, fin.second)
+            print("hora fin cita", type(fin))
+            print("hora inicio cita", type(hora))
+            print("---")
+            print(AM8, PM6)
+    
+            if  not AM8.time() <= hora <=  PM6.time():
+                errores["horaInicioCita"]="La hora de inicio debe estar entre las  8:00 AM y las 6:00 PM"
+            elif not AM8.time() <= fin <=  PM6.time():
+                errores["horaInicioCita"]="La hora de fin debe estar entre las  8:00 AM y las 6:00 PM, la duracion estimada es de {} minutos ,la hora de fin estimamda es {}".format(cita.pedido_id.get_cantidad, fin.strftime("%I:%M %p"))
+            
+            if errores:
+                print("con error")
+                response = JsonResponse({"errores":errores})
+                response.status_code = 400
+                return response
+            else:
+                print("sin error")
                 cita.empleado_id = empleado
                 cita.diaCita = dia
                 cita.horaInicioCita = hora
@@ -331,7 +369,6 @@ class EditarCitaCliente(ActualiarCitaClienteMixin, UpdateView, PermissionMixin):
                 cita.save()
                 try:
                     cliente = self.get_object().cliente_id
-                    
                     
                     if empleado.id_usuario == empleadoOriginal:
                         Servidor = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
@@ -376,13 +413,6 @@ class EditarCitaCliente(ActualiarCitaClienteMixin, UpdateView, PermissionMixin):
                 except Exception as e:
                     print(e)
                 return redirect("Ventas:calendario")
-                
-            
-            except Exception as e:
-                    errores["horaInicioCita"]=str(e)
-                    response = JsonResponse({"errores":errores})
-                    response.status_code = 400
-                    return response
       
 class DetalleCitaCliente(DetailView,PermissionMixin):
     permission_required = ['change_cita','view_cita','add_cita']
@@ -715,7 +745,7 @@ class BuscarDisponibilidadEmpleadoEditarCita(View):
                         cont=int(cont)
                         cont+=1
 
-            horas = [(time(i).strftime("%H:%M")) for i in range(24)]
+            horas = [(time(i).strftime("%H:%M")) for i in [8,9,10,11,12,13,14,15,16,17,18]]
 
             if len(horasNoDisponibles)==0:
                 res=horas
@@ -762,29 +792,38 @@ class CitasReportePDF(View):
     
     def post(self,request,*args,**kwargs):
         accion = request.POST.get("accion", "")
-        if accion != "":
-            if accion == "GenerarReporte":
-                inicio = request.POST.get("fechaInicio", "")
-                fin= request.POST.get("fechaFin", "")
-                
-                citas = Cita.objects.all()
-                empleado=Usuario.objects.get(pk=request.session['pk'])
-                if len(inicio) and len(fin):
-                    citas = citas.filter(diaCita__range=[inicio, fin])
-                    try:
-                        template = get_template('Reportes/empleadoPersonalizado.html')
-                        context = {"citas":citas, "hoy":datetime.now(), "empleado":empleado}
-                        html = template.render(context)
-                        response = HttpResponse(content_type='application/pdf')
-                        # response["Content-Disposition"] = 'attachment; filename="Reporte_Personalizado.pdf"'
-                        pisaStatus = pisa.CreatePDF(html, dest=response, link_callback=self.link_callback)
-                        return response
-                    except:
-                        pass
-                    respone = JsonResponse({"error":"Sin herror creado correctamente"})
-                    respone.status_code = 200
-                    return respone
+
+        if accion == "":
+            print("si hay accion")
         else:
-            response = JsonResponse({"error":"No se ha recibido ninguna acción"})
-            response.status_code = 400
-            return response
+            messages.add_message(request, messages.INFO, 'Ocurrió un error al generar el PDF.')
+            return HttpResponseRedirect(reverse_lazy("Ventas:calendarioEmpleado"))
+        return HttpResponse("sfdsdsds")
+        # if accion != "":
+        #     if accion == "GenerarReporte":
+        #         inicio = request.POST.get("fechaInicio", "")
+        #         fin= request.POST.get("fechaFin", "")
+                
+        #         citas = Cita.objects.all()
+        #         empleado=Usuario.objects.get(pk=request.session['pk'])
+        #         if len(inicio) and len(fin):
+        #             citas = citas.filter(diaCita__range=[inicio, fin])
+        #             try:
+        #                 template = get_template('Reportes/empleadoPersonalizado.html')
+        #                 context = {"citas":citas, "hoy":datetime.now(), "empleado":empleado}
+        #                 html = template.render(context)
+        #                 response = HttpResponse(content_type='application/pdf')
+        #                 response["Content-Disposition"] = 'attachment; filename="Reporte_Personalizado.pdf"'
+        #                 pisaStatus = pisa.CreatePDF(html, dest=response, link_callback=self.link_callback)
+        #                 return response
+        #             except:
+        #                 pass
+        #             respone = JsonResponse({"error":"Sin herror creado correctamente"})
+        #             respone.status_code = 200
+        #             return respone
+        #     else:
+        #         return HttpResponse(request.POST["fechaInicio"])
+        # else:
+        #     response = JsonResponse({"error":"No se ha recibido ninguna acción"})
+        #     response.status_code = 400
+        #     return response

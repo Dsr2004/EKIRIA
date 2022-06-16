@@ -1,6 +1,6 @@
 #-----------------------------------------Imports---------------------------------------------------
 import smtplib
-
+import json
 # prueba
 from Proyecto_Ekiria import settings
 from importlib import import_module
@@ -133,7 +133,7 @@ class Register(CreateView):
                     municipio = form.cleaned_data.get('municipio'),
                     direccion = form.cleaned_data.get('direccion'),
                     cod_postal = form.cleaned_data.get('cod_postal'),
-                    estado = 0
+                    estado = 1
                 )
                 registro.save()
                 user = Usuario.objects.get(username = request.POST['username'])
@@ -151,7 +151,7 @@ class Register(CreateView):
                 mensaje = MIMEMultipart()
                 mensaje['From'] = settings.local.EMAIL_HOST_USER
                 mensaje['To'] = user.email
-                mensaje['Subject'] = "Cambio de contraseña"
+                mensaje['Subject'] = "Confirme su correo"
                 cliente = f"{str(user.nombres).capitalize()} {str(user.apellidos).capitalize()}"
                 key = token.key
                 value = cryptocode.encrypt(str(key),Public_Key)
@@ -208,14 +208,11 @@ class ConfirmarCuenta(TemplateView):
                 user.save()
                 return redirect('IniciarSesion')
             except:
-                
-                response = JsonReponse({'error':'No se pudo confirmar tu correo intentalo de nuevo'})
-                response.status_code = 400
-                return response
+                data = json.dumps({'error': 'El total no puede tener un valor de 0'})
+                return HttpResponse(data, content_type="application/json", status=400)
         else:
-            response = JsonReponse({'error':'No se pudo identificar el usuario'})
-            response.status_code = 401
-            return response
+            data = json.dumps({'error': 'El total no puede tener un valor de 0'})
+            return HttpResponse(data, content_type="application/json", status=400)
 
 @login_required()
 def Perfil(request):

@@ -9,11 +9,13 @@
         <div class="modal-body">
           <form method='post' id=CrearRoles action="{%url 'CreateRol'%}">
             {% csrf_token %}
-            {{form.name|as_crispy_field}}
-            <select name="tipo" id="tipo">
+            <label>Nombre: <sup style='color:red'>(*)</sup></label>
+            {{form.name}}
+            <label >Tipo rol: <sup style="color:red">(*)</sup></label>
+            <select name="tipo" id="tipo" class="form-select form-control">
               <option value="Administrador">Administrador</option>
               <option value="Empleado">Empleado</option>
-              <option value="Cliente" selected>Cliente</option>
+              <option value="Cliente" selected >Cliente</option>
           </select>
             <p id="name" class="bg-light text-danger"></p>
            <div class="modal-footer" id="botones">

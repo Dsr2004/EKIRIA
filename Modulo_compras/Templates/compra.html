@@ -32,15 +32,21 @@
                 <h2>compras</h2>
             </div>
             <div class="Table Add">
-                <button class="pdf img btn btn-dribbble">
-                    <a href="" style="color: #fff;">
-                        <i class="mdi mdi-file-pdf"></i>
-                        <b class="etiquetaReporte" style="display: none;">Reporte</b>
+                <button class="pdf img btn btn-success">
+                    <a href="{%url 'GraficoCompras'%}" style="color: #fff;">
+                        <i class="fa-solid fa-chart-column"></i>
+                        <b class="etiquetaReporte" style="display: none;">Gráficos</b>
+                    </a>
+                </button>
+                <button class="pdf img btn btn-tumblr">
+                    <a href="{%url 'ListaCompra'%}" style="color: #fff;">
+                        <i class="mdi mdi-file-document"></i>
+                        <b class="etiquetaReporte" style="display: none;">Lista de compra</b>
                     </a>
                 </button>
                 <button type="button" class="Add img btn btn-bordred">
                   <a href="{%url 'crearcompra'%}" style="color:black;">
-                    <i class="fas fa-user-plus"></i>
+                    <i class="fas fa-plus"></i>
                     <b class="etiquetaCrearCompra" style="display: none;">Crear Compra</b>
                     </a>
                 </button>
@@ -68,7 +74,7 @@
                             </div>
                         </td>
                         <td>{{compra.total}}</td>
-                        <td><i class="mdi mdi-file-document" style="cursor:pointer;" onclick="verDetalle('{{compra.pk}}')"></i></td>
+                        <td><i class="fa-solid fa-pen-to-square" style="cursor:pointer;" onclick="verDetalle('{{compra.pk}}')"></i></td>
                     </tr>
                     <script>
                         function CambioEstadoCompra(id) {

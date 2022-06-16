@@ -107,6 +107,13 @@
     <script src="https://cdn.datatables.net/responsive/2.3.0/js/dataTables.responsive.min.js"></script>
     <!-- token y user que se borrar despues (solo user) -->
     <script type="text/javascript">
+        $(document).ready(function(){
+            var input = document.querySelectorAll("input");
+            for(var i =0; i<input.length; i++){
+            input[i].removeAttribute("required");
+            }
+           
+        });
         var user = 2
 
         function getToken(name) {
