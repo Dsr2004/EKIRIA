@@ -554,6 +554,7 @@ var citaObject = {
   });
   },
   addPersonalizado : function(item){
+    console.log(item)
     let id = {"id":this.items.serviciosPersonalizados.length}
     let personalizado = item
     $.extend(personalizado, id)
