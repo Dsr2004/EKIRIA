@@ -101,10 +101,9 @@
                             <ul class="list_show">
                                 <li class="nav_link--inside"><a href="{%url 'Administracion'%}">Administración de Usuarios</a></li>
                                 {% if User.admin == 1%}
-                                <li class="nav_link--inside"><a href="{%url 'Configuracion'%}">Administración</a></li>
-                                <li class="nav_link--inside"><a href="{%url 'Roles'%}">Roles del usuario</a></li>
+                                <li class="nav_link--inside"><a href="{%url 'Roles'%}">Administración de Rol</a></li>
                                 <li class="nav_link--inside"><a href="{%url 'Cambios'%}">Cambios de página</a></li>
-                                <li class="nav_link--inside"><a href="{%url 'Permisos'%}">Permisos</a></li>
+                                <li class="nav_link--inside"><a href="{%url 'Permisos'%}">Administración de Permisos</a></li>
                                 {% endif %}
                             </ul>
                         </li>

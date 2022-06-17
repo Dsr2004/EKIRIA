@@ -46,7 +46,6 @@ class PermissionMixin(object):
         #     user = request.user
         #     print(user)
         for permission in self.get_perms():
-            print(permission)
             try:
                 if request.user.rol.permissions.get(codename=permission):
                     pass

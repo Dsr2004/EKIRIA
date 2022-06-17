@@ -8,7 +8,7 @@ from django.db import models
 class Proveedor(models.Model):
     id_proveedor=models.AutoField("id_proveedor",primary_key=True, unique=True)
     nombre=models.CharField(max_length=20,blank=False, null=False, unique=True)
-    telefono=models.CharField(max_length=10,blank=True, null=True)
+    telefono=models.CharField(max_length=10,blank=True, null=True,unique=True)
     celular=models.CharField(max_length=10,blank=False, null=False, unique=True)
     estado=models.BooleanField('estado', default=True)
 
@@ -38,7 +38,7 @@ class Tipo_producto(models.Model):
 
 class Producto(models.Model):
     id_producto=models.AutoField("id_producto",primary_key=True, unique=True)
-    nombre=models.CharField('nombre del producto',max_length=20,blank=False, null=False)
+    nombre=models.CharField('nombre del producto',max_length=50,blank=False, null=False)
     proveedor=models.ForeignKey(Proveedor,on_delete=models.CASCADE)
     tipo_producto=models.ForeignKey(Tipo_producto, verbose_name="Tipo de producto",on_delete=models.CASCADE,null=False, blank=True, db_column="tipo_producto_id")
     cantidad=models.IntegerField('cantidad',blank=False, null=False)

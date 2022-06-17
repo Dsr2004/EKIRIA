@@ -21,7 +21,7 @@ from Usuarios.models import Usuario
 from Usuarios.views import *
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
-
+from django.contrib.contenttypes.models import ContentType
 # Create your views here.
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import get_object_or_404
@@ -32,16 +32,6 @@ from Commands.seeders import PermisosCliente
 
 
 
-@login_required()
-@PermissionDecorator(['add_group', 'add_cambios', 'add_permission'])
-def Configuracion(request):
-    user = request.user
-    cambiosQueryset = cambios.objects.all()
-    cambiosfQueryset = cambiosFooter.objects.all()
-    UserSesion = if_admin(request)
-    if UserSesion == False:
-        return redirect("IniciarSesion")
-    return render(request, "Configuracion.html",{'User':UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
 
 
 
@@ -89,6 +79,7 @@ class Admin(PermissionMixin,DetailView):
     permission_required = ['add_permission','change_permission','delete_permission','view_permission',]
     model = Permission
     template_name = 'Administrador.html'
+    
     def get(self, request,*args, **kwargs):
         grupo = kwargs['pk']
         context = {}
@@ -133,13 +124,38 @@ class Admin(PermissionMixin,DetailView):
         context['permisosexclu']=permisosexclu
 
         return render(request, self.template_name, context)
-
+    
     def post(self, request,*args, **kwargs):
-        queryset = request.POST
-        print(queryset)
-        # param = Codename
-        # rol.permissions.add("codename"=parametro)
-        return redirect('Admin',kwargs['pk'])
+        x=request.POST.getlist('Datos[]')
+        Datos = json.loads(x[0])
+        rol = Group.objects.get(pk = kwargs['pk'])
+        # try:
+        for dato in Datos:
+            if dato['PermissionsAdd'] != []:
+                for add in dato['PermissionsAdd']:
+                    permiso = Permission.objects.get(codename=add)
+                    content = ContentType.objects.get(pk = permiso.content_type_id)
+                    permission = Permission.objects.get(
+                        codename=add,
+                        content_type=ContentType.objects.get(model = content.model),
+                        )
+                    rol.permissions.add(permission)
+            if dato['PermissionsRemove'] != []:
+                for remove in dato['PermissionsRemove']:
+                    permiso = Permission.objects.get(codename=remove)
+                    content = ContentType.objects.get(pk = permiso.content_type_id)
+                    rol.permissions.remove(Permission.objects.get(
+                        codename=remove,
+                        content_type=ContentType.objects.get(model = content.model),
+                        ))
+                    rol.save()
+        return JsonResponse({"Success":"success"})
+        # except Exception as e:   
+        #     print(e)   
+        #     data = json.dumps({'error': 'No se encontraron los permisos y no se pudo realizar ningún cambio'})
+        #     return HttpResponse(data, content_type="application/json", status=400)
+
+        
 
 
 
@@ -201,7 +217,6 @@ class CreateRolView(CreateView, PermissionMixin):
             if request.method == "POST":
                 formulario=self.form_class(request.POST)
                 # empleado =(request.POST['name'])
-                # print(empleado)
                 if formulario.is_valid():
                     rol = formulario.save()
                     roles = Group.objects.all()
@@ -224,9 +239,7 @@ class CreateRolView(CreateView, PermissionMixin):
                     return JsonResponse({"mensaje": "{self.model.__name__} Se ha creado correctamente", "errores":"No hay errores"})
                 else:
                     errores=formulario.errors
-                    print(formulario.is_valid())
                     mensaje=f"{self.model.__name__} No se ha creado correctamente!"
-                    print(mensaje)
                     respuesta=JsonResponse({"mensaje":mensaje, "errores":errores})
                     respuesta.status_code=400
                     return respuesta
@@ -375,7 +388,6 @@ class listarPermisos(ListView,PermissionMixin):
                 Q(name__icontains = queryset)
             )
             # return {'buscar':contexto}
-            # print({'buscar':contexto} )
             # funciona
 
         context = super(listarPermisos, self).get_context_data(**kwargs)

@@ -114,23 +114,25 @@ def Tipo_Documento():
 
 def Tiposervicio():
     # Lista de datos a insertar
+    permiso = Permission.objects.get(id=116)
     Tipo=[
-        {'id':'1','nombre':'Manicure'},
-        {'id':'2','nombre':'Pedicure'},
+        {'id':'1','nombre':'Manicure', "grado_id":permiso},
+        {'id':'2','nombre':'Pedicure',"grado_id":permiso},
     ]
     for TServicio in Tipo:
         try:
             Objecto = Tipo_servicio.objects.get(pk=TServicio['id'])
             Objecto.id_tipo_servicio = TServicio['id']
             Objecto.nombre = TServicio['nombre']
+            Objecto.grado_id = TServicio['grado_id']
             Objecto.save()
         except:
             try:
                 Objecto=Tipo_servicio.objects.get(pk=TServicio["id"])
                 Objecto.delete()
-                Tipo_servicio.objects.create(pk=TServicio["id"], nombre=TServicio['nombre'])
+                Tipo_servicio.objects.create(pk=TServicio["id"], nombre=TServicio['nombre'], grado_id=TServicio['grado_id'])
             except:
-                Tipo_servicio.objects.create(pk=TServicio["id"], nombre=TServicio['nombre'])
+                Tipo_servicio.objects.create(pk=TServicio["id"], nombre=TServicio['nombre'], grado_id=TServicio['grado_id'])
 
 def PermisosCliente(rol):
                 #    Permission - Can view notifications

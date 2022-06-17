@@ -1,5 +1,5 @@
+{% extends 'Menu_Usuario.html' %} {% block head %}
 
-{% block head %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,21 +7,21 @@
     <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
     <link rel="stylesheet" href="/static/Configuracion/css/estilo.css">
+    <link rel="stylesheet" href="sweetalert2.min.css">
     <title>Permisos Admin</title>
 </head>
-        {% endblock head %}
-        {%block Contenido%}
+{% endblock head %} {%block Contenido%}
 
-        
-    <h1 class="titulo">Asignacion de Permisos</h1>
-    <div id="container-main" >
+
+<h1 class="titulo">Asignacion de Permisos</h1>
+<div id="container-main">
     <div class="container">
         <div class="row">
             <div class=" col-md-12 search">
                 <form method="GET">
                     <div id="custom-search-input">
                         <div class="input-group col-md-12">
-                            <input type="text" class="form-control" name="buscar" id="buscar"  placeholder="Buscar...">
+                            <input type="text" class="form-control" name="buscar" id="buscar" placeholder="Buscar...">
                             <!-- <span class="input-group-list">
                                 <i class="icon icon-search"></i>
                                 <button type="submit" class=" botonlist btn-primary" style="height: 38px;"  >Buscar</button>
@@ -34,115 +34,163 @@
         </div>
     </div>
     <div class="row">
-        
+
         <div class="PermiAdmin col-lg-6">
-        <div class="PermiAdmin2" >
-                <h3>Permisos del {{rol.name}}</h3>
+            <div class="PermiAdmin2">
+                <h3>Permisos del rol {{rol.name}}</h3>
                 <form action="" method="POST">
-            <div class="nada"id="permisoSi">
-                    {%if permisos%}
-                    {% for i in permisos %}
-                    <div class="articulo contenedorName" ><div class="form-check">
-                        <input class=" form-check-input" type="checkbox" value="" id="flexCheckDefault{{i.pk}}">
-                        <label class="form-check-label" for="flexCheckDefault{{i.pk}}">Permiso - {{forloop.counter}}: <s id="PermisoName" >{{i.name}}</s><br><br>
-                        </label>
-                      </div>
-                      
-                          </div>
-                          {% endfor %}
-                          
-                        {%else%}
-                            <h1>No se encontraron coincidencias</h1>
+                    <div class="nada" id="permisoSi">
+                        {%if permisos%} {% for i in permisos %}
+                        <div class="articulo contenedorName">
+                            <div class="form-check" id="{{i.pk}}">
+                                <input class=" form-check-input" type="checkbox" value="{{i.codename}}" id="flexCheckDefault{{i.pk}}">
+                                <label class="form-check-label" for="flexCheckDefault{{i.pk}}">Permiso - {{forloop.counter}}: <s id="PermisoName" >{{i.name}}</s><br><br>
+                                </label>
+                            </div>
+                        </div>
+                        {% endfor %} {%else%}
+                        <h1 id="Basura2">No se encontraron coincidencias</h1>
                         {%endif%}
-                       
-                   
-                </div><hr>
-                <input type="button" value="enviar" class="btn btn-outline-secondary">
-            </form>
+
+
+                    </div>
+                    <hr>
+                </form>
             </div>
         </div>
-     
-        
+
+
         <div class="PermiAdmin col-lg-6">
-            <div class="PermiAdmin2" >
-                    <h3>Permisos para Agregar al {{rol.name}}</h3>
-                    <form action="{%url 'Admin' grupo %}" method="post">
-                        {% csrf_token %}
-                        <div class="nada"id="permisoNo">
-                        {%if permisosexclu%}
-                        {% for i in permisosexclu %}
+            <div class="PermiAdmin2">
+                <h3>Permisos para Agregar al rol {{rol.name}}</h3>
+                <form action="{%url 'Admin' grupo %}" method="post" id="FormularioPermisos">
+                    {% csrf_token %}
+                    <div class="nada" id="permisoNo">
+                        {%if permisosexclu%} {% for i in permisosexclu %}
                         <div class="articulo contenedorName">
                             <div class="form-check" id="{{i.pk}}">
                                 <input class=" form-check-input" type="checkbox" value="{{i.codename}}" id="flexCheckDefaultA{{i.pk}}">
                                 <label class="form-check-label" for="flexCheckDefaultA{{i.pk}}">Permiso - {{forloop.counter}}: <s id="PermisoNameA" >{{i.name}}</s><br><br>
                                 </label>
-                              </div>
                             </div>
-                            {% endfor %}
-                            {%else%}
-                                <h1>No se encontraron coincidencias</h1>
-                            {%endif%}
+                        </div>
+                        {% endfor %} {%else%}
+                        <h1 id="Basura2">No se encontraron coincidencias</h1>
+                        {%endif%}
 
-                         </div><hr>
-                         <input type="submit" value="enviar" name="agregar" id="agregar" class="btn btn-outline-secondary">
-                    </form>
-                </div>
+                    </div>
+                    <hr>
+                </form>
             </div>
+            <input type="button" value="Guardar" class="btn btn-outline-secondary" onclick="GuardarPermisos()">
         </div>
     </div>
-    
-    
-    {% endblock Contenido %}
-    
-    {% block scripts %}
-    <script>
-    
+</div>
+
+
+{% endblock Contenido %} {% block scripts %}
+<script>
     let per = document.querySelectorAll("#PermisoNameA")
     let perSi = document.querySelectorAll("#PermisoName")
-    permisoAgregar=[]
-    permisoTiene=[]
-    permiso=[]
+    permisoAgregar = []
+    permisoTiene = []
+    permiso = []
+    data = []
     for (let i = 0; i < per.length; i++) {
         let permiso = per[i].parentNode.parentNode.childNodes[1]
-        permiso.addEventListener('click',p=>{
+        permiso.addEventListener('click', p => {
             let t = p.target
             let y = t.parentNode
             let div = y.parentNode
             let i = y.cloneNode(true)
             let valor = i.childNodes[1].value
-            if (permisoAgregar.includes({valor}) == false){
-                permisoAgregar.push(valor)
-            }
-            else{
-                permisoAgregar.splice(valor,1)
-            }
             let cont = document.getElementById('permisoSi')
-            console.log(permisoAgregar)
-            cont.appendChild(div)
+            let cont2 = document.getElementById('permisoNo')
+            let check = div.childNodes[1].childNodes[1].checked
+            try {
+                document.getElementById('Basura2').style.display = "none"
+            } catch (error) {
+
+            }
+            if (check) {
+                cont.appendChild(div)
+                if (permisoAgregar.includes(valor) == false) {
+                    permisoAgregar.push(valor)
+                } else {
+                    permisoAgregar.splice(valor, 1)
+                }
+            } else {
+                cont2.appendChild(div)
+                if (permisoTiene.includes(valor) == false) {
+                    permisoAgregar.splice(valor, 1)
+                } else {
+                    permisoTiene.splice(valor, 1)
+                }
+            }
         })
     }
     for (let i = 0; i < perSi.length; i++) {
         let permiso = perSi[i].parentNode.parentNode.childNodes[1]
-        permiso.addEventListener('click',p=>{
+        permiso.addEventListener('click', p => {
             let t = p.target
             let y = t.parentNode
             let div = y.parentNode
             let i = y.cloneNode(true)
             let valor = i.childNodes[1].value
-            if (permisoTiene.includes(valor) == false){
-                permisoTiene.push(valor)
-            }
-            else{
-                permisoTiene.splice(valor,1)
-            }
+            let cont2 = document.getElementById('permisoSi')
             let cont = document.getElementById('permisoNo')
-            console.log(permisoTiene)
-            cont.appendChild(div)
+            let check = div.childNodes[1].childNodes[1].checked
+            try {
+                document.getElementById('Basura2').style.display = "none"
+            } catch (error) {
+
+            }
+            if (check) {
+                cont.appendChild(div)
+                if (permisoAgregar.includes(valor) == false) {
+                    permisoTiene.push(valor)
+                } else {
+                    permisoTiene.splice(valor, 1)
+                }
+            } else {
+                cont2.appendChild(div)
+                if (permisoAgregar.includes(valor) == false) {
+                    permisoTiene.splice(valor, 1)
+                } else {
+                    permisoAgregar.splice(valor, 1)
+                }
+            }
         })
     }
+    data.push({
+        "PermissionsAdd": permisoAgregar,
+        "PermissionsRemove": permisoTiene
+    })
 
-    </script>
-    <script src="/static/Configuracion/js/main.js"></script>
-    <script src="/static/Configuracion/js/TraducirPermisos.js"></script>
-    {% endblock scripts %}
-        
+    function GuardarPermisos() {
+        $.ajax({
+            data: {
+                'Datos[]': JSON.stringify(data),
+                "csrfmiddlewaretoken": $("#FormularioPermisos").find('input[name=csrfmiddlewaretoken]').val()
+            },
+            url: $("#FormularioPermisos").attr('action'),
+            type: $("#FormularioPermisos").attr('method'),
+            success: function(data) {
+                window.location.href = "../Roles/";
+            },
+            error: function(error) {
+                Error = error['responseJSON']
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Atención.',
+                    text: Error['error'] + '.',
+                })
+            }
+        })
+
+    }
+</script>
+<script src="/static/Configuracion/js/main.js"></script>
+<script src="/static/Configuracion/js/TraducirPermisos.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+{% endblock scripts %}

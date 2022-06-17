@@ -1,6 +1,6 @@
 #-----------------------------------------Imports---------------------------------------------------
 import smtplib
-
+import json
 # prueba
 from Proyecto_Ekiria import settings
 from importlib import import_module
@@ -87,8 +87,6 @@ def Login(request):
                                     request.session['Admin'] = 2
                             except:
                                  request.session['Admin'] = 3
-                        # pedido, = Pedido.objects.get(cliente_id=usuario, completado=False)
-                        # request.session["carrito"]=pedido.get_items_carrito
                         if 'next' in request.POST:
                             return redirect(request.POST.get('next'))
                         else:
@@ -133,7 +131,7 @@ class Register(CreateView):
                     municipio = form.cleaned_data.get('municipio'),
                     direccion = form.cleaned_data.get('direccion'),
                     cod_postal = form.cleaned_data.get('cod_postal'),
-                    estado = 0
+                    estado = 1
                 )
                 registro.save()
                 user = Usuario.objects.get(username = request.POST['username'])
@@ -151,7 +149,7 @@ class Register(CreateView):
                 mensaje = MIMEMultipart()
                 mensaje['From'] = settings.local.EMAIL_HOST_USER
                 mensaje['To'] = user.email
-                mensaje['Subject'] = "Cambio de contraseña"
+                mensaje['Subject'] = "Confirme su correo"
                 cliente = f"{str(user.nombres).capitalize()} {str(user.apellidos).capitalize()}"
                 key = token.key
                 value = cryptocode.encrypt(str(key),Public_Key)
@@ -208,14 +206,11 @@ class ConfirmarCuenta(TemplateView):
                 user.save()
                 return redirect('IniciarSesion')
             except:
-                
-                response = JsonReponse({'error':'No se pudo confirmar tu correo intentalo de nuevo'})
-                response.status_code = 400
-                return response
+                data = json.dumps({'error': 'El total no puede tener un valor de 0'})
+                return HttpResponse(data, content_type="application/json", status=400)
         else:
-            response = JsonReponse({'error':'No se pudo identificar el usuario'})
-            response.status_code = 401
-            return response
+            data = json.dumps({'error': 'El total no puede tener un valor de 0'})
+            return HttpResponse(data, content_type="application/json", status=400)
 
 @login_required()
 def Perfil(request):
@@ -448,24 +443,14 @@ class UpdateUser(UpdateView,PermissionMixin):
         cambiosfQueryset = cambiosFooter.objects.all()
         if form.is_valid():
             try:
-                print(form.cleande_data('username'))
                 form.save()
                 return redirect('Administracion')
             except Exception as e:
                 context['errors'] = form.errors
-                context['cambios']=cambiosQueryset
-                context['footer']=cambiosfQueryset
-                print(form.errors)
-                return render(request, self.template_name, context)
+                print(e)
         else:
-            print('no')
             context['errors'] =  form.errors
             context['Error']= 'Los datos ingresados son incorrectos'
-        UserSesion = if_admin(request)
-        if UserSesion == False:
-            return redirect("IniciarSesion")
-        context['titulo']="Editar Usuario "+UserSesion['username']
-        context['User']=UserSesion
         context['roles']=Group.objects.all()
         context['cambios']=cambiosQueryset
         context['footer']=cambiosfQueryset
@@ -474,6 +459,7 @@ class UpdateUser(UpdateView,PermissionMixin):
         if UserSesion == False:
             return redirect("IniciarSesion")
         context['User']=UserSesion
+        context['titulo']="Editar Usuario "+UserSesion['username']
         return render(request, self.template_name, context)
                 
     def get_context_data(self, *args, **kwargs):
@@ -501,7 +487,7 @@ def Notification(request):
     cambiosfQueryset = cambiosFooter.objects.all()
     return render(request, "UserInformation/Notification.html", {"User":UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
     
-@PermissionDecorator(['delete_usuario'])
+@PermissionDecorator(['change_usuario'])
 def CambiarEstadoUsuario(request):
     if request.method=="POST":
         id = request.POST["estado"]

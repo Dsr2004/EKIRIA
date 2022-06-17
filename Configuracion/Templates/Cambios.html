@@ -35,13 +35,14 @@
 
                             <input type="hidden" name="id_cambio" value="{{cambios.id_cambios}}">
                         </div>
-                        
+
                         <div class="detallesCambioPa" id="detallesCambioPa">
                             <ul>
                                 <h4> Más Cambios
                                 </h4>
                                 <li onclick="MasCambios()"><i class="fa fa-angle-up icon_show"></i><i class="fa fa-angle-down icon_hide"></i></li>
                             </ul>
+                            <br>
                             <br>
                             <div class="contenidoCambios">
                                 <ul class="cambiosFlexWrap">
@@ -80,7 +81,9 @@
                                     </li>
                                 </ul>
                             </div>
-                        </div><script>
+                        </div>
+                        <hr>
+                        <script>
                             $(document).ready(function() {
                                 let colorFondo = $("#ColorFondo").val()
                                 let texto = document.getElementById("texto");
@@ -125,7 +128,7 @@
                                 }
                             });
                         </script> {%endfor%}
-                        
+
                         <script>
                             function MasCambios() {
                                 let contenedor = document.getElementById("detallesCambioPa")
@@ -144,11 +147,16 @@
                 </form>
             </div>
         </div>
-    </div>
+    </div><br>
 
     <!-- foteeer -->
+
     <div class="contactenos">
-        {%if Foter%} {%for Footers in Foter%}
+        <h3 class="tituloCambios">Modificación del Footer</h3>
+        <br>
+        <br>
+        <br> {%if Foter%} {%for Footers in Foter%}
+        <br>
         <form id="CambiosFooterForm" action="{% url 'CrearFooter'%}" method="post">
             <ul>
                 <li>
@@ -255,33 +263,15 @@
 </div>
 
 {% endblock Contenido %} {% block footer %}
-<div class="footerE">
-    {%if footer%} {%for cambiosFooter in footer%}
-    <div class="footerContent" id="texto21" style="background-color: {{cambiosFooter.Footer_Color_Fondo}}; color:{{cambiosFooter.Footer_Color_Letra}}; font-size:{{cambiosFooter.Footer_tamano_Texto}}px;">
-        <div class="Principal">
-            <ul>
-                <li>
-                    <h3 id="text4" style="font-family: '{{cambiosFooter.Footer_Tipo_Letra}}' ;">&copy; Todos los derechos reservados Ekiria {{cambiosFooter.Derechos}} - Sena</h3>
-                </li>
-                <li onclick="Footer1()"><i class="fa fa-angle-up icon_show"></i><i class="fa fa-angle-down icon_hide"></i></li>
-            </ul>
-        </div>
-        <div class="Segundario">
-            <h3 id="text4" style="font-family: '{{cambiosFooter.Footer_Tipo_Letra}}' ;">Dirección: {{cambiosFooter.Direccion}}</h3>
-            <hr>
-            <h3><a style="color:{{cambiosFooter.Footer_Color_Letra}}" href="https://wa.me/{{cambiosFooter.Telefono}}" target="_blank"><i class="fa-brands fa-whatsapp"></i> WhatsApp: {{cambiosFooter.Telefono}}</a></h3>
-
-        </div>
-    </div>
-    {%endfor%} {%else%}
-
-    <h1>No hay registros</h1>
-
-    {%endif%}
-</div>
+<div></div>
 {% endblock footer %}{%block scripts%}
 
 <script>
+    function cambiosP() {
+        let content = document.getElementById('body-content-menu')
+        content.style.marginBottom = 0 + "px"
+    }
+
     function Footer1() {
         let contenedor = document.getElementById("texto21")
         let br = document.getElementById("br")

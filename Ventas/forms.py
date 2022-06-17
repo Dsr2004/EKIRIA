@@ -15,7 +15,7 @@ class ServicioForm(forms.ModelForm):
         fields=("nombre","precio","tipo_servicio_id","img_servicio","slug","descripcion", "estado","duracion")
         widgets={
             'duracion':forms.NumberInput(attrs={'class':'form-control'}),
-            'nombre':forms.TextInput(attrs={'class':'form-control'}),
+            'nombre':forms.TextInput(attrs={'class':'form-control', 'required':''}),
             'tipo_servicio_id':forms.Select(attrs={"class":"form-select"}),
             'descripcion':forms.Textarea(attrs={'class':'form-control'}),
             'img_servicio':forms.FileInput(attrs={"class":"form-control",}),

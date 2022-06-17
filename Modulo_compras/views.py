@@ -1,8 +1,10 @@
 from gc import get_objects
+from operator import index
 import os
 from itertools import product
 import json
 from pickle import TRUE
+from re import I
 from wsgiref.util import request_uri
 from xmlrpc.client import boolean
 from django.shortcuts import render, redirect
@@ -61,6 +63,18 @@ class Crearprod(CreateView):
     def post(self,request, *args, **kwargs):  
         context={}
         producto_form = self.form_class(request.POST or None)
+        UserSesion = if_admin(request)
+        if UserSesion == False:
+            return redirect("IniciarSesion")
+        cambiosQueryset = cambios.objects.all()
+        cambiosfQueryset = cambiosFooter.objects.all()
+        tipo_producto = Tipo_producto.objects.all()
+        context["User"]=UserSesion
+        context['form']=producto_form
+        context['cambios']=cambiosQueryset
+        context['footer']=cambiosfQueryset
+        context['tipo']=tipo_producto
+        context['errors'] = producto_form.errors
         if producto_form.is_valid():
             nombre = producto_form.cleaned_data.get('nombre')
             proveedor = producto_form.cleaned_data.get('proveedor')
@@ -69,45 +83,24 @@ class Crearprod(CreateView):
             for producto in productos:
                 if producto.nombre == nombre:
                     if producto.proveedor_id == proveedor.pk:
-                        print(producto.proveedor_id)
                         boolean=False
             if boolean != False:
-                producto = self.model(
-                    nombre = nombre,
-                    proveedor = proveedor,
-                    tipo_producto = producto_form.cleaned_data.get('tipo_producto'),
-                    cantidad = 0,
-                )
-                producto.save()
-                return redirect('listarprod')
+                if proveedor.estado:
+                    producto = self.model(
+                        nombre = nombre,
+                        proveedor = proveedor,
+                        tipo_producto = producto_form.cleaned_data.get('tipo_producto'),
+                        cantidad = 0,
+                    )
+                    producto.save()
+                    return redirect('listarprod')
+                else:
+                    context['Error']="El proveedor que ha seleccionado se encuentra inhabilitado"
+                    return render(request, self.template_name, context)
             else:
-                UserSesion = if_admin(request)
-                if UserSesion == False:
-                    return redirect("IniciarSesion")
-                cambiosQueryset = cambios.objects.all()
-                cambiosfQueryset = cambiosFooter.objects.all()
-                tipo_producto = Tipo_producto.objects.all()
-                context["User"]=UserSesion
-                context['form']=producto_form
-                context['cambios']=cambiosQueryset
-                context['footer']=cambiosfQueryset
-                context['tipo']=tipo_producto
-                context['errors'] = producto_form.errors
                 context['Error']="El nombre del producto ya esta relacionado a un proveedor"
                 return render(request, self.template_name, context)
         else:
-            UserSesion = if_admin(request)
-            if UserSesion == False:
-                return redirect("IniciarSesion")
-            cambiosQueryset = cambios.objects.all()
-            cambiosfQueryset = cambiosFooter.objects.all()
-            tipo_producto = Tipo_producto.objects.all()
-            context["User"]=UserSesion
-            context['form']=producto_form
-            context['cambios']=cambiosQueryset
-            context['footer']=cambiosfQueryset
-            context['tipo']=tipo_producto
-            context['errors'] = producto_form.errors
             return render(request, self.template_name, context)
     def get_context_data(self, *args, **kwargs):
         context = super(Crearprod, self).get_context_data(**kwargs)
@@ -263,9 +256,15 @@ class Crearcompra(CreateView):
                 x=request.POST.getlist('Datos[]')
                 DatosCompra = json.loads(x[0])
                 Permite=True
+                print(DatosCompra)
                 for datos in DatosCompra:
+                    producto = Producto.objects.get(pk=int(datos['Id']))
                     if datos['Cantidad'] == "" or datos['Precio']=="":
                         Permite=False
+                    if producto.estado == False:
+                        Permite=False
+                        data = json.dumps({'error': 'El producto '+producto.nombre+" se encuentra inhabilitado por lo que no se puede crear la compra"})
+                        return HttpResponse(data, content_type="application/json", status=400)
                 if Permite==True:
                     Compra=self.model.objects.create(total = 0)
                     historial=[]
@@ -398,7 +397,11 @@ def cambiarestado(request):
             id = request.POST["estado"]
             update=Proveedor.objects.get(id_proveedor=id)
             estatus=update.estado
+            productos = Producto.objects.filter(proveedor_id = update.pk)
             if estatus==True:
+                for producto in productos:
+                    producto.estado = False
+                    producto.save()
                 update.estado=False
                 update.save()
             elif estatus==False:
@@ -430,13 +433,18 @@ def cambiarestadoTProducto(request):
         if request.method=="POST":
             id = request.POST["estado"]
             update=Tipo_producto.objects.get(pk=id)
+            proveedor = Proveedor.objects.get(pk = update.proveedor_id)
             estatus=update.estado
             if estatus==True:
                 update.estado=False
                 update.save()
             elif estatus==False:
-                update.estado=True
-                update.save()
+                if proveedor.estado==True:
+                    update.estado=True
+                    update.save()
+                else:
+                    data = json.dumps({'error': 'No se puede Habilitar este producto si su proveedor está inhabilitado'})
+                    return HttpResponse(data, content_type="application/json", status=400)
             else:
                 return redirect('listarprov')
     return JsonResponse({"kiwi":"yes"})
@@ -458,11 +466,15 @@ def cambiarestadoCompra(request):
                     for h in historial:
                         cantidad = h.cantidad
                         producto = Producto.objects.get(pk = int(h.producto_id))
-                        if producto.cantidad < cantidad:
-                            actualiza = False
-                            errores.append({'producto':producto.nombre})
+                        if producto.estado:
+                            if producto.cantidad < cantidad:
+                                actualiza = False
+                                errores.append({'producto':producto.nombre})
+                            else:
+                                datos.append({'Id':producto.pk,'cantidad':cantidad})
                         else:
-                            datos.append({'Id':producto.pk,'cantidad':cantidad})
+                            data = json.dumps({'error': 'El producto '+producto.nombre+' se encuentra inhabilitado por lo que no se puede modificar la compra'})
+                            return HttpResponse(data, content_type="application/json", status=400)
                     if actualiza:
                         for data in datos:
                             producto = Producto.objects.get(pk = data['Id'])
@@ -563,6 +575,111 @@ class verDetalleCompra(TemplateView):
             return HttpResponse('Se ha encontrado un error <pre>'+html+'</pre>')
         return response
 
+
+
+class ListaCompra(TemplateView):
+    template_name = "ListaCompra.html"
+    model = Producto
+    def get_context_data(self, *args, **kwargs):
+        context = super(ListaCompra, self).get_context_data(**kwargs)
+        productos = self.model.objects.all()
+        context['Productos']=productos
+        UserSesion = if_admin(self.request)
+        if UserSesion == False:
+            return redirect("IniciarSesion")
+        cambiosQueryset = cambios.objects.all()
+        cambiosfQueryset = cambiosFooter.objects.all()
+        context["User"]=UserSesion
+        context['cambios']=cambiosQueryset
+        context['footer']=cambiosfQueryset
+        return context
+
+class GraficoCompras(TemplateView):
+    template_name = "GraficoCompra.html"
+    model = Producto
+    
+    def InformacionGrafico(self, mes, año):
+        Compras = Compra.objects.all()
+        Productos=[]
+        prov = Proveedor.objects.all()
+        Proveedores=[]
+        datos=[]
+        for pr in prov:
+            cant = []
+            for produ in Producto.objects.all():
+                if produ.nombre not in Productos:
+                    Productos.append(produ.nombre)
+            for i in range(len(Productos)):
+                cant.append(0)
+            Proveedores.append({'Proveedor':pr.nombre, 'Precios':cant})
+            
+        for compra in Compras:
+            if compra.fecha_creacion.month == mes and compra.fecha_creacion.year == año:
+                if compra.estado:
+                    History = HistorialCompra.objects.filter(compra_id = compra.pk)
+                    for historial in History:
+                        producto = Producto.objects.get(pk = historial.producto_id)
+                        repP = HistorialCompra.objects.filter(producto_id = producto.pk)
+                        if len(repP) > 1:
+                            producto = Producto.objects.get(pk = repP[0].producto_id)
+                            proveedor = Proveedor.objects.get(pk = producto.proveedor_id)
+                            Precio = [0]
+                            for r in repP:
+                                Precio[0] = Precio[0] + r.precio
+                            Precio[0] = Precio[0] / len(repP)
+                            index = Productos.index(producto.nombre)
+                            for prove in Proveedores:
+                                if prove['Proveedor'] == proveedor.nombre:
+                                    prove['Precios'][index]=Precio[0]
+                        else:
+                            proveedor = Proveedor.objects.get(pk = producto.proveedor_id)
+                            index = Productos.index(producto.nombre)
+                            for prove in Proveedores:
+                                print(prove)
+                                if prove['Proveedor'] == proveedor.nombre:
+                                    if prove['Proveedor'] == proveedor.nombre:
+                                        prove['Precios'][index]=historial.precio
+                                  
+        datos.append(Proveedores)
+        datos.append(Productos)
+        return datos
+                                
+    def get_context_data(self, *args, **kwargs):
+        context = super(GraficoCompras, self).get_context_data(**kwargs)   
+        mes = datetime.now().month 
+        año = datetime.now().year 
+        datos=self.InformacionGrafico(mes, año)
+        Productos=datos[1]
+        Proveedores=datos[0]
+        context['Productos']=json.dumps(Productos)
+        context['Proveedores']=json.dumps(Proveedores)
+        UserSesion = if_admin(self.request)
+        if UserSesion == False:
+            return redirect("IniciarSesion")
+        cambiosQueryset = cambios.objects.all()
+        cambiosfQueryset = cambiosFooter.objects.all()
+        context["User"]=UserSesion
+        context['cambios']=cambiosQueryset
+        context['footer']=cambiosfQueryset
+        return context
+    def post(self, request, *args, **kwargs):
+        context={}
+        mes = datetime.strptime(request.POST['fecha'],"%Y-%m-%d").month 
+        año = datetime.strptime(request.POST['fecha'],"%Y-%m-%d").year 
+        datos=self.InformacionGrafico(mes, año)
+        Productos=datos[1]
+        Proveedores=datos[0]
+        context['Productos']=json.dumps(Productos)
+        context['Proveedores']=json.dumps(Proveedores)
+        UserSesion = if_admin(self.request)
+        if UserSesion == False:
+            return redirect("IniciarSesion")
+        cambiosQueryset = cambios.objects.all()
+        cambiosfQueryset = cambiosFooter.objects.all()
+        context["User"]=UserSesion
+        context['cambios']=cambiosQueryset
+        context['footer']=cambiosfQueryset
+        return render(request, self.template_name, context)    
 class eliminarProductos(TemplateView):
     model=Producto
     template_name = "Funciones/RestarProductos.html"
@@ -596,7 +713,6 @@ class eliminarProductos(TemplateView):
                     if producto.cantidad < int(datos['Cantidad']):
                         cambiar = False
                 if cambiar==True: 
-                    print('si')
                     for datos in DatosProductos: 
                         producto = Producto.objects.get(pk = datos['Id'])
                         producto.cantidad = producto.cantidad - int(datos['Cantidad'])

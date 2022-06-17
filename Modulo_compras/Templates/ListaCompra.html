@@ -1,0 +1,42 @@
+{%extends 'Menu_Usuario.html'%} {% block head %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Compra</title>
+    <link rel="stylesheet" href="/static/Modulo_compras/css/DetalleCompra.css">
+    <link rel="icon" href="/static/Proyecto_Ekiria/Img/Logo Ekiria.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vast+Shadow&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/Proyecto_Ekiria/css/styleTablesInformations.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="sweetalert2.min.css">
+    <link rel="stylesheet" href="/static/Modulo_compras/css/style.css">
+    <script src="/static/bootstrap/js/bootstrap.js"></script>
+
+
+</head>
+{% endblock head %} {% block Contenido %}
+<button class="btn btn-link col-md-1" style="text-decoration: none;"><a style="text-decoration: none; font-size: 24px; "  href="{%url 'listarcompra'%}">Volver</a></button>
+
+<div class="Table Add" style="margin-top: -50px; ">
+    <form action="" method="post">
+        {% csrf_token %}
+        <button type="submit" class="pdf img btn btn-dribbble" style="border-radius: 5px;">
+            <a style="color: #fff;">
+                <i class="mdi mdi-file-pdf"></i>
+                <b class="etiquetaReporte" style="display: none;">Descargar en PDF</b>
+            </a>
+        </button>
+    </form>
+</div>
+
+{{Productos}} {% endblock Contenido %} {% block modal %} {% endblock modal%} {%block scripts%}
+<script src="/static/Modulo_compras/js/js.js"></script> {%endblock scripts%}
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+</html>

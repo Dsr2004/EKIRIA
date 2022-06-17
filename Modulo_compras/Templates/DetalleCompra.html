@@ -20,13 +20,15 @@
 
 </head>
 {% endblock head %} {% block Contenido %}
+<button class="btn btn-link col-md-1" style="text-decoration: none;"><a style="text-decoration: none; font-size: 24px; "  href="{%url 'listarcompra'%}">Volver</a></button>
+
 <div class="Table Add" style="margin-top: -50px; ">
     <form action="" method="post">
         {% csrf_token %}
         <button type="submit" class="pdf img btn btn-dribbble" style="border-radius: 5px;">
             <a style="color: #fff;">
                 <i class="mdi mdi-file-pdf"></i>
-                <b class="etiquetaReporte" style="display: none;">Descargar</b>
+                <b class="etiquetaReporte" style="display: none;">Descargar en PDF</b>
             </a>
         </button>
     </form>
