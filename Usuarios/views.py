@@ -165,10 +165,62 @@ class Register(CreateView):
                 success = "Se ha enviado el correo correctamente al email "+user.email
                 return redirect('IniciarSesion')
             except:
+                nombre = request.POST.getlist("nombres","")[0]
+                username = request.POST.getlist('username',"")[0]
+                apellidos = request.POST.getlist('apellidos',"")[0]
+                telefono = request.POST.getlist('telefono',"")[0]
+                celular = request.POST.getlist('celular',"")[0]
+                email = request.POST.getlist('email',"")[0]
+                num_documento = request.POST.getlist('num_documento',"")[0]
+                direccion = request.POST.getlist('direccion',"")[0]
+                cod_postal = request.POST.getlist('cod_postal',"")[0]
+                municipio = request.POST.getlist('municipio',"")[0]
+                tipo_documento = request.POST.getlist('tipo_documento',"")[0]
+                fec_nac = request.POST.getlist('fec_nac', "")[0]
+
+                context['nombre']=nombre
+                context['username']=username
+                context['apellidos']=apellidos
+                context['telefono']=telefono
+                context['celular']=celular
+                context['email']=email
+                context['num_documento']=num_documento
+                context['direccion']=direccion
+                context['cod_postal']=cod_postal
+                context['municipio']=municipio
+                context['tipo_documento']=tipo_documento
+                context["fec_nac"]= fec_nac
+
                 context['errors'] = form.errors
                 context['Error'] = 'No se pudo enviar el correo'
                 return render(request, self.template_name, context)
         else:
+            nombre = request.POST.getlist("nombres","")[0]
+            username = request.POST.getlist('username',"")[0]
+            apellidos = request.POST.getlist('apellidos',"")[0]
+            telefono = request.POST.getlist('telefono',"")[0]
+            celular = request.POST.getlist('celular',"")[0]
+            email = request.POST.getlist('email',"")[0]
+            num_documento = request.POST.getlist('num_documento',"")[0]
+            direccion = request.POST.getlist('direccion',"")[0]
+            cod_postal = request.POST.getlist('cod_postal',"")[0]
+            municipio = request.POST.getlist('municipio',"")[0]
+            tipo_documento = request.POST.getlist('tipo_documento',"")[0]
+            fec_nac = request.POST.getlist('fec_nac', "")[0]
+
+            context['nombre']=nombre
+            context['username']=username
+            context['apellidos']=apellidos
+            context['telefono']=telefono
+            context['celular']=celular
+            context['email']=email
+            context['num_documento']=num_documento
+            context['direccion']=direccion
+            context['cod_postal']=cod_postal
+            context['municipio']=municipio
+            context['tipo_documento']=tipo_documento
+            context["fec_nac"]= fec_nac
+
             context['errors'] =  form.errors
             context['Error']= 'Los datos ingresados son incorrectos'
         return render(request, self.template_name, context)

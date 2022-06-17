@@ -1,3 +1,4 @@
+{% load crispy_forms_tags %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -17,9 +18,11 @@
 
     <a href="{%url 'Inicio'%}"><img class="logo" src="/static/Proyecto_Ekiria/Img/Logo Ekiria Negro 1.png"></a>
     <div class="contenido">
-        <form method="POST" id="form">
+        <form method="POST" id="form" autocomplete="off">
             <h1>Registro</h1>
 
+
+            
             {% if Error %}
             <div class="alert alert-danger">{{Error}}</div>
             {% endif %} {% csrf_token %}
@@ -86,8 +89,27 @@
             </div>
             <p>
 
-                {% if errors%}
 
+             
+
+                {% if errors%}
+                    <script>
+                        $("input[name=username]").val('{{username}}')   
+                        $("input[name=email]").val('{{email}}')
+                        $("input[name=nombres]").val('{{nombre}}')   
+                        $("input[name=apellidos]").val('{{apellidos}}')
+                        $("input[name=username]").val('{{username}}')   
+                        $("input[name=direccion]").val('{{direccion}}')
+                        $("input[name=telefono]").val('{{telefono}}')   
+                        $("input[name=celular]").val('{{celular}}')
+                        $("input[name=municipio]").val('{{municipio}}')   
+                        $("input[name=num_documento]").val('{{num_documento}}')
+                        $("select[name=municipio]").val('{{municipio}}')
+                        $("select[name=cod_postal]").val('{{cod_postal}}')
+                        $("select[name=tipo_documento]").val('{{tipo_documento}}')
+                        $("input[name=fec_nac]").val('{{fec_nac}}')
+                        
+                    </script>
                 <script>
                     var fields = [];
                 </script>

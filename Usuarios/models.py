@@ -105,7 +105,7 @@ class Usuario(AbstractBaseUser):
     municipio = models.ForeignKey(Municipio, null=True, blank=True, on_delete=models.CASCADE)
     direccion = models.CharField(blank=True, null=True, max_length=250)
     cod_postal = models.ForeignKey(CodigoPostal, null=True, blank=True, on_delete=models.SET_NULL)
-    rol = models.ForeignKey(Group, default=2, null=True, blank=True, on_delete=models.CASCADE)
+    rol = models.ForeignKey(Group, default=2, null=True, blank=True, on_delete=models.SET_DEFAULT)
     estado = models.BooleanField(default = True) 
     administrador = models.BooleanField(default=False)
     objects = UsuarioManager()
