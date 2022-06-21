@@ -9,7 +9,7 @@
    <title>Catalogo</title>
    <link rel="stylesheet" href="{% static 'Ventas/css/Ventas.css' %}">
    <link rel="icon" href="{% static 'Proyecto_Ekiria/Img/Logo Ekiria.png' %}">
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.css' %}">
    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
    
@@ -22,7 +22,7 @@
    <div class="spinner-grow " style="width: 3rem; height: 3rem;" role="status">
      <span class="visually-hidden">Cargando...</span>
    </div>
-   <h4 class="quitar" id="titleSpinner">Buscando Servicio... <br> <sub> Esto puede tardar un poco...</sub></h4>
+   <h4 class="quitar" id="titleSpinner">Buscando Servicio... <br> <sub> Esto puede tardar...</sub></h4>
 </div>
 <div class="body" id="containerInicio">
    <div class="container">
@@ -108,6 +108,7 @@
    <i class="fa-brands fa-whatsapp"></i>
 </a>  
 {% endfor %}
+
 {% endblock Contenido %}
 
 
@@ -123,9 +124,7 @@
 <script src="{%static 'Ventas/js/Ventas.js'%}"></script>
 <script src="{% static 'Ventas/js/Carrito.js' %}"></script>
 <script>
-   function executeTest(){
-      alert("Hola");
-   }
+  
    function BuscarServicioCatalogo(){
       $("#CatalogoContainer").css("display", "none");
       let cajaI = $("#containerInicio")
@@ -154,23 +153,30 @@
             titulo.css("margin-top", "0px")
             function InsertToHTML(datos){
                var html = "";
-               for(dato in datos){
-                  let slug =  datos[dato]["slug"]
-                  let id  = datos[dato]["id_servicio"]
-                  var url = datos[dato]["carrito"]
-                  html += '<div class="col-md-3">'+
-                     '<img class="img ImgServiceCatalogo" src="'+datos[dato]["img_servicio"]+'" style="z-index: 0 !important;" height="241">'+
-                     '<div class="box-element product" style="height: 160px;">'+
-                        '<h6 style="width:100%; overflow: hidden; white-space:nowrap; text-overflow: ellipsis;" ><strong>'+datos[dato]["nombre"]+'</strong></h6>'+
-                        '<hr>'+
-                       ' <button data-servicio="'+datos[dato]["id_servicio"]+'" data-action="add" class="btn btn-outline-success addToCar" onclick="AjaxAddService('+url+')">Al carrito!</button>'+
-                        '<a  class="btn  btn-outline-primary" onclick="'+slug+'")">Ver</a>'+
-                        '<hr>'+
-                        '<h6 style="float: left; color: gray;"><strong>Precio:</strong></h6>'+
-                        '<h6 style="float: right; "><strong>$'+datos[dato]["precio"]+'</strong></h6>'+
-                     '</div>'+
-                  '</div>'
+               if(datos.length > 0){
+                  for(dato in datos){
+                     let slug =  datos[dato]["slug"]
+                     let id  = datos[dato]["id_servicio"]
+                     var url = datos[dato]["carrito"]
+                     html += '<div class="col-md-3">'+
+                        '<img class="img ImgServiceCatalogo" src="'+datos[dato]["img_servicio"]+'" style="z-index: 0 !important;" height="241">'+
+                        '<div class="box-element product" style="height: 160px;">'+
+                           '<h6 style="width:100%; overflow: hidden; white-space:nowrap; text-overflow: ellipsis;" ><strong>'+datos[dato]["nombre"]+'</strong></h6>'+
+                           '<hr>'+
+                          ' <button data-servicio="'+datos[dato]["id_servicio"]+'" data-action="add" class="btn btn-outline-success addToCar" onclick="AjaxAddService('+url+')">Al carrito!</button>'+
+                           '<a  class="btn  btn-outline-primary" onclick="'+slug+'")">Ver</a>'+
+                           '<hr>'+
+                           '<h6 style="float: left; color: gray;"><strong>Precio:</strong></h6>'+
+                           '<h6 style="float: right; "><strong>$'+datos[dato]["precio"]+'</strong></h6>'+
+                        '</div>'+
+                     '</div>'
+                     
+                  }
                   
+               }else{
+                  html += '<div class="card">'+
+                              '<h4>No se encontraron coincidencias con <u>'+ $("#BuscarServicioCatalogo").val()+'</u></h4>'+
+                           '</div>'
                }
                return html
             }
