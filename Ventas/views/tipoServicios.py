@@ -36,6 +36,7 @@ class AgregarTipo_Servicio(CreateView):#crear
         return context
 
     def post(self, request, *args, **kwargs):
+        print(request.POST.getlist('nombre'))
         if request.is_ajax():
             form = self.form_class(request.POST)
             if form.is_valid():
@@ -50,6 +51,7 @@ class AgregarTipo_Servicio(CreateView):#crear
                 response = JsonResponse({"mensaje":mensaje, "error":error})
                 response.status_code = 201
                 return response
+
             else:
                 errores=form.errors
                 mensaje = f"{self.model.__name__} no se ha podido actualizar!"
