@@ -39,7 +39,7 @@ function ds(id, url){
                     success: function (data) {
                         swalWithBootstrapButtons.fire(
                             'Modificado Correctamente',
-                            'Cambiaste el estado',
+                            'Se elimino el rol correctamente',
                             'success'
                         ).then(function(){
                           location.reload()
