@@ -4,7 +4,7 @@ from .base import *
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'db_ekiria',
+        'NAME': 'db_ekiria_Notify',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',

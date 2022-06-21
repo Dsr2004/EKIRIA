@@ -4,6 +4,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import render
 
 from Proyecto_Ekiria.Mixin.Mixin import PermissionDecorator, PermissionMixin
 from Configuracion.models import cambios, cambiosFooter
@@ -48,6 +49,8 @@ class ServiciosPersonalizados(CreateView,PermissionMixin):
         pedido.save()
 
         return redirect("Ventas:carrito")
+    
+
 
 
 

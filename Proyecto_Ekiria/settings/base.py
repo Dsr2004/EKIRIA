@@ -44,7 +44,8 @@ LOCAL_APPS =[
     'Ventas',
     'Usuarios',
     'Modulo_compras',
-    'Commands'
+    'Commands',
+    'Notificaciones',
 ]
 THIRD_APPS =[
     'tempus_dominus',
