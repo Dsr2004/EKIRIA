@@ -1,4 +1,5 @@
 from django.db import models
+from Usuarios.models import Usuario
 # from django.contrib.auth.models import Group
 # # declare a new model with a name "GeeksModel"
 # class Permiso(models.Model):
@@ -59,3 +60,14 @@ class cambiosFooter(models.Model):
 
     def __str__(self):
         return str(self.id_footer)
+
+from django.contrib.auth.models import Group
+
+class GroupExtensions(Group):
+    class Meta:
+       proxy = True
+
+    @property
+    def get_cant_users(self):
+        cant = Usuario.objects.filter(rol = self).count()
+        return cant
