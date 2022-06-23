@@ -477,16 +477,7 @@ class UpdateUser(UpdateView,PermissionMixin):
             return context
         except:
             return context
-@csrf_exempt
-@login_required()
-def Notification(request):
-    UserSesion = if_User(request)
-    if UserSesion == False:
-        return redirect("IniciarSesion")
-    cambiosQueryset = cambios.objects.all()
-    cambiosfQueryset = cambiosFooter.objects.all()
-    return render(request, "UserInformation/Notification.html", {"User":UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
-    
+
 @PermissionDecorator(['change_usuario'])
 def CambiarEstadoUsuario(request):
     if request.method=="POST":

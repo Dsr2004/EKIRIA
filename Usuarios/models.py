@@ -177,6 +177,6 @@ class Post(models.Model):
 
 
 def notificacion_post(sender, instance, created, **kwargs):
-    notificar.send(Post, usuario_id=instance.usuario, verbo=instance.titulo, nivel="info")
+    notificar.send(instance.usuario, usuario_id=instance.usuario, verbo=instance.titulo, nivel="notificaciones")
 
 post_save.connect(notificacion_post, sender=Post)

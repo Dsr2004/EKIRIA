@@ -1,6 +1,6 @@
 from unicodedata import name
 from django.urls import path
-from Usuarios.views import PassR, Perfil, Admin, Notification, CreateUser, UpdateUser,EditarPerfil, CambiarEstadoUsuario, Change
+from Usuarios.views import PassR, Perfil, Admin, CreateUser, UpdateUser,EditarPerfil, CambiarEstadoUsuario, Change
 from django.contrib.auth.decorators import login_required
 
 
@@ -10,7 +10,6 @@ urlpatterns = [
     path('estado/', CambiarEstadoUsuario, name="editarEstadoUsuario"),
     path('Perfil', Perfil, name="Perfil"),
     path('Administracion/', Admin, name="Administracion"),
-    path('Notificaciones/', Notification, name="Notify"),
     path('CrearUsuario/', login_required(CreateUser.as_view()), name="CreateUser"),
     path('CrearUsuario/<int:pk>', login_required(UpdateUser.as_view()), name="UpdateUser"),
     path('EditarPerfil/', EditarPerfil, name="EditarPerfil"),
