@@ -53,14 +53,12 @@
         <h6 style="margin:15px">Bienvenido <strong>{{request.user.nombres | title}} {{request.user.apellidos}}</strong> aquí podrá administrar su calendario.</h6>
       </div>
       
-     
-     {% comment %}
+
      {% if EsAdmin %}
      <div class="col-lg-3" style="margin-top:20px">
-       <a  class="btn btn-outline-dark botonX">Administrar Calendarios</a>
+       <a href="{% url 'Ventas:calendarioAdmin' %}" class="btn btn-outline-dark botonX">Administrar Calendarios</a>
      </div>
      {% endif %}
-     {% endcomment %}
       
         
       
