@@ -41,9 +41,20 @@
                                 <a href="{%url 'Notify'%}" class="right-bar-toggle ">
                                     <i class="mdi mdi-bell noti-icon "></i>
                                 </a>
-                                <div class="noti-dot " style="margin-left: -6px; ">
-                                    <span class="dot "></span>
-                                    <span class="pulse "></span>
+                                <div class="noti-dot " style="margin-left: -6px;">
+                                    {% if User.notify > 0 %}
+                                        <span class="dot"></span>  
+                                    {% endif %}                          
+                                    {% if User.notify > 9 and User.notify < 100%}
+                                            <span class="pulse" style="color:#fff;"><b style="left:-1.5px; font-size: 10px;margin-top: -3px!important;">{{User.notify}}</b></span>
+                                    
+                                    {% else %}
+                                    {% if User.notify > 99 %}
+                                    <span class="pulse" style="color:#fff;"><b style="left:-4px; font-size: 9px;margin-top: -2px!important;">+99</b></span>
+                                    {% else %}
+                                    
+                                    <span class="pulse" style="color:#fff;"><b>{{User.notify}}</b></span>
+                                    {% endif %}{% endif %}
                                 </div>
                             </li>
                         </ul>

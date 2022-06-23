@@ -46,6 +46,7 @@ from Usuarios.Mixins.Mixin import Asimetric_Cipher,if_admin
 from Proyecto_Ekiria.settings.local import Public_Key
 import cryptocode
 from Proyecto_Ekiria.Mixin.Mixin import PermissionDecorator, PermissionMixin
+from Notificaciones.models import Notificacion
 #--------------------------------------Templates Loaders------------------------------------
 
 @login_required()
@@ -53,6 +54,32 @@ def Loguot(request):
     logout(request)
     return redirect('Inicio')
 
+def if_User(request):
+    UserSesion=""
+    if request.session:
+        try:
+            if request.session['pk']:
+                imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+                imagen = imagen.img_usuario
+                UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "admin":request.session['Admin'],"imagen":imagen, "notify":request.session['notificaciones']}
+                return UserSesion
+        except:
+            return False
+
+def if_admin(request):
+    UserSesion=""
+    if request.session:
+        try:
+            if request.session['pk']:
+                if request.session['Admin']:
+                    imagen = Usuario.objects.get(id_usuario=request.session['pk'])
+                    imagen = imagen.img_usuario
+                    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin'],"notify":request.session['notificaciones']}
+                    return UserSesion
+                else:
+                    return False
+        except:
+            return False
 
 def Login(request):
     Error = ""
@@ -75,6 +102,11 @@ def Login(request):
                 usuario = authenticate(username=username, password=password)
                 if usuario is not None:
                     if usuario.estado:
+                        notificaciones = Notificacion.objects.filter(usuario_id = usuario).filter(leido=False).count()
+                        if notificaciones > 0:
+                            request.session['notificaciones'] = notificaciones
+                        else:
+                            request.session['notificaciones'] = 0
                         login(request, usuario)
                         request.session['username'] = usuario.username
                         request.session['rol']= usuario.rol.name
@@ -272,32 +304,7 @@ def Perfil(request):
     usuario = Usuario.objects.get(id_usuario=request.session['pk'])
     return render(request, "UserInformation/Perfil.html", {"Usuario":usuario, "User":UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
 
-def if_User(request):
-    UserSesion=""
-    if request.session:
-        try:
-            if request.session['pk']:
-                imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-                imagen = imagen.img_usuario
-                UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "admin":request.session['Admin'],"imagen":imagen}
-                return UserSesion
-        except:
-            return False
 
-def if_admin(request):
-    UserSesion=""
-    if request.session:
-        try:
-            if request.session['pk']:
-                if request.session['Admin']:
-                    imagen = Usuario.objects.get(id_usuario=request.session['pk'])
-                    imagen = imagen.img_usuario
-                    UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin']}
-                    return UserSesion
-                else:
-                    return False
-        except:
-            return False
 
 @login_required()
 @PermissionDecorator(['change_usuario'])
