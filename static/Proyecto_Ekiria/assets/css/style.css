@@ -5597,33 +5597,41 @@ File: Menu
 }
 
 .notification-box .pulse {
-  width: 2px;
-  height: 2px;
-  border: 3px solid #ff5b5b;
+  width: 15px;
+  height: 15px;
+  border: 3px solid #dc3545;
   border-radius: 30px;
-  background-color: #ff5b5b;
+  background-color: #dc3545;
   z-index: 10;
   position: absolute;
-  right: 6px;
+  right: -18px;
+  top: -10px;padding: 0;
 }
-
+.notification-box .pulse b{
+  position: absolute;
+  margin-top: -5px!important;
+  left: 1px;
+  font-size: 12px;
+}
 .notification-box .dot {
-  border: 4px solid #ff5b5b;
+  border: 4px solid #dc3545;
   background: transparent;
   border-radius: 60px;
-  height: 30px;
-  width: 30px;
+  height: 50px;
+  width: 50px;
   -webkit-animation: pulse 3s ease-out;
   animation: pulse 3s ease-out;
   -webkit-animation-iteration-count: infinite;
   animation-iteration-count: infinite;
   position: absolute;
-  top: -12px;
-  left: 2px;
+  top: -28px;
+  left: 7px;
   z-index: 1;
   opacity: 0;
 }
-
+.notification-box ul li a i{
+ margin-right: -5px;
+}
 @-webkit-keyframes pulse {
   0% {
     -webkit-transform: scale(0);

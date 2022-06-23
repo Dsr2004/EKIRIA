@@ -11,9 +11,17 @@
 //   }
 // });
 
-function ds(id, url){
+function ds(id, cant){
     let cosa = id
     let token = $('#eliminar').find('input[name=csrfmiddlewaretoken]').val()
+    function usuario() {
+      if (cant == 1){
+        return "Usuario"
+      }
+      else{
+        return "Usuarios"
+      }
+    }
     const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
           confirmButton: 'btn btn-success sweetAlertB',
@@ -24,6 +32,7 @@ function ds(id, url){
       
       swalWithBootstrapButtons.fire({
         title: '¿Estas seguro?',
+        html: 'Este rol esta relacionado con '+ cant+' '+usuario()+'.<br> Por lo que estos usuarios obtendrán el rol Nivel 1',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Aceptar',

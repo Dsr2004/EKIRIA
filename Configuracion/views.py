@@ -25,11 +25,10 @@ from django.contrib.contenttypes.models import ContentType
 # Create your views here.
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import get_object_or_404
-from .models import  cambios, cambiosFooter
+from .models import  cambios, cambiosFooter, GroupExtensions
 from Proyecto_Ekiria.Mixin.Mixin import PermissionMixin, PermissionDecorator
 from .forms import RolForm, CambiosForm, FooterForm
 from Commands.seeders import PermisosCliente
-
 
 
 
@@ -163,7 +162,7 @@ class Admin(PermissionMixin,DetailView):
 @PermissionDecorator(['view_group'])
 def ListarRol(request ):
     formulario=RolForm
-    ListRoles = Group.objects.all()
+    ListRoles = GroupExtensions.objects.all()
     
     cambiosQueryset = cambios.objects.all()
     cambiosfQueryset = cambiosFooter.objects.all()
@@ -176,11 +175,13 @@ def ListarRol(request ):
     contexto['footer']=cambiosfQueryset
     return render(request, "Roles.html", contexto)
 
+@login_required()
 @PermissionDecorator(['delete_group'])
 def eliminarRol(request):
     if request.method == "POST":
         id = request.POST['id']
         rol = Group.objects.get(pk = id)
+        y = rol.usuarios()
         rol.delete()
         from django.contrib import messages
         messages.add_message(request, messages.SUCCESS , 'Eliminado correctamente.')

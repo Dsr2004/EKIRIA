@@ -20,6 +20,7 @@
 
     
 <h1 class="titulo">Listado De Roles</h1>
+
 <div class="tabla">
     <table class="table table-striped" id="RolTabla">
         <thead>
@@ -28,6 +29,7 @@
                 <th scope="col">Nombre</th>
                 <th scope="col">Editar</th>
                 <th scope="col">Permiso</th>
+                <th scope="col">Usuario asociados</th>
                 <th scope="col">Eliminar</th>
 
                 <!-- <th scope="col">Estado</th> -->
@@ -57,13 +59,13 @@
                  <!-- </form> -->
                     
                     <!-- </td> -->
-
+                  <td>{{Rol.get_cant_users}}</td>
                 {% if Rol.id > 6%}
                 <td>
                     <form action="{%url 'eliminarRol'%}" id="eliminar" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="id" value="{{Rol.id}}">
-                        <button type="button" class="btn btn-outline-danger" onclick="ds('{{Rol.id}}')">Eliminar</button>
+                        <button type="button" class="btn btn-outline-danger" onclick="ds('{{Rol.id}}', '{{Rol.get_cant_users}}')">Eliminar</button>
                     </form>
                 </td>
                 {% else %}
