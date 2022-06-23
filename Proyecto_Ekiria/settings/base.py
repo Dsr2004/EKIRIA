@@ -38,13 +38,15 @@ BASE_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "django.contrib.humanize",
 ]
 LOCAL_APPS =[
     'Configuracion',
     'Ventas',
     'Usuarios',
     'Modulo_compras',
-    'Commands'
+    'Commands',
+    'Notificaciones',
 ]
 THIRD_APPS =[
     'tempus_dominus',

@@ -38,6 +38,7 @@ urlpatterns = [
     path('Inicio/', Inicio),
     path('Compras/', include ('Modulo_compras.urls')),
     path('Ventas/', include ('Ventas.urls')),
+    path('Notificaciones/', include ('Notificaciones.urls')),
     path('Configuracion/', include ('Configuracion.urls')),
     path('api-auth/', include('rest_framework.urls')),
     path('api_generate_token/', views.obtain_auth_token, name="tokenGenerate"),

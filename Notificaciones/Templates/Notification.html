@@ -1,0 +1,54 @@
+{% extends "Menu_Usuario.html" %} 
+{% load humanize %}
+{% block head %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificaciones</title>
+    <link rel="stylesheet" href="/static/ModuloUsuarios/css/styleNotifications.css">
+    <link rel="stylesheet" href="/static/Proyecto_Ekiria/css/styleTablesInformations.css"> {% endblock head %}
+</head>
+{% block Contenido %}
+
+<div class="Table Content-table" style="height: 83vh;">
+    <div class="Information">
+        <div class="cardHeader">
+            <h2>
+                Notificaciones
+            </h2>
+        </div>
+        {% if notificaciones %}
+        <table>
+                <thead>
+                    <tr>
+                        <td>Leido</td>
+                        <td>Descripción</td>
+                        <td>Fecha</td>
+                        <td>Eliminar</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    
+                    {% for notificacion in notificaciones %}
+                        <tr>
+                            <td><i class="mdi mdi-eye-off"></i></td>
+                            <td>{{notificacion.verbo}}</td>
+                            <td>Hace {{notificacion.fecha|timesince|naturaltime}}</td>
+                            <td><i class="mdi mdi-delete"></i></td>
+                            </tr>
+                    {% endfor %}
+                        
+                   
+                </tbody>
+            </table>
+            {% else %}
+            <h1>Usted no tiene notificaciones</h1>
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock Contenido %}
