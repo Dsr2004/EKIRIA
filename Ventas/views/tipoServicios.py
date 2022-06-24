@@ -20,7 +20,6 @@ def get_grado():
     for rol in roles:
         permisos =rol.permissions.filter(name__icontains="Puede visualizar elementos de grado").order_by('id')
         for permiso in permisos:
-            print(permiso)
             grados[permiso.id]=permiso.codename
     return grados
 
@@ -36,7 +35,6 @@ class AgregarTipo_Servicio(CreateView):#crear
         return context
 
     def post(self, request, *args, **kwargs):
-        print(request.POST.getlist('nombre'))
         if request.is_ajax():
             form = self.form_class(request.POST)
             if form.is_valid():

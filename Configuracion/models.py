@@ -1,5 +1,7 @@
 from django.db import models
 
+from Usuarios.models import Usuario
+
 
 class cambios(models.Model):
     id_cambios =  models.AutoField(primary_key=True, unique=True)
@@ -33,3 +35,14 @@ class cambiosFooter(models.Model):
 
     def __str__(self):
         return str(self.id_footer)
+
+from django.contrib.auth.models import Group
+
+class GroupExtensions(Group):
+    class Meta:
+       proxy = True
+
+    @property
+    def get_cant_users(self):
+        cant = Usuario.objects.filter(rol = self).count()
+        return cant

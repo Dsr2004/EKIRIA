@@ -1,4 +1,5 @@
-
+from distutils.command.upload import upload
+from email.mime import image
 from email.policy import default
 from turtle import width
 from django.db import models
@@ -6,7 +7,12 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Group
 from django.forms import model_to_dict
 from django.conf import settings
 
+from django.utils import timezone
 
+from django.db.models.signals import post_save
+#señal propia 
+from Notificaciones.signals import notificar
+ 
 
 class VistasDiarias(models.Model):
     id_dia = models.CharField(primary_key=True, max_length=10)
@@ -157,13 +163,20 @@ class Usuario(AbstractBaseUser):
     def is_staff(self):
         return self.administrador
     
-class Notificacion(models.Model):
-    id_notificacion = models.AutoField(primary_key=True)
-    mensaje = models.CharField(max_length=1000)
-    usuario_id = models.ForeignKey(Usuario, null=True, blank=True, on_delete=models.CASCADE)
-
+class Post(models.Model):
+    id_post = models.AutoField(unique=True, primary_key=True)
+    usuario = models.ForeignKey(Usuario, null=True, blank=True, on_delete=models.CASCADE)
+    titulo = models.CharField('Titulo', max_length=100, blank=False, null=False)
+    image = models.ImageField(upload_to='pos/')
+    text = models.TextField('Texto', blank=False, null=False)
+    time = models.DateTimeField(default=timezone.now, db_index=True)
     
-    class Meta:
-        db_table = 'notificaciones'
-        verbose_name ='notificacion'
-        verbose_name_plural='notificiaciones'
+    def __str__(self):
+        return '{}'.format(self.titulo)
+    
+
+
+def notificacion_post(sender, instance, created, **kwargs):
+    notificar.send(instance.usuario, usuario_id=instance.usuario, verbo=instance.titulo, nivel="notificaciones")
+
+post_save.connect(notificacion_post, sender=Post)

@@ -20,6 +20,7 @@ from django.contrib.contenttypes.models import ContentType
 from Usuarios.models import *
 from Ventas.models import *
 from Configuracion.models import *
+from Notificaciones.models import *
 # ---------------------------------Import information-------------------------
 # ---------------------------------Django setup-------------------------------
 django.setup()

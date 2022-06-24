@@ -19,10 +19,11 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from Proyecto_Ekiria.views import Inicio, menu, SinPermisos, Noregistrado, Error404, Error500, Errors
+from Proyecto_Ekiria.views import Inicio, menu, SinPermisos, Noregistrado, Error404, Error500, Errors, ayuda
 from Usuarios.views import Login, Register, Loguot, PassR, PassRec, ConfirmarCuenta
 from rest_framework.authtoken import views
 from django.conf.urls import handler404, handler500
+from django.contrib.auth.decorators import login_required
 urlpatterns = [
     path('', Inicio.as_view(), name="Inicio"),
     path('UsuarioNoRegistrado', Noregistrado, name="UNR"),
@@ -36,8 +37,10 @@ urlpatterns = [
     path('InformacionUsuario/', include('Usuarios.urls')),
     path('admin/', admin.site.urls),
     path('Inicio/', Inicio),
+    path('Ayuda/', login_required(ayuda.as_view()), name="ayuda"),
     path('Compras/', include ('Modulo_compras.urls')),
     path('Ventas/', include ('Ventas.urls')),
+    path('Notificaciones/', include ('Notificaciones.urls')),
     path('Configuracion/', include ('Configuracion.urls')),
     path('api-auth/', include('rest_framework.urls')),
     path('api_generate_token/', views.obtain_auth_token, name="tokenGenerate"),

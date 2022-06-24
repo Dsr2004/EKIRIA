@@ -1,5 +1,6 @@
 #-----------------------------------------Importaciones---------------------------------------------------
 from contextlib import redirect_stderr
+from multiprocessing import context
 from re import U
 from django.http import HttpResponse
 from django.template import Template, Context, loader 
@@ -12,7 +13,8 @@ from Usuarios.models import Usuario, VistasDiarias
 from Configuracion.models import cambios, cambiosFooter
 from datetime import datetime
 from Usuarios.views import *
-from Ventas.models import Catalogo
+from Ventas.models import Catalogo, Servicio
+from Ventas.Accesso import acceso
 #--------------------------------------Cargadores de templates------------------------------------
 class Inicio(View):
     def get(self, request, *args, **kwargs):  
@@ -48,6 +50,26 @@ class Inicio(View):
 class menu(View):
     def get(self, request, *args, **kwargs):
         return render(request, 'menuPrueba.html')
+
+class ayuda(View):
+    def get(self, request, *args, **kwargs):
+        context ={}
+        try:
+            UserSesion = if_admin(self.request)
+            if UserSesion == False:
+                return redirect("IniciarSesion")
+            cambiosQueryset = cambios.objects.all()
+            cambiosfQueryset = cambiosFooter.objects.all()
+            context["User"] = UserSesion
+            context['cambios']=cambiosQueryset
+            context['footer']=cambiosfQueryset
+        except Exception as e:
+            print("desde ayuda : ", e)
+            
+        myacceso = acceso(self.request.user)
+        context["acceso"]=myacceso
+        return render(request, 'ayuda.html', context)
+
     
 def SinPermisos(request):
     return render(request, "SinPermisos.html")
