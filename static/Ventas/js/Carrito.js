@@ -9,7 +9,7 @@ function AjaxAddService(datos, accion){
         location.href="/Ventas/Carrito/"
     },
     error: function(error){
-     swal("¡ERROR! No se pudo agregar el servicio"+error.responseJSON)
+     console.log("no se pudo agregar el servicio")
     }
   });
  }
