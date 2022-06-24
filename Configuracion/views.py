@@ -284,14 +284,6 @@ class EditarRolView(UpdateView,PermissionMixin):
             else:
                 return HttpResponse("holi")
 
-        #         else:
-        #         errores=form.errors
-        #         mensaje = f"{self.model.__name__} no se ha podido actualizar!"
-        #         response = JsonResponse({"mensaje":mensaje, 'errors': errores})
-        #         response.status_code = 400
-        #         return response
-        # else:
-        #     return redirect("Ventas:adminVentas")
     def get_context_data(self, *args, **kwargs):
         context = super(EditarRolView, self).get_context_data(**kwargs)
         UserSesion = if_admin(self.request)
