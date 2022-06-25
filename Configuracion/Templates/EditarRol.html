@@ -8,7 +8,7 @@
             <div class="modal-body">
               <form method="POST" id=EditarRoles action="{%url 'updateRol' object.id%}" onKeyPress="if(event.keyCode == 13) event.returnValue = false;" >
                     {% csrf_token %}
-                    {{form.name|as_crispy_field}}
+                    <label>Nombre: <sup style='color:red'>(*)</sup></label>{{form.name}}
                     <p id="name" class="bg-light text-danger"></p>
             <div class="modal-footer" id="botones">
               <button type="button" class="btn btn-success" onclick="EditarRol()">Modificar</button>

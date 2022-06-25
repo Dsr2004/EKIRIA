@@ -176,12 +176,12 @@ def ListarRol(request ):
     return render(request, "Roles.html", contexto)
 
 @login_required()
-@PermissionDecorator(['delete_group'])
+# @PermissionDecorator(['delete_group'])
 def eliminarRol(request):
     if request.method == "POST":
         id = request.POST['id']
         rol = Group.objects.get(pk = id)
-        y = rol.usuarios()
+        # y = rol.Usuario()
         rol.delete()
         from django.contrib import messages
         messages.add_message(request, messages.SUCCESS , 'Eliminado correctamente.')
@@ -191,20 +191,6 @@ def eliminarRol(request):
         messages.add_message(request, messages.INFO, 'No se puede borrar el rol, ¡ha ocurrido un error interno!')
         return redirect('Roles')
     
-
-# def EstadoRol(request):
-#     id_estado=request.POST.get("estado")
-#     Object=Group.objects.get(id_rol=id_estado)
-#     estado = Object.estado
-#     if estado == True:
-#         Object.estado = False
-#         Object.save()
-#         return HttpResponse('cosa')
-#     elif estado == False:
-#         Object.estado = True
-#         Object.save()
-#         return HttpResponse('cosa2')
-
 
 
 class CreateRolView(CreateView, PermissionMixin):
@@ -285,14 +271,6 @@ class EditarRolView(UpdateView,PermissionMixin):
             else:
                 return HttpResponse("holi")
 
-        #         else:
-        #         errores=form.errors
-        #         mensaje = f"{self.model.__name__} no se ha podido actualizar!"
-        #         response = JsonResponse({"mensaje":mensaje, 'errors': errores})
-        #         response.status_code = 400
-        #         return response
-        # else:
-        #     return redirect("Ventas:adminVentas")
     def get_context_data(self, *args, **kwargs):
         context = super(EditarRolView, self).get_context_data(**kwargs)
         UserSesion = if_admin(self.request)

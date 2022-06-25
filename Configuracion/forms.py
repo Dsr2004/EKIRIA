@@ -23,8 +23,9 @@ class RolForm(forms.ModelForm):
         name = self.cleaned_data.get('name')
         if len(name)<4:
             raise forms.ValidationError('Este campo requiere más de 4 digitos')
+        elif len(name)>20:
+            raise forms.ValidationError('El maximo de este campo es de 20 digitos')
         return name
-            
 class CambiosForm(forms.ModelForm):
 
     class Meta:

@@ -10,6 +10,7 @@ function CrearRol(){
         data:{"csrfmiddlewaretoken":csrftoken, "name":name, "tipo":tipo},
         url:$('#CrearRoles').attr('action'),
         type:$('#CrearRoles').attr('method'),
+        dataType: 'json',
         success: function (response) {
             Swal.fire({
                 position: 'top-end',
