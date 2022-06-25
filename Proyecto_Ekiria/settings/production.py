@@ -2,7 +2,7 @@ from .base import *
 
 # esta es para mysql
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['ekiriatest.herokuapp.com']
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
