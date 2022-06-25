@@ -48,7 +48,6 @@ LOCAL_APPS =[
     'Notificaciones',
 ]
 THIRD_APPS =[
-    'tempus_dominus',
     'crispy_forms',
     'jsonify',
     'rest_framework',
