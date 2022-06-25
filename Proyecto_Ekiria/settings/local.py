@@ -1,6 +1,8 @@
 from .base import *
 
 # esta es para mysql
+ALLOWED_HOSTS = []
+DEBUG = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
