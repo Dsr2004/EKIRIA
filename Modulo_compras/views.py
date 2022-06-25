@@ -1,12 +1,5 @@
-from gc import get_objects
-from operator import index
 import os
-from itertools import product
 import json
-from pickle import TRUE
-from re import I
-from wsgiref.util import request_uri
-from xmlrpc.client import boolean
 from django.shortcuts import render, redirect
 from Modulo_compras.forms import ProveedorForm, ComprasForm, ProductosForm, Tipo_productoForm
 from .models import Proveedor, Producto, Compra, Tipo_producto, HistorialCompra

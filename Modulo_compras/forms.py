@@ -1,4 +1,3 @@
-from tkinter import Widget
 from django import forms
 from Modulo_compras.models import Proveedor, Producto , Compra, Tipo_producto
 

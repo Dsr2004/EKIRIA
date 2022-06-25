@@ -3,7 +3,6 @@ import smtplib
 import json
 # prueba
 from Proyecto_Ekiria import settings
-from importlib import import_module
 # -----
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart

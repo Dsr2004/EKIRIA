@@ -1,12 +1,9 @@
 from datetime import timedelta
-from email import message
 from django.utils import timezone
 from django.conf import settings
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.exceptions import AuthenticationFailed
 from datetime import timedelta
 from django.contrib.sessions.models import Session
-from rest_framework.response import Response
 from datetime import datetime
 
 class ExpiringTokenAuthentication(TokenAuthentication):

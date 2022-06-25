@@ -1,4 +1,3 @@
-from email import message
 from Usuarios.authentication import ExpiringTokenAuthentication
 from rest_framework.authentication import get_authorization_header
 from rest_framework.response import Response

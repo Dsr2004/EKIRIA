@@ -9,14 +9,12 @@ from xhtml2pdf import pisa
 
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
-from django.template import Context
 from django.template.loader import render_to_string, get_template
 from django.urls import reverse_lazy
 from django.views.generic import View, TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from django.db.models import Q
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.staticfiles import finders
 
 from Proyecto_Ekiria.Mixin.Mixin import PermissionDecorator, PermissionMixin
 from Configuracion.models import cambios, cambiosFooter
@@ -31,7 +29,6 @@ from ..forms import CitaForm
 from Usuarios.views import if_User, if_admin
 from ..forms import CitaForm, Servicio_PersonalizadoForm
 
-from ..Accesso import acceso
 """
 <----------------------------------------------------------------->
 Seccion de las Vistas donde se administran las citas

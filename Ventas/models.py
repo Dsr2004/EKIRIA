@@ -3,13 +3,12 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from this import d
-from django.forms import model_to_dict
 from django.template.loader import render_to_string
 
 from datetime import date, datetime, timedelta, time
 
 from django.db import models
-from django.db.models.signals import pre_save, post_save, m2m_changed
+from django.db.models.signals import pre_save, post_save
 from django.utils.text import slugify
 from django.shortcuts import reverse 
 

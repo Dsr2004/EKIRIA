@@ -1,19 +1,13 @@
 #-----------------------------------------Importaciones---------------------------------------------------
-from contextlib import redirect_stderr
-from multiprocessing import context
-from re import U
-from django.http import HttpResponse
-from django.template import Template, Context, loader 
 from django.shortcuts import render
 from Usuarios.views import *
 from Usuarios.authentication_mixins import Authentication
 from django.views.generic import View
-from rest_framework.views import APIView
-from Usuarios.models import Usuario, VistasDiarias
+from Usuarios.models import VistasDiarias
 from Configuracion.models import cambios, cambiosFooter
 from datetime import datetime
 from Usuarios.views import *
-from Ventas.models import Catalogo, Servicio
+from Ventas.models import Catalogo
 from Ventas.Accesso import acceso
 #--------------------------------------Cargadores de templates------------------------------------
 class Inicio(View):
