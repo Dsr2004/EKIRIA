@@ -1,0 +1,55 @@
+.notification{
+    margin-bottom: 30px;
+}
+.notification:hover{
+background-color: rgba(86, 118, 146, 0.16);
+border-radius: 8px;
+}
+.principal_notify{
+    opacity: 0.99;
+    background-color: whitesmoke;
+    padding: 20px 80px;
+}
+.actions{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10%;
+}
+
+
+.img_user_notification{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: white;
+    color:white;
+    margin-bottom: 10px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+.verb_notification{
+    display: flex;
+    align-items: center;
+    justify-content: left;
+}
+
+.ventas{
+    background-color: rgba(77, 199, 87, 0.857);
+}
+.compras{
+    background-color: rgba(214, 165, 38, 0.857);
+}
+.usuarios{
+    background-color: rgba(71, 71, 234, 0.857);
+}
+.configuracion{
+    background-color: rgba(114, 38, 221, 0.857);
+}
+.notificacion{
+    background-color: rgba(197, 50, 50, 0.857);
+}
