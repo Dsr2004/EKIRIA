@@ -53,7 +53,7 @@ def actualizarItem(request):
 
 
 def buscarPedido(request):
-    cliente = Usuario.objects.get(username=request.session['username'])
+    cliente = Usuario.objects.get(username=request.user.username)
     pedido, = Pedido.objects.get(cliente_id=cliente, completado=False)
 
     if pedido:

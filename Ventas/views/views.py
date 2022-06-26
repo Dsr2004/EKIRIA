@@ -105,7 +105,6 @@ def Carrito(request):
         else:
             items=[]
             pedido={"get_total_carrito":0,"get_items_carrito":0}
-            request.session["carrito"]=0
 
         try:
             if request.session:
