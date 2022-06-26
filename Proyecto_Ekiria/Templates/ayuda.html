@@ -1,356 +1,370 @@
-{% extends "Menu_Usuario.html" %} 
-{%load static%}
-{% block head %}
+{% extends "Menu_Usuario.html" %} {%load static%} {% block head %}
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ayuda en  línea</title>
+    <title>Ayuda en línea</title>
     <link rel="icon" href="{% static 'Proyecto_Ekiria/Img/Logo Ekiria.png' %}">
     <link rel="stylesheet" href=" https://use.fontawesome.com/releases/v5.15.4/css/all.css">
     <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.css' %}">
     <link rel="stylesheet" href="{% static 'Plugins/select2/dist/css/select2.min.css' %}">
     <link rel="stylesheet" href="/static/Plugins/datetimepicker/jquery.datetimepicker.css">
 </head>
-{% endblock head %}
-
-{% block Contenido %}
+{% endblock head %} {% block Contenido %}
 <div class="container">
-  <h1>Ayuda en  línea</h1>
-  <br>
+    <h1>Ayuda en línea</h1>
+    <br>
     <div class="row">
         <div class="col-lg-6">
-          <div class="card">
-            <div class="card-header">
-              <h4><i class="mdi mdi-view-dashboard centrado"></i> Módulo de Configuracion</h4>
-            </div>
-            <div class="card-body">
-              <div class="accordion" id="accordionExample">
-                <div class="card">
-                  <div class="card-header" id="headingOne">
-                    <h2 class="mb-0">
-                      <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#Ventas1" aria-expanded="true" aria-controls="Ventas1">
-                        ¿Como se reparte configuración?
-                      </button>
-                    </h2>
-                  </div>
-                  <div id="Ventas1" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
-                    <div class="card-body">
-                      <div class="embed-responsive embed-responsive-4by3">
-                        <iframe width="560" height="315" src="https://www.youtube.com/embed/FGaBjFlsqHc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                      </div>
-                    </div>
-                  </div>
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="mdi mdi-view-dashboard centrado"></i> Módulo de Configuracion</h4>
                 </div>
-                <div class="card">
-                  <div class="card-header" id="headingOne">
-                    <h2 class="mb-0">
-                      <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#Ventas1" aria-expanded="true" aria-controls="Ventas1">
+                <div class="card-body">
+                    <div class="accordion" id="accordionExample">
+                        <div class="card">
+                            <div class="card-header" id="headingOne">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#Ventas1" aria-expanded="true" aria-controls="Ventas1">
+                        ¿Cómo se reparte configuración?
+                      </button>
+                                </h2>
+                            </div>
+                            <div id="Ventas1" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                <div class="card-body">
+                                    <div class="embed-responsive embed-responsive-4by3">
+                                        <iframe width="560" height="315" src="https://www.youtube.com/embed/FGaBjFlsqHc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header" id="headingOne">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#Ventas1" aria-expanded="true" aria-controls="Ventas1">
                         ¿Para que sirve administracion del Rol?
                       </button>
-                    </h2>
-                  </div>
-                  <div id="Ventas2" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
-                    <div class="card-body">
-                      <div class="embed-responsive embed-responsive-4by3">
-                        <iframe width="560" height="315" src="https://www.youtube.com/embed/mFbEvSj12k4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="card">
-                  <div class="card-header" id="headingOne">
-                    <h2 class="mb-0">
-                      <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#Ventas1" aria-expanded="true" aria-controls="Ventas1">
+                                </h2>
+                            </div>
+                            <div id="Ventas2" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                <div class="card-body">
+                                    <div class="embed-responsive embed-responsive-4by3">
+                                        <iframe width="560" height="315" src="https://www.youtube.com/embed/mFbEvSj12k4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header" id="headingOne">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#Ventas1" aria-expanded="true" aria-controls="Ventas1">
                         ¿Para que es el boton de "Agregar Permisos"?
                       </button>
-                    </h2>
-                  </div>
-                  <div id="Ventas3" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
-                    <div class="card-body">
-                      <div class="embed-responsive embed-responsive-4by3">
-                        <iframe width="560" height="315" src="https://www.youtube.com/embed/51KUXbctZs0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="card">
-                  <div class="card-header" id="headingOne">
-                    <h2 class="mb-0">
-                      <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#Ventas1" aria-expanded="true" aria-controls="Ventas1">
+                                </h2>
+                            </div>
+                            <div id="Ventas3" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                <div class="card-body">
+                                    <div class="embed-responsive embed-responsive-4by3">
+                                        <iframe width="560" height="315" src="https://www.youtube.com/embed/51KUXbctZs0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header" id="headingOne">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#Ventas1" aria-expanded="true" aria-controls="Ventas1">
                         ¿Para que es cada permiso?
                       </button>
-                    </h2>
-                  </div>
-                  <div id="Ventas4" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
-                    <div class="card-body">
-                      <div class="embed-responsive embed-responsive-4by3">
-                        <iframe width="560" height="315" src="https://www.youtube.com/embed/IvjhyR4lP6U" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="card">
-                  <div class="card-header" id="headingOne">
-                    <h2 class="mb-0">
-                      <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#Ventas1" aria-expanded="true" aria-controls="Ventas1">
-                        ¿Como agrego los permisos a un rol?
+                                </h2>
+                            </div>
+                            <div id="Ventas4" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                <div class="card-body">
+                                    <div class="embed-responsive embed-responsive-4by3">
+                                        <iframe width="560" height="315" src="https://www.youtube.com/embed/IvjhyR4lP6U" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header" id="headingOne">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#Ventas1" aria-expanded="true" aria-controls="Ventas1">
+                        ¿Cómo agrego los permisos a un rol?
                       </button>
-                    </h2>
-                  </div>
-                  <div id="Ventas5" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
-                    <div class="card-body">
-                      <div class="embed-responsive embed-responsive-4by3">
-                        <iframe width="560" height="315" src="https://www.youtube.com/embed/uuQFN9srObg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="card">
-                  <div class="card-header" id="headingOne">
-                    <h2 class="mb-0">
-                      <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#Ventas1" aria-expanded="true" aria-controls="Ventas1">
-                        ¿Como funciona Cambios de pagina?
+                                </h2>
+                            </div>
+                            <div id="Ventas5" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                <div class="card-body">
+                                    <div class="embed-responsive embed-responsive-4by3">
+                                        <iframe width="560" height="315" src="https://www.youtube.com/embed/uuQFN9srObg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header" id="headingOne">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#Ventas1" aria-expanded="true" aria-controls="Ventas1">
+                        ¿Cómo funciona Cambios de pagina?
                       </button>
-                    </h2>
-                  </div>
-                  <div id="Ventas6" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
-                    <div class="card-body">
-                      <div class="embed-responsive embed-responsive-4by3">
-                        <iframe width="560" height="315" src="https://www.youtube.com/embed/KmXlGxaVFt8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                      </div>
+                                </h2>
+                            </div>
+                            <div id="Ventas6" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                <div class="card-body">
+                                    <div class="embed-responsive embed-responsive-4by3">
+                                        <iframe width="560" height="315" src="https://www.youtube.com/embed/KmXlGxaVFt8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                </div>
                 </div>
             </div>
-          </div>
         </div>
         <br><br><br><br><br><br>
         <div class="col-lg-6">
-          <div class="card">
-            <div class="card-header">
-              <h4><i class="mdi mdi-account centrado"></i> Módulo de Usuarios</h4>
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="mdi mdi-account centrado"></i> Módulo de Usuarios</h4>
+                </div>
+                <div class="card-body">
+                    <div class="accordion" id="accordionExample">
+                        {% if acceso.esAdministrador %}
+                        <div class="card">
+                            <div class="card-header" id="headingTwo">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#Ventas5" aria-expanded="false" aria-controls="Ventas5">
+                        ¿Cómo registrar un usuario?
+                      </button>
+                                </h2>
+                            </div>
+                            <div id="Ventas5" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                                <div class="card-body">
+                                    <div class="embed-responsive embed-responsive-4by3">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
-            <div class="card-body">
+        </div>
+        <br><br><br><br><br><br>
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="mdi mdi-archive centrado"></i> Módulo de Compras</h4>
+                </div>
+                <div class="card-body">
 
+                </div>
             </div>
-          </div>
         </div>
         <br><br><br><br><br><br>
         <div class="col-lg-6">
-          <div class="card">
-            <div class="card-header">
-              <h4><i class="mdi mdi-archive centrado"></i> Módulo de Compras</h4>
-            </div>
-            <div class="card-body">
-              
-            </div>
-          </div>
-        </div>
-        <br><br><br><br><br><br>
-        <div class="col-lg-6">
-          <div class="card">
-            <div class="card-header">
-              <h4><i class="mdi mdi-basket centrado"></i> Módulo de Ventas</h4>
-            </div>
-            <div class="card-body">
-              <div class="accordion" id="accordionExample">
-                <div class="card">
-                  <div class="card-header" id="headingOne">
-                    <h2 class="mb-0">
-                      <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#Ventas1" aria-expanded="true" aria-controls="Ventas1">
-                      ¿Como agendar una cita?
-                      </button>
-                    </h2>
-                  </div>
-                  <div id="Ventas1" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
-                    <div class="card-body">
-                      <div class="embed-responsive embed-responsive-4by3">
-                        <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/h0VOOR071-w" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                      </div>
-                    </div>
-                  </div>
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="mdi mdi-basket centrado"></i> Módulo de Ventas</h4>
                 </div>
-                <div class="card">
-                  <div class="card-header" id="headingTwo">
-                    <h2 class="mb-0">
-                      <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#Ventas2" aria-expanded="false" aria-controls="Ventas2">
-                        ¿Como modificar una cita?
+                <div class="card-body">
+                    <div class="accordion" id="accordionExample">
+                        <div class="card">
+                            <div class="card-header" id="headingOne">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#Ventas1" aria-expanded="true" aria-controls="Ventas1">
+                      ¿Cómo agendar una cita?
                       </button>
-                    </h2>
-                  </div>
-                  <div id="Ventas2" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
-                    <div class="card-body">
-                      <div class="embed-responsive embed-responsive-4by3">
-                        <iframe class="embed-responsive-item"src="https://www.youtube.com/embed/w5qAV_u-OPU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="card">
-                  <div class="card-header" id="headingThree">
-                    <h2 class="mb-0">
-                      <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#Ventas3" aria-expanded="false" aria-controls="Ventas3">
-                        ¿Como cancelar una cita?
+                                </h2>
+                            </div>
+                            <div id="Ventas1" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                <div class="card-body">
+                                    <div class="embed-responsive embed-responsive-4by3">
+                                        <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/h0VOOR071-w" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header" id="headingTwo">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#Ventas2" aria-expanded="false" aria-controls="Ventas2">
+                        ¿Cómo modificar una cita?
                       </button>
-                    </h2>
-                  </div>
-                  <div id="Ventas3" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
-                    <div class="card-body">
-                      <div class="embed-responsive embed-responsive-4by3">
-                        <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/vJBLSZwFDcc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="card">
-                  <div class="card-header" id="headingTwo">
-                    <h2 class="mb-0">
-                      <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#Ventas4" aria-expanded="false" aria-controls="Ventas4">
-                        ¿Como agendar una cita con pedido personalizado?
+                                </h2>
+                            </div>
+                            <div id="Ventas2" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                                <div class="card-body">
+                                    <div class="embed-responsive embed-responsive-4by3">
+                                        <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/w5qAV_u-OPU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header" id="headingThree">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#Ventas3" aria-expanded="false" aria-controls="Ventas3">
+                        ¿Cómo cancelar una cita?
                       </button>
-                    </h2>
-                  </div>
-                  <div id="Ventas4" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
-                    <div class="card-body">
-                      <div class="embed-responsive embed-responsive-4by3">
-                        <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/cOLT-cFQYiY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                {% if acceso.esAdministrador %}
-                <div class="card">
-                  <div class="card-header" id="headingTwo">
-                    <h2 class="mb-0">
-                      <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#Ventas5" aria-expanded="false" aria-controls="Ventas5">
-                        ¿Como crear servicios?
+                                </h2>
+                            </div>
+                            <div id="Ventas3" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                                <div class="card-body">
+                                    <div class="embed-responsive embed-responsive-4by3">
+                                        <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/vJBLSZwFDcc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header" id="headingTwo">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#Ventas4" aria-expanded="false" aria-controls="Ventas4">
+                        ¿Cómo agendar una cita con pedido personalizado?
                       </button>
-                    </h2>
-                  </div>
-                  <div id="Ventas5" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
-                    <div class="card-body">
-                      <div class="embed-responsive embed-responsive-4by3">
-                        <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/0Pi1sPKrLJ8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="card">
-                  <div class="card-header" id="headingTwo">
-                    <h2 class="mb-0">
-                      <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#Ventas6" aria-expanded="false" aria-controls="Ventas6">
-                        ¿Como deshabilitar  servicios del catálogo?
-                      </button>
-                    </h2>
-                  </div>
-                  <div id="Ventas6" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
-                    <div class="card-body">
-                      <div class="embed-responsive embed-responsive-4by3">
-                        <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/-fVrRfmQ5zA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {% endif %}
-                  
-                <div class="card">
-                  <div class="card-header" id="headingTwo">
-                    <h2 class="mb-0">
-                      <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#Ventas7" aria-expanded="false" aria-controls="Ventas7">
-                        ¿Como confirmar citas?
-                      </button>
-                    </h2>
-                  </div>
-                  <div id="Ventas7" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
-                    <div class="card-body">
-                      <div class="embed-responsive embed-responsive-4by3">
-                        <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/9CX72D0yN88" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="card">
-                  <div class="card-header" id="headingTwo">
-                    <h2 class="mb-0">
-                      <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#Ventas8" aria-expanded="false" aria-controls="Ventas8">
-                        ¿Como ver citas en el calendario?
-                      </button>
-                    </h2>
-                  </div>
-                  <div id="Ventas8" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
-                    <div class="card-body">
-                      <div class="embed-responsive embed-responsive-4by3">
-                        <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/XzirG6zK-YA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <br><br><br><br><br><br>
-        <div class="col-lg-6">
-          <div class="card">
-            <div class="card-header">
-              <h4><i class="mdi mdi-bell noti-icon centrado"></i> Módulo de Notificaciones</h4>
-            </div>
-            <div class="card-body">
+                                </h2>
+                            </div>
+                            <div id="Ventas4" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                                <div class="card-body">
+                                    <div class="embed-responsive embed-responsive-4by3">
+                                        <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/cOLT-cFQYiY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
+                        {% if acceso.esAdministrador %}
+                        <div class="card">
+                            <div class="card-header" id="headingTwo">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#Ventas5" aria-expanded="false" aria-controls="Ventas5">
+                        ¿Cómo crear servicios?
+                      </button>
+                                </h2>
+                            </div>
+                            <div id="Ventas5" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                                <div class="card-body">
+                                    <div class="embed-responsive embed-responsive-4by3">
+                                        <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/0Pi1sPKrLJ8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header" id="headingTwo">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#Ventas6" aria-expanded="false" aria-controls="Ventas6">
+                        ¿Cómo deshabilitar  servicios del catálogo?
+                      </button>
+                                </h2>
+                            </div>
+                            <div id="Ventas6" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                                <div class="card-body">
+                                    <div class="embed-responsive embed-responsive-4by3">
+                                        <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/-fVrRfmQ5zA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <div class="card">
+                            <div class="card-header" id="headingTwo">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#Ventas7" aria-expanded="false" aria-controls="Ventas7">
+                        ¿Cómo confirmar citas?
+                      </button>
+                                </h2>
+                            </div>
+                            <div id="Ventas7" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                                <div class="card-body">
+                                    <div class="embed-responsive embed-responsive-4by3">
+                                        <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/9CX72D0yN88" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header" id="headingTwo">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#Ventas8" aria-expanded="false" aria-controls="Ventas8">
+                        ¿Cómo ver citas en el calendario?
+                      </button>
+                                </h2>
+                            </div>
+                            <div id="Ventas8" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                                <div class="card-body">
+                                    <div class="embed-responsive embed-responsive-4by3">
+                                        <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/XzirG6zK-YA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
+        </div>
+        <br><br><br><br><br><br>
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="mdi mdi-bell noti-icon centrado"></i> Módulo de Notificaciones</h4>
+                </div>
+                <div class="card-body">
+
+                </div>
+            </div>
         </div>
         <br><br><br><br><br><br>
     </div>
-    
+
 </div>
 
 
-{% endblock Contenido %}
-
-{% block scripts %}
-
-
-{% endblock scripts %}
-
-
-{% comment %}
+{% endblock Contenido %} {% block scripts %} {% endblock scripts %} {% comment %}
 <div class="col-lg-6">
-  <div class="card"><!--tarjeta correspondiente a cada modulo-->
-    <div class="card-header">
-      <h4><i class="mdi mdi-basket centrado"></i> Módulo de Ventas</h4>
-    </div>
-    <div class="card-body"><!--cuerpo de la tarjeta-->
-      <div class="accordion" id="accordionExample"><!--acordeon-->
-       
-        {% if acceso.esAdministrador %} <!--Validacion para saber que tipo de usuario es acceso es un objeto que tiene 3 metodos
+    <div class="card">
+        <!--tarjeta correspondiente a cada modulo-->
+        <div class="card-header">
+            <h4><i class="mdi mdi-basket centrado"></i> Módulo de Ventas</h4>
+        </div>
+        <div class="card-body">
+            <!--cuerpo de la tarjeta-->
+            <div class="accordion" id="accordionExample">
+                <!--acordeon-->
+
+                {% if acceso.esAdministrador %}
+                <!--Validacion para saber que tipo de usuario es acceso es un objeto que tiene 3 metodos
         .esAdministrador -> solo para administradores
         .esEmpleado -> solo para empleados
         .esCliente ->solo para clientes
         -->
-        <div class="card"> <!--tarjeta del acordeon osea el item-->
-          <div class="card-header" id="headingTwo">
-            <h2 class="mb-0">
-              <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#Ventas5" aria-expanded="false" aria-controls="Ventas5">
-                ¿Como crear servicios?
-              </button><!--boton que activa la tarjeta del acorden el id puede ser el modulo y un numero que lo represente-->
-            </h2>
-          </div>
-          <div id="Ventas5" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample"><!--este es el cuerpo de la tarjeta que se muestra cuando se presiona el boton el id  debe corresponder al del boton-->
-            <div class="card-body">
-              <div class="embed-responsive embed-responsive-4by3"><!--este es el iframe responsive de bootstrap solo deben cambiar el src-->
-                <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/0Pi1sPKrLJ8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-              </div>
+                <div class="card">
+                    <!--tarjeta del acordeon osea el item-->
+                    <div class="card-header" id="headingTwo">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#Ventas5" aria-expanded="false" aria-controls="Ventas5">
+                ¿Cómo crear servicios?
+              </button>
+                            <!--boton que activa la tarjeta del acorden el id puede ser el modulo y un numero que lo represente-->
+                        </h2>
+                    </div>
+                    <div id="Ventas5" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                        <!--este es el cuerpo de la tarjeta que se muestra cuando se presiona el boton el id  debe corresponder al del boton-->
+                        <div class="card-body">
+                            <div class="embed-responsive embed-responsive-4by3">
+                                <!--este es el iframe responsive de bootstrap solo deben cambiar el src-->
+                                <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/0Pi1sPKrLJ8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
             </div>
-          </div>
         </div>
-        {% endif %}
-      </div>
     </div>
-  </div>
 </div>
 {% endcomment %}
-  
