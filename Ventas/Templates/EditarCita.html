@@ -6,11 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar cita de {{object.cliente_id.nombres | title}}</title>
-    <link rel="stylesheet" href="/static/Ventas/css/Ventas.css">
+    <link rel="stylesheet" href="{% static 'Ventas/css/Ventas.css' %}">
     <link rel="icon" href="/static/Proyecto_Ekiria/Img/Logo Ekiria.png">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-    <link rel="stylesheet" href="/static/Plugins/datetimepicker/jquery.datetimepicker.css">
+    <link rel="stylesheet" href="{% static 'Plugins/datetimepicker/jquery.datetimepicker.css' %}">
 </head>{% endblock head %}
 
 {% block Contenido %}
@@ -176,8 +176,8 @@
 
 {% endblock Contenido %}
 {% block scripts %}
-<script src="/static/Ventas/js/Ventas.js"></script>
-<script src="/static/Plugins/datetimepicker/build/jquery.datetimepicker.full.js"></script>
+<script src="{% static 'Ventas/js/Ventas.js' %}"></script>
+<script src="{% static 'Plugins/datetimepicker/build/jquery.datetimepicker.full.js' %}"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
   var id_cita = '{{object.id_cita}}';

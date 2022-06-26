@@ -7,11 +7,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Terminar Pedido</title>
-    <link rel="stylesheet" href="/static/Ventas/css/Ventas.css">
+    <link rel="stylesheet" href="{% static 'Ventas/css/Ventas.css' %}">
     <link rel="icon" href="/static/Proyecto_Ekiria/Img/Logo Ekiria.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-    <link rel="stylesheet" href="/static/Plugins/datetimepicker/jquery.datetimepicker.css">
+    <link rel="stylesheet" href="{% static 'Plugins/datetimepicker/jquery.datetimepicker.css' %}">
     
 </head>{% endblock head %}
 
@@ -133,9 +133,7 @@
 {% endblock Contenido %}
 
 {% block scripts %}
-<!-- <script src="{% static 'Plugins/Datepicker/datepicker.min.js' %}"></script> -->
-<script src="/static/bootstrap/js/bootstrap.js"></script>
-<script src="/static/Plugins/datetimepicker/build/jquery.datetimepicker.full.js"></script>
+<script src="{% static 'Plugins/datetimepicker/build/jquery.datetimepicker.full.js' %}"></script>
 <script src="{% static 'Ventas/js/Carrito.js' %}"></script>
 <script>
   $.datetimepicker.setLocale('es');
