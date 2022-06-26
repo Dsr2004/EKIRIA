@@ -1,0 +1,196 @@
+<div class="col-lg-6">
+    <div class="card">
+        <!--tarjeta correspondiente a cada módulo-->
+        <div class="card-header">
+            <h4><i class="mdi mdi-basket centrado"></i> Módulo de Usuarios</h4>
+        </div>
+        <div class="card-body">
+            <!--cuerpo de la tarjeta-->
+            <div class="accordion" id="accordionExample">
+                <!--acordeon-->
+                <div class="card">
+                    <!--tarjeta del acordeon osea el item-->
+                    <div class="card-header" id="headingTwo">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#Ventas5" aria-expanded="false" aria-controls="Ventas5">
+                                ¿Cómo registrarse?
+                            </button>
+                            <!--boton que activa la tarjeta del acorden el id puede ser el módulo y un numero que lo represente-->
+                        </h2>
+                    </div>
+                    <div id="Ventas5" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                        <!--este es el cuerpo de la tarjeta que se muestra cuando se presiona el boton el id  debe corresponder al del boton-->
+                        <div class="card-body">
+                            <div class="embed-responsive embed-responsive-4by3">
+                                <!--este es el iframe responsive de bootstrap solo deben cambiar el src-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <!--tarjeta del acordeon osea el item-->
+                    <div class="card-header" id="headingTwo">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#Ventas5" aria-expanded="false" aria-controls="Ventas5">
+                                ¿Cómo iniciar sesión?
+                            </button>
+                            <!--boton que activa la tarjeta del acorden el id puede ser el módulo y un numero que lo represente-->
+                        </h2>
+                    </div>
+                    <div id="Ventas5" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                        <!--este es el cuerpo de la tarjeta que se muestra cuando se presiona el boton el id  debe corresponder al del boton-->
+                        <div class="card-body">
+                            <div class="embed-responsive embed-responsive-4by3">
+                                <!--este es el iframe responsive de bootstrap solo deben cambiar el src-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <!--tarjeta del acordeon osea el item-->
+                    <div class="card-header" id="headingTwo">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#Ventas5" aria-expanded="false" aria-controls="Ventas5">
+                                ¿Cómo recuperar contraseña?
+                            </button>
+                            <!--boton que activa la tarjeta del acorden el id puede ser el módulo y un numero que lo represente-->
+                        </h2>
+                    </div>
+                    <div id="Ventas5" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                        <!--este es el cuerpo de la tarjeta que se muestra cuando se presiona el boton el id  debe corresponder al del boton-->
+                        <div class="card-body">
+                            <div class="embed-responsive embed-responsive-4by3">
+                                <!--este es el iframe responsive de bootstrap solo deben cambiar el src-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if acceso.esCliente %}
+                <div class="card">
+                    <!--tarjeta del acordeon osea el item-->
+                    <div class="card-header" id="headingTwo">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#Ventas5" aria-expanded="false" aria-controls="Ventas5">
+                                ¿Cómo visualizar el perfil de usuario?
+                            </button>
+                            <!--boton que activa la tarjeta del acorden el id puede ser el módulo y un numero que lo represente-->
+                        </h2>
+                    </div>
+                    <div id="Ventas5" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                        <!--este es el cuerpo de la tarjeta que se muestra cuando se presiona el boton el id  debe corresponder al del boton-->
+                        <div class="card-body">
+                            <div class="embed-responsive embed-responsive-4by3">
+                                <!--este es el iframe responsive de bootstrap solo deben cambiar el src-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <!--tarjeta del acordeon osea el item-->
+                    <div class="card-header" id="headingTwo">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#Ventas5" aria-expanded="false" aria-controls="Ventas5">
+                                ¿Cómo modificar la información básica del perfil?
+                            </button>
+                            <!--boton que activa la tarjeta del acorden el id puede ser el módulo y un numero que lo represente-->
+                        </h2>
+                    </div>
+                    <div id="Ventas5" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                        <!--este es el cuerpo de la tarjeta que se muestra cuando se presiona el boton el id  debe corresponder al del boton-->
+                        <div class="card-body">
+                            <div class="embed-responsive embed-responsive-4by3">
+                                <!--este es el iframe responsive de bootstrap solo deben cambiar el src-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %} {% if acceso.esEmpleado %}
+                <!--Validacion para saber que tipo de usuario es acceso es un objeto que tiene 3 metodos
+                    .esAdministrador -> solo para administradores
+                    .esEmpleado -> solo para empleados
+                    .esCliente ->solo para clientes
+                    -->
+                <div class="card">
+                    <!--tarjeta del acordeon osea el item-->
+                    <div class="card-header" id="headingTwo">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#Ventas5" aria-expanded="false" aria-controls="Ventas5">
+                                ¿Cómo registrar a un usuario?
+                            </button>
+                            <!--boton que activa la tarjeta del acorden el id puede ser el módulo y un numero que lo represente-->
+                        </h2>
+                    </div>
+                    <div id="Ventas5" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                        <!--este es el cuerpo de la tarjeta que se muestra cuando se presiona el boton el id  debe corresponder al del boton-->
+                        <div class="card-body">
+                            <div class="embed-responsive embed-responsive-4by3">
+                                <!--este es el iframe responsive de bootstrap solo deben cambiar el src-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <!--tarjeta del acordeon osea el item-->
+                    <div class="card-header" id="headingTwo">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#Ventas5" aria-expanded="false" aria-controls="Ventas5">
+                                ¿Cómo modificar la información a un usuario?
+                            </button>
+                            <!--boton que activa la tarjeta del acorden el id puede ser el módulo y un numero que lo represente-->
+                        </h2>
+                    </div>
+                    <div id="Ventas5" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                        <!--este es el cuerpo de la tarjeta que se muestra cuando se presiona el boton el id  debe corresponder al del boton-->
+                        <div class="card-body">
+                            <div class="embed-responsive embed-responsive-4by3">
+                                <!--este es el iframe responsive de bootstrap solo deben cambiar el src-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <!--tarjeta del acordeon osea el item-->
+                    <div class="card-header" id="headingTwo">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#Ventas5" aria-expanded="false" aria-controls="Ventas5">
+                                ¿Cómo habilitar e inhabilitar a un usuario?
+                            </button>
+                            <!--boton que activa la tarjeta del acorden el id puede ser el módulo y un numero que lo represente-->
+                        </h2>
+                    </div>
+                    <div id="Ventas5" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                        <!--este es el cuerpo de la tarjeta que se muestra cuando se presiona el boton el id  debe corresponder al del boton-->
+                        <div class="card-body">
+                            <div class="embed-responsive embed-responsive-4by3">
+                                <!--este es el iframe responsive de bootstrap solo deben cambiar el src-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %} {% if acceso.esAdministrador %}
+                <div class="card">
+                    <!--tarjeta del acordeon osea el item-->
+                    <div class="card-header" id="headingTwo">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#Ventas5" aria-expanded="false" aria-controls="Ventas5">
+                                ¿Cómo cambiar la contraseña de usuario?
+                            </button>
+                            <!--boton que activa la tarjeta del acorden el id puede ser el módulo y un numero que lo represente-->
+                        </h2>
+                    </div>
+                    <div id="Ventas5" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                        <!--este es el cuerpo de la tarjeta que se muestra cuando se presiona el boton el id  debe corresponder al del boton-->
+                        <div class="card-body">
+                            <div class="embed-responsive embed-responsive-4by3">
+                                <!--este es el iframe responsive de bootstrap solo deben cambiar el src-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</div>

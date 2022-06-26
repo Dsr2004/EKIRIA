@@ -12,7 +12,7 @@ class acceso():
                 return False
         except:
            return False
-    def esClente(self):
+    def esCliente(self):
         try:
             if self.usuario.rol.permissions.get(codename="Cliente"):
                 return True
