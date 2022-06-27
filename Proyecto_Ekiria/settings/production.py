@@ -11,6 +11,10 @@ DATABASES = {
         'PASSWORD': 'usDS2My7PZ',
         'HOST': 'sql10.freemysqlhosting.net',
         'PORT': '3306',
+         'OPTIONS': {
+            'init_command': 'SET default_storage_engine=INNODB',
+            'charset': 'utf8mb4',
+        }
     }
 }
 
