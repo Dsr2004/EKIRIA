@@ -16,6 +16,7 @@ from django.shortcuts import reverse
 from django.conf import settings
 from django.contrib.auth.models import Permission,Group
 from Usuarios.models import Usuario
+from Notificaciones.signals import notificar
 
 usuario = Usuario
 
@@ -244,8 +245,15 @@ class Cita(models.Model):
         else:
             estado = False
         return estado
+    
+    @property
+    def get_url_cliente(self):
+        return reverse("Ventas:detalleCita", kwargs={"pk": self.id_cita})
+    
+    @property
+    def get_url_empleado(self):
+        return reverse("Ventas:detalleEditarCita", kwargs={"pk": self.id_cita})
         
-
 
 class Calendario(models.Model):
     #falta el id de este campo importante tambien organizar la parte donde se agendan citas creo
@@ -298,7 +306,7 @@ def pre_save_servicio_personalizado_receiver(sender, instance, *args, **kwargs):
             instance.duracion = 0
         
 def pre_save_cita_receiver(sender, instance, *args, **kwargs):
-    if not instance.horaFinCita:
+    if not instance.horaFinCita: 
         # creacion de varibales para la hora de inicio y fin de la cita
         inicio = instance.horaInicioCita
         fin = datetime(1970, 1, 1, inicio.hour, inicio.minute, inicio.second) + timedelta(minutes=instance.pedido_id.get_cantidad)
@@ -346,29 +354,9 @@ def pre_save_cita_receiver(sender, instance, *args, **kwargs):
 
 def post_save_cita(sender, instance, created, *args, **kwargs):
     if created:
-        try:
-            Servidor = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
-            Servidor.starttls()
-            Servidor.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
-            print("conexion establecida")
-
-            mensaje = MIMEMultipart()
-            mensaje['From'] = settings.EMAIL_HOST_USER
-            mensaje['To'] = instance.cliente_id.email
-            mensaje['Subject'] = "Correo de Agendamiento de cita"
-
-            cliente = f"{str(instance.cliente_id.nombres).capitalize()} {str(instance.cliente_id.apellidos).capitalize()}"
-
-            content = render_to_string("Correo/AgendarCitaCorreo.html", {"cliente":cliente, "dia":instance.diaCita, "hora":instance.horaInicioCita,"url":instance.id_cita})
-            mensaje.attach(MIMEText(content, 'html'))
-
-            Servidor.sendmail(settings.EMAIL_HOST_USER,
-                                instance.cliente_id.email,
-                                mensaje.as_string())
-
-            print("Se envio el correo")
-        except Exception as e:
-            print(e)
+        verb = "{} {} Ha agendado una cita, recuerde que esta cita primero tiene que ser confirmada por el empleado.".format(str(instance.cliente_id.nombres.capitalize()), str(instance.cliente_id.apellidos.capitalize()))
+        notificar.send(instance, usuario_id=instance.cliente_id, verbo=verb, direct= instance.get_url_cliente())
+       
     else:
         print("desdemodelo")
         print(type(instance.horaInicioCita))

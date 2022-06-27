@@ -23,12 +23,14 @@ from Configuracion.models import cambios, cambiosFooter
 from django.conf import settings
 from Usuarios.views import if_admin
 from Usuarios.models import Usuario
+from Usuarios.views import if_User, if_admin
+
+from Notificaciones.save import saveNotify
 
 from .views import is_list_empty
 from ..mixins import ActualiarCitaMixin, ActualiarCitaClienteMixin
 from ..models import Cita, Pedido, Calendario, Servicio
 from ..forms import CitaForm
-from Usuarios.views import if_User, if_admin
 from ..forms import CitaForm, Servicio_PersonalizadoForm
 
 from ..Accesso import acceso
@@ -363,52 +365,19 @@ class EditarCitaCliente(ActualiarCitaClienteMixin, UpdateView, PermissionMixin):
                 cita.horaInicioCita = hora
                 cita.horaFinCita = fin
                 cita.descripcion = descripcion
-                cita.save()
-                try:
-                    cliente = self.get_object().cliente_id
-                    
-                    if empleado.id_usuario == empleadoOriginal:
-                        Servidor = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
-                        Servidor.starttls()
-                        Servidor.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
-                        print("conexion establecida")
-
-                        mensaje = MIMEMultipart()
-                        mensaje['From'] = settings.EMAIL_HOST_USER
-                        mensaje['To'] = empleado.email
-                        mensaje['Subject'] = "Se han modificado los datos de una cita"
-
-                        cliente = f"{str(cliente.nombres).capitalize()} {str(cliente.apellidos).capitalize()}"
-                        empleadoN = f"{str(empleado.nombres).capitalize()} {str(empleado.apellidos).capitalize()}"
-                        content = render_to_string("Correo/ClienteModificoCita.html", {"cliente":cliente,"empleado":empleadoN, "dia":dia, "hora":horaOriginal,"url":self.get_object().id_cita})
-                        mensaje.attach(MIMEText(content, 'html'))
-
-                        Servidor.sendmail(settings.EMAIL_HOST_USER,
-                                            empleado.email,
-                                            mensaje.as_string())
-                    if empleado.id_usuario != empleadoOriginal:
-                        Servidor = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
-                        Servidor.starttls()
-                        Servidor.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
-                        print("conexion establecida")
-
-                        mensaje = MIMEMultipart()
-                        mensaje['From'] = settings.EMAIL_HOST_USER
-                        mensaje['To'] = empleado.email
-                        mensaje['Subject'] = "Se le ha asignado una nueva cita"
-
-                        cliente = f"{str(cliente.nombres).capitalize()} {str(cliente.apellidos).capitalize()}"
-                        empleadoN = f"{str(empleado.nombres).capitalize()} {str(empleado.apellidos).capitalize()}"
-                        content = render_to_string("Correo/NuevoEmpleadoCita.html", {"cliente":cliente,"empleado":empleadoN, "dia":dia, "hora":horaOriginal,"url":self.get_object().id_cita})
-                        mensaje.attach(MIMEText(content, 'html'))
-
-                        Servidor.sendmail(settings.EMAIL_HOST_USER,
-                                            empleado.email,
-                                            mensaje.as_string())
-
-                    print("Se envio el correo")
-                except Exception as e:
-                    print(e)
+                cita.estado = False
+                
+                if empleado.id_usuario == empleadoOriginal:# si el empleado es el mismo
+                    verb = "{} {} Se han modificado los datos de una cita, debe confirmarla de nuevo".format(str(cita.empleado_id.nombres.capitalize()), str(cita.empleado_id.apellidos.capitalize()))
+                    saveNotify(verb=verb,direct=cita.get_url_empleado,actor=cita,usuario=cita.empleado_id)
+                   
+                if empleado.id_usuario != empleadoOriginal: #diferente empleado
+                    verb = "{} {} Se le ha asignado una nueva cita, debe confirmarla".format(str(cita.empleado_id.nombres.capitalize()), str(cita.empleado_id.apellidos.capitalize()))
+                    saveNotify(verb=verb,direct=cita.get_url_empleado,actor=cita,usuario=cita.empleado_id)
+                if saveNotify:
+                    cita.save()  
+                else:
+                    print("no se modifico la cita")
                 return redirect("Ventas:calendario")
       
 class DetalleCitaCliente(DetailView,PermissionMixin):
@@ -474,31 +443,14 @@ class CambiarEstadoDeCita(TemplateView,PermissionMixin):
             update.estado=False
             update.save()    
         elif estatus==False:
-            try:
-                update.estado=True
-                update.save() 
-                Servidor = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
-                Servidor.starttls()
-                Servidor.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
-                print("conexion establecida")
-
-                mensaje = MIMEMultipart()
-                mensaje['From'] = settings.EMAIL_HOST_USER
-                mensaje['To'] = update.cliente_id.email
-                mensaje['Subject'] = "Correo de confirmación de cita"
-
-                cliente = f"{str(update.cliente_id.nombres).capitalize()} {str(update.cliente_id.apellidos).capitalize()}"
-
-                content = render_to_string("Correo/ConfirmarCitaCorreo.html", {"cliente":cliente, "dia":update.diaCita, "hora":update.horaInicioCita,"url":update.id_cita})
-                mensaje.attach(MIMEText(content, 'html'))
-
-                Servidor.sendmail(settings.EMAIL_HOST_USER,
-                                  update.cliente_id.email,
-                                  mensaje.as_string())
-
-                print("Se envio el correo")
-            except Exception as e:
-                print("DESDE CAMBIAR ESTADO DE CITA:", e)
+            update.estado=True
+            verb = "{} {} Su cita se ha confirmado, vea los detalles en el botón verde".format(str(update.cliente_id.nombres.capitalize()), str(update.cliente_id.apellidos.capitalize()))
+            saveNotify(verb=verb,direct=update.get_url_cliente, actor=update,usuario=update.cliente_id)
+            if saveNotify:
+                update.save()
+            else:
+                print("no se confirmo la cita")
+                
         else:
             return redirect("Ventas:listarCitas")
         return HttpResponse(update)

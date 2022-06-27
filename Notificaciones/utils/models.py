@@ -49,20 +49,13 @@ class AbstractNotificacionManager(models.Manager):
         return self.NotificacionQuerySet(self.model, using=self._db) #mando el modelo y que use mi base de datos
     
 class AbstractNotificacion(models.Model):
-    class Niveles(models.TextChoices):
-        configuracion = "Configuracion", "configuracion"
-        usuarios = "Usuarios", "usuarios"
-        compras = "Compras", "compras"
-        ventas = "Ventas", "ventas"
-        notificaciones = "Notificaciones", "notificaciones"
-        
-    id_notificacion = models.AutoField(primary_key=True) 
-    nivel = models.CharField(max_length=20, choices=Niveles.choices, default=Niveles.notificaciones) #tipo de notificacion  
+   
+    id_notificacion = models.AutoField(primary_key=True)
     verbo = models.CharField(max_length=220) #lo que se va a mostrar en la notificacion
     fecha = models.DateTimeField(default=timezone.now, db_index=True) #fecha y hora de la notificacion
     usuario_id = models.ForeignKey(Usuario, null=True, blank=True, on_delete=models.CASCADE, related_name="notificaciones") #usuario que recibe la notificacion
     leido = models.BooleanField(default=False) #si la notificacion ha sido leida o no
-    direct = models.URLField(max_length = 200, null=True, blank=True)
+    direct = models.CharField(max_length = 200, null=True, blank=True)
 
     actor_content_type = models.ForeignKey(ContentType, related_name="notificar_actor", on_delete=models.CASCADE)
     object_id_actor = models.PositiveIntegerField()
@@ -79,8 +72,8 @@ def notificaciones_signals(verbo, **kwargs):
     usuario = kwargs.pop('usuario_id')
     timestamp = kwargs.pop('tiempo', timezone.now()) 
     Notificacion = load_model('Notificaciones', 'Notificacion')
-    niveles = kwargs.pop('nivel',Notificacion.Niveles.notificaciones)
     actor = kwargs.pop('sender')
+    direct = kwargs.pop('direct')
     
     if  isinstance(usuario, Group):
         usuarios = usuario.user_set.all()
@@ -96,9 +89,10 @@ def notificaciones_signals(verbo, **kwargs):
             usuario_id = usuario,
             verbo = str(verbo),
             fecha = timestamp,
-            nivel = niveles,
             actor_content_type = ContentType.objects.get_for_model(actor),
-            object_id_actor = actor.pk
+            object_id_actor = actor.pk,
+            direct = direct
+            
         )
         notificacion.save()
         nueva_notificacion.append(notificacion)

@@ -7,9 +7,6 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Group
 from django.forms import model_to_dict
 from django.conf import settings
 
-from django.utils import timezone
-
-from django.db.models.signals import post_save
 #señal propia 
 from Notificaciones.signals import notificar
  
@@ -163,20 +160,20 @@ class Usuario(AbstractBaseUser):
     def is_staff(self):
         return self.administrador
     
-class Post(models.Model):
-    id_post = models.AutoField(unique=True, primary_key=True)
-    usuario = models.ForeignKey(Usuario, null=True, blank=True, on_delete=models.CASCADE)
-    titulo = models.CharField('Titulo', max_length=100, blank=False, null=False)
-    image = models.ImageField(upload_to='pos/')
-    text = models.TextField('Texto', blank=False, null=False)
-    time = models.DateTimeField(default=timezone.now, db_index=True)
+# class Post(models.Model):
+#     id_post = models.AutoField(unique=True, primary_key=True)
+#     usuario = models.ForeignKey(Usuario, null=True, blank=True, on_delete=models.CASCADE)
+#     titulo = models.CharField('Titulo', max_length=100, blank=False, null=False)
+#     image = models.ImageField(upload_to='pos/')
+#     text = models.TextField('Texto', blank=False, null=False)
+#     time = models.DateTimeField(default=timezone.now, db_index=True)
     
-    def __str__(self):
-        return '{}'.format(self.titulo)
+#     def __str__(self):
+#         return '{}'.format(self.titulo)
     
 
 
-def notificacion_post(sender, instance, created, **kwargs):
-    notificar.send(instance.usuario, usuario_id=instance.usuario, verbo=instance.titulo, nivel="notificaciones")
+# def notificacion_post(sender, instance, created, **kwargs):
+#     notificar.send(instance.usuario, usuario_id=instance.usuario, verbo=instance.titulo)
 
-post_save.connect(notificacion_post, sender=Post)
+# post_save.connect(notificacion_post, sender=Post) 

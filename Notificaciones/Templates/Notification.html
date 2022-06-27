@@ -96,15 +96,24 @@
                             <button onclick="BorrarNotificacion('{% url 'DeleteNotify' notificacion.id_notificacion %}')" class="btn btn-sm btn-danger"><i class="fa-solid fa-trash" ></i></button>
                         </div>  
                         <div class="col-3" class="actions-read-status">
+                            
+                            {% if notificacion.direct %}
+                            <a  href="{{notificacion.direct}}" class="btn btn-sm btn-outline-success" ><i class="fa-solid fa-eye"></i></a>
+                            {% endif %}
+                                
+                            {% comment %}
                             <form action="{% url 'ChangeStatus' %}" method="POST">
                                 {% csrf_token %}
                                 <input type="hidden" name="id" value="{{notificacion.id_notificacion}}">
                             {% if notificacion.leido %}
-                                <button type="submit" class="btn btn-sm btn-outline-success" ><i class="fa-solid fa-eye"></i></button>
+                                <button type="submit" class="btn btn-sm btn-outline-success" ><i class="fa-solid fa-badge-check"></i></button>
                             {% else %}
-                            <button type="submit" class="btn btn-sm btn-outline-primary" ><i class="fa-solid fa-eye-slash"></i></button>
+                            <button type="submit" class="btn btn-sm btn-outline-primary" ><i class="fa-solid fa-x"></i></button>
                             {% endif %}
                             </form>
+                            {% endcomment %}
+                                
+                           
                            
                         </div>
                     </div>

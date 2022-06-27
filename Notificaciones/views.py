@@ -23,7 +23,7 @@ class Notification(View):
         return context
     def get(self, request, *args, **kwargs):
         contexto = self.get_context_data()
-        notificaciones = Notificacion.objects.filter(usuario_id=request.user)
+        notificaciones = Notificacion.objects.filter(usuario_id=request.user).order_by("-fecha")
         contexto["notificaciones"] = notificaciones
         return render(request, "Notification.html", contexto)
     def post(self, request, *args, **kwargs):
@@ -49,9 +49,9 @@ def CambiarEstado(request):
         leido = notificacion.leido
         if leido == True:
             notificacion.leido = False
-            messages.add_message(request, messages.INFO, 'Se ha marcado una notificacion como no leida.')
+            messages.add_message(request, messages.INFO, 'Se ha marcado una notificación como no leida.')
         elif leido == False:
             notificacion.leido = True
-            messages.add_message(request, messages.INFO, 'Se ha marcado una notificacion como leida.')
+            messages.add_message(request, messages.INFO, 'Se ha marcado una notificación como leida.')
         notificacion.save()
         return redirect("Notify")
