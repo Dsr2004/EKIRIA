@@ -184,7 +184,7 @@ class Regitro(forms.ModelForm):
                 }
             ),
         }
-
+    
     def clean_fec_nac(self):
         fec_nac = self.cleaned_data.get('fec_nac')
         fec_actual = datetime.datetime.now()
@@ -205,10 +205,9 @@ class Regitro(forms.ModelForm):
         num = self.cleaned_data.get('num_documento')
         if num.isdigit() is False:
             raise  forms.ValidationError('Por favor ingresa solo números')
-        if len(num)!=10:
-            raise forms.ValidationError('Por favor ingresa un número de celular correcto')
+        if len(num)<7:
+            raise forms.ValidationError('Por favor ingresa un número de documento correcto')
         return num
-
     def clean_password2(self):
         """Validación de contraseña
         
@@ -225,15 +224,16 @@ class Regitro(forms.ModelForm):
             raise forms.ValidationError('la contraseña debe contener al menos un número')
         if any(chr.isupper() for chr in password1) is False:
             raise forms.ValidationError('la contraseña debe contener al menos una Mayúscula')
-        else:
-            return password2
+        return password2
     
     def save(self,commit = True):
         user = super().save(commit = False)
         user.set_password(self.cleaned_data['password1'])
+        user.estado=0
         if commit:
             user.save()
         return user
+    
 
 
 class Editar(forms.ModelForm):
