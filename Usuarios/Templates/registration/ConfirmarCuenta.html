@@ -1,33 +1,40 @@
+{% include 'preloader.html' %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Confirmar Cuenta</title>
 </head>
+
 <body>
-    
-    {% if User %}
+
+    {% if User %} hola
     <script>
-        $(document).ready(function(){
+        $(document).ready(function() {
             $.ajax({
-            data: {"csrfmiddlewaretoken":csrftoken, "user":'{{User.pk}}'},
-            url: '{%url "ConfirmarCuenta" %}',
-            type: "POST",
-            success: function(data){
-                location.href='{%url "IniciarSesion"%}';
-            }
+                data: {
+                    "csrfmiddlewaretoken": csrftoken,
+                    "user": '{{User.pk}}'
+                },
+                url: '{%url "ConfirmarCuenta" %}',
+                type: "POST",
+                success: function(data) {
+                    location.href = '{%url "IniciarSesion"%}';
+                },
+                error: function(error) {
+                    alert("Error:" + error.responseJSON)
+                }
             });
-            error: function(error){
-                console.log("no")
-                alert("Error:"+error.responseJSON)
-            }
-            }); 
-        })
+        });
     </script>
     {% else %}
-    <h1>Chupese un guebo</h1>
+    <script>
+        location.href = '{%url "IniciarSesion"%}';
+    </script>
     {% endif %}
 </body>
+
 </html>

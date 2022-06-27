@@ -198,31 +198,26 @@
                             </tr>
                             {% endif %} {% endfor %} {%else%}
                             <tr>
-                                <td>
+                                <td colspan="15">
                                     No hay usuarios Registrados
                                 </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
                             </tr>
                             {%endif%}
                         </tbody>
-                        <tfoot>
-                            <tr>
-                                <td>Apodo</td>
-                                <td>Nombres</td>
-                                <td>Apellidos</td>
-                                <td>Teléfono</td>
-                                <td>Celular</td>
-                                <td>E-mail</td>
-                                <td>Tipo De Documento</td>
-                                <td>Número De Documento</td>
-                                <td>Dirección</td>
-                                <td>Código Postal</td>
-                                <td>Municipio</td>
-                                <td>Rol</td>
-                                <td>Último Inicio</td>
-                                <td>Estado</td>
-                                <td>Editar</td>
-                            </tr>
-                        </tfoot>
                     </table>
                 </div>
             </div>
@@ -240,12 +235,14 @@
 <script src="/static/Proyecto_Ekiria/js/jsTablesInformations.js"></script>
 <script src="/static/ModuloUsuarios/js/mainAdministration.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-<script>$(document).ready(function() {
-    $('#TableUsers').DataTable({
-        "language": {
-            "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
-        },
-        responsive: true
+<script>
+    $(document).ready(function() {
+        $('#TableUsers').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+            },
+            responsive: true
+        });
     });
-});</script>
+</script>
 {% endblock scripts %}
