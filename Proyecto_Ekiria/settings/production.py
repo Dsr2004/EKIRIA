@@ -5,12 +5,12 @@ DEBUG = True
 ALLOWED_HOSTS = ['ekiriatest.herokuapp.com']
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'd3b89n552k778a',
-        'USER': 'rcskocaksnkrso',
-        'PASSWORD': '690bc2558a6cf8313324ea8ffe7483a74e9f3d452b9bbd9bcd2e0351e3265055',
-        'HOST': 'ec2-34-200-35-222.compute-1.amazonaws.com',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'sql10502612',
+        'USER': 'sql10502612',
+        'PASSWORD': 'usDS2My7PZ',
+        'HOST': 'sql10.freemysqlhosting.net',
+        'PORT': '3306',
     }
 }
 
