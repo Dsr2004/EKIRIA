@@ -49,23 +49,28 @@
     </div>
     <script>
         window.onload = function() {
-            let ct = document.getElementById('contentMenu')
-            ct.style.visibility = "visible";
-            let contenedor = document.getElementById("texto2")
-            let content = document.getElementById('body-content-menu')
-            content.style.marginBottom = contenedor.clientHeight + "px"
-            let body = document.getElementById('body_preloader')
             try {
-                let icono = document.querySelector('.btn-wsp')
-                body.style.display = "none"
-                icono.style.marginBottom = contenedor.clientHeight + 20 + "px"
-            } catch (error) {
-                body.style.display = "none"
-            }
-            try {
-                cambiosP()
-            } catch (error) {
+                let ct = document.getElementById('contentMenu')
+                ct.style.visibility = "visible";
+                let contenedor = document.getElementById("texto2")
+                let content = document.getElementById('body-content-menu')
+                content.style.marginBottom = contenedor.clientHeight + "px"
+                let body = document.getElementById('body_preloader')
+                try {
+                    let icono = document.querySelector('.btn-wsp')
+                    body.style.display = "none"
+                    icono.style.marginBottom = contenedor.clientHeight + 20 + "px"
+                } catch (error) {
+                    body.style.display = "none"
+                }
+                try {
+                    cambiosP()
+                } catch (error) {
 
+                }
+            } catch (error) {
+                let body = document.getElementById('body_preloader')
+                body.style.display = "none"
             }
         }
     </script>

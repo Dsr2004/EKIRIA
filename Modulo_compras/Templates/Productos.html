@@ -54,10 +54,10 @@
                 <thead>
                     <tr>
                         <td scope="col">Nombre</td>
+                        <td scope="col">Estado</td>
                         <td scope="col">Proveedor</td>
                         <td scope="col">Tipo</td>
                         <td scope="col">Cantidad</td>
-                        <td scope="col">Estado</td>
                         <td scope="col">Editar</td>
                     </tr>
                 </thead>
@@ -66,9 +66,6 @@
                     {%if Productos%} {%for prod in Productos%}
                     <tr>
                         <td>{{prod.nombre}}</td>
-                        <td>{{prod.proveedor}}</td>
-                        <td>{{prod.tipo_producto}}</td>
-                        <td>{{prod.cantidad}}</td>
                         <td>
                             <form action="{%url 'camestadoProducto' %}" method="POST" id="camestado">
                                 {%csrf_token%}
@@ -77,6 +74,9 @@
                                 </div>
                             </form>
                         </td>
+                        <td>{{prod.proveedor}}</td>
+                        <td>{{prod.tipo_producto}}</td>
+                        <td>{{prod.cantidad}}</td>
                         <td>
                             <button class="btn" onclick="modificarProb('{{prod.id_producto }}')"><i style="font-size:20px; margin-top: 5px;" class="fas fa-pencil"></i></button>
                         </td>

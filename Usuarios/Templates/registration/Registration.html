@@ -1,4 +1,4 @@
-{% load crispy_forms_tags %}
+{% include 'preloader.html' %} {% load crispy_forms_tags %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -22,7 +22,7 @@
             <h1>Registro</h1>
 
 
-            
+
             {% if Error %}
             <div class="alert alert-danger">{{Error}}</div>
             {% endif %} {% csrf_token %}
@@ -90,26 +90,25 @@
             <p>
 
 
-             
+
 
                 {% if errors%}
-                    <script>
-                        $("input[name=username]").val('{{username}}')   
-                        $("input[name=email]").val('{{email}}')
-                        $("input[name=nombres]").val('{{nombre}}')   
-                        $("input[name=apellidos]").val('{{apellidos}}')
-                        $("input[name=username]").val('{{username}}')   
-                        $("input[name=direccion]").val('{{direccion}}')
-                        $("input[name=telefono]").val('{{telefono}}')   
-                        $("input[name=celular]").val('{{celular}}')
-                        $("input[name=municipio]").val('{{municipio}}')   
-                        $("input[name=num_documento]").val('{{num_documento}}')
-                        $("select[name=municipio]").val('{{municipio}}')
-                        $("select[name=cod_postal]").val('{{cod_postal}}')
-                        $("select[name=tipo_documento]").val('{{tipo_documento}}')
-                        $("input[name=fec_nac]").val('{{fec_nac}}')
-                        
-                    </script>
+                <script>
+                    $("input[name=username]").val('{{username}}')
+                    $("input[name=email]").val('{{email}}')
+                    $("input[name=nombres]").val('{{nombre}}')
+                    $("input[name=apellidos]").val('{{apellidos}}')
+                    $("input[name=username]").val('{{username}}')
+                    $("input[name=direccion]").val('{{direccion}}')
+                    $("input[name=telefono]").val('{{telefono}}')
+                    $("input[name=celular]").val('{{celular}}')
+                    $("input[name=municipio]").val('{{municipio}}')
+                    $("input[name=num_documento]").val('{{num_documento}}')
+                    $("select[name=municipio]").val('{{municipio}}')
+                    $("select[name=cod_postal]").val('{{cod_postal}}')
+                    $("select[name=tipo_documento]").val('{{tipo_documento}}')
+                    $("input[name=fec_nac]").val('{{fec_nac}}')
+                </script>
                 <script>
                     var fields = [];
                 </script>
@@ -135,12 +134,12 @@
 </body>
 
 <script>
-    $(document).ready(function(){
+    $(document).ready(function() {
         var input = document.querySelectorAll("input");
-        for(var i =0; i<input.length; i++){
-        input[i].removeAttribute("required");
+        for (var i = 0; i < input.length; i++) {
+            input[i].removeAttribute("required");
         }
-       
+
     });
 </script>
 

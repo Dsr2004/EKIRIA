@@ -51,7 +51,9 @@
         <p id="tipo_producto-p" class="text-danger"></p>
 
         {{form.cantidad}}
-        <button type="submit" class="btn btn-success " style="float: right;">Enviar</button>
+        <div style="width: 100%; height: 40px; padding: 5px; position: sticky; bottom:0; background-color: white; border-top: 0.5px solid rgba(0, 0, 0, 0.4);">
+            <button type="submit" class="btn btn-success " style="float: right;">Enviar</button>
+        </div>
     </form>
     <div class="tipo_productoroductos">
         <i class="mdi mdi-plus-circle-outline" style="cursor:pointer;" onclick="agregartp('{%url 'creartp'%}')"></i>
