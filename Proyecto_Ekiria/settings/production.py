@@ -6,11 +6,11 @@ ALLOWED_HOSTS = ['ekiriatest.herokuapp.com']
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'sql10502612',
-        'USER': 'sql10502612',
-        'PASSWORD': 'usDS2My7PZ',
-        'HOST': 'sql10.freemysqlhosting.net',
-        'PORT': '3306',
+        'NAME': 'ekiria_db_ekiria_tets',
+        'USER': 'ekiria_root',
+        'PASSWORD': 'Ekiria12345678.',
+        'HOST': 'mysql-ekiria.alwaysdata.net',
+        'PORT': '',
          'OPTIONS': {
             'init_command': 'SET default_storage_engine=INNODB',
             'charset': 'utf8mb4',
