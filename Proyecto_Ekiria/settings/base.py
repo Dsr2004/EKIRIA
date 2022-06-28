@@ -71,7 +71,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': ['Proyecto_Ekiria/Templates', 'Usuarios/Templates', 'Modulo_compras/Templates',
-                 'Configuracion/Templates', 'Ventas/Templates', 'Notificacion/Templates'],
+                 'Configuracion/Templates', 'Ventas/Templates', 'Notificaciones/Templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
