@@ -4,6 +4,10 @@
     box-sizing: border-box;
 }
 
+.titulosTexto {
+    color: var(--ShinyPurple);
+}
+
 .modal-backdrop {
     z-index: 1 !important;
     opacity: 0.5 !important;

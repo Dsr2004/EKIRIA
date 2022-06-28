@@ -1,4 +1,3 @@
-import json
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from Proyecto_Ekiria.Mixin.Mixin import PermissionDecorator, PermissionMixin
@@ -54,7 +53,7 @@ def actualizarItem(request):
 
 
 def buscarPedido(request):
-    cliente = Usuario.objects.get(username=request.session['username'])
+    cliente = Usuario.objects.get(username=request.user.username)
     pedido, = Pedido.objects.get(cliente_id=cliente, completado=False)
 
     if pedido:

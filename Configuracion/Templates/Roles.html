@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="{%static 'bootstrap/css/bootstrap.css'%}">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
-    <link rel="stylesheet" href="/static/Configuracion/css/estilo.css">
+    <link rel="stylesheet" href="{%static 'Configuracion/css/estilo.css'%}">
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <title>Roles</title>
 </head>
 {% endblock head %} {%block Contenido%} {% if messages %} {%for i in messages%}
@@ -85,7 +86,7 @@
         <button class="nuevoRol" type="button" onclick="abrir_modal_crear('{% url 'CreateRol' %}')">
           Crear Nuevo Rol
         </button>
-        <img class="imgAgregar " src="/static/Configuracion/img/Agregar.png" type="button" onclick="abrir_modal_crear('{% url 'CreateRol' %}')">
+        <img class="imgAgregar " src="{%static 'Configuracion/img/Agregar.png'%}" type="button" onclick="abrir_modal_crear('{% url 'CreateRol' %}')">
     </div>
 </div>
 
@@ -114,9 +115,9 @@
 </script>
 
 <script src="{%static 'Configuracion/js/erroresCrear.js'%}"></script>
-<script src="/static/Configuracion/js/habilitar.js"></script>
-<script src="/static/bootstrap/js/bootstrap.js"></script>
-<script src="/static/Configuracion/js/ErroresEditar.js"></script>
+<script src="{%static 'Configuracion/js/EliminarRol.js'%}"></script>
+<script src="{%static 'bootstrap/js/bootstrap.js'%}"></script>
+<script src="{%static 'Configuracion/js/ErroresEditar.js'%}"></script>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 

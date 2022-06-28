@@ -1,18 +1,27 @@
 from .base import *
 
 # esta es para mysql
+DEBUG = False
+Domain = "ekiriatest.herokuapp.com"
+ALLOWED_HOSTS = ['ekiriatest.herokuapp.com']
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'ekiria_db_ekiria_tets',
+#         'USER': 'ekiria_root',
+#         'PASSWORD': 'Ekiria12345678.',
+#         'HOST': 'mysql-ekiria.alwaysdata.net',
+#         'PORT': '',
+#          'OPTIONS': {
+#             'init_command': 'SET default_storage_engine=INNODB',
+#             'charset': 'utf8mb4',
+#         }
+#     }
+# }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'db_ekiria',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '',
-        'OPTIONS': {
-            'init_command': 'SET default_storage_engine=INNODB',
-            'charset': 'utf8mb4',
-        }
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 

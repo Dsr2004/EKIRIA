@@ -1,4 +1,4 @@
-{% extends 'Menu_Usuario.html' %} {% block head %}
+{% extends 'Menu_Usuario.html' %} {%load static%} {% block head %}
 
 <head>
     <meta charset="UTF-8">
@@ -190,7 +190,7 @@
 
     }
 </script>
-<script src="/static/Configuracion/js/main.js"></script>
-<script src="/static/Configuracion/js/TraducirPermisos.js"></script>
+<script src="{%static 'Configuracion/js/main.js'%}"></script>
+<script src="{%static 'Configuracion/js/TraducirPermisos.js'%}"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 {% endblock scripts %}

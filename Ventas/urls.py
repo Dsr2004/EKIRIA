@@ -2,7 +2,7 @@ from django.urls import path
 from django.contrib.auth.decorators import login_required
 from Ventas.views import admin, citas, serviciosPersonalizados, servicios, tipoServicios, views
 from Ventas import carrito
-app_name="Ventas"
+app_name="Ventas" 
 urlpatterns = [
     path('AddtoCarrito/', login_required(carrito.actualizarItem), name="addtoCarrito"),
    

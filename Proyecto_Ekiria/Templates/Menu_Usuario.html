@@ -169,7 +169,11 @@
                                 <li class="nav_link--inside"><a href="{%url 'Ventas:listarCitas'%}">Citas</a></li>
                                 <li class="nav_link--inside"><a href="{%url 'Ventas:agregarServicio'%}">Agregar Servicios</a></li>
                                 {%endif%}{% if User.admin == 1 or User.admin == 2%}
-                                <li class="nav_link--inside"><a href="{%url 'Ventas:agregarCita'%}">Agregar cita</a></li>
+                               
+                               {% comment %}
+                               <li class="nav_link--inside"><a href="{%url 'Ventas:agregarCita'%}">Agregar cita</a></li>
+                               {% endcomment %}
+                                
                                 {%endif%}
                                 <br>
                             </ul>

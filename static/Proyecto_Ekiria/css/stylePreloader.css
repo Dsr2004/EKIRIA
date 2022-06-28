@@ -7,7 +7,7 @@
     --black: #000000;
     --menu_color: #0f0f0f;
     --white: #fff;
-    --ShinyPurple: #800080;
+    --ShinyPurple: #a200ff;
     --Purple: #572364;
 }
 
@@ -30,7 +30,7 @@ body {
 }
 
 .contentMenu {
-    visibility:hidden;
+    visibility: hidden;
 }
 
 .containerPreloader {

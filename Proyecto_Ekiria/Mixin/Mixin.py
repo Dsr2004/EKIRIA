@@ -11,7 +11,6 @@ def PermissionDecorator(permissions):
                     try:
                         if request.user.rol.permissions.get(codename=permission):
                             pass
-
                     except Exception as e:
                         return redirect('SinPermisos')
                 result = func(*args, **kwargs)
@@ -38,14 +37,10 @@ class PermissionMixin(object):
         if self.url_redirect is None:
             return redirect('SinPermisos')
         return redirect(self.url_redirect)
-
+    
     def dispatch(self, request, *args, **kwargs):
-        # if request.user.has_perm(self.get_perms()):
-        #     # print(request.user.has_perm('citasds'))
-        
-        #     user = request.user
-        #     print(user)
         for permission in self.get_perms():
+            print(permission)
             try:
                 if request.user.rol.permissions.get(codename=permission):
                     pass

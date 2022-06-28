@@ -1,5 +1,5 @@
 from django.contrib import admin
-from Usuarios.models import Usuario, Post
+from Usuarios.models import Usuario
 from django.contrib.auth.models import Permission
 
 
@@ -11,4 +11,3 @@ class UserAdmin(admin.ModelAdmin):
   
     
 admin.site.register(Permission)
-admin.site.register(Post)

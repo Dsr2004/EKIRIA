@@ -1,0 +1,109 @@
+{% extends "Menu_Usuario.html" %}
+{% load static %}
+{% block head %}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario</title>
+    <link rel="stylesheet" href="{% static 'Ventas/css/Ventas.css' %}">
+   <link rel="icon" href="{% static 'Proyecto_Ekiria/Img/Logo Ekiria.png' %}">
+   <link rel="stylesheet" href="{% static 'Plugins/fullcalendar/lib/main.css' %}">
+   
+
+ 
+
+</head>
+{% endblock head %}
+
+{% block Contenido %}
+  <h1>Calendario</h1>
+<div class="row" style="margin:10px">
+     <div class="col-md-7 ">
+       <!--aqui va el calendario-->
+       <div id="calendar" style="padding: 40px;" class=""></div>
+      </div> 
+    <div class="col-md-5 ContainerHistorialCitas">
+        <legend>Historial</legend>
+        <table class="table  historialCitas" >
+            <thead>
+              <tr>
+                <th scope="col">Fecha</th>
+                <th scope="col">Total</th>
+                <th scope="col">Estado</th>
+                <th scope="col">Acciones</th>
+              </tr>
+            </thead>
+            <tbody sty>
+              
+              {% if citas %}
+                  {% for cita in citas %}
+                  <tr>
+                    <th scope="row">{{cita.diaCita}}</th>
+                    <td>${{cita.pedido_id.get_total_carrito}}</td>
+                    {% if cita.cancelado == True %} 
+                    <td><div class="containerEstadoCita Cancelado"><p class="EstadoCitaTextoCalendario">Cancelado</p></div></td>
+                    {% else %}
+                      {% if cita.EstadoCita %}
+                      <td><div class="containerEstadoCita Realizado"><p class="EstadoCitaTextoCalendario">Realizado</p></div></td>
+                      {% else %}
+                      <td><div class="containerEstadoCita EnEspera"><p class="
+                        EstadoCitaTextoCalendario">Pedndiente</p></div></td>
+                      {% endif %}
+                    {% endif %}
+                   
+                    <td><a href="{% url 'Ventas:detalleCita' cita.id_cita%}" class="LinkDetalleCita"><i class="fas fa-info-circle verMasDetalleCitaCalendario"></a></i></td>
+                  </tr>
+                  {% endfor %}
+              {% else %}
+                  <h4>No hay citas que mostrar</h4>
+              {% endif %}
+            </tbody>
+          </table>
+    </div>
+</div>
+
+
+<!-- scripts -->
+<!-- <script src="/static/Ventas/js/bootstrap.min.js"></script>
+<script src="/static/Ventas/plugins/jquery-ui/jquery-ui.min.js"></script>
+<script src="/static/Ventas/plugins/moment/moment.js"></script>
+<script src="/static/Ventas/plugins/fullcalendar/js/fullcalendar.min.js"></script>
+<script src="/static/Ventas/js/jquery.fullcalendar.js"></script> -->
+
+
+{% endblock Contenido %}
+
+{%block scripts%}
+<script src="{% static 'Plugins/fullcalendar/lib/main.js' %}"></script>
+<script src="{% static 'Plugins/fullcalendar/lib/locales-all.js' %}"></script>
+<script>
+  
+  document.addEventListener('DOMContentLoaded', function(){
+    var calendarUI  = document.getElementById("calendar")
+    var calendar = new FullCalendar.Calendar(calendarUI,{
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+      },
+      events: [
+        {% for cita in citas %}
+        {
+          title:"{{cita.titulo}}",
+          start: "{{cita.inicio}}",
+          end: "{{cita.fin}}",
+        },
+        {% endfor %}
+
+      ],
+      dateClick: function(arg) {
+        console.log('dateClick', calendar.formatIso(arg.date));
+        // aqui se cargara las modales que mostraran la info de la cita
+      },
+    });
+    calendar.render();
+    calendar.setOption('locale','es')
+  });
+</script>
+{%endblock scripts%}

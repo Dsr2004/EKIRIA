@@ -2,10 +2,7 @@ from datetime import datetime, timedelta
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.urls import resolve, reverse_lazy
-from django.http import HttpResponseRedirect
 
-from django.contrib.auth.models import Permission,Group
 
 from Ventas.models import Cita
 

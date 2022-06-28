@@ -151,7 +151,6 @@ function CambioLetraFooter2() {
 }
 
 function ActualizarCambiosPagina() {
-    let formulario = $("#cambiosPaginaForm")
     const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
             confirmButton: 'btn btn-success sweetAlertB',
@@ -171,9 +170,10 @@ function ActualizarCambiosPagina() {
         if (result.isConfirmed) {
             $(document).ready(function() {
                 $.ajax({
-                    data: formulario.serialize(),
-                    url: formulario.attr("action"),
-                    type: formulario.attr("method"),
+                    data: $("#cambiosPaginaForm").serialize(),
+                    url: $("#cambiosPaginaForm").attr("action"),
+                    type:$("#cambiosPaginaForm").attr("method"),
+                    dataType: 'json',
                     success: function(response) {
                         swalWithBootstrapButtons.fire(
                             'Modificado Correctamente',
@@ -183,9 +183,22 @@ function ActualizarCambiosPagina() {
                             location.reload()
                         });
                     },
-                    error: function(error) {
-                        alert("Error: " + error.responseJSON)
+                    error: function(error){
+                        $('#cambiosPaginaForm').find('.text-danger').text('')
+                        $('#cambiosPaginaForm').removeClass('is-invalid')
+                        for (let item in error.responseJSON["errores"]){
+                            let input =$("#cambiosPaginaForm").find('input[name='+item+']')
+                            input.addClass("is-invalid")
+                            $('#'+item).text(error.responseJSON["errores"][item])
+                            
+                            // si imprime con esto  aun no veo el error
+                            // aunque aun no dice que campo exactamente es el 
+                            // error solo muestra dos errores si son dos campos
+                            // alert(error.responseJSON["errores"][item])
+                            
                     }
+                    
+                }
                 });
 
             })
@@ -207,7 +220,6 @@ function ActualizarCambiosPagina() {
 };
 
 function ActualizarCambiosFooter() {
-    let formulario = $("#CambiosFooterForm")
     const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
             confirmButton: 'btn btn-success sweetAlertB',
@@ -227,9 +239,10 @@ function ActualizarCambiosFooter() {
         if (result.isConfirmed) {
             $(document).ready(function() {
                 $.ajax({
-                    data: formulario.serialize(),
-                    url: formulario.attr("action"),
-                    type: formulario.attr("method"),
+                    data: $("#CambiosFooterForm").serialize(),
+                    url: $("#CambiosFooterForm").attr("action"),
+                    type: $("#CambiosFooterForm").attr("method"),
+                    dataType: 'json',
                     success: function(response) {
                         swalWithBootstrapButtons.fire(
                             'Modificado Correctamente',
@@ -239,9 +252,17 @@ function ActualizarCambiosFooter() {
                             location.reload()
                         });
                     },
-                    error: function(error) {
-                        alert("Error: " + error.responseJSON)
+                    error: function(error){
+                        $("#CambiosFooterForm").find('.text-danger').text('')
+                        $("#CambiosFooterForm").removeClass('is-invalid')
+                        for (let item in error.responseJSON["errores"]){
+                            let input =$("#CambiosFooterForm").find('input[name='+item+']')
+                            input.addClass("is-invalid")
+                            $('#'+item).text(error.responseJSON["errores"][item])
+                            
                     }
+                    
+                }
                 });
 
             })

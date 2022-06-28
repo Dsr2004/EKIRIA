@@ -1,9 +1,4 @@
-from ast import If
-from msilib.schema import ListView
-from pyexpat import model
-from re import template
-import re
-from webbrowser import get
+
 import json
 
 # Create your views here.
@@ -14,9 +9,9 @@ from django.db.models import Q
 
 from django.http import HttpResponse,JsonResponse
 from django.views.generic import View, CreateView, UpdateView, ListView, DetailView
-from django.urls import reverse_lazy
+
 from django.contrib.auth.models import Permission,Group
-from django.contrib import messages
+
 from Usuarios.models import Usuario
 from Usuarios.views import *
 from django.contrib.auth.decorators import login_required, permission_required
@@ -24,7 +19,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 # Create your views here.
 from django.contrib.contenttypes.models import ContentType
-from django.shortcuts import get_object_or_404
+
 from .models import  cambios, cambiosFooter, GroupExtensions
 from Proyecto_Ekiria.Mixin.Mixin import PermissionMixin, PermissionDecorator
 from .forms import RolForm, CambiosForm, FooterForm
@@ -304,6 +299,7 @@ class CrearCambios(View,PermissionMixin):
             respuesta=JsonResponse({"mensaje":mensaje, "errores":errores})
             respuesta.status_code=400
             return respuesta
+            
     def get_context_data(self, *args, **kwargs):
         context = super(CrearCambios, self).get_context_data(**kwargs)
         UserSesion = if_admin(self.request)
