@@ -16,6 +16,6 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Proyecto_Ekiria.settings.produc
 
 # application = get_wsgi_application()
 
-from dj_static import Cling
+from dj-static import Cling
 application = Cling(get_wsgi_application())
 
