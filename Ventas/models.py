@@ -355,7 +355,7 @@ def pre_save_cita_receiver(sender, instance, *args, **kwargs):
 def post_save_cita(sender, instance, created, *args, **kwargs):
     if created:
         verb = "{} {} Ha agendado una cita, recuerde que esta cita primero tiene que ser confirmada por el empleado.".format(str(instance.cliente_id.nombres.capitalize()), str(instance.cliente_id.apellidos.capitalize()))
-        notificar.send(instance, usuario_id=instance.cliente_id, verbo=verb, direct= instance.get_url_cliente())
+        notificar.send(instance, usuario_id=instance.cliente_id, verbo=verb, direct= instance.get_url_cliente)
        
     else:
         print("desdemodelo")
