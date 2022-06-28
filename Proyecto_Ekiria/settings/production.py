@@ -1,9 +1,12 @@
 from .base import *
 
-# esta es para mysql
+
 DEBUG = False
 Domain = "ekiriatest.herokuapp.com"
 ALLOWED_HOSTS = ['ekiriatest.herokuapp.com']
+
+
+
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
@@ -24,6 +27,9 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+STATIC_ROOT = os.path.join(BASE_DIR, '../staticfiles')
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS  = (os.path.join(BASE_DIR, '../static/'),)
