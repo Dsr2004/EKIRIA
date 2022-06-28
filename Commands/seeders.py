@@ -190,19 +190,19 @@ def PermisosCliente(rol):
             rol.permissions.add(permission_view_Pedido)
                                  # Permission - can change Pedido
             permission_change_Pedido = Permission.objects.get(
-                codename='change_Pedido',
+                codename='change_pedido',
                 content_type=content_type_Pedido,
             )
             rol.permissions.add(permission_change_Pedido)
                                 # Permisssion - can delete Pedido
             permission_delete_Pedido = Permission.objects.get(
-                codename='delete_Pedido',
+                codename='delete_pedido',
                 content_type=content_type_Pedido,
             )
             rol.permissions.add(permission_delete_Pedido)
                                 # Permisssion - can add Pedido
             permission_add_Pedido = Permission.objects.get(
-                codename='add_Pedido',
+                codename='add_pedido',
                 content_type=content_type_Pedido,
             )
             rol.permissions.add(permission_add_Pedido)
@@ -216,71 +216,71 @@ def PermisosCliente(rol):
                                 #   Permission - can view pedidoItem
             content_type_PedidoItem = ContentType.objects.get_for_model(PedidoItem)
             permission_view_PedidoItem = Permission.objects.get(
-                codename='view_PedidoItem',
+                codename='view_pedidoitem',
                 content_type=content_type_PedidoItem,
             )
             rol.permissions.add(permission_view_PedidoItem)
                                 #   Permission - can change PedidoItem
             permission_change_PedidoItem = Permission.objects.get(
-                codename='change_PedidoItem',
+                codename='change_pedidoitem',
                 content_type=content_type_PedidoItem,
             )
             rol.permissions.add(permission_change_PedidoItem)
                             #   Permission - can add PedidoItem
             permission_add_PedidoItem = Permission.objects.get(
-                codename='add_PedidoItem',
+                codename='add_pedidoitem',
                 content_type=content_type_PedidoItem,
             )
             rol.permissions.add(permission_add_PedidoItem)
                             #   Permission - can delete PedidoItem
             permission_delete_PedidoItem = Permission.objects.get(
-                codename='delete_PedidoItem',
+                codename='delete_pedidoitem',
                 content_type=content_type_PedidoItem,
             )
             rol.permissions.add(permission_delete_PedidoItem)
                                 #   Permission - can view TipoServicio
             content_type_TipoServicio = ContentType.objects.get_for_model(Tipo_servicio)
             permission_view_TipoServicio = Permission.objects.get(
-                codename='view_Tipo_servicio',
+                codename='view_tipo_servicio',
                 content_type=content_type_TipoServicio,
             )
             rol.permissions.add(permission_view_TipoServicio)
                                 #   Permission - can view Municipio
             content_type_Municipio = ContentType.objects.get_for_model(Municipio)
             permission_view_Municipio = Permission.objects.get(
-                codename='view_Municipio',
+                codename='view_municipio',
                 content_type=content_type_Municipio,
             )
             rol.permissions.add(permission_view_Municipio)
                                 #   Permission - can view TipoDocumento
             content_type_TipoDocumento = ContentType.objects.get_for_model(TipoDocumento)
             permission_view_TipoDocumento = Permission.objects.get(
-                codename='view_TipoDocumento',
+                codename='view_tipodocumento',
                 content_type=content_type_TipoDocumento,
             )
             rol.permissions.add(permission_view_TipoDocumento)
                                 #   Permission - can view Servicio_Personalizado
             content_type_Servicio_Personalizado = ContentType.objects.get_for_model(Servicio_Personalizado)
             permission_view_Servicio_Personalizado = Permission.objects.get(
-                codename='view_Servicio_Personalizado',
+                codename='view_servicio_personalizado',
                 content_type=content_type_Servicio_Personalizado,
             )
             rol.permissions.add(permission_view_Servicio_Personalizado)
                                 #   Permission - can change Servicio_Personalizado
             permission_change_Servicio_Personalizado = Permission.objects.get(
-                codename='change_Servicio_Personalizado',
+                codename='change_servicio_personalizado',
                 content_type=content_type_Servicio_Personalizado,
             )
             rol.permissions.add(permission_change_Servicio_Personalizado)
                             #   Permission - can add Servicio_Personalizado
             permission_add_Servicio_Personalizado = Permission.objects.get(
-                codename='add_Servicio_Personalizado',
+                codename='add_servicio_personalizado',
                 content_type=content_type_Servicio_Personalizado,
             )
             rol.permissions.add(permission_add_Servicio_Personalizado)
                             #   Permission - can delete Servicio_Personalizado
             permission_delete_Servicio_Personalizado = Permission.objects.get(
-                codename='delete_Servicio_Personalizado',
+                codename='delete_servicio_personalizado',
                 content_type=content_type_Servicio_Personalizado,
             )
             rol.permissions.add(permission_delete_Servicio_Personalizado)
