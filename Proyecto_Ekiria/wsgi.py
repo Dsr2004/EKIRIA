@@ -7,7 +7,7 @@ For more information on this file, see
 https://docs.djangoproject.com/en/3.2/howto/deployment/wsgi/
 """
 
-from email.mime import application
+
 import os
 
 from django.core.wsgi import get_wsgi_application
