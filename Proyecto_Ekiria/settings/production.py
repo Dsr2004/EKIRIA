@@ -1,7 +1,7 @@
 from .base import *
 
 
-DEBUG = False
+DEBUG = True
 Domain = "ekiriatest.herokuapp.com"
 ALLOWED_HOSTS = ['ekiriatest.herokuapp.com']
 
