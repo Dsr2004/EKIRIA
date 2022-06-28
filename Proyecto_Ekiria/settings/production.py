@@ -1,9 +1,9 @@
 from .base import *
 
 # esta es para mysql
-DEBUG = True
-Domain = "ekiriatest.herokuapp.com"
-ALLOWED_HOSTS = ['ekiriatest.herokuapp.com', '127.0.0.1']
+DEBUG = False
+Domain = "ekiria.herokuapp.com"
+ALLOWED_HOSTS = ['ekiria.herokuapp.com']
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
