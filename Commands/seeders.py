@@ -10,7 +10,7 @@ https://docs.djangoproject.com/en/3.2/howto/deployment/wsgi/
 import os
 from pprint import pprint
 import time
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Proyecto_Ekiria.settings.local")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Proyecto_Ekiria.settings.production")
 import django
 from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()
