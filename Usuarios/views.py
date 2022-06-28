@@ -3,7 +3,6 @@ import smtplib
 import json
 # prueba
 from Proyecto_Ekiria import settings
-from importlib import import_module
 # -----
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -43,7 +42,7 @@ from Usuarios.authentication_mixins import Authentication
 from datetime import datetime
 from Usuarios.forms import Cambiar, Regitro, Editar, CustomAuthForm, EditUser
 from Usuarios.Mixins.Mixin import Asimetric_Cipher,if_admin
-from Proyecto_Ekiria.settings.local import Public_Key
+from Proyecto_Ekiria.settings.production import Public_Key
 import cryptocode
 from Proyecto_Ekiria.Mixin.Mixin import PermissionDecorator, PermissionMixin
 from Notificaciones.models import Notificacion
@@ -71,7 +70,7 @@ def if_admin(request):
     if request.session:
         try:
             if request.session['pk']:
-                if request.session['Admin']:
+                if request.user.administrador:
                     imagen = Usuario.objects.get(id_usuario=request.session['pk'])
                     imagen = imagen.img_usuario
                     UserSesion = {"username":request.session['username'], "rol":request.session['rol'], "imagen":imagen, "admin":request.session['Admin'],"notify":request.session['notificaciones']}
@@ -145,27 +144,12 @@ class Register(CreateView):
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST or None)
         context = {
-            'form':self.form_class,
+            'form':form,
         }
-        if form.is_valid() is False:
+        if form.is_valid():
             try:
-                registro = self.model(
-                    img_usuario = form.cleaned_data.get('img_usuario'),
-                    username = form.cleaned_data.get('username'),
-                    nombres = form.cleaned_data.get('nombres'),
-                    apellidos = form.cleaned_data.get('apellidos'),
-                    telefono = form.cleaned_data.get('telefono'),
-                    celular = form.cleaned_data.get('celular'),
-                    email = form.cleaned_data.get('email'),
-                    fec_nac = form.cleaned_data.get('fec_nac'),
-                    tipo_documento = form.cleaned_data.get('tipo_documento'),
-                    num_documento = form.cleaned_data.get('num_documento'),
-                    municipio = form.cleaned_data.get('municipio'),
-                    direccion = form.cleaned_data.get('direccion'),
-                    cod_postal = form.cleaned_data.get('cod_postal'),
-                    estado = 1
-                )
-                registro.save()
+                form.estado = 0
+                form.save()
                 user = Usuario.objects.get(username = request.POST['username'])
                 try:
                     token = Token.objects.get(user=user)
@@ -174,22 +158,22 @@ class Register(CreateView):
                 except:
                     Token.objects.create(user=user)
                     token = Token.objects.get(user=user)
-                Servidor = smtplib.SMTP(settings.local.EMAIL_HOST, settings.local.EMAIL_PORT)
+                Servidor = smtplib.SMTP(settings.production.EMAIL_HOST, settings.production.EMAIL_PORT)
                 Servidor.starttls()
-                Servidor.login(settings.local.EMAIL_HOST_USER, settings.local.EMAIL_HOST_PASSWORD)
+                Servidor.login(settings.production.EMAIL_HOST_USER, settings.production.EMAIL_HOST_PASSWORD)
                 print("conexion establecida")
                 mensaje = MIMEMultipart()
-                mensaje['From'] = settings.local.EMAIL_HOST_USER
+                mensaje['From'] = settings.production.EMAIL_HOST_USER
                 mensaje['To'] = user.email
                 mensaje['Subject'] = "Confirme su correo"
                 cliente = f"{str(user.nombres).capitalize()} {str(user.apellidos).capitalize()}"
                 key = token.key
                 value = cryptocode.encrypt(str(key),Public_Key)
                 content = render_to_string("Correo/ConfirmarCuenta.html",
-                                            {"cliente": cliente, "token":value})
+                                            {"cliente": cliente, "token":value, 'dominio':settings.production.Domain, 'footer':cambiosFooter.objects.all()})
                 mensaje.attach(MIMEText(content, 'html'))
 
-                Servidor.sendmail(settings.local.EMAIL_HOST_USER,
+                Servidor.sendmail(settings.production.EMAIL_HOST_USER,
                                   user.email,
                                   mensaje.as_string())
 
@@ -273,6 +257,7 @@ class ConfirmarCuenta(TemplateView):
             user,token,message, self.user_token_expired = token_expired.authenticate_credentials(key)
             if user != None and token != None:
                     token = Token.objects.get(key = token)
+                    token.delete()
                     context={'User':user}
             else:
                 context={
@@ -290,10 +275,10 @@ class ConfirmarCuenta(TemplateView):
                 user.save()
                 return redirect('IniciarSesion')
             except:
-                data = json.dumps({'error': 'El total no puede tener un valor de 0'})
+                data = json.dumps({'error': 'No se pudo cambiar el estado de tu usuario. Intentalo nuevamente'})
                 return HttpResponse(data, content_type="application/json", status=400)
         else:
-            data = json.dumps({'error': 'El total no puede tener un valor de 0'})
+            data = json.dumps({'error': 'No se pudo identificar al usuario'})
             return HttpResponse(data, content_type="application/json", status=400)
 
 @login_required()
@@ -307,7 +292,6 @@ def Perfil(request):
 
 
 @login_required()
-@PermissionDecorator(['change_usuario'])
 def EditarPerfil(request):  
     template_name = "UserInformation/EditarPerfil.html"
     UserSesion = if_User(request)
@@ -378,15 +362,18 @@ def Change(request):
 @login_required()
 @PermissionDecorator(['add_usuario','change_usuario', 'delete_usuario', 'view_usuario'])
 def Admin(request):
-    UserSesion = if_admin(request)
+    UserSesion = if_User(request)
     if UserSesion == False:
-        return redirect("IniciarSesion")
+        return redirect("Inicio")
     cambiosQueryset = cambios.objects.all()
     cambiosfQueryset = cambiosFooter.objects.all()
-    filter = "yes"
     template_name = "UsersConfiguration/UsersAdministration.html"
     if request.method=="GET":
-        queryset = Usuario.objects.all()
+        queryset=""
+        if request.user.administrador:
+            queryset = Usuario.objects.filter().exclude(pk = request.user.pk)
+        else:
+            queryset = Usuario.objects.filter(administrador = 0).exclude(pk = request.user.pk)
         Servicios = Servicio.objects.all()
         try:
             Vistas = VistasDiarias.objects.get(id_dia=datetime.today().strftime('%Y-%m-%d'))
@@ -404,29 +391,16 @@ class CreateUser(CreateView, PermissionMixin):
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST or None)
         context = {
-            'form':self.form_class,
+            'form':form,
         }
         cambiosQueryset = cambios.objects.all()
         cambiosfQueryset = cambiosFooter.objects.all()
-        if form.is_valid() is False:
+        if form.is_valid():
             try:
-                registro = self.model(
-                    img_usuario = form.cleaned_data.get('img_usuario'),
-                    username = form.cleaned_data.get('username'),
-                    nombres = form.cleaned_data.get('nombres'),
-                    apellidos = form.cleaned_data.get('apellidos'),
-                    telefono = form.cleaned_data.get('telefono'),
-                    celular = form.cleaned_data.get('celular'),
-                    email = form.cleaned_data.get('email'),
-                    fec_nac = form.cleaned_data.get('fec_nac'),
-                    tipo_documento = form.cleaned_data.get('tipo_documento'),
-                    num_documento = form.cleaned_data.get('num_documento'),
-                    municipio = form.cleaned_data.get('municipio'),
-                    direccion = form.cleaned_data.get('direccion'),
-                    cod_postal = form.cleaned_data.get('cod_postal'),
-                    estado = 1
-                )
-                registro.save()
+                form.save()
+                update = Usuario.objects.get(username = form.cleaned_data.get('username')) 
+                update.estado = 1
+                update.save()
                 return redirect('Administracion')
             except:
                 context['errors'] = form.errors
@@ -439,18 +413,18 @@ class CreateUser(CreateView, PermissionMixin):
             context['Error']= 'Los datos ingresados son incorrectos'
             context['cambios']=cambiosQueryset
             context['footer']=cambiosfQueryset
-        UserSesion = if_admin(request)
+        UserSesion = if_User(request)
         if UserSesion == False:
-            return redirect("IniciarSesion")
+            return redirect("Inicio")
         context['User']=UserSesion
         return render(request, self.template_name, context)
                 
     def get_context_data(self, *args, **kwargs):
         context = super(CreateUser, self).get_context_data(**kwargs)
         try:
-            UserSesion = if_admin(self.request)
+            UserSesion = if_User(self.request)
             if UserSesion == False:
-                return redirect("IniciarSesion")
+                return redirect("Inicio")
             cambiosQueryset = cambios.objects.all()
             cambiosfQueryset = cambiosFooter.objects.all()
             context["User"]=UserSesion
@@ -469,6 +443,8 @@ class UpdateUser(UpdateView,PermissionMixin):
     def get(self, request, *args,**kwargs):
         try:
             get_object = Usuario.objects.get(id_usuario=kwargs['pk'])
+            if kwargs['pk']==request.user.pk:  
+                return redirect('Administracion')
         except:
             return redirect('Administracion')
         cambiosQueryset = cambios.objects.all()
@@ -480,20 +456,34 @@ class UpdateUser(UpdateView,PermissionMixin):
         if request.user.administrador == False:
             if get_object.administrador:
                 return redirect("Administracion")
-        UserSesion = if_admin(request)
+        UserSesion = if_User(request)
         if UserSesion == False:
-            return redirect("IniciarSesion")
-        context['titulo']="Editar Usuario "+UserSesion['username']
+            return redirect("Inicio")
+        context['titulo']="Editar Usuario "+get_object.username
         context['User']=UserSesion
         context['UsuarioE']=get_object
         context['cambios']=cambiosQueryset
         context['footer']=cambiosfQueryset
         context['fecha']=str(get_object.fec_nac)
-        context['roles']=Group.objects.all()
+        roles=[]
+        if request.user.administrador:
+            roles = Group.objects.all()
+        else:
+            for rol in Group.objects.all():
+                try:
+                    rol.permissions.get(codename="Empleado")
+                except:
+                    roles.append(rol)
+        context['roles']=roles
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        get_object = Usuario.objects.get(id_usuario=kwargs['pk'])
+        try:
+            get_object = Usuario.objects.get(id_usuario=kwargs['pk'])
+            if kwargs['pk']==request.user.pk:  
+                return redirect('Administracion')
+        except:
+            return redirect('Administracion')
         form = self.form_class(request.POST or None, instance=get_object)
         context = {
             'form':form,
@@ -502,21 +492,50 @@ class UpdateUser(UpdateView,PermissionMixin):
         cambiosfQueryset = cambiosFooter.objects.all()
         if form.is_valid():
             try:
-                form.save()
-                return redirect('Administracion')
+                rol=form.cleaned_data.get('rol')
+                if request.user.administrador:
+                    form.save()
+                    update=Usuario.objects.get(username=form.cleaned_data.get('username'))
+                    try:
+                        if rol.permissions.get(codename="Administrador"):
+                            update.administrador = 1
+                            update.save()
+                    except:
+                        update.administrador = 0
+                        update.save()
+                    return redirect('Administracion')
+                else:
+                    try:
+                        rol.permissions.get(codename="Empleado")
+                        context['Error']= 'El rol '+rol.name+' no puede ser asignado por el usuario '+request.user.nombres+" "+request.user.apellidos
+                    except:
+                        form.save()
+                        update=Usuario.objects.get(username=form.cleaned_data.get('username'))
+                        update.administrador = 0
+                        update.save()
+                        return redirect('Administracion')
             except Exception as e:
                 context['errors'] = form.errors
                 print(e)
         else:
             context['errors'] =  form.errors
             context['Error']= 'Los datos ingresados son incorrectos'
-        context['roles']=Group.objects.all()
+        roles=[]
+        if request.user.administrador:
+            roles = Group.objects.all()
+        else:
+            for rol in Group.objects.all():
+                try:
+                    rol.permissions.get(codename="Empleado")
+                except:
+                    roles.append(rol)
+        context['roles']=roles
         context['cambios']=cambiosQueryset
         context['footer']=cambiosfQueryset
         context['UsuarioE']=get_object
-        UserSesion = if_admin(request)
+        UserSesion = if_User(request)
         if UserSesion == False:
-            return redirect("IniciarSesion")
+            return redirect("Inicio")
         context['User']=UserSesion
         context['titulo']="Editar Usuario "+UserSesion['username']
         return render(request, self.template_name, context)
@@ -524,9 +543,9 @@ class UpdateUser(UpdateView,PermissionMixin):
     def get_context_data(self, *args, **kwargs):
         context = super(CreateUser, self).get_context_data(**kwargs)
         try:
-            UserSesion = if_admin(self.request)
+            UserSesion = if_User(self.request)
             if UserSesion == False:
-                return redirect("IniciarSesion")
+                return redirect("Inicio")
             cambiosQueryset = cambios.objects.all()
             cambiosfQueryset = cambiosFooter.objects.all()
             context['titulo']="Editar Usuario "+UserSesion['username']
@@ -637,22 +656,22 @@ def PassRec(request):
                             Token.objects.create(user=user)
                             token = Token.objects.get(user=user)
                     try:
-                        Servidor = smtplib.SMTP(settings.local.EMAIL_HOST, settings.local.EMAIL_PORT)
+                        Servidor = smtplib.SMTP(settings.production.EMAIL_HOST, settings.production.EMAIL_PORT)
                         Servidor.starttls()
-                        Servidor.login(settings.local.EMAIL_HOST_USER, settings.local.EMAIL_HOST_PASSWORD)
+                        Servidor.login(settings.production.EMAIL_HOST_USER, settings.production.EMAIL_HOST_PASSWORD)
                         print("conexion establecida")
                         mensaje = MIMEMultipart()
-                        mensaje['From'] = settings.local.EMAIL_HOST_USER
+                        mensaje['From'] = settings.production.EMAIL_HOST_USER
                         mensaje['To'] = user.email
                         mensaje['Subject'] = "Cambio de contraseña"
                         cliente = f"{str(user.nombres).capitalize()} {str(user.apellidos).capitalize()}"
                         key = token.key
                         value = cryptocode.encrypt(str(key),Public_Key)
                         content = render_to_string("Correo/CambioContraseñaCorreo.html",
-                                                   {"cliente": cliente, "token":value})
+                                                   {"cliente": cliente, "token":value, 'dominio':settings.production.Domain, 'footer':cambiosFooter.objects.all()})
                         mensaje.attach(MIMEText(content, 'html'))
 
-                        Servidor.sendmail(settings.local.EMAIL_HOST_USER,
+                        Servidor.sendmail(settings.production.EMAIL_HOST_USER,
                                           user.email,
                                           mensaje.as_string())
 

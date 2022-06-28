@@ -13,6 +13,5 @@ urlpatterns=[
     path("EditarRol/<int:pk>",login_required(views.EditarRolView.as_view()), name="updateRol"),
     path("CrearRol/", login_required(views.CreateRolView.as_view()), name="CreateRol"),
     path("AgregarPermisos/", login_required(views.AgregarPer), name="AgregarPer"),
-    # path("EstadoRol/",views.EstadoRol, name="estado"),
     path('EliminarRol/', login_required(views.eliminarRol), name="eliminarRol"),
 ]

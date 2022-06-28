@@ -1,4 +1,3 @@
-from unicodedata import name
 from django.urls import path
 from Modulo_compras.views import *
 from django.contrib.auth.decorators import login_required

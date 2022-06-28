@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -35,10 +36,8 @@
                 <i class="fa fa-eye-slash hide" id="hide" onclick="show()"></i>
             </label>
             <br> <br>
-            <button type="submit">Iniciar sesión</button>
-            {% if request.GET.next %}
-                 <input type="hidden" name="next" value="{{ request.GET.next }}"/>
-            {% endif %} 
+            <button type="submit">Iniciar sesión</button> {% if request.GET.next %}
+            <input type="hidden" name="next" value="{{ request.GET.next }}" /> {% endif %}
             <br><br>
             <a href="{%url 'EmailRecovery'%}" class="OTC">¿Olvidaste tu contraseña?</a>
             <p class="Reg">¿No tienes una cuenta? <a href="{%url 'Registro'%}" class="OTC">Registrate aquí</a></p>
@@ -46,12 +45,12 @@
     </div>
     <script src="/static/ModuloUsuarios/js/mainLogin.js"></script>
     <script>
-        $(document).ready(function(){
+        $(document).ready(function() {
             var input = document.querySelectorAll("input");
-            for(var i =0; i<input.length; i++){
-            input[i].removeAttribute("required");
+            for (var i = 0; i < input.length; i++) {
+                input[i].removeAttribute("required");
             }
-           
+
         });
     </script>
 </body>

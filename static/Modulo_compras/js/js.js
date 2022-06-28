@@ -223,13 +223,15 @@ function cambioestadoP(id) {
                         location.reload()
                     });
                 },
-                error: function(errors) {
+                error: function(error) {
                     Error = error['responseJSON']
                     Swal.fire({
                         icon: 'info',
                         title: 'Atención.',
                         text: Error['error'] + '.',
-                    })
+                    }).then(function() {
+                        location.reload()
+                    });
                 }
             });
 

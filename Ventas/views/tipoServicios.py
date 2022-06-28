@@ -3,7 +3,6 @@
 Seccion de las Vistas donde se administran los tipos de servicios
 <----------------------------------------------------------------->
 """
-from multiprocessing import context
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy

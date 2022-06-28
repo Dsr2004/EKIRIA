@@ -9,14 +9,12 @@ from xhtml2pdf import pisa
 
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
-from django.template import Context
 from django.template.loader import render_to_string, get_template
 from django.urls import reverse_lazy
 from django.views.generic import View, TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from django.db.models import Q
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.staticfiles import finders
 
 from Proyecto_Ekiria.Mixin.Mixin import PermissionDecorator, PermissionMixin
 from Configuracion.models import cambios, cambiosFooter
@@ -33,7 +31,6 @@ from ..models import Cita, Pedido, Calendario, Servicio
 from ..forms import CitaForm
 from ..forms import CitaForm, Servicio_PersonalizadoForm
 
-from ..Accesso import acceso
 """
 <----------------------------------------------------------------->
 Seccion de las Vistas donde se administran las citas
@@ -115,9 +112,6 @@ class AgregarCita(TemplateView,PermissionMixin):
                 return  JsonResponse(data, safe=False)
         elif accion == "AgregarCita": 
             cita = json.loads(request.POST["cita"])
-            print("ARCHIVOS",request.FILES)
-            
-            print(request.POST)
             cliente = cita["cliente"]
             empleado = cita["empleado"]
             # print(cita) 
@@ -606,7 +600,7 @@ class AgandarCita(CreateView,PermissionMixin):
 
     def get(self, request, *args,**kwargs):
         try: 
-            username = self.request.session['username']
+            username = self.request.user.username
             cliente=Usuario.objects.get(username=username)
             if cliente:
                 pedido,creado = Pedido.objects.get_or_create(cliente_id=cliente, completado=False)
@@ -686,7 +680,7 @@ class AgandarCita(CreateView,PermissionMixin):
                 response = JsonResponse({"errores":errores})
                 response.status_code = 400
                 return response
-            cliente=Usuario.objects.get(username=self.request.session['username'])
+            cliente=Usuario.objects.get(username=self.request.user.username)
             pedido,creado = Pedido.objects.get_or_create(cliente_id=cliente, completado=False)
 
             datosParaGuardar = {"pedido_id":pedido,"horaInicioCita":horaInicio,"cliente_id":cliente, "empleado_id":empleado.pk,
@@ -832,8 +826,8 @@ class CitasReportePDF(View):
         return path
     
     def get(self,request,*args,**kwargs):
-        citas=Cita.objects.filter(empleado_id=request.session['pk']).filter(diaCita=datetime.now().date()).filter(estado=1)
-        empleado=Usuario.objects.get(pk=request.session['pk'])
+        citas=Cita.objects.filter(empleado_id=request.user.pk).filter(diaCita=datetime.now().date()).filter(estado=1)
+        empleado=Usuario.objects.get(pk=request.user.pk)
         try:
             template = get_template('Reportes/citas_hoy.html')
             context = {"citas":citas, "hoy":datetime.now(), "empleado":empleado}

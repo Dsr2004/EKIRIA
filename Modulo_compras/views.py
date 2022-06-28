@@ -1,12 +1,5 @@
-from gc import get_objects
-from operator import index
 import os
-from itertools import product
 import json
-from pickle import TRUE
-from re import I
-from wsgiref.util import request_uri
-from xmlrpc.client import boolean
 from django.shortcuts import render, redirect
 from Modulo_compras.forms import ProveedorForm, ComprasForm, ProductosForm, Tipo_productoForm
 from .models import Proveedor, Producto, Compra, Tipo_producto, HistorialCompra
@@ -21,9 +14,11 @@ from xhtml2pdf import pisa
 from Usuarios.models import *
 from Usuarios.views import *
 from Configuracion.models import cambios, cambiosFooter
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required
+from Proyecto_Ekiria.Mixin.Mixin import PermissionDecorator, PermissionMixin
 
 @login_required()
+@PermissionDecorator(['view_producto','Administrador'])
 def Listproductos (request):
     UserSesion = if_admin(request)
     if UserSesion == False:
@@ -35,6 +30,7 @@ def Listproductos (request):
     return render(request,'Productos.html',{'producto_form':producto_form , 'Productos': Productos, 'User':UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
 
 @login_required()
+@PermissionDecorator(['view_compra','Administrador'])
 def Listcompra(request):
     UserSesion = if_admin(request)
     if UserSesion == False:
@@ -45,17 +41,20 @@ def Listcompra(request):
     return render(request,'compra.html',{ 'Compras': Compras, 'User':UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
 
 @login_required()
+@PermissionDecorator(['view_proveedor','Administrador'])
 def Listarprov(request):
     UserSesion = if_admin(request)
     if UserSesion == False:
-        return redirect("IniciarSesion")
+        return redirect("Inicio")
     cambiosQueryset = cambios.objects.all()
     cambiosfQueryset = cambiosFooter.objects.all()
     Proveedores=Proveedor.objects.all()
     prov_form=ProveedorForm
     return render(request,'proveedores.html',{'prov_form':prov_form , 'proveedores': Proveedores, 'User':UserSesion, 'cambios':cambiosQueryset, 'footer':cambiosfQueryset})
 
-class Crearprod(CreateView):
+
+class Crearprod(CreateView, PermissionMixin):
+    permission_required = ['add_producto','view_tipo_producto','Administrador']
     model= Producto
     form_class=ProductosForm
     template_name='Funciones/agregarprod.html'
@@ -98,7 +97,7 @@ class Crearprod(CreateView):
                     context['Error']="El proveedor que ha seleccionado se encuentra inhabilitado"
                     return render(request, self.template_name, context)
             else:
-                context['Error']="El nombre del producto ya esta relacionado a un proveedor"
+                context['Error']="El nombre del producto ya está relacionado a un proveedor"
                 return render(request, self.template_name, context)
         else:
             return render(request, self.template_name, context)
@@ -106,8 +105,6 @@ class Crearprod(CreateView):
         context = super(Crearprod, self).get_context_data(**kwargs)
         try:
             UserSesion = if_admin(self.request)
-            if UserSesion == False:
-                return redirect("IniciarSesion")
             cambiosQueryset = cambios.objects.all()
             cambiosfQueryset = cambiosFooter.objects.all()
             tipo_producto = Tipo_producto.objects.all()
@@ -119,7 +116,8 @@ class Crearprod(CreateView):
         except:
             return context
 
-class Modificarprod(UpdateView):
+class Modificarprod(UpdateView, PermissionMixin):
+    permission_required = ['change_producto','Administrador']
     model= Producto
     form_class=ProductosForm
     template_name='Funciones/agregarprod.html'
@@ -128,13 +126,13 @@ class Modificarprod(UpdateView):
             get_object = self.model.objects.get(pk=kwargs['pk'])
             producto_form = self.form_class(request.POST or None, instance=get_object)
             context={}
+            UserSesion = if_admin(request)
+            if UserSesion == False:
+                return redirect("Inicio")
             if producto_form.is_valid():
                 producto_form.save()
                 return redirect('listarprod')
             else:
-                UserSesion = if_admin(request)
-                if UserSesion == False:
-                    return redirect("IniciarSesion")
                 cambiosQueryset = cambios.objects.all()
                 cambiosfQueryset = cambiosFooter.objects.all()
                 tipo_producto = Tipo_producto.objects.all()
@@ -150,7 +148,7 @@ class Modificarprod(UpdateView):
         try:
             UserSesion = if_admin(self.request)
             if UserSesion == False:
-                return redirect("IniciarSesion")
+                return redirect("Inicio")
             cambiosQueryset = cambios.objects.all()
             cambiosfQueryset = cambiosFooter.objects.all()
             tipo_producto = Tipo_producto.objects.all()
@@ -163,13 +161,17 @@ class Modificarprod(UpdateView):
             return context
 
 
-class Creartp(CreateView):
+class Creartp(CreateView, PermissionMixin):
+    permission_required = ['add_tipo_producto','Administrador']
     model=Tipo_producto
     form_class=Tipo_productoForm
     template_name='modalprod/agregartp.html'
 
     def post(self,request, *args, **kwargs):  
             tproducto_form = Tipo_productoForm(request.POST)
+            UserSesion = if_admin(self.request)
+            if UserSesion == False:
+                return redirect("Inicio")
             if tproducto_form.is_valid():
                 tproducto_form.save()
                 return redirect('crearprod')
@@ -184,7 +186,7 @@ class Creartp(CreateView):
         try:
             UserSesion = if_admin(self.request)
             if UserSesion == False:
-                return redirect("IniciarSesion")
+                return redirect("Inicio")
             cambiosQueryset = cambios.objects.all()
             cambiosfQueryset = cambiosFooter.objects.all()
             context["User"]=UserSesion
@@ -196,13 +198,17 @@ class Creartp(CreateView):
 
 
 
-class Crearprov(CreateView):
+class Crearprov(CreateView, PermissionMixin):
+    permission_required = ['add_proveedor','Administrador']
     model= Proveedor
     form_class=ProveedorForm
     template_name='modalprov/agregarprov.html'
 
     def post(self,request, *args, **kwargs):  
             prov_form = ProveedorForm(request.POST)
+            UserSesion = if_admin(self.request)
+            if UserSesion == False:
+                return redirect("Inicio")
             if prov_form.is_valid():
                 prov_form.save()
                 return redirect('listarprov')
@@ -217,7 +223,7 @@ class Crearprov(CreateView):
         try:
             UserSesion = if_admin(self.request)
             if UserSesion == False:
-                return redirect("IniciarSesion")
+                return redirect("Inicio")
             cambiosQueryset = cambios.objects.all()
             cambiosfQueryset = cambiosFooter.objects.all()
             context["User"]=UserSesion
@@ -228,7 +234,8 @@ class Crearprov(CreateView):
             return context
         
 
-class Crearcompra(CreateView):
+class Crearcompra(CreateView, PermissionMixin):
+    permission_required = ['add_compra','Administrador']
     model= Compra
     form_class=ComprasForm
     template_name='crearCompra.html'
@@ -237,7 +244,8 @@ class Crearcompra(CreateView):
         try:
             UserSesion = if_admin(self.request)
             if UserSesion == False:
-                return redirect("IniciarSesion")
+                return redirect("Inicio")
+            print('hola')
             cambiosQueryset = cambios.objects.all()
             cambiosfQueryset = cambiosFooter.objects.all()
             context['productos']=Producto.objects.all()
@@ -252,6 +260,9 @@ class Crearcompra(CreateView):
             return context
 
     def post(self,request, *args, **kwargs): 
+            UserSesion = if_admin(self.request)
+            if UserSesion == False:
+                return redirect("Inicio")
             if request.is_ajax():
                 x=request.POST.getlist('Datos[]')
                 DatosCompra = json.loads(x[0])
@@ -289,8 +300,11 @@ class Crearcompra(CreateView):
                     data = json.dumps({'error': 'No se puede crear una compra si los campos están vacios'})
                     return HttpResponse(data, content_type="application/json", status=400)
 
-
+@PermissionDecorator(['add_compra','add_historialcompra','Administrador'])
 def crearHistorial(request):
+    UserSesion = if_admin(request)
+    if UserSesion == False:
+        return redirect("Inicio")
     if request.is_ajax():
         x=request.POST.getlist('historial[]')
         Historial = json.loads(x[0])
@@ -313,20 +327,28 @@ def crearHistorial(request):
             data = json.dumps({'error': 'No se puedo crear el historial correctamente, por lo que la compra será eliminada'})
             return HttpResponse(data, content_type="application/json", status=400)
 
+@PermissionDecorator(['delete_proveedor','Administrador'])
 def Eliminarprov(request, id_proveedor):
+    UserSesion = if_admin(request)
+    if UserSesion == False:
+        return redirect("Inicio")
     prov_form =Proveedor.objects.filter(pk=id_proveedor)
     prov_form.delete()
     return redirect('listarprov')
     # return render(request,'proveedores.html',{'prov_form':prov_form})
 
 
-class modificarprov(UpdateView):
+class modificarprov(UpdateView, PermissionMixin):
+    permission_required = ['change_proveedor','Administrador']
     model= Proveedor
     form_class=ProveedorForm
     template_name='modalprov/editarprov.html'
 
     def post(self,request, *args, **kwargs):  
             prov_form = ProveedorForm(request.POST,instance=self.get_object())
+            UserSesion = if_admin(self.request)
+            if UserSesion == False:
+                return redirect("Inicio")
             if prov_form.is_valid():
                 prov_form.save()
                 return redirect('listarprov')
@@ -341,6 +363,8 @@ class modificarprov(UpdateView):
         context = super(modificarprov, self).get_context_data(**kwargs)
         try:
             UserSesion=if_admin(self.request)
+            if UserSesion == False:
+                return redirect("Inicio")
             cambiosQueryset = cambios.objects.all()
             cambiosfQueryset = cambiosFooter.objects.all()
             context["User"]=UserSesion
@@ -351,7 +375,8 @@ class modificarprov(UpdateView):
             return context
         
         
-class modificartp(UpdateView):
+class modificartp(UpdateView, PermissionMixin):
+    permission_required = ['change_tipo_producto','Administrador']   
     model= Tipo_producto
     form_class=Tipo_productoForm
     template_name='modalprod/editartp.html'
@@ -359,6 +384,9 @@ class modificartp(UpdateView):
     def post(self,request, *args, **kwargs):  
             get_object = self.model.objects.get(pk=kwargs['pk'])
             tp_form = self.form_class(request.POST or None, instance=get_object)
+            UserSesion = if_admin(self.request)
+            if UserSesion == False:
+                return redirect("Inicio")
             if tp_form.is_valid():
                 tp_form.save()
                 return redirect('crearprod')
@@ -373,6 +401,8 @@ class modificartp(UpdateView):
         context = super(modificartp, self).get_context_data(**kwargs)
         try:
             UserSesion=if_admin(self.request)
+            if UserSesion == False:
+                return redirect("Inicio")   
             cambiosQueryset = cambios.objects.all()
             cambiosfQueryset = cambiosFooter.objects.all()
             context["User"]=UserSesion
@@ -383,7 +413,12 @@ class modificartp(UpdateView):
         except:
             return context
 
+
+@PermissionDecorator(['add_proveedor','change_proveedor','Administrador'])
 def Actprov (request):
+    UserSesion = if_admin(request)
+    if UserSesion == False:
+        return redirect("Inicio")
     pk = request.POST.get("id_proveedor")
     prov_form=Proveedor.objects.get(id_proveedor=pk)
     Proveedores=ProveedorForm(request.POST, instance=prov_form)
@@ -391,7 +426,11 @@ def Actprov (request):
        Proveedores.save()
     return redirect('listarprov')
 
+@PermissionDecorator(['change_proveedor','Administrador'])
 def cambiarestado(request):
+    UserSesion = if_admin(request)
+    if UserSesion == False:
+        return redirect("Inicio")
     if request.is_ajax:
         if request.method=="POST":
             id = request.POST["estado"]
@@ -410,29 +449,16 @@ def cambiarestado(request):
             else:
                 return redirect('listarprov')
     return JsonResponse({"kiwi":"yes"})
-  
+
+@PermissionDecorator(['change_producto','Administrador'])
 def cambiarestadoProducto(request):
+    UserSesion = if_admin(request)
+    if UserSesion == False:
+        return redirect("Inicio")
     if request.is_ajax:
         if request.method=="POST":
             id = request.POST["estado"]
             update=Producto.objects.get(id_producto=id)
-            estatus=update.estado
-            if estatus==True:
-                update.estado=False
-                update.save()
-            elif estatus==False:
-                update.estado=True
-                update.save()
-            else:
-                return redirect('listarprov')
-    return JsonResponse({"kiwi":"yes"})
-  
-  
-def cambiarestadoTProducto(request):
-    if request.is_ajax:
-        if request.method=="POST":
-            id = request.POST["estado"]
-            update=Tipo_producto.objects.get(pk=id)
             proveedor = Proveedor.objects.get(pk = update.proveedor_id)
             estatus=update.estado
             if estatus==True:
@@ -448,9 +474,32 @@ def cambiarestadoTProducto(request):
             else:
                 return redirect('listarprov')
     return JsonResponse({"kiwi":"yes"})
+  
+@PermissionDecorator(['change_tipo_producto','Administrador'])
+def cambiarestadoTProducto(request):
+    UserSesion = if_admin(request)
+    if UserSesion == False:
+        return redirect("Inicio")
+    if request.is_ajax:
+        if request.method=="POST":
+            id = request.POST["estado"]
+            update=Tipo_producto.objects.get(pk=id)
+            estatus=update.estado
+            if estatus==True:
+                update.estado=False
+                update.save()
+            elif estatus==False:
+                update.estado=True
+                update.save()
+            else:
+                return redirect('listarprov')
+    return JsonResponse({"kiwi":"yes"})
 
-
+@PermissionDecorator(['change_compra','change_producto','Administrador'])
 def cambiarestadoCompra(request):
+    UserSesion = if_admin(request)
+    if UserSesion == False:
+        return redirect("Inicio")
     if request.is_ajax:
         if request.method=="POST":
             id = request.POST["estado"]
@@ -509,7 +558,8 @@ def cambiarestadoCompra(request):
 
 
 
-class verDetalleCompra(TemplateView):
+class verDetalleCompra(TemplateView, PermissionMixin):
+    permission_required = ['view_compra','Administrador']
     template_name = "DetalleCompra.html"
     model = Compra
     def get_context_data(self, *args, **kwargs):
@@ -522,7 +572,7 @@ class verDetalleCompra(TemplateView):
         context['Productos']=productos
         UserSesion = if_admin(self.request)
         if UserSesion == False:
-            return redirect("IniciarSesion")
+            return redirect("Inicio")
         cambiosQueryset = cambios.objects.all()
         cambiosfQueryset = cambiosFooter.objects.all()
         context["User"]=UserSesion
@@ -559,7 +609,7 @@ class verDetalleCompra(TemplateView):
         context['Productos']=productos
         UserSesion = if_admin(self.request)
         if UserSesion == False:
-            return redirect("IniciarSesion")
+            return redirect("Inicio")
         cambiosQueryset = cambios.objects.all()
         cambiosfQueryset = cambiosFooter.objects.all()
         context["User"]=UserSesion
@@ -577,7 +627,8 @@ class verDetalleCompra(TemplateView):
 
 
 
-class ListaCompra(TemplateView):
+class ListaCompra(TemplateView, PermissionMixin):
+    permission_required = ['view_compra','Administrador']
     template_name = "ListaCompra.html"
     model = Producto
     def get_context_data(self, *args, **kwargs):
@@ -586,7 +637,7 @@ class ListaCompra(TemplateView):
         context['Productos']=productos
         UserSesion = if_admin(self.request)
         if UserSesion == False:
-            return redirect("IniciarSesion")
+            return redirect("Inicio")
         cambiosQueryset = cambios.objects.all()
         cambiosfQueryset = cambiosFooter.objects.all()
         context["User"]=UserSesion
@@ -594,7 +645,8 @@ class ListaCompra(TemplateView):
         context['footer']=cambiosfQueryset
         return context
 
-class GraficoCompras(TemplateView):
+class GraficoCompras(TemplateView, PermissionMixin):
+    permission_required = ['view_proveedor','view_producto','view_compra','Administrador']
     template_name = "GraficoCompra.html"
     model = Producto
     
@@ -655,7 +707,7 @@ class GraficoCompras(TemplateView):
         context['Proveedores']=json.dumps(Proveedores)
         UserSesion = if_admin(self.request)
         if UserSesion == False:
-            return redirect("IniciarSesion")
+            return redirect("Inicio")
         cambiosQueryset = cambios.objects.all()
         cambiosfQueryset = cambiosFooter.objects.all()
         context["User"]=UserSesion
@@ -673,21 +725,23 @@ class GraficoCompras(TemplateView):
         context['Proveedores']=json.dumps(Proveedores)
         UserSesion = if_admin(self.request)
         if UserSesion == False:
-            return redirect("IniciarSesion")
+            return redirect("Inicio")
         cambiosQueryset = cambios.objects.all()
         cambiosfQueryset = cambiosFooter.objects.all()
         context["User"]=UserSesion
         context['cambios']=cambiosQueryset
         context['footer']=cambiosfQueryset
         return render(request, self.template_name, context)    
-class eliminarProductos(TemplateView):
+
+class eliminarProductos(TemplateView, PermissionMixin):    
+    permission_required = ['delete_producto','Administrador']
     model=Producto
     template_name = "Funciones/RestarProductos.html"
     def get_context_data(self, *args, **kwargs):
         context = super(eliminarProductos, self).get_context_data(**kwargs)
         UserSesion = if_admin(self.request)
         if UserSesion == False:
-            return redirect("IniciarSesion")
+            return redirect("Inicio")
         cambiosQueryset = cambios.objects.all()
         cambiosfQueryset = cambiosFooter.objects.all()
         context['Productos']=Producto.objects.all()
@@ -696,6 +750,9 @@ class eliminarProductos(TemplateView):
         context['footer']=cambiosfQueryset
         return context
     def post(self,request, *args, **kwargs): 
+        UserSesion = if_admin(request)
+        if UserSesion == False:
+            return redirect("Inicio")
         if request.is_ajax():
             x=request.POST.getlist('Datos[]')
             DatosProductos = json.loads(x[0])

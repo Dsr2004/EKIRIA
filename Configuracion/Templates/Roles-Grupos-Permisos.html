@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="{%static 'bootstrap/css/bootstrap.css'%}">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
-    <link rel="stylesheet" href="/static/Configuracion/css/estilo.css">
+    <link rel="stylesheet" href="{%static 'Configuracion/css/estilo.css'%}">
     
     <title>Roles</title>
   </head>
@@ -66,7 +66,7 @@
         
         <button class="nuevoRol" type="button"data-bs-toggle="modal" data-bs-target="#CrearRol">
          Crear Nuevo Rol</button>
-        <img class="imgAgregar" src="/static/Configuracion/img/Agregar.png" type="button"data-bs-toggle="modal" data-bs-target="#CrearRol">
+        <img class="imgAgregar" src="{%static 'Configuracion/img/Agregar.png'%}" type="button"data-bs-toggle="modal" data-bs-target="#CrearRol">
       </div>
     </div>
       
@@ -74,9 +74,9 @@
 
          
 {%block scripts%} 
-<script src="/static/Configuracion/js/main.js"></script>
-<script src="/static/Configuracion/js/habilitar.js"></script>
-<script src="/static/bootstrap/js/bootstrap.js"></script>
+<script src="{%static 'Configuracion/js/main.js'%}"></script>
+<script src="{%static 'Configuracion/js/EliminarRol.js'%}"></script>
+<script src="{%static 'bootstrap/js/bootstrap.js'%}"></script>
 <script src="//code.jquery.com/jquery-3.6.0.min.js"></script>
 {%endblock scripts%}
 {% block modal %} 

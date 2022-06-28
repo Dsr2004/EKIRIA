@@ -1,6 +1,9 @@
 from .base import *
 
 # esta es para mysql
+Domain = "127.0.0.1:8000"
+ALLOWED_HOSTS = []
+DEBUG = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -15,6 +18,7 @@ DATABASES = {
         }
     }
 }
+
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS  = (os.path.join(BASE_DIR, '../static/'),)
