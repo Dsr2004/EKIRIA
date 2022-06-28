@@ -42,7 +42,7 @@ from Usuarios.authentication_mixins import Authentication
 from datetime import datetime
 from Usuarios.forms import Cambiar, Regitro, Editar, CustomAuthForm, EditUser
 from Usuarios.Mixins.Mixin import Asimetric_Cipher,if_admin
-from Proyecto_Ekiria.settings.local import Public_Key
+from Proyecto_Ekiria.settings.production import Public_Key
 import cryptocode
 from Proyecto_Ekiria.Mixin.Mixin import PermissionDecorator, PermissionMixin
 from Notificaciones.models import Notificacion
@@ -158,22 +158,22 @@ class Register(CreateView):
                 except:
                     Token.objects.create(user=user)
                     token = Token.objects.get(user=user)
-                Servidor = smtplib.SMTP(settings.local.EMAIL_HOST, settings.local.EMAIL_PORT)
+                Servidor = smtplib.SMTP(settings.production.EMAIL_HOST, settings.production.EMAIL_PORT)
                 Servidor.starttls()
-                Servidor.login(settings.local.EMAIL_HOST_USER, settings.local.EMAIL_HOST_PASSWORD)
+                Servidor.login(settings.production.EMAIL_HOST_USER, settings.production.EMAIL_HOST_PASSWORD)
                 print("conexion establecida")
                 mensaje = MIMEMultipart()
-                mensaje['From'] = settings.local.EMAIL_HOST_USER
+                mensaje['From'] = settings.production.EMAIL_HOST_USER
                 mensaje['To'] = user.email
                 mensaje['Subject'] = "Confirme su correo"
                 cliente = f"{str(user.nombres).capitalize()} {str(user.apellidos).capitalize()}"
                 key = token.key
                 value = cryptocode.encrypt(str(key),Public_Key)
                 content = render_to_string("Correo/ConfirmarCuenta.html",
-                                            {"cliente": cliente, "token":value, 'dominio':settings.local.Domain, 'footer':cambiosFooter.objects.all()})
+                                            {"cliente": cliente, "token":value, 'dominio':settings.production.Domain, 'footer':cambiosFooter.objects.all()})
                 mensaje.attach(MIMEText(content, 'html'))
 
-                Servidor.sendmail(settings.local.EMAIL_HOST_USER,
+                Servidor.sendmail(settings.production.EMAIL_HOST_USER,
                                   user.email,
                                   mensaje.as_string())
 
@@ -656,22 +656,22 @@ def PassRec(request):
                             Token.objects.create(user=user)
                             token = Token.objects.get(user=user)
                     try:
-                        Servidor = smtplib.SMTP(settings.local.EMAIL_HOST, settings.local.EMAIL_PORT)
+                        Servidor = smtplib.SMTP(settings.production.EMAIL_HOST, settings.production.EMAIL_PORT)
                         Servidor.starttls()
-                        Servidor.login(settings.local.EMAIL_HOST_USER, settings.local.EMAIL_HOST_PASSWORD)
+                        Servidor.login(settings.production.EMAIL_HOST_USER, settings.production.EMAIL_HOST_PASSWORD)
                         print("conexion establecida")
                         mensaje = MIMEMultipart()
-                        mensaje['From'] = settings.local.EMAIL_HOST_USER
+                        mensaje['From'] = settings.production.EMAIL_HOST_USER
                         mensaje['To'] = user.email
                         mensaje['Subject'] = "Cambio de contraseña"
                         cliente = f"{str(user.nombres).capitalize()} {str(user.apellidos).capitalize()}"
                         key = token.key
                         value = cryptocode.encrypt(str(key),Public_Key)
                         content = render_to_string("Correo/CambioContraseñaCorreo.html",
-                                                   {"cliente": cliente, "token":value, 'dominio':settings.local.Domain, 'footer':cambiosFooter.objects.all()})
+                                                   {"cliente": cliente, "token":value, 'dominio':settings.production.Domain, 'footer':cambiosFooter.objects.all()})
                         mensaje.attach(MIMEText(content, 'html'))
 
-                        Servidor.sendmail(settings.local.EMAIL_HOST_USER,
+                        Servidor.sendmail(settings.production.EMAIL_HOST_USER,
                                           user.email,
                                           mensaje.as_string())
 

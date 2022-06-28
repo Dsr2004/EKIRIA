@@ -2,6 +2,7 @@ from .base import *
 
 # esta es para mysql
 DEBUG = True
+Domain = "ekiriatest.herokuapp.com"
 ALLOWED_HOSTS = ['ekiriatest.herokuapp.com']
 DATABASES = {
     'default': {
