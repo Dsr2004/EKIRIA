@@ -25,6 +25,7 @@ function CrearRol(){
         },
         error: function(error){
             $('#CrearRoles').find('.text-danger').text('')
+            $('#mensaje').css('display', 'none')
             $('#CrearRoles').removeClass('is-invalid')
             for (let item in error.responseJSON["errores"]){
                 let input =$("#CrearRoles").find('input[name='+item+']')
@@ -36,4 +37,3 @@ function CrearRol(){
     }
     });
 }
-

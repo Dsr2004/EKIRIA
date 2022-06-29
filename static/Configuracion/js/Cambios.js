@@ -188,8 +188,10 @@ function ActualizarCambiosPagina() {
                         $('#cambiosPaginaForm').removeClass('is-invalid')
                         for (let item in error.responseJSON["errores"]){
                             let input =$("#cambiosPaginaForm").find('input[name='+item+']')
+                            
                             input.addClass("is-invalid")
                             $('#'+item).text(error.responseJSON["errores"][item])
+                 
                             
                             // si imprime con esto  aun no veo el error
                             // aunque aun no dice que campo exactamente es el 
@@ -197,6 +199,18 @@ function ActualizarCambiosPagina() {
                             // alert(error.responseJSON["errores"][item])
                             
                     }
+                    for (let item in error.responseJSON["errores"]){
+                        let input =$("#cambiosPaginaForm").find('textarea[name='+item+']')
+                        
+                        input.addClass("is-invalid")
+                        $('#'+item).text(error.responseJSON["errores"][item])    
+                }
+                for (let item in error.responseJSON["errores"]){
+                    let input =$("#cambiosPaginaForm").find('select[name='+item+']')
+                    
+                    input.addClass("is-invalid")
+                    $('#'+item).text(error.responseJSON["errores"][item])    
+            }
                     
                 }
                 });
