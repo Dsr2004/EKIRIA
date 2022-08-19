@@ -52,22 +52,22 @@
              <td style="text-align: center;">
                 {% if cita.cancelado == True %}
                 <i class="fas fa-times-circle" style="font-size: 25px; color: red;" ></i>
-                {% else %}
-                   {% if cita.estado == True %}
-                   <!-- onclick="CancelarCita3('{{cita.id_cita}}')" -->
-                      <i class="fas fa-check-circle" style="font-size: 25px; color: green;" ></i>
-                   {% else %}
-                      <a type="button" onclick="ConfirmarCita('{{cita.id_cita}}')"><i class="fas fa-clock" style="font-size: 25px; color: orange;" ></i></a>
-                   {% endif %}
-                {% endif %}
-               
-             </td>
-          </tr>
-          {% endfor %}
-          {% else  %}
-          <h1>No hay registros</h1>
-      {% endif %}
-      </tbody>
+                  {% else %}
+                     {% if cita.estado == True %}
+                     <!-- onclick="CancelarCita3('{{cita.id_cita}}')" -->
+                        <i class="fas fa-check-circle" style="font-size: 25px; color: green;" ></i>
+                     {% else %}
+                        <a type="button" onclick="ConfirmarCita('{{cita.id_cita}}')"><i class="fas fa-clock" style="font-size: 25px; color: orange;" ></i></a>
+                     {% endif %}
+                  {% endif %}
+                  
+               </td>
+            </tr>
+            {% endfor %}
+            {% else  %}
+            <h1>No hay registros</h1>
+         {% endif %}
+         </tbody>
   </table>
      
 </div>
@@ -84,9 +84,6 @@
 <script>
    $(document).ready(function () {
       $('#listarCitasTable').DataTable({
-            "language": {
-               "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
-           },
            responsive:true
       });
     });

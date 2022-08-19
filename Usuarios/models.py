@@ -64,9 +64,6 @@ class UsuarioManager(BaseUserManager):
         return usuario
 
 
-
-
-
     def create_superuser(self,email,username,nombres,apellidos,celular,fec_nac,num_documento, direccion, password):
         usuario = self.create_user(
             email,
